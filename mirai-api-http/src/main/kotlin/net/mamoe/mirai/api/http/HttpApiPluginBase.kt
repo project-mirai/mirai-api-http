@@ -7,6 +7,7 @@ object HttpApiPluginBase: PluginBase() {
     val setting by lazy{
         this.loadConfig("setting.yml")
     }
+
     val port by setting.withDefaultWriteSave { 8080 }
     val APIKey by setting.withDefaultWriteSave { "INITKEY" + generateSessionKey() }
 
