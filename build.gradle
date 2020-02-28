@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+allprojects {
+    group = "net.mamoe"
+
+    repositories {
+        mavenLocal()
+        maven { url "https://mirrors.huaweicloud.com/repository/maven" }
+        jcenter()
+        mavenCentral()
+    }
+}
