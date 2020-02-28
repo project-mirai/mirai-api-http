@@ -1,9 +1,16 @@
+import org.jetbrains.kotlin.backend.wasm.lower.excludeDeclarationsFromCodegen
 import java.util.*
 
 plugins {
     id("kotlinx-serialization")
     id("kotlin")
     id("java")
+}
+
+apply(plugin = "com.github.johnrengelman.shadow")
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
+
 }
 
 val kotlinVersion: String by rootProject.ext
@@ -25,22 +32,25 @@ val miraiVersion: String by rootProject.ext
 val miraiConsoleVersion: String by rootProject.ext
 
 
+
+
+
 kotlin {
     sourceSets["main"].apply {
         dependencies {
-            implementation("net.mamoe:mirai-core-jvm:$miraiVersion")
-            implementation("net.mamoe:mirai-core-qqandroid-jvm:$miraiVersion")
-            implementation("net.mamoe:mirai-console:$miraiConsoleVersion")
+            compileOnly("net.mamoe:mirai-core-jvm:$miraiVersion")
+            compileOnly("net.mamoe:mirai-core-qqandroid-jvm:$miraiVersion")
+            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
 
 
-            implementation(kotlin("stdlib-jdk8", kotlinVersion))
-            implementation(kotlin("stdlib-jdk7", kotlinVersion))
-            implementation(kotlin("reflect", kotlinVersion))
+            compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
+            compileOnly(kotlin("stdlib-jdk7", kotlinVersion))
+            compileOnly(kotlin("reflect", kotlinVersion))
 
-            implementation(ktor("server-cio"))
-            implementation(kotlinx("io-jvm"))
-            implementation(ktor("http-jvm"))
-            implementation("org.slf4j:slf4j-simple:1.7.26")
+            api(ktor("server-cio"))
+            api(kotlinx("io-jvm"))
+            api(ktor("http-jvm"))
+            api("org.slf4j:slf4j-simple:1.7.26")
         }
     }
 
@@ -58,14 +68,14 @@ kotlin {
         languageSettings.useExperimentalAnnotation("kotlin.Experimental")
 
         dependencies {
-            implementation(kotlin("stdlib", kotlinVersion))
-            implementation(kotlin("serialization", kotlinVersion))
+            compileOnly(kotlin("stdlib", kotlinVersion))
+            compileOnly(kotlin("serialization", kotlinVersion))
 
             //implementation("org.jetbrains.kotlinx:atomicfu:$atomicFuVersion")
-            implementation(kotlinx("io"))
-            implementation(kotlinx("coroutines-io", coroutinesIoVersion))
-            implementation(kotlinx("coroutines-core", coroutinesVersion))
-            implementation(kotlinx("serialization-runtime", serializationVersion))
+            compileOnly(kotlinx("io"))
+            compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
+            compileOnly(kotlinx("coroutines-core", coroutinesVersion))
+            compileOnly(kotlinx("serialization-runtime", serializationVersion))
             implementation(ktor("server-core"))
             implementation(ktor("http"))
         }
