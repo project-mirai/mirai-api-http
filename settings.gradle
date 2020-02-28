@@ -1,0 +1,26 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            switch (requested.id.id) {
+                case "org.jetbrains.kotlin.multiplatform": useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}"); break
+                case "com.android.library": useModule("com.android.tools.build:gradle:${requested.version}"); break
+                case "com.jfrog.bintray": useModule("com.jfrog.bintray.gradle:gradle-bintray-plugin:${requested.version}")
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        google()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
+    }
+}
+
+rootProject.name = 'mirai-api-http'
+
+include(':mirai-api-http')
+
+enableFeaturePreview('GRADLE_METADATA')
