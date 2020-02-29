@@ -122,7 +122,7 @@ Mirai HTTP API (console) plugin
 ```
 
 使用此方式释放session及其相关资源（Bot不会被释放）
-**不使用的Session应当被释放，否则Session持续保存Bot收到的消息，将会导致内存泄露**
+**不使用的Session应当被释放，长时间（30分钟）未使用的Session将自动释放，否则Session持续保存Bot收到的消息，将会导致内存泄露**
 
 #### 请求:
 
@@ -146,7 +146,7 @@ Mirai HTTP API (console) plugin
     "msg": "success"
 }
 ```
-> SessionKey与Bot 对应错误时将会返回状态码5：指定对象不存在
+> SessionKey与Bot 对应错误时将会返回状态码2：指定的Bot不存在
 
 
 
@@ -241,6 +241,7 @@ Mirai HTTP API (console) plugin
 ```
 
 使用此方法向指定对象（群或好友）发送图片消息
+**除非需要通过此手段获取imageId，否则不推荐使用该接口**
 
 #### 请求
 
@@ -309,7 +310,7 @@ Content-Type：multipart/form-data
 [POST] /recall
 ```
 
-使用此方法撤回指定消息。对于bot发送的消息，又2分钟时间限制。对于撤回群聊中群员的消息，需要有相应权限
+使用此方法撤回指定消息。对于bot发送的消息，有2分钟时间限制。对于撤回群聊中群员的消息，需要有相应权限
 
 #### 请求
 
@@ -358,7 +359,7 @@ Content-Type：multipart/form-data
     "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
 	"messageChain": [{             // 消息链，是一个消息对象构成的数组
 	    "type": "Source",
-	    "uid": 123456
+	    "id": 123456
 	},{
         "type": "Plain",
         "text": "Miral牛逼"
@@ -377,7 +378,7 @@ Content-Type：multipart/form-data
     "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
     "messageChain": [{             // 消息链，是一个消息对象构成的数组
         "type": "Source",
-        "uid": 123456
+        "id": 123456
     },{
         "type": "Plain",
         "text": "Miral牛逼"
@@ -504,14 +505,16 @@ Content-Type：multipart/form-data
 ```json5
 {
     "type": "Image",
-    "imageId": "{01E9451B-70ED-EAE3-B37C-101F1EEBF5B5}.png" //群图片格式
+    "imageId": "{01E9451B-70ED-EAE3-B37C-101F1EEBF5B5}.png",  //群图片格式
     //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
+    "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 ```
 
-| 名字    | 类型   | 说明                                    |
-| ------- | ------ | --------------------------------------- |
-| imageId | String | 图片的imageId，群图片与好友图片格式不同 |
+| 名字    | 类型   | 说明                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| imageId | String | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性 |
+| url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
 
 #### Xml
 
