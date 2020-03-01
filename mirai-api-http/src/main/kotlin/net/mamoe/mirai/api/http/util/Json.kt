@@ -49,8 +49,7 @@ object MiraiJson {
     @UnstableDefault
     val json = Json(
         configuration = JsonConfiguration(
-            strictMode = false,
-            useArrayPolymorphism = true
+            strictMode = false
         ),
         context = SerializersModule {
 

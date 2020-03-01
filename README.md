@@ -415,6 +415,44 @@ Content-Type：multipart/form-data
 ```
 
 
+### 通过messageId获取一条被缓存的消息
+
+```
+[GET] /messageFromId?sessionKey=YourSessionKey&id=1234567890
+```
+
+使用此方法获取bot接收到的消息和各类事件
+
+#### 请求:
+
+| 名字       | 可选  | 举例           | 说明                 |
+| ---------- | ----- | -------------- | -------------------- |
+| sessionKey | false | YourSessionKey | 你的session key      |
+| id         | false | 1234567890     | 获取消息的messageId  |
+
+#### 响应: 返回JSON对象
+
+**当该messageId没有被缓存或缓存失效时，返回code 5(指定对象不存在)**
+
+```json5
+{
+    "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
+    "messageChain": [{             // 消息链，是一个消息对象构成的数组
+        "type": "Source",
+        "id": 123456
+    },{
+        "type": "Plain",
+        "text": "Miral牛逼"
+    }],
+    "sender": {                      // 发送者信息
+        "id": 1234567890,            // 发送者的QQ号码
+        "nickName": "",              // 发送者的昵称
+        "remark": ""                 // 发送者的备注
+    }
+ }
+```
+
+
 
 ### 事件类型一览
 [事件类型一览](EventType.md)

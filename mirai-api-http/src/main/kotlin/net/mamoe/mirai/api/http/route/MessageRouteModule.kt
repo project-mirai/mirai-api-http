@@ -11,11 +11,9 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.readAllParts
 import io.ktor.http.content.streamProvider
 import io.ktor.request.receiveMultipart
-import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.post
 import io.ktor.routing.routing
@@ -23,10 +21,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.data.*
-import net.mamoe.mirai.api.http.data.common.DTO
-import net.mamoe.mirai.api.http.data.common.MessageChainDTO
-import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import net.mamoe.mirai.api.http.data.common.toMessageChain
+import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.message.FriendMessage
@@ -44,6 +39,13 @@ fun Application.messageModule() {
             val fetch = it.messageQueue.fetch(count)
 
             call.respondJson(fetch.toJson())
+        }
+
+        miraiGet("/messageFromId") {
+            val id: Long = paramOrNull("id")
+            it.messageQueue.cache[id]?.apply {
+                call.respondDTO(this.toDTO())
+            } ?: throw NoSuchElementException()
         }
 
         suspend fun <C : Contact> sendMessage(
