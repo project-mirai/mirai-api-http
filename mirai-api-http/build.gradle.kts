@@ -56,6 +56,19 @@ kotlin {
 
     sourceSets["test"].apply {
         dependencies {
+            api("net.mamoe:mirai-core-jvm:$miraiVersion")
+            api("net.mamoe:mirai-core-qqandroid-jvm:$miraiVersion")
+            api("net.mamoe:mirai-console:$miraiConsoleVersion")
+
+
+            api(kotlin("stdlib-jdk8", kotlinVersion))
+            api(kotlin("stdlib-jdk7", kotlinVersion))
+            api(kotlin("reflect", kotlinVersion))
+
+            api(ktor("server-cio"))
+            api(kotlinx("io-jvm"))
+            api(ktor("http-jvm"))
+            api("org.slf4j:slf4j-simple:1.7.26")
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
         kotlin.setSrcDirs(listOf("src/$name/kotlin"))
