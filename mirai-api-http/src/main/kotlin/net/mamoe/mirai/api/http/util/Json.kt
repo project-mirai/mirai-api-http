@@ -11,16 +11,19 @@ package net.mamoe.mirai.api.http.util
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import net.mamoe.mirai.api.http.data.common.*
 
 // 解析失败时直接返回null，由路由判断响应400状态
-@UseExperimental(ImplicitReflectionSerializer::class)
+@UseExperimental(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> String.jsonParseOrNull(
     serializer: DeserializationStrategy<T>? = null
 ): T? = try {
-    if(serializer == null) MiraiJson.json.parse(this) else Json.parse(this)
-} catch (e: Exception) { null }
+    if (serializer == null) MiraiJson.json.parse(this) else Json.parse(this)
+} catch (e: Exception) {
+    null
+}
 
 
 @UseExperimental(ImplicitReflectionSerializer::class, UnstableDefault::class)
@@ -43,38 +46,44 @@ else MiraiJson.json.stringify(serializer, this)
  * Json解析规则，需要注册支持的多态的类
  */
 object MiraiJson {
-    val json = Json(context = SerializersModule {
+    @UnstableDefault
+    val json = Json(
+        configuration = JsonConfiguration(
+            strictMode = false,
+            useArrayPolymorphism = true
+        ),
+        context = SerializersModule {
 
-        polymorphic(EventDTO.serializer()) {
-            GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
-            FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
+            polymorphic(EventDTO.serializer()) {
+                GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
+                FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
 
-            BotOnlineEventDTO::class with BotOnlineEventDTO.serializer()
-            BotOfflineEventActiveDTO::class with BotOfflineEventActiveDTO.serializer()
-            BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
-            BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
-            BotReloginEventDTO::class with BotReloginEventDTO.serializer()
-            BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
-            BotMuteEventDTO::class with BotMuteEventDTO.serializer()
-            BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
-            BotJoinGroupEventDTO::class with BotJoinGroupEventDTO.serializer()
-            GroupNameChangeEventDTO::class with GroupNameChangeEventDTO.serializer()
-            GroupEntranceAnnouncementChangeEventDTO::class with GroupEntranceAnnouncementChangeEventDTO.serializer()
-            GroupMuteAllEventDTO::class with GroupMuteAllEventDTO.serializer()
-            GroupAllowAnonymousChatEventDTO::class with GroupAllowAnonymousChatEventDTO.serializer()
-            GroupAllowConfessTalkEventDTO::class with GroupAllowConfessTalkEventDTO.serializer()
-            GroupAllowMemberInviteEventDTO::class with GroupAllowMemberInviteEventDTO.serializer()
-            MemberJoinEventDTO::class with MemberJoinEventDTO.serializer()
-            MemberLeaveEventKickDTO::class with MemberLeaveEventKickDTO.serializer()
-            MemberLeaveEventQuitDTO::class with MemberLeaveEventQuitDTO.serializer()
-            MemberCardChangeEventDTO::class with MemberCardChangeEventDTO.serializer()
-            MemberSpecialTitleChangeEventDTO::class with MemberSpecialTitleChangeEventDTO.serializer()
-            MemberPermissionChangeEventDTO::class with MemberPermissionChangeEventDTO.serializer()
-            MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
-            MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
-        }
+                BotOnlineEventDTO::class with BotOnlineEventDTO.serializer()
+                BotOfflineEventActiveDTO::class with BotOfflineEventActiveDTO.serializer()
+                BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
+                BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
+                BotReloginEventDTO::class with BotReloginEventDTO.serializer()
+                BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
+                BotMuteEventDTO::class with BotMuteEventDTO.serializer()
+                BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
+                BotJoinGroupEventDTO::class with BotJoinGroupEventDTO.serializer()
+                GroupNameChangeEventDTO::class with GroupNameChangeEventDTO.serializer()
+                GroupEntranceAnnouncementChangeEventDTO::class with GroupEntranceAnnouncementChangeEventDTO.serializer()
+                GroupMuteAllEventDTO::class with GroupMuteAllEventDTO.serializer()
+                GroupAllowAnonymousChatEventDTO::class with GroupAllowAnonymousChatEventDTO.serializer()
+                GroupAllowConfessTalkEventDTO::class with GroupAllowConfessTalkEventDTO.serializer()
+                GroupAllowMemberInviteEventDTO::class with GroupAllowMemberInviteEventDTO.serializer()
+                MemberJoinEventDTO::class with MemberJoinEventDTO.serializer()
+                MemberLeaveEventKickDTO::class with MemberLeaveEventKickDTO.serializer()
+                MemberLeaveEventQuitDTO::class with MemberLeaveEventQuitDTO.serializer()
+                MemberCardChangeEventDTO::class with MemberCardChangeEventDTO.serializer()
+                MemberSpecialTitleChangeEventDTO::class with MemberSpecialTitleChangeEventDTO.serializer()
+                MemberPermissionChangeEventDTO::class with MemberPermissionChangeEventDTO.serializer()
+                MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
+                MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
+            }
 
-        // Message Polymorphic
+            // Message Polymorphic
 //        polymorphic(MessageDTO.serializer()) {
 //            MessageSourceDTO::class with MessageSourceDTO.serializer()
 //            AtDTO::class with AtDTO.serializer()
@@ -85,5 +94,5 @@ object MiraiJson {
 //            XmlDTO::class with XmlDTO.serializer()
 //            UnknownMessageDTO::class with UnknownMessageDTO.serializer()
 //        }
-    })
+        })
 }
