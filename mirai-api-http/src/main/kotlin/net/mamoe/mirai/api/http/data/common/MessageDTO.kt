@@ -65,6 +65,10 @@ data class ImageDTO(val imageId: String? = null, val url: String? = null) : Mess
 data class XmlDTO(val xml: String) : MessageDTO()
 
 @Serializable
+@SerialName("Quote")
+data class QuoteDTO(val id: Long) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
@@ -112,7 +116,8 @@ suspend fun MessagePacket<*, *>.messageDTO(message: Message) = when (message) {
     is Face -> FaceDTO(message.id)
     is PlainText -> PlainDTO(message.stringValue)
     is Image -> ImageDTO(message.imageId, message.url())
-    is XMLMessage -> XmlDTO(message.stringValue)
+//    is XMLMessage -> XmlDTO(message.stringValue)
+    is QuoteReply -> QuoteDTO(message.source.id)
     else -> UnknownMessageDTO
 }
 
@@ -127,7 +132,10 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         !url.isNullOrBlank() -> contact.uploadImage(URL(url))
         else -> null
     }
-    is XmlDTO -> XMLMessage(xml)
-    is MessageSourceDTO, is UnknownMessageDTO -> null
+    // ignore
+    is XmlDTO, //-> XMLMessage(xml)
+    is QuoteDTO,
+    is MessageSourceDTO,
+    is UnknownMessageDTO -> null
 }
 
