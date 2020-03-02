@@ -38,7 +38,7 @@ data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 // Message
 @Serializable
 @SerialName("Source")
-data class MessageSourceDTO(val id: Long) : MessageDTO()
+data class MessageSourceDTO(val id: Long, val time: Long) : MessageDTO()
 
 @Serializable
 @SerialName("At")
@@ -110,7 +110,7 @@ suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
 
 @UseExperimental(ExperimentalUnsignedTypes::class)
 suspend fun MessagePacket<*, *>.messageDTO(message: Message) = when (message) {
-    is MessageSource -> MessageSourceDTO(message.id)
+    is MessageSource -> MessageSourceDTO(message.id, message.time)
     is At -> AtDTO(message.target, message.display)
     is AtAll -> AtAllDTO(0L)
     is Face -> FaceDTO(message.id)

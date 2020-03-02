@@ -359,7 +359,8 @@ Content-Type：multipart/form-data
     "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
 	"messageChain": [{             // 消息链，是一个消息对象构成的数组
 	    "type": "Source",
-	    "id": 123456
+	    "id": 123456,
+        "time": 123456789
 	},{
         "type": "Plain",
         "text": "Miral牛逼"
@@ -378,7 +379,8 @@ Content-Type：multipart/form-data
     "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
     "messageChain": [{             // 消息链，是一个消息对象构成的数组
         "type": "Source",
-        "id": 123456
+        "id": 123456,
+        "time": 123456789
     },{
         "type": "Plain",
         "text": "Miral牛逼"
@@ -439,7 +441,8 @@ Content-Type：multipart/form-data
     "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
     "messageChain": [{             // 消息链，是一个消息对象构成的数组
         "type": "Source",
-        "id": 123456
+        "id": 123456,
+        "time": 123456789
     },{
         "type": "Plain",
         "text": "Miral牛逼"
