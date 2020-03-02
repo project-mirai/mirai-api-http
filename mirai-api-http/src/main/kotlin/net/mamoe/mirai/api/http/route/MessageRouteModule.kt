@@ -100,7 +100,7 @@ fun Application.messageModule() {
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
             val ls = it.urls.map { url -> contact.uploadImage(URL(url)) }
-            contact.sendMessage(MessageChain(ls))
+            contact.sendMessage(buildMessageChain { addAll(ls) })
             call.respondJson(ls.map { image -> image.imageId }.toJson())
         }
 
