@@ -355,16 +355,20 @@ Content-Type：multipart/form-data
 #### 响应: 返回JSON对象
 
 ```json5
-[{
+[
+  {
     "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
-	"messageChain": [{             // 消息链，是一个消息对象构成的数组
+	"messageChain": [              // 消息链，是一个消息对象构成的数组
+      {
 	    "type": "Source",
 	    "id": 123456,
         "time": 123456789
-	},{
+	  },
+      {
         "type": "Plain",
         "text": "Miral牛逼"
-    }],
+      }
+    ],
     "sender": {                      // 发送者信息
         "id": 123456789,             // 发送者的QQ号码
         "memberName": "化腾",        // 发送者的群名片
@@ -375,22 +379,27 @@ Content-Type：multipart/form-data
             "permission": "MEMBER"      // 发送群中，Bot的群限权
         }
     }
- },{
+  },
+  {
     "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
-    "messageChain": [{             // 消息链，是一个消息对象构成的数组
+    "messageChain": [                // 消息链，是一个消息对象构成的数组
+      {
         "type": "Source",
         "id": 123456,
         "time": 123456789
-    },{
+      },
+      {
         "type": "Plain",
         "text": "Miral牛逼"
-    }],
+      }
+    ],
     "sender": {                      // 发送者信息
         "id": 1234567890,            // 发送者的QQ号码
         "nickName": "",              // 发送者的昵称
         "remark": ""                 // 发送者的备注
     }
- },{
+  },
+  {
     "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或各类Event
     "durationSeconds": 600,
     "member":{
@@ -413,7 +422,8 @@ Content-Type：multipart/form-data
             "permission": "MEMBER"
         }
     }
-}]
+  }
+]
 ```
 
 
@@ -439,14 +449,17 @@ Content-Type：multipart/form-data
 ```json5
 {
     "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
-    "messageChain": [{             // 消息链，是一个消息对象构成的数组
+    "messageChain": [                // 消息链，是一个消息对象构成的数组
+      {
         "type": "Source",
         "id": 123456,
         "time": 123456789
-    },{
+      },
+      {
         "type": "Plain",
         "text": "Miral牛逼"
-    }],
+      }
+    ],
     "sender": {                      // 发送者信息
         "id": 1234567890,            // 发送者的QQ号码
         "nickName": "",              // 发送者的昵称
@@ -498,15 +511,18 @@ Content-Type：multipart/form-data
 #### 响应: 返回JSON对象
 
 ```json5
-[{
+[
+  {
     "id":123456789,
     "nickName":"",
     "remark":""
-  },{
+  },
+  {
     "id":987654321,
     "nickName":"",
     "remark":""
-}]
+  }
+]
 ```
 
 
@@ -528,15 +544,18 @@ Content-Type：multipart/form-data
 #### 响应: 返回JSON对象
 
 ```json5
-[{
+[
+  {
     "id":123456789,
     "name":"群名1",
     "permission": "MEMBER"
-  },{
+  },
+  {
     "id":987654321,
     "name":"群名2",
     "permission": "MEMBER"
-}]
+  }
+]
 ```
 
 
@@ -559,7 +578,8 @@ Content-Type：multipart/form-data
 #### 响应: 返回JSON对象
 
 ```json5
-[{
+[
+  {
     "id":1234567890,
     "memberName":"",
     "permission":"MEMBER",
@@ -568,7 +588,8 @@ Content-Type：multipart/form-data
         "name":"群名1",
         "permission": "MEMBER"
     }
-  },{
+  },
+  {
     "id":9876543210,
     "memberName":"",
     "permission":"OWNER",
@@ -577,7 +598,8 @@ Content-Type：multipart/form-data
         "name":"群名2",
         "permission": "MEMBER"
     }
-}]
+  }
+]
 ```
 
 
@@ -860,7 +882,7 @@ Content-Type：multipart/form-data
 使用此方法获取群员资料
 
 ```
-[Get] /groupConfig?sessionKey=YourSessionKey&target=123456789
+[Get] /memberInfo?sessionKey=YourSessionKey&target=123456789
 ```
 
 #### 请求:
