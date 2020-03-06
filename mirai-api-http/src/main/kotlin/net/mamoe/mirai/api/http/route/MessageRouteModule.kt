@@ -14,7 +14,6 @@ import io.ktor.application.call
 import io.ktor.http.content.readAllParts
 import io.ktor.http.content.streamProvider
 import io.ktor.request.receiveMultipart
-import io.ktor.response.respondText
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
@@ -133,7 +132,7 @@ fun Application.messageModule() {
                     }
                 }
                 image?.apply {
-                    call.respondText(imageId)
+                    call.respondDTO(UploadImageRetDTO(imageId, queryUrl()))
                 } ?: throw IllegalAccessException("图片上传错误")
             } ?: throw IllegalAccessException("未知错误")
         }
@@ -169,6 +168,12 @@ private class SendRetDTO(
     val code: Int = 0,
     val msg: String = "success",
     val messageId: Long
+) : DTO
+
+@Serializable
+private class UploadImageRetDTO(
+    val imageId: String,
+    val url: String
 ) : DTO
 
 @Serializable
