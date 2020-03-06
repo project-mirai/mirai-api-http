@@ -13,6 +13,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
 
 }
 
+val httpVersion: String by rootProject.ext
+
 val kotlinVersion: String by rootProject.ext
 val coroutinesVersion: String by rootProject.ext
 val coroutinesIoVersion: String by rootProject.ext
@@ -96,6 +98,6 @@ kotlin {
 }
 
 
-project.version = "1.0.0"
+project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
