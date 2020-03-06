@@ -24,13 +24,16 @@ import net.mamoe.mirai.api.http.data.*
 import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.FriendMessage
 import net.mamoe.mirai.message.GroupMessage
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadImage
+import net.mamoe.mirai.utils.MiraiExperimentalAPI
 import java.net.URL
 
+@UseExperimental(MiraiExperimentalAPI::class)
 fun Application.messageModule() {
     routing {
 
@@ -56,7 +59,7 @@ fun Application.messageModule() {
             val send = if (quote == null) {
                 messageChain
             } else {
-                (quote + messageChain).toChain()
+                ((quote + messageChain) as Iterable<Message>).asMessageChain()
             }
             return target.sendMessage(send)
         }
@@ -71,7 +74,7 @@ fun Application.messageModule() {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
                 receipt.source.ensureSequenceIdAvailable()
 
-                it.session.messageQueue.addQuoteCache(FriendMessage(bot.selfQQ, receipt.source.toChain()))
+                it.session.messageQueue.addQuoteCache(FriendMessage(bot.selfQQ, receipt.source.asMessageChain()))
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -86,7 +89,12 @@ fun Application.messageModule() {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
                 receipt.source.ensureSequenceIdAvailable()
 
-                it.session.messageQueue.addQuoteCache(GroupMessage("", botPermission, botAsMember, receipt.source.toChain()))
+                it.session.messageQueue.addQuoteCache(GroupMessage(
+                    "",
+                    botPermission,
+                    botAsMember,
+                    receipt.source.asMessageChain()
+                ))
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -94,7 +102,7 @@ fun Application.messageModule() {
         miraiVerify<SendImageDTO>("sendImageMessage") {
             val bot = it.session.bot
             val contact = when {
-                it.target != null -> bot[it.target]
+                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroup(it.target)
                 it.qq != null -> bot.getFriend(it.qq)
                 it.group != null -> bot.getGroup(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
@@ -120,7 +128,7 @@ fun Application.messageModule() {
                 val image = streamProvider().use {
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
-                        "friend" -> session.bot.qqs.firstOrNull()?.uploadImage(it)
+                        "friend" -> session.bot.friends.firstOrNull()?.uploadImage(it)
                         else -> null
                     }
                 }

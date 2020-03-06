@@ -22,7 +22,7 @@ fun Application.infoModule() {
     routing {
 
         miraiGet("/friendList") {
-            val ls = it.bot.qqs.toMutableList().map { qq -> QQDTO(qq) }
+            val ls = it.bot.friends.toMutableList().map { qq -> QQDTO(qq) }
             call.respondJson(ls.toJson())
         }
 
