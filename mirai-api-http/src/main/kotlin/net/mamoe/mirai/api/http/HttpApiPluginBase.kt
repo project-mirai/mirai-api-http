@@ -9,19 +9,19 @@ object HttpApiPluginBase: PluginBase() {
     }
 
     val port by setting.withDefaultWriteSave { 8080 }
-    val APIKey by setting.withDefaultWriteSave { "INITKEY" + generateSessionKey() }
+    val authKey by setting.withDefaultWriteSave { "INITKEY" + generateSessionKey() }
 
     override fun onLoad() {
         logger.info("Loading Mirai HTTP API plugin")
         logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
-        if(APIKey.startsWith("INITKEY")){
+        if(authKey.startsWith("INITKEY")){
             logger.warning("USING INITIAL KEY, please edit the key")
         }
     }
 
     override fun onEnable() {
         logger.info("Starting Mirai HTTP Server in 0.0.0.0:$port")
-        MiraiHttpAPIServer.start(port, APIKey)
+        MiraiHttpAPIServer.start(port, authKey)
     }
 
     override fun onDisable() {
