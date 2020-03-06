@@ -6,8 +6,7 @@
 ----
 
 [![Gitter](https://badges.gitter.im/mamoe/mirai.svg)](https://gitter.im/mamoe/mirai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Actions Status](https://github.com/mamoe/mirai/workflows/CI/badge.svg)](https://github.com/mamoe/mirai/actions)
-[![Download](https://api.bintray.com/packages/him188moe/mirai/mirai-core/images/download.svg)](https://bintray.com/him188moe/mirai/mirai-core/)  
+[![Actions Status](https://github.com/mamoe/mirai-api-http/workflows/CI/badge.svg)](https://github.com/mamoe/mirai/actions)
 
 Mirai 是一个在全平台下运行，提供 QQ Android 和 TIM PC 协议支持的高效率机器人框架
 
@@ -20,8 +19,26 @@ Mirai 是一个在全平台下运行，提供 QQ Android 和 TIM PC 协议支持
 # mirai-api-http
 Mirai HTTP API (console) plugin
 
-
 <b>Mirai-API-http插件 提供HTTP API供所有语言使用mirai</b>
+
+
+
+## 开始使用
+
+1. 将`mirai-api-http`插件放入`plugins`文件夹中
+2. 编辑`plugins/MiraiAPIHTTP/setting.yml`配置文件
+3. 启动[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端
+4. 记录日志中出现的`authKey`
+
+```yaml
+# 可选，默认值为8080
+port: 8080          
+
+# 可选，默认由插件随机生成，建议手动指定
+authKey: 1234567890  
+```
+
+
 
 
 ## 认证相关
