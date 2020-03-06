@@ -315,8 +315,11 @@ Content-Type：multipart/form-data
 
 #### 响应: 图片的imageId（好友图片与群聊图片Id不同）
 
-```
-{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg
+```json5
+{
+    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg",
+    "url": "xxxxxxxxxxxxxxxxxxxx"
+}
 ```
 
 
