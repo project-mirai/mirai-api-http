@@ -97,8 +97,8 @@ suspend fun MessagePacket<*, *>.toDTO() = when (this) {
     if (this is MessagePacketDTO) {
         // 将MessagePacket中的所有Message转为DTO对象，并添加到messageChain
         // foreachContent会忽略MessageSource，一次主动获取
-        messageChain = mutableListOf(messageDTO(message[MessageSource])).apply {
-            message.foreachContent { content -> messageDTO(content).takeUnless { it == UnknownMessageDTO }?.let(::add) }
+        messageChain = mutableListOf(message[MessageSource].toDTO()).apply {
+            message.foreachContent { content -> content.toDTO().takeUnless { it == UnknownMessageDTO }?.let(::add) }
         }
         // else: `this` is bot event
     }
@@ -109,15 +109,15 @@ suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
 
 
 @UseExperimental(ExperimentalUnsignedTypes::class)
-suspend fun MessagePacket<*, *>.messageDTO(message: Message) = when (message) {
-    is MessageSource -> MessageSourceDTO(message.id, message.time)
-    is At -> AtDTO(message.target, message.display)
+suspend fun Message.toDTO() = when (this) {
+    is MessageSource -> MessageSourceDTO(id, time)
+    is At -> AtDTO(target, display)
     is AtAll -> AtAllDTO(0L)
-    is Face -> FaceDTO(message.id)
-    is PlainText -> PlainDTO(message.stringValue)
-    is Image -> ImageDTO(message.imageId, message.url())
+    is Face -> FaceDTO(id)
+    is PlainText -> PlainDTO(stringValue)
+    is Image -> ImageDTO(imageId, queryUrl())
 //    is XMLMessage -> XmlDTO(message.stringValue)
-    is QuoteReply -> QuoteDTO(message.source.id)
+    is QuoteReply -> QuoteDTO(source.id)
     else -> UnknownMessageDTO
 }
 
