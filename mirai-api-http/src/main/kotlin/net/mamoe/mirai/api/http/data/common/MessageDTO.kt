@@ -71,7 +71,6 @@ data class QuoteDTO(
     val imageId: Long,
     val groupId: Long,
     val senderId: Long,
-    val target: Long,
     val origin: MessageChainDTO
 ) : MessageDTO()
 
@@ -128,7 +127,7 @@ suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(stringValue)
     is Image -> ImageDTO(imageId, queryUrl())
 //    is XMLMessage -> XmlDTO(message.stringValue)
-    is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId, source.toUin,
+    is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId,
         source.originalMessage.toMessageChainDTO { (it != UnknownMessageDTO) and (it !is QuoteDTO) })
     else -> UnknownMessageDTO
 }
