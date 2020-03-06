@@ -66,7 +66,13 @@ data class XmlDTO(val xml: String) : MessageDTO()
 
 @Serializable
 @SerialName("Quote")
-data class QuoteDTO(val id: Long) : MessageDTO()
+data class QuoteDTO(
+    val imageId: Long,
+    val groupId: Long,
+    val senderId: Long,
+    val target: Long,
+    val origin: MessageChainDTO
+) : MessageDTO()
 
 @Serializable
 @SerialName("Unknown")
@@ -97,12 +103,16 @@ suspend fun MessagePacket<*, *>.toDTO() = when (this) {
     if (this is MessagePacketDTO) {
         // 将MessagePacket中的所有Message转为DTO对象，并添加到messageChain
         // foreachContent会忽略MessageSource，一次主动获取
-        messageChain = mutableListOf(message[MessageSource].toDTO()).apply {
-            message.foreachContent { content -> content.toDTO().takeUnless { it == UnknownMessageDTO }?.let(::add) }
-        }
+        messageChain = message.toMessageChainDTO { it != UnknownMessageDTO }
         // else: `this` is bot event
     }
 }
+
+suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
+    mutableListOf(this[MessageSource].toDTO()).apply {
+        foreachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
+    }
+
 
 suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
     buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact)?.let(::add) } }
@@ -117,7 +127,8 @@ suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(stringValue)
     is Image -> ImageDTO(imageId, queryUrl())
 //    is XMLMessage -> XmlDTO(message.stringValue)
-    is QuoteReply -> QuoteDTO(source.id)
+    is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId, source.toUin,
+        source.originalMessage.toMessageChainDTO { (it != UnknownMessageDTO) and (it !is QuoteDTO) })
     else -> UnknownMessageDTO
 }
 
