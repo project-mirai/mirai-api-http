@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.FriendMessage
@@ -50,7 +51,7 @@ data class AtAllDTO(val target: Long = 0) : MessageDTO() // target为保留字�
 
 @Serializable
 @SerialName("Face")
-data class FaceDTO(val faceId: Int) : MessageDTO()
+data class FaceDTO(val faceId: Int = -1, val name: String = "") : MessageDTO()
 
 @Serializable
 @SerialName("Plain")
@@ -123,7 +124,7 @@ suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(id, time)
     is At -> AtDTO(target, display)
     is AtAll -> AtAllDTO(0L)
-    is Face -> FaceDTO(id)
+    is Face -> FaceDTO(id, FaceMap[id])
     is PlainText -> PlainDTO(stringValue)
     is Image -> ImageDTO(imageId, queryUrl())
 //    is XMLMessage -> XmlDTO(message.stringValue)
@@ -136,7 +137,11 @@ suspend fun Message.toDTO() = when (this) {
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is AtDTO -> At((contact as Group)[target])
     is AtAllDTO -> AtAll
-    is FaceDTO -> Face(faceId)
+    is FaceDTO -> when {
+        faceId >= 0 -> Face(faceId)
+        name.isNotEmpty() -> Face(FaceMap[name])
+        else -> Face(Face.unknown)
+    }
     is PlainDTO -> PlainText(text)
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)

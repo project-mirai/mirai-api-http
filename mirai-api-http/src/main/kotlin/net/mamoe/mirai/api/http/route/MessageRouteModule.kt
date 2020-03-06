@@ -164,6 +164,7 @@ private data class SendImageDTO(
 ) : VerifyDTO()
 
 @Serializable
+@Suppress("unused")
 private class SendRetDTO(
     val code: Int = 0,
     val msg: String = "success",
@@ -171,6 +172,7 @@ private class SendRetDTO(
 ) : DTO
 
 @Serializable
+@Suppress("unused")
 private class UploadImageRetDTO(
     val imageId: String,
     val url: String
