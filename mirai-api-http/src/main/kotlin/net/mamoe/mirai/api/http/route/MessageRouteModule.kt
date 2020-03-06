@@ -67,7 +67,8 @@ fun Application.messageModule() {
             val quote = it.quote?.let { q ->
                 it.session.messageQueue.cache(q).run {
                     this[MessageSource].quote(sender)
-                }}
+                }
+            }
 
             it.session.bot.getFriend(it.target).apply {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
@@ -82,18 +83,21 @@ fun Application.messageModule() {
             val quote = it.quote?.let { q ->
                 it.session.messageQueue.cache(q).run {
                     this[MessageSource].quote(sender)
-                }}
+                }
+            }
 
             it.session.bot.getGroup(it.target).apply {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
                 receipt.source.ensureSequenceIdAvailable()
 
-                it.session.messageQueue.addQuoteCache(GroupMessage(
-                    "",
-                    botPermission,
-                    botAsMember,
-                    receipt.source.asMessageChain()
-                ))
+                it.session.messageQueue.addQuoteCache(
+                    GroupMessage(
+                        "",
+                        botPermission,
+                        botAsMember,
+                        receipt.source.asMessageChain()
+                    )
+                )
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -132,7 +136,7 @@ fun Application.messageModule() {
                     }
                 }
                 image?.apply {
-                    call.respondDTO(UploadImageRetDTO(imageId, queryUrl()))
+                    call.respondDTO(UploadImageRetDTO(imageId, trickImageUrl(this, type)))
                 } ?: throw IllegalAccessException("图片上传错误")
             } ?: throw IllegalAccessException("未知错误")
         }
@@ -183,3 +187,12 @@ private data class RecallDTO(
     override val sessionKey: String,
     val target: Long
 ) : VerifyDTO()
+
+private fun trickImageUrl(image: Image, type: String) = when (type) {
+    "friend" -> "http://c2cpicdw.qpic.cn/offpic_new/0/${image.imageId}/0"
+    "group" -> "http://gchat.qpic.cn/gchatpic_new/0/0-0-${image.imageId.parseGId()}/0"
+    else -> "未知"
+}
+
+private fun String.parseGId() =
+    substringAfter('{').substringBefore('}').replace("-", "").toUpperCase()
