@@ -37,7 +37,7 @@ object MiraiHttpAPIServer : CoroutineScope {
         SessionManager.authKey = key
     }
 
-    @UseExperimental(KtorExperimentalAPI::class)
+    @OptIn(KtorExperimentalAPI::class)
     fun start(
         port: Int = 8080,
         authKey: String,

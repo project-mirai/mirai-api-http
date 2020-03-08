@@ -6,12 +6,10 @@ import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.MessagePacket
-import net.mamoe.mirai.utils.MiraiExperimentalAPI
 
 @Serializable
 sealed class BotEventDTO : EventDTO()
 
-@UseExperimental(MiraiExperimentalAPI::class)
 suspend fun BotEvent.toDTO() = when(this) {
     is MessagePacket<*, *> -> toDTO()
     else -> when(this) {

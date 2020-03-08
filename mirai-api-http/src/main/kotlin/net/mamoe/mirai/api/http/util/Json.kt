@@ -11,12 +11,11 @@ package net.mamoe.mirai.api.http.util
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import net.mamoe.mirai.api.http.data.common.*
 
 // 解析失败时直接返回null，由路由判断响应400状态
-@UseExperimental(ImplicitReflectionSerializer::class, UnstableDefault::class)
+@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> String.jsonParseOrNull(
     serializer: DeserializationStrategy<T>? = null
 ): T? = try {
@@ -26,7 +25,7 @@ inline fun <reified T : Any> String.jsonParseOrNull(
 }
 
 
-@UseExperimental(ImplicitReflectionSerializer::class, UnstableDefault::class)
+@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> T.toJson(
     serializer: SerializationStrategy<T>? = null
 ): String = if (serializer == null) MiraiJson.json.stringify(this)
@@ -35,7 +34,7 @@ else MiraiJson.json.stringify(serializer, this)
 
 // 序列化列表时，stringify需要使用的泛型是T，而非List<T>
 // 因为使用的stringify的stringify(objs: List<T>)重载
-@UseExperimental(ImplicitReflectionSerializer::class, UnstableDefault::class)
+@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> List<T>.toJson(
     serializer: SerializationStrategy<List<T>>? = null
 ): String = if (serializer == null) MiraiJson.json.stringify(this)
@@ -47,13 +46,12 @@ else MiraiJson.json.stringify(serializer, this)
  */
 object MiraiJson {
     @UnstableDefault
-    val json = Json(
-        configuration = JsonConfiguration(
-            strictMode = false
-        ),
-        context = SerializersModule {
+    val json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
 
-            polymorphic(EventDTO.serializer()) {
+        serialModule = SerializersModule {
+            polymorphic(EventDTO::class) {
                 GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
                 FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
 
@@ -81,17 +79,6 @@ object MiraiJson {
                 MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
                 MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
             }
-
-            // Message Polymorphic
-//        polymorphic(MessageDTO.serializer()) {
-//            MessageSourceDTO::class with MessageSourceDTO.serializer()
-//            AtDTO::class with AtDTO.serializer()
-//            AtAllDTO::class with AtAllDTO.serializer()
-//            FaceDTO::class with FaceDTO.serializer()
-//            PlainDTO::class with PlainDTO.serializer()
-//            ImageDTO::class with ImageDTO.serializer()
-//            XmlDTO::class with XmlDTO.serializer()
-//            UnknownMessageDTO::class with UnknownMessageDTO.serializer()
-//        }
-        })
+        }
+    }
 }

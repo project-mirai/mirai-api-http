@@ -165,7 +165,7 @@ fun PipelineContext<Unit, ApplicationCall>.illegalParam(
 
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 internal inline fun <reified R> PipelineContext<Unit, ApplicationCall>.paramOrNull(name: String): R =
     when (R::class) {
         Byte::class -> call.parameters[name]?.toByte()

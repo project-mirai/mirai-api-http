@@ -19,7 +19,6 @@ import net.mamoe.mirai.message.GroupMessage
 import net.mamoe.mirai.message.MessagePacket
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadImage
-import net.mamoe.mirai.utils.MiraiInternalAPI
 import java.net.URL
 
 /*
@@ -118,7 +117,6 @@ suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
     buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact)?.let(::add) } }
 
 
-@UseExperimental(ExperimentalUnsignedTypes::class)
 suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(id, time)
     is At -> AtDTO(target, display)
@@ -132,7 +130,6 @@ suspend fun Message.toDTO() = when (this) {
     else -> UnknownMessageDTO
 }
 
-@UseExperimental(ExperimentalUnsignedTypes::class, MiraiInternalAPI::class)
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is AtDTO -> At((contact as Group)[target])
     is AtAllDTO -> AtAll

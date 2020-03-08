@@ -29,10 +29,8 @@ import net.mamoe.mirai.message.GroupMessage
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadImage
-import net.mamoe.mirai.utils.MiraiExperimentalAPI
 import java.net.URL
 
-@UseExperimental(MiraiExperimentalAPI::class)
 fun Application.messageModule() {
     routing {
 
