@@ -11,24 +11,18 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.http.content.readAllParts
 import io.ktor.http.content.streamProvider
-import io.ktor.request.receiveMultipart
-import io.ktor.routing.post
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.api.http.AuthedSession
-import net.mamoe.mirai.api.http.SessionManager
-import net.mamoe.mirai.api.http.data.*
+import net.mamoe.mirai.api.http.data.IllegalAccessException
+import net.mamoe.mirai.api.http.data.IllegalParamException
+import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.getFriendOrNull
-import net.mamoe.mirai.message.FriendMessage
-import net.mamoe.mirai.message.GroupMessage
-import net.mamoe.mirai.message.MessageReceipt
+import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.uploadImage
 import java.net.URL
 
 fun Application.messageModule() {
@@ -43,9 +37,9 @@ fun Application.messageModule() {
 
         miraiGet("/messageFromId") {
             val id: Long = paramOrNull("id")
-            it.messageQueue.cache[id]?.apply {
+            it.cacheQueue[id].apply {
                 call.respondDTO(this.toDTO())
-            } ?: throw NoSuchElementException()
+            }
         }
 
         suspend fun <C : Contact> sendMessage(
@@ -63,7 +57,7 @@ fun Application.messageModule() {
 
         miraiVerify<SendDTO>("/sendFriendMessage") {
             val quote = it.quote?.let { q ->
-                it.session.messageQueue.cache(q).run {
+                it.session.cacheQueue[q].run {
                     this[MessageSource].quote(sender)
                 }
             }
@@ -72,14 +66,14 @@ fun Application.messageModule() {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
                 receipt.source.ensureSequenceIdAvailable()
 
-                it.session.messageQueue.addQuoteCache(FriendMessage(bot.selfQQ, receipt.source.asMessageChain()))
+                it.session.cacheQueue.add(FriendMessage(bot.selfQQ, receipt.source.asMessageChain()))
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
 
         miraiVerify<SendDTO>("/sendGroupMessage") {
             val quote = it.quote?.let { q ->
-                it.session.messageQueue.cache(q).run {
+                it.session.cacheQueue[q].run {
                     this[MessageSource].quote(sender)
                 }
             }
@@ -88,7 +82,7 @@ fun Application.messageModule() {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
                 receipt.source.ensureSequenceIdAvailable()
 
-                it.session.messageQueue.addQuoteCache(
+                it.session.cacheQueue.add(
                     GroupMessage(
                         "",
                         botPermission,
@@ -132,7 +126,7 @@ fun Application.messageModule() {
         }
 
         miraiVerify<RecallDTO>("recall") {
-            it.session.messageQueue.cache(it.target).apply {
+            it.session.cacheQueue[it.target].apply {
                 it.session.bot.recall(get(MessageSource))
             }
             call.respondStateCode(StateCode.Success)

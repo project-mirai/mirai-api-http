@@ -20,9 +20,6 @@ import java.util.concurrent.ConcurrentLinkedDeque
 
 class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
 
-    val cacheSize = 4096
-    val cache = LinkedHashMap<Long, MessagePacket<*, *>>()
-
     suspend fun fetch(size: Int): List<EventDTO> {
         var count = size
 
@@ -36,21 +33,7 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
                     count--
                 }
             }
-
-            if (event is MessagePacket<*, *>) {
-                addQuoteCache(event)
-            }
         }
         return ret
-    }
-
-    fun cache(messageId: Long) =
-        cache[messageId] ?: throw NoSuchElementException()
-
-    fun addQuoteCache(msg: MessagePacket<*, *>) {
-        cache[msg.message[MessageSource].id] = msg
-        if (cache.size > cacheSize) {
-            cache.remove(cache.firstKey())
-        }
     }
 }
