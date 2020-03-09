@@ -12,7 +12,7 @@ object HttpApiPluginBase: PluginBase() {
     val port by setting.withDefault { 8080 }
     val authKey by setting.withDefault { "INITKEY" + generateSessionKey() }
     val cacheSize by setting.withDefault { 4096 }
-    val enableWebSocket by setting.withDefault { false }
+    val enableWebsocket by setting.withDefault { false }
 
     override fun onLoad() {
         logger.info("Loading Mirai HTTP API plugin")
