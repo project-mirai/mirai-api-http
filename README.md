@@ -415,7 +415,7 @@ Content-Type：multipart/form-data
     ],
     "sender": {                      // 发送者信息
         "id": 1234567890,            // 发送者的QQ号码
-        "nickName": "",              // 发送者的昵称
+        "nickname": "",              // 发送者的昵称
         "remark": ""                 // 发送者的备注
     }
   },
@@ -482,7 +482,7 @@ Content-Type：multipart/form-data
     ],
     "sender": {                      // 发送者信息
         "id": 1234567890,            // 发送者的QQ号码
-        "nickName": "",              // 发送者的昵称
+        "nickname": "",              // 发送者的昵称
         "remark": ""                 // 发送者的备注
     }
  }
@@ -534,12 +534,12 @@ Content-Type：multipart/form-data
 [
   {
     "id":123456789,
-    "nickName":"",
+    "nickname":"",
     "remark":""
   },
   {
     "id":987654321,
-    "nickName":"",
+    "nickname":"",
     "remark":""
   }
 ]

@@ -20,7 +20,7 @@ abstract class ContactDTO : DTO {
 @Serializable
 data class QQDTO(
     override val id: Long,
-    val nickName: String,
+    val nickname: String,
     val remark: String
 ) : ContactDTO() {
     // TODO: queryProfile.nickname & queryRemark.value not support now
