@@ -29,6 +29,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.route
 import io.ktor.util.pipeline.ContextDsl
 import io.ktor.util.pipeline.PipelineContext
+import io.ktor.websocket.WebSockets
 import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.TempSession
@@ -43,6 +44,7 @@ import org.slf4j.helpers.NOPLoggerFactory
 
 fun Application.mirai() {
     install(DefaultHeaders)
+    install(WebSockets)
     install(CallLogging) {
         logger = NOPLoggerFactory().getLogger("NMSL")
 
@@ -52,6 +54,7 @@ fun Application.mirai() {
     infoModule()
     groupManageModule()
     configRouteModule()
+    websocketRouteModule()
 }
 
 /**

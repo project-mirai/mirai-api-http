@@ -50,8 +50,9 @@ kotlin {
             compileOnly(kotlin("reflect", kotlinVersion))
 
             api(ktor("server-cio"))
-            api(kotlinx("io-jvm"))
             api(ktor("http-jvm"))
+            api(ktor("websockets"))
+            api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
         }
     }
@@ -68,8 +69,9 @@ kotlin {
             api(kotlin("reflect", kotlinVersion))
 
             api(ktor("server-cio"))
-            api(kotlinx("io-jvm"))
+            api(ktor("websockets"))
             api(ktor("http-jvm"))
+            api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
