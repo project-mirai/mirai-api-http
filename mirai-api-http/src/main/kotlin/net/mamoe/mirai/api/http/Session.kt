@@ -109,7 +109,7 @@ class AuthedSession internal constructor(val bot: Bot, coroutineContext: Corouti
     val config = Config(
         session = this,
         cacheSize = HttpApiPluginBase.cacheSize,
-        enableWebsocket = HttpApiPluginBase.enableWebSocket
+        enableWebsocket = HttpApiPluginBase.enableWebsocket
     )
     private var _listener: Listener<BotEvent>
     private val _cache: Listener<MessagePacket<*, *>>
