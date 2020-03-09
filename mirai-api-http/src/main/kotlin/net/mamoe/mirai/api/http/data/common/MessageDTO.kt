@@ -67,7 +67,7 @@ data class XmlDTO(val xml: String) : MessageDTO()
 @Serializable
 @SerialName("Quote")
 data class QuoteDTO(
-    val imageId: Long,
+    val id: Long,
     val groupId: Long,
     val senderId: Long,
     val origin: MessageChainDTO
