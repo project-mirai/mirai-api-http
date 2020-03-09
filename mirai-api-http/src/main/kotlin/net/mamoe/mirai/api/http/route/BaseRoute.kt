@@ -19,7 +19,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
+import io.ktor.http.content.readAllParts
 import io.ktor.request.receive
+import io.ktor.request.receiveMultipart
 import io.ktor.response.defaultTextContentType
 import io.ktor.response.respond
 import io.ktor.response.respondText
@@ -116,6 +118,27 @@ internal inline fun <reified T : VerifyDTO> Route.miraiVerify(
             } ?: throw IllegalSessionException
 
             this.body(dto)
+        }
+    }
+}
+
+@ContextDsl
+internal inline fun Route.miraiMultiPart(
+    path: String,
+    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(AuthedSession, List<PartData>) -> Unit
+) : Route {
+    return route(path, HttpMethod.Post) {
+        intercept {
+            val parts = call.receiveMultipart().readAllParts()
+            val sessionKey = parts.value("sessionKey")
+            if (!SessionManager.containSession(sessionKey)) throw IllegalSessionException
+            val session = try {
+                SessionManager[sessionKey] as AuthedSession
+            } catch (e: TypeCastException) {
+                throw NotVerifiedSessionException
+            }
+
+            this.body(session, parts)
         }
     }
 }

@@ -114,15 +114,7 @@ fun Application.messageModule() {
         }
 
         // TODO: 重构
-        post("uploadImage") {
-            val parts = call.receiveMultipart().readAllParts()
-            val sessionKey = parts.value("sessionKey")
-            if (!SessionManager.containSession(sessionKey)) throw IllegalSessionException
-            val session = try {
-                SessionManager[sessionKey] as AuthedSession
-            } catch (e: TypeCastException) {
-                throw NotVerifiedSessionException
-            }
+        miraiMultiPart("uploadImage") { session, parts ->
 
             val type = parts.value("type")
             parts.file("img")?.apply {
