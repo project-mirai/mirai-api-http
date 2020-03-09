@@ -51,6 +51,7 @@ fun Application.mirai() {
     messageModule()
     infoModule()
     groupManageModule()
+    configRouteModule()
 }
 
 /**

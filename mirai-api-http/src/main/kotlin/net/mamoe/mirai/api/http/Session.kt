@@ -11,12 +11,12 @@ package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.data.Config
 import net.mamoe.mirai.api.http.queue.CacheQueue
 import net.mamoe.mirai.api.http.queue.MessageQueue
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.MessagePacket
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -106,17 +106,39 @@ class AuthedSession internal constructor(val bot: Bot, coroutineContext: Corouti
 
     val messageQueue = MessageQueue()
     val cacheQueue = CacheQueue()
-    private val _listener: Listener<BotEvent>
+    val config = Config(
+        session = this,
+        cacheSize = HttpApiPluginBase.cacheSize,
+        enableWebsocket = HttpApiPluginBase.enableWebSocket
+    )
+    private var _listener: Listener<BotEvent>
+    private val _cache: Listener<MessagePacket<*, *>>
 
     init {
-        _listener = bot.subscribeAlways{
-            this.run(messageQueue::add)
-            this.run(cacheQueue::add)
+        _listener = bot.subscribeAlways{ this.run(messageQueue::add) }
+        _cache = bot.subscribeAlways { this.run(cacheQueue::add) }
+
+        if (config.enableWebsocket) {
+            _listener.complete()
+        }
+    }
+
+    fun enableWebSocket() {
+        if (_listener.isActive) {
+            _listener.complete()
+            messageQueue.clear()
+        }
+    }
+
+    fun disableWebSocket() {
+        if (_listener.isCompleted) {
+            _listener = bot.subscribeAlways{ this.run(messageQueue::add) }
         }
     }
 
     override fun close() {
         _listener.complete()
+        _cache.complete()
         super.close()
     }
 }

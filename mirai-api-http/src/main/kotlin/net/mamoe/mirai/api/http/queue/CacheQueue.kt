@@ -7,7 +7,7 @@ import net.mamoe.mirai.utils.firstKey
 
 class CacheQueue : LinkedHashMap<Long, MessagePacket<*, *>>() {
 
-    val cacheSize = 4096
+    var cacheSize = 4096
 
     override fun get(key: Long): MessagePacket<*, *> = super.get(key) ?: throw NoSuchElementException()
 
@@ -17,9 +17,7 @@ class CacheQueue : LinkedHashMap<Long, MessagePacket<*, *>>() {
         }
     }
 
-    fun add(botEvent: BotEvent) {
-        if (botEvent is MessagePacket<*, *>) {
-            put(botEvent[MessageSource].id, botEvent)
-        }
+    fun add(packet: MessagePacket<*, *>) {
+        put(packet[MessageSource].id, packet)
     }
 }

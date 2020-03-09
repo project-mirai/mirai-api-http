@@ -1,6 +1,7 @@
 package net.mamoe.mirai.api.http
 
 import net.mamoe.mirai.console.plugins.PluginBase
+import net.mamoe.mirai.console.plugins.withDefault
 import net.mamoe.mirai.console.plugins.withDefaultWriteSave
 
 object HttpApiPluginBase: PluginBase() {
@@ -8,8 +9,10 @@ object HttpApiPluginBase: PluginBase() {
         this.loadConfig("setting.yml")
     }
 
-    val port by setting.withDefaultWriteSave { 8080 }
-    val authKey by setting.withDefaultWriteSave { "INITKEY" + generateSessionKey() }
+    val port by setting.withDefault { 8080 }
+    val authKey by setting.withDefault { "INITKEY" + generateSessionKey() }
+    val cacheSize by setting.withDefault { 4096 }
+    val enableWebSocket by setting.withDefault { false }
 
     override fun onLoad() {
         logger.info("Loading Mirai HTTP API plugin")
