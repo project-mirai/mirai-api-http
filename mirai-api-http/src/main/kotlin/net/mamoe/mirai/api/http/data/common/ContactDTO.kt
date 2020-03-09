@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.*
-import net.mamoe.mirai.utils.MiraiExperimentalAPI
 
 @Serializable
 abstract class ContactDTO : DTO {
@@ -25,7 +24,7 @@ data class QQDTO(
     val remark: String
 ) : ContactDTO() {
     // TODO: queryProfile.nickname & queryRemark.value not support now
-    constructor(qq: QQ) : this(qq.id, "", "")
+    constructor(qq: QQ) : this(qq.id, qq.nick, "")
 }
 
 
@@ -48,6 +47,5 @@ data class GroupDTO(
     val name: String,
     val permission: MemberPermission
 ) : ContactDTO() {
-    @UseExperimental(MiraiExperimentalAPI::class)
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
 }
