@@ -2,13 +2,28 @@
 
 
 
-## [pre-1.2.0] - 2020-03-08
+## [1.2.0] - 2020-03-09
 
 ### 变更
 
-* `mirai-core` 更新至 `0.25.0`
-* `mirai-console` 更新至 `0.3.2`
+* `mirai-core` 更新至 `0.27.0`
+* `mirai-console` 更新至 `0.3.3`
 * `kotlin`到`1.3.70`
+* 好友对象属性`nickName`->`nickname`
+
+### 新增
+
+* 好友对象`nickname`属性可用（不再是空字符串）
+* 缓存消息表的缓存大小可配置
+* 增加通过`config`接口获取和修改指定session有效的配置
+* 支持通过websocket获取消息与事件
+* 支持XML、JSON、小程序富文本消息
+
+### 修复
+
+* Quote消息类型属性与文档不一致：`imageId`->`id`
+* `uploadImage`接口无法处理异常的问题
+* 击毙一些不为人知的BUG(s)
 
 
 

@@ -31,11 +31,19 @@ Mirai HTTP API (console) plugin
 4. 记录日志中出现的`authKey`
 
 ```yaml
+## 该配置为全局配置，对所有Session有效
+
 # 可选，默认值为8080
 port: 8080          
 
 # 可选，默认由插件随机生成，建议手动指定
 authKey: 1234567890  
+
+# 可选，缓存大小，默认4096.缓存过小会导致引用回复与撤回消息失败
+cacheSize: 4096
+
+# 可选，是否开启websocket，默认关闭，建议通过Session范围的配置设置
+enableWebsocket: false
 ```
 
 
@@ -505,7 +513,9 @@ Content-Type：multipart/form-data
 + [x] Face，表情消息
 + [x] Plain，文字消息
 + [x] Image，图片消息
-+ [ ] Xml，Xml卡片消息
++ [x] Xml，Xml卡片消息
++ [x] Json，Json卡片消息
++ [x] App，小程序消息
 + [ ] 敬请期待
 
 [消息类型一览](MessageType.md)
@@ -922,4 +932,145 @@ Content-Type：multipart/form-data
     "announcement": "群头衔"
 }
 ```
+
+
+
+## Websocket
+
+### 获取消息
+
+监听该接口，插件将推送Bot收到的消息
+
+```
+[ws] /message?sessionKey=YourSessionKey
+```
+
+#### 请求:
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | YourSessionKey   | 你的session key      |
+
+#### 响应
+
+```josn5
+{
+    "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
+	"messageChain": [              // 消息链，是一个消息对象构成的数组
+      {
+	    "type": "Source",
+	    "id": 123456,
+        "time": 123456789
+	  },
+      {
+        "type": "Plain",
+        "text": "Miral牛逼"
+      }
+    ],
+    "sender": {                      // 发送者信息
+        "id": 123456789,             // 发送者的QQ号码
+        "memberName": "化腾",        // 发送者的群名片
+        "permission": "MEMBER",      // 发送者的群限权：OWNER、ADMINISTRATOR或MEMBER
+        "group": {                   // 消息发送群的信息
+            "id": 1234567890,        // 发送群的群号
+            "name": "Miral Technology", // 发送群的群名称
+            "permission": "MEMBER"      // 发送群中，Bot的群限权
+        }
+    }
+}
+```
+
+
+## 获取事件
+
+监听该接口，插件将推送Bot收到的事件
+
+```
+[ws] /event?sessionKey=YourSessionKey
+```
+
+#### 请求:
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | YourSessionKey   | 你的session key      |
+
+#### 响应
+
+```json
+{
+    "type": "BotOfflineEventActive",
+    "qq": 123456
+}
+```
+
+
+## 获取事件和消息
+
+监听该接口，插件将推送Bot收到的事件和消息
+
+```
+[ws] /all?sessionKey=YourSessionKey
+```
+
+#### 请求:
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | YourSessionKey   | 你的session key      |
+
+#### 响应
+
+参考上文
+
+
+
+## 配置相关
+
+### 获取指定Session的配置
+
+使用此方法获取指定Session的配置信息，注意该配置是Session范围有效
+
+```
+[GET] /config?sessionKey=YourSessionKey
+```
+
+#### 请求:
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | YourSessionKey   | 你的session key      |
+
+#### 响应
+
+```json5
+{
+    "cacheSize": 4096,
+    "enableWebsocket": false
+}
+```
+
+### 设置指定Session的配置
+
+使用此方法设置指定Session的配置信息，注意该配置是Session范围有效
+
+```
+[Post] /config
+```
+
+#### 请求:
+
+```json5
+{
+    "sessionKey": "YourSessionKey",
+    "cacheSize": 4096,
+    "enableWebsocket": false
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
+| cacheSize         | true  | Int     | 123456789        | 缓存大小             |
+| enableWebsocket   | true  | Boolean | false            | 是否开启Websocket    |
 
