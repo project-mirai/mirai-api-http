@@ -1,10 +1,6 @@
-import org.jetbrains.kotlin.backend.wasm.lower.excludeDeclarationsFromCodegen
-import java.util.*
-
 plugins {
     id("kotlinx-serialization")
-    id("kotlin")
-    id("java")
+    kotlin("jvm")
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
