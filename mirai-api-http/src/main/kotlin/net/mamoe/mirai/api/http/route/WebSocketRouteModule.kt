@@ -13,6 +13,7 @@ import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.TempSession
 import net.mamoe.mirai.api.http.data.StateCode
+import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.event.events.BotEvent
@@ -25,7 +26,11 @@ fun Application.websocketRouteModule() {
 
         miraiWebsocket("/message") {
             val listener = it.bot.subscribeMessages {
-                always { outgoing.send(Frame.Text(this.toDTO().toJson())) }
+                always {
+                    this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
+                        outgoing.send(Frame.Text(this.toJson()))
+                    }
+                }
             }
 
             try {
@@ -37,7 +42,11 @@ fun Application.websocketRouteModule() {
 
         miraiWebsocket("/event") {
             val listener = it.bot.subscribeAlways<BotEvent> {
-                if (this !is MessagePacket<*, *>) outgoing.send(Frame.Text(this.toDTO().toJson()))
+                if (this !is MessagePacket<*, *>) {
+                    this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
+                        outgoing.send(Frame.Text(this.toJson()))
+                    }
+                }
             }
 
             try {
@@ -49,7 +58,9 @@ fun Application.websocketRouteModule() {
 
         miraiWebsocket("/all") {
             val listener = it.bot.subscribeAlways<BotEvent> {
-                outgoing.send(Frame.Text(this.toDTO().toJson()))
+                this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
+                    outgoing.send(Frame.Text(this.toJson()))
+                }
             }
 
             try {
