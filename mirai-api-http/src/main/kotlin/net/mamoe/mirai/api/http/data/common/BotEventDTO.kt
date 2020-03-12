@@ -29,7 +29,7 @@ suspend fun BotEvent.toDTO() = when (this) {
             authorId,
             messageId,
             messageTime.toLong() and 0xFFFF,
-            QQDTO(if (operator == bot.uin) bot.selfQQ else bot.getFriend(operator))
+            operator
         )
         is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(
             origin,
@@ -150,7 +150,7 @@ data class FriendRecallEventDTO(
     val authorId: Long,
     val messageId: Long,
     val time: Long,
-    val operator: QQDTO
+    val operator: Long
 ) : BotEventDTO()
 
 @Serializable
