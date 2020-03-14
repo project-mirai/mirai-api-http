@@ -43,6 +43,7 @@ suspend fun BotEvent.toDTO() = when (this) {
         is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(
             origin,
             new,
+            new,
             GroupDTO(group)
         )
         is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
@@ -51,11 +52,13 @@ suspend fun BotEvent.toDTO() = when (this) {
         is GroupNameChangeEvent -> GroupNameChangeEventDTO(
             origin,
             new,
+            new,
             GroupDTO(group),
             isByBot
         )
         is GroupEntranceAnnouncementChangeEvent -> GroupEntranceAnnouncementChangeEventDTO(
             origin,
+            new,
             new,
             GroupDTO(group),
             operator?.let(::MemberDTO)
@@ -63,11 +66,13 @@ suspend fun BotEvent.toDTO() = when (this) {
         is GroupMuteAllEvent -> GroupMuteAllEventDTO(
             origin,
             new,
+            new,
             GroupDTO(group),
             operator?.let(::MemberDTO)
         )
         is GroupAllowAnonymousChatEvent -> GroupAllowAnonymousChatEventDTO(
             origin,
+            new,
             new,
             GroupDTO(group),
             operator?.let(::MemberDTO)
@@ -75,11 +80,13 @@ suspend fun BotEvent.toDTO() = when (this) {
         is GroupAllowConfessTalkEvent -> GroupAllowConfessTalkEventDTO(
             origin,
             new,
+            new,
             GroupDTO(group),
             isByBot
         )
         is GroupAllowMemberInviteEvent -> GroupAllowMemberInviteEventDTO(
             origin,
+            new,
             new,
             GroupDTO(group),
             operator?.let(::MemberDTO)
@@ -93,16 +100,19 @@ suspend fun BotEvent.toDTO() = when (this) {
         is MemberCardChangeEvent -> MemberCardChangeEventDTO(
             origin,
             new,
+            new,
             MemberDTO(member),
             operator?.let(::MemberDTO)
         )
         is MemberSpecialTitleChangeEvent -> MemberSpecialTitleChangeEventDTO(
             origin,
             new,
+            new,
             MemberDTO(member)
         )
         is MemberPermissionChangeEvent -> MemberPermissionChangeEventDTO(
             origin,
+            new,
             new,
             MemberDTO(member)
         )
@@ -167,6 +177,7 @@ data class FriendRecallEventDTO(
 data class BotGroupPermissionChangeEventDTO(
     val origin: MemberPermission,
     val new: MemberPermission,
+    val current: MemberPermission,
     val group: GroupDTO
 ) : BotEventDTO()
 
@@ -190,6 +201,7 @@ data class BotJoinGroupEventDTO(val group: GroupDTO) : BotEventDTO()
 data class GroupNameChangeEventDTO(
     val origin: String,
     val new: String,
+    val current: String,
     val group: GroupDTO,
     val isByBot: Boolean
 ) : BotEventDTO()
@@ -199,6 +211,7 @@ data class GroupNameChangeEventDTO(
 data class GroupEntranceAnnouncementChangeEventDTO(
     val origin: String,
     val new: String,
+    val current: String,
     val group: GroupDTO,
     val operator: MemberDTO?
 ) : BotEventDTO()
@@ -208,6 +221,7 @@ data class GroupEntranceAnnouncementChangeEventDTO(
 data class GroupMuteAllEventDTO(
     val origin: Boolean,
     val new: Boolean,
+    val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
 ) : BotEventDTO()
@@ -217,6 +231,7 @@ data class GroupMuteAllEventDTO(
 data class GroupAllowAnonymousChatEventDTO(
     val origin: Boolean,
     val new: Boolean,
+    val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
 ) : BotEventDTO()
@@ -226,6 +241,7 @@ data class GroupAllowAnonymousChatEventDTO(
 data class GroupAllowConfessTalkEventDTO(
     val origin: Boolean,
     val new: Boolean,
+    val current: Boolean,
     val group: GroupDTO,
     val isByBot: Boolean
 ) : BotEventDTO()
@@ -235,6 +251,7 @@ data class GroupAllowConfessTalkEventDTO(
 data class GroupAllowMemberInviteEventDTO(
     val origin: Boolean,
     val new: Boolean,
+    val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
 ) : BotEventDTO()
@@ -259,6 +276,7 @@ data class MemberLeaveEventQuitDTO(val member: MemberDTO) : BotEventDTO()
 data class MemberCardChangeEventDTO(
     val origin: String,
     val new: String,
+    val current: String,
     val member: MemberDTO,
     val operator: MemberDTO?
 ) : BotEventDTO()
@@ -268,6 +286,7 @@ data class MemberCardChangeEventDTO(
 data class MemberSpecialTitleChangeEventDTO(
     val origin: String,
     val new: String,
+    val current: String,
     val member: MemberDTO
 ) : BotEventDTO()
 
@@ -276,6 +295,7 @@ data class MemberSpecialTitleChangeEventDTO(
 data class MemberPermissionChangeEventDTO(
     val origin: MemberPermission,
     val new: MemberPermission,
+    val current: MemberPermission,
     val member: MemberDTO
 ) : BotEventDTO()
 

@@ -146,6 +146,7 @@
     "type": "BotGroupPermissionChangeEvent",
     "origin": "MEMBER",
     "new": "ADMINISTRATOR",
+    "current": "ADMINISTRATOR",
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -157,7 +158,8 @@
 | 名字             | 类型   | 说明                                          |
 | ---------------- | ------ | --------------------------------------------- |
 | origin           | String | Bot的原权限，OWNER、ADMINISTRATOR或MEMBER     |
-| new              | String | Bot的新权限，OWNER、ADMINISTRATOR或MEMBER     |
+| new(Deprecated)  | String | Bot的新权限，OWNER、ADMINISTRATOR或MEMBER     |
+| current          | String | Bot的新权限，OWNER、ADMINISTRATOR或MEMBER     |
 | group            | Object | 权限改变所在的群信息                          |
 | group.id         | Long   | 群号                                          |
 | group.name       | String | 群名                                          |
@@ -258,6 +260,7 @@
     "type": "GroupNameChangeEvent",
     "origin": "miral technology",
     "new": "MIRAI TECHNOLOGY",
+    "current": "MIRAI TECHNOLOGY",
     "group": {
         "id": 123456789,
         "name": "MIRAI TECHNOLOGY",
@@ -270,7 +273,8 @@
 | 名字             | 类型    | 说明                                          |
 | ---------------- | ------- | --------------------------------------------- |
 | origin           | String  | 原群名                                        |
-| new              | String  | 新群名                                        |
+| new(Deprecated)  | String  | 新群名                                        |
+| current          | String  | 新群名                                        |
 | group            | Object  | 群名改名的群信息                              |
 | group.id         | Long    | 群号                                          |
 | group.name       | String  | 群名                                          |
@@ -286,6 +290,7 @@
     "type": "GroupEntranceAnnouncementChangeEvent",
     "origin": "abc",
     "new": "cba",
+    "current": "cba",
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -307,7 +312,8 @@
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | String  | 原公告                                        |
-| new                 | String  | 新公告                                        |
+| new(Deprecated)     | String  | 新公告                                        |
+| current             | String  | 新公告                                        |
 | group               | Object  | 公告改变的群信息                              |
 | group.id            | Long    | 群号                                          |
 | group.name          | String  | 群名                                          |
@@ -327,6 +333,7 @@
     "type": "GroupMuteAllEvent",
     "origin": false,
     "new": true,
+    "current": true,
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -348,7 +355,8 @@
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本是否处于全员禁言                          |
-| new                 | Boolean | 现在是否处于全员禁言                          |
+| new(Deprecated)     | Boolean | 现在是否处于全员禁言                          |
+| current             | Boolean | 现在是否处于全员禁言                          |
 | group               | Object  | 全员禁言的群信息                              |
 | group.id            | Long    | 群号                                          |
 | group.name          | String  | 群名                                          |
@@ -368,6 +376,7 @@
     "type": "GroupAllowAnonymousChatEvent",
     "origin": false,
     "new": true,
+    "current": true,
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -389,7 +398,8 @@
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本匿名聊天是否开启                          |
-| new                 | Boolean | 现在匿名聊天是否开启                          |
+| new(Deprecated)     | Boolean | 现在匿名聊天是否开启                          |
+| current             | Boolean | 现在匿名聊天是否开启                          |
 | group               | Object  | 匿名聊天状态改变的群信息                      |
 | group.id            | Long    | 群号                                          |
 | group.name          | String  | 群名                                          |
@@ -409,6 +419,7 @@
     "type": "GroupAllowConfessTalkEvent",
     "origin": false,
     "new": true,
+    "current": true,
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -421,7 +432,8 @@
 | 名字             | 类型    | 说明                                          |
 | ---------------- | ------- | --------------------------------------------- |
 | origin           | Boolean | 原本坦白说是否开启                            |
-| new              | Boolean | 现在坦白说是否开启                            |
+| new(Deprecated)  | Boolean | 现在坦白说是否开启                            |
+| current          | Boolean | 现在坦白说是否开启                            |
 | group            | Object  | 坦白说状态改变的群信息                        |
 | group.id         | Long    | 群号                                          |
 | group.name       | String  | 群名                                          |
@@ -437,6 +449,7 @@
     "type": "GroupAllowMemberInviteEvent",
     "origin": false,
     "new": true,
+    "current": true,
     "group": {
         "id": 123456789,
         "name": "Miral Technology",
@@ -458,7 +471,8 @@
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本是否允许群员邀请好友加群                  |
-| new                 | Boolean | 现在是否允许群员邀请好友加群                  |
+| new(Deprecated)     | Boolean | 现在是否允许群员邀请好友加群                  |
+| current             | Boolean | 现在是否允许群员邀请好友加群                  |
 | group               | Object  | 允许群员邀请好友加群状态改变的群信息          |
 | group.id            | Long    | 群号                                          |
 | group.name          | String  | 群名                                          |
@@ -586,6 +600,7 @@
     "type": "MemberCardChangeEvent",
     "origin": "origin name",
     "new": "我是被改名的",
+    "current": "我是被改名的",
     "member": {
         "id": 123456789,
         "memberName": "我是被改名的",
@@ -611,6 +626,9 @@
 
 | 名字                    | 类型    | 说明                                                     |
 | ----------------------- | ------- | -------------------------------------------------------- |
+| origin                  | String  | 原本名片                                                 |
+| new(Deprecated)         | String  | 现在名片                                                 |
+| current                 | String  | 现在名片                                                 |
 | member                  | Object  | 名片改动的群员的信息                                     |
 | member.id               | Long    | 名片改动的群员的QQ号                                     |
 | member.memberName       | String  | 名片改动的群员的群名片                                   |
@@ -634,6 +652,7 @@
     "type": "MemberSpecialTitleChangeEvent",
     "origin": "origin title",
     "new": "new title",
+    "current": "new title",
     "member": {
         "id": 123456789,
         "memberName": "我是被改头衔的",
@@ -650,7 +669,8 @@
 | 名字                    | 类型   | 说明                                                     |
 | ----------------------- | ------ | -------------------------------------------------------- |
 | origin                  | String | 原头衔                                                   |
-| new                     | String | 现头衔                                                   |
+| new（Deprecated)        | String | 现头衔                                                   |
+| current                 | String | 现头衔                                                   |
 | member                  | Object | 头衔改动的群员的信息                                     |
 | member.id               | Long   | 头衔改动的群员的QQ号                                     |
 | member.memberName       | String | 头衔改动的群员的群名片                                   |
@@ -669,6 +689,7 @@
     "type": "MemberPermissionChangeEvent",
     "origin": "MEMBER",
     "new": "ADMINISTRATOR",
+    "current": "ADMINISTRATOR",
     "member": {
         "id": 123456789,
         "memberName": "我是被改权限的",
@@ -685,7 +706,8 @@
 | 名字                    | 类型   | 说明                                              |
 | ----------------------- | ------ | ------------------------------------------------- |
 | origin                  | String | 原权限                                            |
-| new                     | String | 现权限                                            |
+| new                     | String | 现权限(Deprecated)                                            |
+| current                 | String | 现权限                                            |
 | member                  | Object | 权限改动的群员的信息                              |
 | member.id               | Long   | 权限改动的群员的QQ号                              |
 | member.memberName       | String | 权限改动的群员的群名片                            |
