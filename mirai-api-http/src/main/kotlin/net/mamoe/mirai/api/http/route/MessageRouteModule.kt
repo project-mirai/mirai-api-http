@@ -120,7 +120,7 @@ fun Application.messageModule() {
                 val image = streamProvider().use {
                     // originalFileName assert not null
                     val newFile = HttpApiPluginBase.saveImageAsync(
-                        originalFileName ?: generateSessionKey(), it.readAllBytes())
+                        originalFileName ?: generateSessionKey(), it.readBytes())
 
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
