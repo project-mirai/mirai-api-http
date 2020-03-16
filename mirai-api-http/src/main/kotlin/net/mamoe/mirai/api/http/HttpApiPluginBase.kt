@@ -41,9 +41,7 @@ object HttpApiPluginBase: PluginBase() {
 
     }
 
-    internal val imageFold: File by lazy {
-        File(dataFolder, "images").apply { mkdirs() }
-    }
+    private val imageFold: File = File(dataFolder, "images").apply { mkdirs() }
 
     internal fun image(imageName: String) = File(imageFold, imageName)
 }
