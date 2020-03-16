@@ -62,7 +62,7 @@ data class PlainDTO(val text: String) : MessageDTO()
 data class ImageDTO(
     val imageId: String? = null,
     val url: String? = null,
-    val file: String? = null
+    val path: String? = null
 ) : MessageDTO()
 
 @Serializable
@@ -157,7 +157,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
         !url.isNullOrBlank() -> contact.uploadImage(URL(url))
-        !file.isNullOrBlank() -> with(HttpApiPluginBase.image(file)) {
+        !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
                 contact.uploadImage(this)
             } else throw NoSuchFileException(this)

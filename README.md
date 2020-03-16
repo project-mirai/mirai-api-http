@@ -327,7 +327,8 @@ Content-Type：multipart/form-data
 ```json5
 {
     "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg",
-    "url": "xxxxxxxxxxxxxxxxxxxx"
+    "url": "xxxxxxxxxxxxxxxxxxxx",
+    "path": "xxxxxxxxxx"
 }
 ```
 
