@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.data
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.data.common.DTO
+import java.io.File
 
 @Serializable
 open class StateCode(val code: Int, var msg: String) : DTO {
@@ -20,6 +21,12 @@ open class StateCode(val code: Int, var msg: String) : DTO {
     object NotVerifySession : StateCode(4, "Session未认证")
     object NoElement : StateCode(5, "指定对象不存在")
     object PermissionDenied : StateCode(10, "无操作权限")
+
+    class NoFile() : StateCode(6, "") {
+        constructor(file: File) : this() {
+            this.msg = "文件不存在：${file.absolutePath}"
+        }
+    }
 
     // KS bug: 主构造器中不能有非字段参数 https://github.com/Kotlin/kotlinx.serialization/issues/575
     @Serializable

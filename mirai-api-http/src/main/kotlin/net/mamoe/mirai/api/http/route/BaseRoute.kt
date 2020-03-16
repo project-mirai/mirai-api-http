@@ -161,6 +161,8 @@ internal inline fun Route.intercept(crossinline blk: suspend PipelineContext<Uni
         call.respondStateCode(StateCode.NoBot)
     } catch (e: NoSuchElementException) {
         call.respondStateCode(StateCode.NoElement)
+    } catch (e: NoSuchFileException) {
+        call.respondStateCode(StateCode.NoFile(e.file))
     } catch (e: PermissionDeniedException) {
         call.respondStateCode(StateCode.PermissionDenied)
     } catch (e: IllegalAccessException) {

@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -58,7 +59,11 @@ data class PlainDTO(val text: String) : MessageDTO()
 
 @Serializable
 @SerialName("Image")
-data class ImageDTO(val imageId: String? = null, val url: String? = null) : MessageDTO()
+data class ImageDTO(
+    val imageId: String? = null,
+    val url: String? = null,
+    val file: String? = null
+) : MessageDTO()
 
 @Serializable
 @SerialName("Xml")
@@ -152,6 +157,11 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
         !url.isNullOrBlank() -> contact.uploadImage(URL(url))
+        !file.isNullOrBlank() -> with(HttpApiPluginBase.image(file)) {
+            if (exists()) {
+                contact.uploadImage(this)
+            } else throw NoSuchFileException(this)
+        }
         else -> null
     }
     is XmlDTO -> XmlMessage(xml)

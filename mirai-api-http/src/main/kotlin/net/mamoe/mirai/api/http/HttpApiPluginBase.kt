@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
 import net.mamoe.mirai.console.plugins.withDefaultWriteSave
+import java.io.File
 
 object HttpApiPluginBase: PluginBase() {
     val setting by lazy{
@@ -39,4 +40,10 @@ object HttpApiPluginBase: PluginBase() {
     override fun onDisable() {
 
     }
+
+    internal val imageFold: File by lazy {
+        File(dataFolder, "images").apply { mkdirs() }
+    }
+
+    internal fun image(imageName: String) = File(imageFold, imageName)
 }
