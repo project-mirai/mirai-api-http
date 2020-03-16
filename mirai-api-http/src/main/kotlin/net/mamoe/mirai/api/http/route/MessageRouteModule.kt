@@ -14,10 +14,12 @@ import io.ktor.application.call
 import io.ktor.http.content.streamProvider
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.*
+import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.getFriendOrNull
@@ -112,16 +114,22 @@ fun Application.messageModule() {
 
             val type = parts.value("type")
             parts.file("img")?.apply {
+
                 val image = streamProvider().use {
+                    val newFile = HttpApiPluginBase.saveImageAsync(
+                        originalFileName ?: generateSessionKey(), it.readAllBytes()) // originalFileName assert not null
+
                     when (type) {
-                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
-                        "friend" -> session.bot.friends.firstOrNull()?.uploadImage(it)
+                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
+                        "friend" -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
                         else -> null
                     }
                 }
+
                 image?.apply {
                     call.respondDTO(UploadImageRetDTO(imageId, trickImageUrl(this, type)))
                 } ?: throw IllegalAccessException("图片上传错误")
+
             } ?: throw IllegalAccessException("未知错误")
         }
 

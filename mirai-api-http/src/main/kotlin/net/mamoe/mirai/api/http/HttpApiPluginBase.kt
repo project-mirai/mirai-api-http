@@ -9,9 +9,9 @@
 
 package net.mamoe.mirai.api.http
 
+import kotlinx.coroutines.async
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
-import net.mamoe.mirai.console.plugins.withDefaultWriteSave
 import java.io.File
 
 object HttpApiPluginBase: PluginBase() {
@@ -44,4 +44,9 @@ object HttpApiPluginBase: PluginBase() {
     private val imageFold: File = File(dataFolder, "images").apply { mkdirs() }
 
     internal fun image(imageName: String) = File(imageFold, imageName)
+
+    fun saveImageAsync(name: String, data: ByteArray) =
+        async {
+            image(name).apply { writeBytes(data) }
+        }
 }
