@@ -112,22 +112,32 @@ fun Application.messageModule() {
         // TODO: 重构
         miraiMultiPart("uploadImage") { session, parts ->
 
+            var path: String? = null
+
             val type = parts.value("type")
             parts.file("img")?.apply {
 
                 val image = streamProvider().use {
+                    // originalFileName assert not null
                     val newFile = HttpApiPluginBase.saveImageAsync(
-                        originalFileName ?: generateSessionKey(), it.readAllBytes()) // originalFileName assert not null
+                        originalFileName ?: generateSessionKey(), it.readAllBytes())
 
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
                         "friend" -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
                         else -> null
+                    }.apply {
+                        // 使用apply不影响when返回
+                        path = newFile.await().absolutePath
                     }
                 }
 
                 image?.apply {
-                    call.respondDTO(UploadImageRetDTO(imageId, trickImageUrl(this, type)))
+                    call.respondDTO(UploadImageRetDTO(
+                        imageId,
+                        trickImageUrl(this, type),
+                        path
+                    ))
                 } ?: throw IllegalAccessException("图片上传错误")
 
             } ?: throw IllegalAccessException("未知错误")
@@ -171,7 +181,8 @@ private class SendRetDTO(
 @Suppress("unused")
 private class UploadImageRetDTO(
     val imageId: String,
-    val url: String
+    val url: String,
+    val path: String?
 ) : DTO
 
 @Serializable
