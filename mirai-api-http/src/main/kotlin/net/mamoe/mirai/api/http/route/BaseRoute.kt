@@ -31,6 +31,7 @@ import io.ktor.util.pipeline.ContextDsl
 import io.ktor.util.pipeline.PipelineContext
 import io.ktor.websocket.WebSockets
 import net.mamoe.mirai.api.http.AuthedSession
+import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.TempSession
 import net.mamoe.mirai.api.http.data.*
@@ -168,7 +169,7 @@ internal inline fun Route.intercept(crossinline blk: suspend PipelineContext<Uni
     } catch (e: IllegalAccessException) {
         call.respondStateCode(StateCode(400, e.message), HttpStatusCode.BadRequest)
     } catch (e: Throwable) {
-        e.printStackTrace()
+        HttpApiPluginBase.logger.error(e)
         call.respond(HttpStatusCode.InternalServerError, e.message!!)
     }
 }
