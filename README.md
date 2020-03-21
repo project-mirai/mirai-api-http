@@ -24,12 +24,13 @@ Mirai HTTP API (console) plugin
 
 
 ## 开始使用
-0. 请首先运行[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端生成plugins文件夹
-1. 将`mirai-api-http`生成的`jar包文件`放入`plugins`文件夹中
+0. 请首先运行[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端生成`plugins`文件夹
+1. 将`mirai-api-http`生成的`jar包文件`放入`plugins`文件夹中,并且重启[Mirai-console](https://github.com/mamoe/mirai-console)
 2. 编辑`plugins/MiraiAPIHTTP/setting.yml`配置文件
-3. 再次启动[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端
+3. 再次重启[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端
 4. 记录日志中出现的`authKey`
 
+`sessting.yml`详细配置如下:
 ```yaml
 ## 该配置为全局配置，对所有Session有效
 
