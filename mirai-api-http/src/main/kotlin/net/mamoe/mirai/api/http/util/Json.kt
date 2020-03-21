@@ -60,6 +60,8 @@ object MiraiJson {
                 BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
                 BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
                 BotReloginEventDTO::class with BotReloginEventDTO.serializer()
+                GroupRecallEventDTO::class with GroupRecallEventDTO.serializer()
+                FriendRecallEventDTO::class with FriendRecallEventDTO.serializer()
                 BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
                 BotMuteEventDTO::class with BotMuteEventDTO.serializer()
                 BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
