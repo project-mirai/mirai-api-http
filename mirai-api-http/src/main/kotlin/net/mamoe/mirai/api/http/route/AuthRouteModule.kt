@@ -63,7 +63,7 @@ private data class AuthRetDTO(val code: Int, val session: String) : DTO
 @Serializable
 private data class BindDTO(override val sessionKey: String, val qq: Long) : VerifyDTO()
 
-private fun getBotOrThrow(qq: Long) = try {
+internal fun getBotOrThrow(qq: Long) = try {
     Bot.getInstance(qq)
 } catch (e: NoSuchElementException) {
     throw NoSuchBotException

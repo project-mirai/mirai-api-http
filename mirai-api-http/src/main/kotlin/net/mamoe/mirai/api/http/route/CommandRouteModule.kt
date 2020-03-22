@@ -3,20 +3,26 @@ package net.mamoe.mirai.api.http.route
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.close
 import io.ktor.response.respondText
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.websocket.webSocket
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
+import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
-import net.mamoe.mirai.api.http.data.common.*
+import net.mamoe.mirai.api.http.data.common.DTO
+import net.mamoe.mirai.api.http.data.common.UnknownMessageDTO
+import net.mamoe.mirai.api.http.data.common.toMessageChainDTO
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.CommandSenderImpl
+import net.mamoe.mirai.console.utils.managers
 import net.mamoe.mirai.message.data.MessageChain
 
 fun Application.commandModule() {
@@ -40,6 +46,14 @@ fun Application.commandModule() {
                     command = "${it.name} ${it.args.joinToString(" ")}"
                 )
                 call.respondStateCode(StateCode.Success)
+            }
+        }
+
+        route("/managers", HttpMethod.Get) {
+            intercept {
+                val qq = call.parameters["qq"] ?: throw IllegalParamException("参数格式错误")
+                val managers = getBotOrThrow(qq.toLong()).managers
+                call.respondJson(managers.toJson())
             }
         }
 
