@@ -44,6 +44,10 @@ cacheSize: 4096
 
 # 可选，是否开启websocket，默认关闭，建议通过Session范围的配置设置
 enableWebsocket: false
+
+# 可选，配置CORS跨域，默认为*，即允许所有域名
+cors: 
+  - '*'
 ```
 
 
@@ -1076,3 +1080,103 @@ Content-Type：multipart/form-data
 | cacheSize         | true  | Int     | 123456789        | 缓存大小             |
 | enableWebsocket   | true  | Boolean | false            | 是否开启Websocket    |
 
+## 插件相关、Console相关
+
+### 简介
+
+`Mirai-console`通过指令执行任务，如`/login qq password`进行登录，`Mirai-api-http`支持通过`POST`请求发送指令和注册指令，
+帮助第三方开发语言进行符合`Mirai-console`规范的插件开发
+
+`Mirai-console`通过`manager`列表进行对`bot`任务的鉴权。尽量避免各插件使用自己的鉴权方式而产生重复配置的混乱情况出现。
+
+### 注册指令
+
+```
+[POST] /command/register
+```
+
+#### 请求:
+
+```json5
+{
+    "authKey": "U9HSaDXl39ksd918273hU",
+    "name": "login",
+    "alias": ["lg", "SignIn"],
+    "description": "用于登录",
+    "usage": "/login qq password",
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| authKey        | false | String  | "YourSessionKey" | 你的session key      |
+| name            | false | Long    | 123456789        | 指定群的群号         |
+| alias          | false | Long    | 987654321        | 群员QQ号             |
+| description              | false | Object  | {}               | 群员资料             |
+| usage              | true  | String  | "Name"           | 群名片，即群昵称     |
+
+#### 响应
+
+按普通文本处理
+
+
+
+### 发送指令
+
+```
+[POST] /command/send
+```
+
+#### 请求:
+
+```json5
+{
+    "authKey": "U9HSaDXl39ksd918273hU",
+    "name": "login",
+    "args": ["123", "pwd"]
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| authKey        | false | String  | "YourSessionKey" | 你的session key      |
+| name            | false | Long    | 123456789        | 指定群的群号         |
+| args          | false | Long    | 987654321        | 群员QQ号             |
+
+
+#### 响应
+
+按普通文本处理
+
+
+
+### 监听指令
+
+```
+[ws] /command?authKey=U9HSaDXl39ksd918273hU
+```
+
+#### 响应
+
+```json5
+{
+    "name": "commandName",
+    "args": ["arg1", "arg2"]
+}
+```
+
+
+
+### 获取Mangers
+
+```
+[GET] /managers?qq=123456
+```
+
+#### 响应
+
+```json5
+[123456789, 987654321]
+```
+
+> 响应Manager的qq号数组，当QQ号不存在时返回状态码(StateCode 2)
