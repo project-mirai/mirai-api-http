@@ -25,7 +25,7 @@ object HttpApiPluginBase: PluginBase() {
         this.loadConfig("setting.yml")
     }
 
-    val cors by setting.withDefault { emptyList<String>() }
+    val cors by setting.withDefault { listOf("*") }
 
     val port by setting.withDefault { 8080 }
     val authKey by setting.withDefault { "INITKEY" + generateSessionKey() }
