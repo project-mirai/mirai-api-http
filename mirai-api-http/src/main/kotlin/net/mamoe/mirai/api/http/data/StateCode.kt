@@ -16,6 +16,7 @@ import java.io.File
 @Serializable
 open class StateCode(val code: Int, var msg: String) : DTO {
     object Success : StateCode(0, "success") // 成功
+    object AuthKeyFail : StateCode(1, "Auth Key错误")
     object NoBot : StateCode(2, "指定Bot不存在")
     object IllegalSession : StateCode(3, "Session失效或不存在")
     object NotVerifySession : StateCode(4, "Session未认证")

@@ -36,7 +36,6 @@ import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.TempSession
 import net.mamoe.mirai.api.http.data.*
-import net.mamoe.mirai.api.http.data.common.AuthDTO
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.util.jsonParseOrNull
@@ -54,6 +53,7 @@ fun Application.mirai() {
         }
     }
     authModule()
+    commandModule()
     messageModule()
     infoModule()
     groupManageModule()
@@ -66,13 +66,13 @@ fun Application.mirai() {
  * 为闭包传入一个AuthDTO对象
  */
 @ContextDsl
-internal fun Route.miraiAuth(
+internal inline fun <reified T : DTO> Route.miraiAuth(
     path: String,
-    body: suspend PipelineContext<Unit, ApplicationCall>.(AuthDTO) -> Unit
+    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit
 ): Route {
     return route(path, HttpMethod.Post) {
         intercept {
-            val dto = context.receiveDTO<AuthDTO>() ?: throw IllegalParamException("参数格式错误")
+            val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
             this.body(dto)
         }
     }

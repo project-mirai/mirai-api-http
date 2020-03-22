@@ -18,6 +18,7 @@ import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.data.NoSuchBotException
 import net.mamoe.mirai.api.http.data.StateCode
+import net.mamoe.mirai.api.http.data.common.AuthDTO
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import kotlin.coroutines.EmptyCoroutineContext
@@ -25,9 +26,9 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 fun Application.authModule() {
     routing {
-        miraiAuth("/auth") {
+        miraiAuth<AuthDTO>("/auth") {
             if (it.authKey != SessionManager.authKey) {
-                call.respondStateCode(StateCode(1, "Auth Key错误"))
+                call.respondStateCode(StateCode.AuthKeyFail)
             } else {
                 call.respondDTO(AuthRetDTO(0, SessionManager.createTempSession().key))
             }

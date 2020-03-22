@@ -10,9 +10,15 @@
 package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import net.mamoe.mirai.console.command.Command
+import net.mamoe.mirai.console.command.CommandSender
+import net.mamoe.mirai.console.command.registerCommand
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
 import java.io.File
+
+internal typealias CommandSubscriber = suspend (String, List<String>) -> Unit
 
 object HttpApiPluginBase: PluginBase() {
     val setting by lazy{
@@ -41,6 +47,32 @@ object HttpApiPluginBase: PluginBase() {
 
     override fun onDisable() {
 
+    }
+
+    private val subscribers = mutableListOf<CommandSubscriber>()
+
+    internal fun subscribeCommand(subscriber: CommandSubscriber): CommandSubscriber = subscriber.also { subscribers.add(it) }
+
+    internal fun unSubscribeCommand(subscriber: CommandSubscriber) = subscribers.remove(subscriber)
+
+    internal fun registerCommand(
+        name: String,
+        alias: List<String>,
+        description: String,
+        usage: String
+    ) = registerCommand {
+        this.name = name
+        this.alias = alias
+        this.description = description
+        this.usage = usage
+    }
+
+    override fun onCommand(command: Command, sender: CommandSender, args: List<String>) {
+        launch {
+            subscribers.forEach {
+                it(command.name, args)
+            }
+        }
     }
 
     private val imageFold: File = File(dataFolder, "images").apply { mkdirs() }
