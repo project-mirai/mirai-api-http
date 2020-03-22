@@ -17,13 +17,12 @@ import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
-import net.mamoe.mirai.api.http.data.common.UnknownMessageDTO
-import net.mamoe.mirai.api.http.data.common.toMessageChainDTO
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.console.MiraiConsole
-import net.mamoe.mirai.console.command.CommandSenderImpl
+import net.mamoe.mirai.console.command.AbstractCommandSender
+import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.utils.managers
-import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.Message
 
 fun Application.commandModule() {
 
@@ -41,7 +40,7 @@ fun Application.commandModule() {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
             } else {
-                MiraiConsole.CommandProcessor.runCommandBlocking(
+                CommandManager.runCommand(
                     sender = HttpCommandSender(call),
                     command = "${it.name} ${it.args.joinToString(" ")}"
                 )
@@ -89,13 +88,13 @@ fun Application.commandModule() {
     }
 }
 
-class HttpCommandSender(private val call: ApplicationCall) : CommandSenderImpl() {
+class HttpCommandSender(private val call: ApplicationCall) : AbstractCommandSender() {
     override suspend fun sendMessage(message: String) {
         call.respondText(message)
     }
 
-    override suspend fun sendMessage(messageChain: MessageChain) {
-        call.respondText(messageChain.toMessageChainDTO { it != UnknownMessageDTO }.toJson())
+    override suspend fun sendMessage(messageChain: Message) {
+        call.respondText(messageChain.toString())
     }
 }
 

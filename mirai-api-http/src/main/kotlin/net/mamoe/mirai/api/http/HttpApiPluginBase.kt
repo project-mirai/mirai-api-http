@@ -55,6 +55,7 @@ object HttpApiPluginBase: PluginBase() {
 
     internal fun unSubscribeCommand(subscriber: CommandSubscriber) = subscribers.remove(subscriber)
 
+    // TODO: 解决Http-api插件卸载后，注册的command将失效
     internal fun registerCommand(
         name: String,
         alias: List<String>,
