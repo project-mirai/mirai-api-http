@@ -16,6 +16,7 @@ import io.ktor.application.install
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
+import io.ktor.features.maxAgeDuration
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -42,12 +43,21 @@ import net.mamoe.mirai.api.http.util.jsonParseOrNull
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
+
+@OptIn(ExperimentalTime::class)
 fun Application.mirai() {
     install(DefaultHeaders)
     install(WebSockets)
     install(CallLogging) { logger = NOPLoggerFactory().getLogger("NMSL") }
     install(CORS) {
+        method(HttpMethod.Options)
+        allowNonSimpleContentTypes = true
+        maxAgeDuration = 1.toDuration(DurationUnit.DAYS)
+
         HttpApiPluginBase.cors.forEach {
             host(it, schemes = listOf("http", "https"))
         }
