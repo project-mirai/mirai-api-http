@@ -13,6 +13,7 @@ import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.http.ContentType
@@ -46,9 +47,11 @@ import org.slf4j.helpers.NOPLoggerFactory
 fun Application.mirai() {
     install(DefaultHeaders)
     install(WebSockets)
-    install(CallLogging) {
-        logger = NOPLoggerFactory().getLogger("NMSL")
-
+    install(CallLogging) { logger = NOPLoggerFactory().getLogger("NMSL") }
+    install(CORS) {
+        HttpApiPluginBase.cors.forEach {
+            host(it, schemes = listOf("http", "https"))
+        }
     }
     authModule()
     messageModule()

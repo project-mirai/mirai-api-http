@@ -69,6 +69,7 @@ kotlin {
             api(ktor("http-jvm"))
             api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
+            api("org.yaml:snakeyaml:1.25")
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
         kotlin.setSrcDirs(listOf("src/$name/kotlin"))
