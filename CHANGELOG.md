@@ -2,6 +2,27 @@
 
 
 
+## [1.3.0] - 2020-03-22
+
+### 变更
+
+* 更新`core`依赖到 0.29.0
+* 更新`conosle`依赖到 0.3.5
+
+### 新增
+* 支持配置CORS，初始默认允许所有域名
+* 支持注册指令到`Mirai-console`
+* 支持发送指令到`Mirai-console`
+* 支持通过websocket获取`Mirai-console`指令触发事件
+* 支持获取`Mirai-console`中`bot`的`managers`
+
+> 支持通过指令和`manager`两个框架，使用http-api开发符合`Mirai`规范的插件
+
+### 修复
+* 修复撤回事件序列化错误的异常
+
+
+
 ## [1.2.3] - 2020-03-18
 
 ### 变更
