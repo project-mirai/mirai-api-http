@@ -12,7 +12,11 @@ package net.mamoe.mirai.api.http.util
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import net.mamoe.mirai.api.http.data.common.*
+import net.mamoe.mirai.api.http.data.common.BotEventDTO
+import net.mamoe.mirai.api.http.data.common.EventDTO
+import net.mamoe.mirai.api.http.data.common.FriendMessagePacketDTO
+import net.mamoe.mirai.api.http.data.common.GroupMessagePacketDTO
+import kotlin.reflect.KClass
 
 // 解析失败时直接返回null，由路由判断响应400状态
 @OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
@@ -45,41 +49,56 @@ else MiraiJson.json.stringify(serializer, this)
  * Json解析规则，需要注册支持的多态的类
  */
 object MiraiJson {
+    @OptIn(ImplicitReflectionSerializer::class)
     @UnstableDefault
     val json = Json {
+
         isLenient = true
         ignoreUnknownKeys = true
 
+        @Suppress("UNCHECKED_CAST")
         serialModule = SerializersModule {
+
             polymorphic(EventDTO::class) {
+
                 GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
                 FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
 
-                BotOnlineEventDTO::class with BotOnlineEventDTO.serializer()
-                BotOfflineEventActiveDTO::class with BotOfflineEventActiveDTO.serializer()
-                BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
-                BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
-                BotReloginEventDTO::class with BotReloginEventDTO.serializer()
-                GroupRecallEventDTO::class with GroupRecallEventDTO.serializer()
-                FriendRecallEventDTO::class with FriendRecallEventDTO.serializer()
-                BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
-                BotMuteEventDTO::class with BotMuteEventDTO.serializer()
-                BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
-                BotJoinGroupEventDTO::class with BotJoinGroupEventDTO.serializer()
-                GroupNameChangeEventDTO::class with GroupNameChangeEventDTO.serializer()
-                GroupEntranceAnnouncementChangeEventDTO::class with GroupEntranceAnnouncementChangeEventDTO.serializer()
-                GroupMuteAllEventDTO::class with GroupMuteAllEventDTO.serializer()
-                GroupAllowAnonymousChatEventDTO::class with GroupAllowAnonymousChatEventDTO.serializer()
-                GroupAllowConfessTalkEventDTO::class with GroupAllowConfessTalkEventDTO.serializer()
-                GroupAllowMemberInviteEventDTO::class with GroupAllowMemberInviteEventDTO.serializer()
-                MemberJoinEventDTO::class with MemberJoinEventDTO.serializer()
-                MemberLeaveEventKickDTO::class with MemberLeaveEventKickDTO.serializer()
-                MemberLeaveEventQuitDTO::class with MemberLeaveEventQuitDTO.serializer()
-                MemberCardChangeEventDTO::class with MemberCardChangeEventDTO.serializer()
-                MemberSpecialTitleChangeEventDTO::class with MemberSpecialTitleChangeEventDTO.serializer()
-                MemberPermissionChangeEventDTO::class with MemberPermissionChangeEventDTO.serializer()
-                MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
-                MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
+
+                /*
+                 * BotEventDTO为sealed Class，以BotEventDTO为接收者的函数可以自动进行多态序列化
+                 * 这里通过向EventDTO为接收者的方法进行所有事件类型的多态注册
+                 */
+                BotEventDTO::class.sealedSubclasses.forEach {
+                    val clazz = it as KClass<BotEventDTO>
+                    clazz with clazz.serializer()
+                }
+
+//                BotOnlineEventDTO::class with BotOnlineEventDTO.serializer()
+//                BotOfflineEventActiveDTO::class with BotOfflineEventActiveDTO.serializer()
+//                BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
+//                BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
+//                BotReloginEventDTO::class with BotReloginEventDTO.serializer()
+//                GroupRecallEventDTO::class with GroupRecallEventDTO.serializer()
+//                FriendRecallEventDTO::class with FriendRecallEventDTO.serializer()
+//                BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
+//                BotMuteEventDTO::class with BotMuteEventDTO.serializer()
+//                BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
+//                BotJoinGroupEventDTO::class with BotJoinGroupEventDTO.serializer()
+//                GroupNameChangeEventDTO::class with GroupNameChangeEventDTO.serializer()
+//                GroupEntranceAnnouncementChangeEventDTO::class with GroupEntranceAnnouncementChangeEventDTO.serializer()
+//                GroupMuteAllEventDTO::class with GroupMuteAllEventDTO.serializer()
+//                GroupAllowAnonymousChatEventDTO::class with GroupAllowAnonymousChatEventDTO.serializer()
+//                GroupAllowConfessTalkEventDTO::class with GroupAllowConfessTalkEventDTO.serializer()
+//                GroupAllowMemberInviteEventDTO::class with GroupAllowMemberInviteEventDTO.serializer()
+//                MemberJoinEventDTO::class with MemberJoinEventDTO.serializer()
+//                MemberLeaveEventKickDTO::class with MemberLeaveEventKickDTO.serializer()
+//                MemberLeaveEventQuitDTO::class with MemberLeaveEventQuitDTO.serializer()
+//                MemberCardChangeEventDTO::class with MemberCardChangeEventDTO.serializer()
+//                MemberSpecialTitleChangeEventDTO::class with MemberSpecialTitleChangeEventDTO.serializer()
+//                MemberPermissionChangeEventDTO::class with MemberPermissionChangeEventDTO.serializer()
+//                MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
+//                MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
             }
         }
     }
