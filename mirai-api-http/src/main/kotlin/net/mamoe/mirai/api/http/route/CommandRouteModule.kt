@@ -18,7 +18,6 @@ import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.AbstractCommandSender
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.utils.managers
@@ -40,11 +39,15 @@ fun Application.commandModule() {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
             } else {
-                CommandManager.runCommand(
-                    sender = HttpCommandSender(call),
+
+                val sender = HttpCommandSender(call)
+
+                CommandManager.dispatchCommandBlocking(
+                    sender = sender,
                     command = "${it.name} ${it.args.joinToString(" ")}"
                 )
-                call.respondStateCode(StateCode.Success)
+
+                if (!sender.consume) call.respondText("")
             }
         }
 
@@ -88,14 +91,32 @@ fun Application.commandModule() {
     }
 }
 
+// TODO: 将command输出返回给请求
 class HttpCommandSender(private val call: ApplicationCall) : AbstractCommandSender() {
+
+    var consume = false
+
     override suspend fun sendMessage(message: String) {
-        call.respondText(message)
+//        appendMessage(message)
+        if (!consume) {
+            call.respondText(message)
+            consume = true
+        }
     }
 
     override suspend fun sendMessage(messageChain: Message) {
-        call.respondText(messageChain.toString())
+//        appendMessage(messageChain.toString())
+        if (!consume) {
+            call.respondText(messageChain.toString())
+            consume = true
+        }
     }
+
+//    override suspend fun flushMessage() {
+//        if (builder.isNotEmpty()) {
+//            call.respondText(builder.toString().removeSuffix("\n"))
+//        }
+//    }
 }
 
 @Serializable
