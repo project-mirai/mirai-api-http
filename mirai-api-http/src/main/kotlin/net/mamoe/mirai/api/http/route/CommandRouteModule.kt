@@ -20,6 +20,7 @@ import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.console.command.AbstractCommandSender
 import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.command.UnknownCommandException
 import net.mamoe.mirai.console.utils.managers
 import net.mamoe.mirai.message.data.Message
 
@@ -39,15 +40,18 @@ fun Application.commandModule() {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
             } else {
+                try {
+                    val sender = HttpCommandSender(call)
 
-                val sender = HttpCommandSender(call)
+                    CommandManager.dispatchCommandBlocking(
+                        sender = sender,
+                        command = "${it.name} ${it.args.joinToString(" ")}"
+                    )
 
-                CommandManager.dispatchCommandBlocking(
-                    sender = sender,
-                    command = "${it.name} ${it.args.joinToString(" ")}"
-                )
-
-                if (!sender.consume) call.respondText("")
+                    if (!sender.consume) call.respondText("")
+                } catch (e: UnknownCommandException) {
+                    call.respondStateCode(StateCode.NoElement)
+                }
             }
         }
 
