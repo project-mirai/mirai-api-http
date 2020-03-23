@@ -66,6 +66,11 @@ object HttpApiPluginBase: PluginBase() {
         this.alias = alias
         this.description = description
         this.usage = usage
+
+        this.onCommand {
+            // do nothing
+            true
+        }
     }
 
     override fun onCommand(command: Command, sender: CommandSender, args: List<String>) {
