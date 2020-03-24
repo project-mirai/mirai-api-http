@@ -27,12 +27,12 @@ fun Application.groupManageModule() {
          * 禁言（需要相关权限）
          */
         miraiVerify<MuteDTO>("/muteAll") {
-            it.session.bot.getGroup(it.target).isMuteAll = true
+            it.session.bot.getGroup(it.target).settings.isMuteAll = true
             call.respondStateCode(StateCode.Success)
         }
 
         miraiVerify<MuteDTO>("/unmuteAll") {
-            it.session.bot.getGroup(it.target).isMuteAll = false
+            it.session.bot.getGroup(it.target).settings.isMuteAll = false
             call.respondStateCode(StateCode.Success)
         }
 
@@ -66,9 +66,9 @@ fun Application.groupManageModule() {
             val group = dto.session.bot.getGroup(dto.target)
             with(dto.config) {
                 name?.let { group.name = it }
-                announcement?.let { group.entranceAnnouncement = it }
-                confessTalk?.let { group.isConfessTalkEnabled = it }
-                allowMemberInvite?.let { group.isAllowMemberInvite = it }
+                announcement?.let { group.settings.entranceAnnouncement = it }
+                confessTalk?.let { group.settings.isConfessTalkEnabled = it }
+                allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
                 // TODO: 待core接口实现设置可改
 //                autoApprove?.let { group.autoApprove = it }
 //                anonymousChat?.let { group.anonymousChat = it }
@@ -130,8 +130,12 @@ private data class GroupDetailDTO(
     val anonymousChat: Boolean? = null
 ) : DTO {
     constructor(group: Group) : this(
-        group.name, group.entranceAnnouncement, group.isConfessTalkEnabled, group.isAllowMemberInvite,
-        group.isAutoApproveEnabled, group.isAnonymousChatEnabled
+        group.name,
+        group.settings.entranceAnnouncement,
+        group.settings.isConfessTalkEnabled,
+        group.settings.isAllowMemberInvite,
+        group.settings.isAutoApproveEnabled,
+        group.settings.isAnonymousChatEnabled
     )
 }
 
