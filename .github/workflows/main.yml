@@ -16,7 +16,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew shadow
+      run: ./gradlew build
     - name: Rename Artifact
       run: |
         mv ./mirai-api-http/build/libs/*-all.jar ./mirai-http-api-all.jar
