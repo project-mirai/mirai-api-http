@@ -17,17 +17,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Rename Artifact
-      run: mv ./mirai-api-http/build/libs/*.jar ./mirai-http-api.jar
-    - name: Upload artifact (all)
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: "mirai-http-api-all.jar"
-        # Directory containing files to upload
-        path: .
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: "mirai-http-api.jar"
+        name: "mirai-http-api"
         # Directory containing files to upload
-        path: .
+        path: mirai-api-http/build/libs
