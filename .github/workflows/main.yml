@@ -18,10 +18,18 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew shadow
     - name: Rename Artifact
-      run: mv ./build/libs/*.jar ./build/libs/mirai-http-api.jar
+      run: |
+        mv ./mirai-api-http/build/libs/*-all.jar ./mirai-http-api-all.jar
+        mv ./mirai-api-http/build/libs/*.jar ./mirai-http-api.jar
+    - name: Upload artifact (all)
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: "mirai-http-api-all.jar"
+        # Directory containing files to upload
+        path: .
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: "mirai-http-api.jar"
         # Directory containing files to upload
-        path: build/libs
+        path: .
