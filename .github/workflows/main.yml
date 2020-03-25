@@ -17,3 +17,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: "mirai-http-api"
+        # Directory containing files to upload
+        path: mirai-api-http/build/libs
