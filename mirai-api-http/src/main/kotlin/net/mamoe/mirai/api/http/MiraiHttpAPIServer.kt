@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http
 
 import io.ktor.application.Application
 import io.ktor.server.cio.CIO
+import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
@@ -28,6 +29,8 @@ object MiraiHttpAPIServer : CoroutineScope {
     var logger = DefaultLogger("Mirai HTTP API")
     override val coroutineContext: CoroutineContext =
         CoroutineExceptionHandler { _, throwable -> logger.error(throwable) }
+
+    lateinit var server: ApplicationEngine
 
     init {
         SessionManager.authKey = generateSessionKey()//用于验证的key, 使用和SessionKey相同的方法生成, 但意义不同
@@ -48,7 +51,7 @@ object MiraiHttpAPIServer : CoroutineScope {
 
         // TODO: start是无阻塞的，理应获取启动状态后再执行后续代码
         launch {
-            embeddedServer(CIO, environment = applicationEngineEnvironment {
+            server = embeddedServer(CIO, environment = applicationEngineEnvironment {
                 this.parentCoroutineContext = coroutineContext
                 this.log = NOPLoggerFactory().getLogger("NMYSL")
                 this.module(Application::mirai)
@@ -62,4 +65,6 @@ object MiraiHttpAPIServer : CoroutineScope {
         logger.info("Http api server is running with authKey: ${SessionManager.authKey}")
         callback?.invoke()
     }
+
+    fun stop() = server.stop(5000, 5000)
 }

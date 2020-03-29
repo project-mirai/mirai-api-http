@@ -47,7 +47,7 @@ object HttpApiPluginBase: PluginBase() {
     }
 
     override fun onDisable() {
-
+        MiraiHttpAPIServer.stop()
     }
 
     private val subscribers = mutableListOf<CommandSubscriber>()
