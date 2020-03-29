@@ -11,14 +11,15 @@ package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import net.mamoe.mirai.console.command.Command
-import net.mamoe.mirai.console.command.CommandSender
-import net.mamoe.mirai.console.command.registerCommand
+import net.mamoe.mirai.api.http.route.HttpCommandSender
+import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.QQ
 import java.io.File
 
-internal typealias CommandSubscriber = suspend (String, List<String>) -> Unit
+internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
 object HttpApiPluginBase: PluginBase() {
     val setting by lazy{
@@ -75,8 +76,17 @@ object HttpApiPluginBase: PluginBase() {
 
     override fun onCommand(command: Command, sender: CommandSender, args: List<String>) {
         launch {
+            val (friend: Long, group: Long) = when(sender) {
+                is ContactCommandSender -> when(sender.contact) {
+                    is Group -> 0L to sender.contact.id
+                    is QQ -> sender.contact.id to 0L
+                    else -> 0L to 0L // assert unreachable
+                }
+                else -> 0L to 0L // 考虑保留对其他Sender类型的扩展，先统一默认为ConsoleSender
+            }
+
             subscribers.forEach {
-                it(command.name, args)
+                it(command.name, friend, group, args)
             }
         }
     }

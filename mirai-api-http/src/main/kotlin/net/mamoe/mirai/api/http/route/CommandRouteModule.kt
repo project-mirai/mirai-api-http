@@ -78,8 +78,8 @@ fun Application.commandModule() {
             }
 
             // 订阅onCommand事件
-            val subscriber = HttpApiPluginBase.subscribeCommand { name, args ->
-                outgoing.send(Frame.Text(CommandDTO(name, args).toJson()))
+            val subscriber = HttpApiPluginBase.subscribeCommand { name, friend, group, args ->
+                outgoing.send(Frame.Text(CommandDTO(name, friend, group, args).toJson()))
             }
 
             try {
@@ -126,7 +126,9 @@ class HttpCommandSender(private val call: ApplicationCall) : AbstractCommandSend
 @Serializable
 data class CommandDTO(
     val name: String,
-    val args: List<String>
+    val friend: Long,
+    val group: Long,
+    val args: List<String>,
 ) : DTO
 
 @Serializable
