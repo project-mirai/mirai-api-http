@@ -1162,7 +1162,7 @@ Content-Type：multipart/form-data
 {
     "name": "commandName",
     "friend": 12345,
-    "group": 54321
+    "group": 54321,
     "args": ["arg1", "arg2"]
 }
 ```
