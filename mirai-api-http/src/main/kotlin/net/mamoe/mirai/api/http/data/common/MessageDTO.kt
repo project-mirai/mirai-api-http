@@ -114,14 +114,16 @@ suspend fun MessagePacket<*, *>.toDTO() = when (this) {
 }.apply {
     if (this is MessagePacketDTO) {
         // 将MessagePacket中的所有Message转为DTO对象，并添加到messageChain
-        // foreachContent会忽略MessageSource，一次主动获取
         messageChain = message.toMessageChainDTO { it != UnknownMessageDTO }
         // else: `this` is bot event
     }
 }
 
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
+    // `foreachContent`会忽略`MessageSource`，手动添加
     mutableListOf(this[MessageSource].toDTO()).apply {
+        // `QuoteReply`会被`foreachContent`过滤，手动添加
+        this@toMessageChainDTO.getOrNull(QuoteReply)?.let { this.add(it.toDTO()) }
         foreachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
     }
 
@@ -141,7 +143,8 @@ suspend fun Message.toDTO() = when (this) {
     is JsonMessage -> JsonDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId,
-        source.originalMessage.toMessageChainDTO { (it != UnknownMessageDTO) and (it !is QuoteDTO) })
+        // 避免套娃
+        source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     else -> UnknownMessageDTO
 }
 
