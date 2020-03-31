@@ -22,6 +22,7 @@ open class StateCode(val code: Int, var msg: String) : DTO {
     object NotVerifySession : StateCode(4, "Session未认证")
     object NoElement : StateCode(5, "指定对象不存在")
     object PermissionDenied : StateCode(10, "无操作权限")
+    object BotMuted : StateCode(20, "Bot被禁言")
 
     class NoFile() : StateCode(6, "") {
         constructor(file: File) : this() {
