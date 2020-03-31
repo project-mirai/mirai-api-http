@@ -151,3 +151,22 @@
 | -------- | ------ | ------- |
 | content  | String | 内容    |
 
+#### Poke
+
+```json5
+{
+    "type": "Poke",
+    "name": "SixSixSix"
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| name | String | 戳一戳的类型 |
+
+1. "Poke": 戳一戳
+2. "ShowLove": 比心
+3. "Like": 点赞
+4. "Heartbroken": 心碎
+5. "SixSixSix": 666
+6. "FangDaZhao": 放大招

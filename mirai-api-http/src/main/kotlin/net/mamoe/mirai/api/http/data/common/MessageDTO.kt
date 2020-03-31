@@ -13,6 +13,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.util.FaceMap
+import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.FriendMessage
@@ -87,6 +88,12 @@ data class QuoteDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("Poke")
+data class PokeMessageDTO(
+    val name: String
+) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
@@ -145,6 +152,7 @@ suspend fun Message.toDTO() = when (this) {
     is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId,
         // 避免套娃
         source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
+    is PokeMessage -> PokeMessageDTO(PokeMap[type])
     else -> UnknownMessageDTO
 }
 
@@ -170,9 +178,11 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is XmlDTO -> XmlMessage(xml)
     is JsonDTO -> JsonMessage(json)
     is AppDTO -> LightApp(content)
+    is PokeMessageDTO -> PokeMap[name]
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
-    is UnknownMessageDTO -> null
+    is UnknownMessageDTO,
+    -> null
 }
 
