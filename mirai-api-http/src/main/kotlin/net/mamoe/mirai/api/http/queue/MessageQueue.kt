@@ -13,9 +13,6 @@ import net.mamoe.mirai.api.http.data.common.EventDTO
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
 import net.mamoe.mirai.event.events.BotEvent
-import net.mamoe.mirai.message.MessagePacket
-import net.mamoe.mirai.message.data.MessageSource
-import net.mamoe.mirai.utils.firstKey
 import java.util.concurrent.ConcurrentLinkedDeque
 
 class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {

@@ -28,7 +28,7 @@ import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.event.subscribeMessages
-import net.mamoe.mirai.message.MessagePacket
+import net.mamoe.mirai.message.ContactMessage
 
 fun Application.websocketRouteModule() {
     routing {
@@ -51,7 +51,7 @@ fun Application.websocketRouteModule() {
 
         miraiWebsocket("/event") {
             val listener = it.bot.subscribeAlways<BotEvent> {
-                if (this !is MessagePacket<*, *>) {
+                if (this !is ContactMessage) {
                     this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
                         outgoing.send(Frame.Text(this.toJson()))
                     }

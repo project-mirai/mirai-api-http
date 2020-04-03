@@ -21,7 +21,6 @@ import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.AuthDTO
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import kotlin.coroutines.EmptyCoroutineContext
 
 
 fun Application.authModule() {
@@ -43,7 +42,7 @@ fun Application.authModule() {
         miraiVerify<BindDTO>("/release") {
             val bot = getBotOrThrow(it.qq)
             val session = SessionManager[it.sessionKey] as AuthedSession
-            if (bot.uin == session.bot.uin) {
+            if (bot.id == session.bot.id) {
                 SessionManager.closeSession(it.sessionKey)
                 call.respondStateCode(StateCode.Success)
             } else {

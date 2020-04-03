@@ -12,21 +12,20 @@ package net.mamoe.mirai.api.http.data.common
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.MemberPermission
-import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.MessagePacket
+import net.mamoe.mirai.message.ContactMessage
 
 @Serializable
 sealed class BotEventDTO : EventDTO()
 
 suspend fun BotEvent.toDTO() = when (this) {
-    is MessagePacket<*, *> -> toDTO()
+    is ContactMessage -> toDTO()
     else -> when (this) {
-        is BotOnlineEvent -> BotOnlineEventDTO(bot.uin)
-        is BotOfflineEvent.Active -> BotOfflineEventActiveDTO(bot.uin)
-        is BotOfflineEvent.Force -> BotOfflineEventForceDTO(bot.uin, title, message)
-        is BotOfflineEvent.Dropped -> BotOfflineEventDroppedDTO(bot.uin)
-        is BotReloginEvent -> BotReloginEventDTO(bot.uin)
+        is BotOnlineEvent -> BotOnlineEventDTO(bot.id)
+        is BotOfflineEvent.Active -> BotOfflineEventActiveDTO(bot.id)
+        is BotOfflineEvent.Force -> BotOfflineEventForceDTO(bot.id, title, message)
+        is BotOfflineEvent.Dropped -> BotOfflineEventDroppedDTO(bot.id)
+        is BotReloginEvent -> BotReloginEventDTO(bot.id)
         is MessageRecallEvent.GroupRecall -> GroupRecallEventDTO(
             authorId,
             messageId,

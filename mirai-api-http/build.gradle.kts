@@ -48,7 +48,7 @@ kotlin {
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
-            api(kotlinx("io-jvm"))
+            compileOnly(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
         }
     }

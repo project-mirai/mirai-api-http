@@ -182,7 +182,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
-    is UnknownMessageDTO,
+    is UnknownMessageDTO
     -> null
 }
 

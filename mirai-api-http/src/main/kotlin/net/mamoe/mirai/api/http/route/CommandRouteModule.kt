@@ -128,7 +128,7 @@ data class CommandDTO(
     val name: String,
     val friend: Long,
     val group: Long,
-    val args: List<String>,
+    val args: List<String>
 ) : DTO
 
 @Serializable
