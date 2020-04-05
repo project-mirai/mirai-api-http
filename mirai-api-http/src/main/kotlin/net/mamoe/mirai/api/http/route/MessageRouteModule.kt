@@ -38,14 +38,14 @@ fun Application.messageModule() {
         }
 
         miraiGet("/messageFromId") {
-            val id: Long = paramOrNull("id")
+            val id: Int = paramOrNull("id")
             it.cacheQueue[id].apply {
                 call.respondDTO(this.toDTO())
             }
         }
 
         suspend fun <C : Contact> sendMessage(
-            quote: QuoteReplyToSend?,
+            quote: QuoteReply?,
             messageChain: MessageChain,
             target: C
         ): MessageReceipt<out Contact> {
@@ -60,15 +60,14 @@ fun Application.messageModule() {
         miraiVerify<SendDTO>("/sendFriendMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
-                    this[MessageSource].quote(sender)
+                    this[MessageSource].quote()
                 }
             }
 
-            it.session.bot.getFriend(it.target).apply {
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
-                receipt.source.ensureSequenceIdAvailable()
+            it.session.bot.getFriend(it.target).also { qq ->
+                val receipt = sendMessage(quote, it.messageChain.toMessageChain(qq), qq)
 
-                it.session.cacheQueue.add(FriendMessage(bot.selfQQ, receipt.source.asMessageChain()))
+                it.session.cacheQueue.add(FriendMessage(qq.bot.selfQQ, receipt.source.asMessageChain()))
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -76,19 +75,18 @@ fun Application.messageModule() {
         miraiVerify<SendDTO>("/sendGroupMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
-                    this[MessageSource].quote(sender)
+                    this[MessageSource].quote()
                 }
             }
 
-            it.session.bot.getGroup(it.target).apply {
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(this), this)
-                receipt.source.ensureSequenceIdAvailable()
+            it.session.bot.getGroup(it.target).also { group ->
+                val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
 
                 it.session.cacheQueue.add(
                     GroupMessage(
                         "",
-                        botPermission,
-                        botAsMember,
+                        group.botPermission,
+                        group.botAsMember,
                         receipt.source.asMessageChain()
                     )
                 )
@@ -155,7 +153,7 @@ fun Application.messageModule() {
 @Serializable
 private data class SendDTO(
     override val sessionKey: String,
-    val quote: Long? = null,
+    val quote: Int? = null,
     val target: Long,
     val messageChain: MessageChainDTO
 ) : VerifyDTO()
@@ -174,7 +172,7 @@ private data class SendImageDTO(
 private class SendRetDTO(
     val code: Int = 0,
     val msg: String = "success",
-    val messageId: Long
+    val messageId: Int
 ) : DTO
 
 @Serializable
@@ -188,7 +186,7 @@ private class UploadImageRetDTO(
 @Serializable
 private data class RecallDTO(
     override val sessionKey: String,
-    val target: Long
+    val target: Int
 ) : VerifyDTO()
 
 private fun trickImageUrl(image: Image, type: String) = when (type) {

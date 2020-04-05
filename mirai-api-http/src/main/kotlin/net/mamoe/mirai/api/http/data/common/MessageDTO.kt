@@ -40,7 +40,7 @@ data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 // Message
 @Serializable
 @SerialName("Source")
-data class MessageSourceDTO(val id: Long, val time: Long) : MessageDTO()
+data class MessageSourceDTO(val id: Int, val time: Long) : MessageDTO()
 
 @Serializable
 @SerialName("At")
@@ -81,7 +81,7 @@ data class AppDTO(val content: String) : MessageDTO()
 @Serializable
 @SerialName("Quote")
 data class QuoteDTO(
-    val id: Long,
+    val id: Int,
     val groupId: Long,
     val senderId: Long,
     val origin: MessageChainDTO

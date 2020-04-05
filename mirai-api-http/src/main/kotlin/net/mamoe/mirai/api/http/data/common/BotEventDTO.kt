@@ -156,7 +156,7 @@ data class BotReloginEventDTO(val qq: Long) : BotEventDTO()
 @SerialName("GroupRecallEvent")
 data class GroupRecallEventDTO(
     val authorId: Long,
-    val messageId: Long,
+    val messageId: Int,
     val time: Long,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -166,7 +166,7 @@ data class GroupRecallEventDTO(
 @SerialName("FriendRecallEvent")
 data class FriendRecallEventDTO(
     val authorId: Long,
-    val messageId: Long,
+    val messageId: Int,
     val time: Long,
     val operator: Long
 ) : BotEventDTO()

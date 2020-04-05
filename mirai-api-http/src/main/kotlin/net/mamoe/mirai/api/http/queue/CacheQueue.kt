@@ -12,13 +12,13 @@ package net.mamoe.mirai.api.http.queue
 import net.mamoe.mirai.message.ContactMessage
 import net.mamoe.mirai.message.data.MessageSource
 
-class CacheQueue : LinkedHashMap<Long, ContactMessage>() {
+class CacheQueue : LinkedHashMap<Int, ContactMessage>() {
 
     var cacheSize = 4096
 
-    override fun get(key: Long): ContactMessage = super.get(key) ?: throw NoSuchElementException()
+    override fun get(key: Int): ContactMessage = super.get(key) ?: throw NoSuchElementException()
 
-    override fun put(key: Long, value: ContactMessage): ContactMessage? = super.put(key, value).also {
+    override fun put(key: Int, value: ContactMessage): ContactMessage? = super.put(key, value).also {
         if (size > cacheSize) {
             remove(this.entries.first().key)
         }
