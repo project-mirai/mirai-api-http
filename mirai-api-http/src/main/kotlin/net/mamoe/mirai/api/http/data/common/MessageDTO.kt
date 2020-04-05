@@ -64,6 +64,14 @@ data class ImageDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("FlashImage")
+data class FlashImageDTO(
+    val imageId: String? = null,
+    val url: String? = null,
+    val path: String? = null
+) : MessageDTO()
+
+@Serializable
 @SerialName("Xml")
 data class XmlDTO(val xml: String) : MessageDTO()
 
@@ -144,6 +152,7 @@ suspend fun Message.toDTO() = when (this) {
     is Face -> FaceDTO(id, FaceMap[id])
     is PlainText -> PlainDTO(stringValue)
     is Image -> ImageDTO(imageId, queryUrl())
+    is FlashImage -> FlashImageDTO(image.imageId, image.queryUrl())
     is XmlMessage -> XmlDTO(content)
     is JsonMessage -> JsonDTO(content)
     is LightApp -> AppDTO(content)
@@ -178,6 +187,16 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }
+    is FlashImageDTO -> when {
+        !imageId.isNullOrBlank() -> Image(imageId)
+        !url.isNullOrBlank() -> contact.uploadImage(URL(url))
+        !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
+            if (exists()) {
+                contact.uploadImage(this)
+            } else throw NoSuchFileException(this)
+        }
+        else -> null
+    }?.flash()
     is XmlDTO -> XmlMessage(xml)
     is JsonDTO -> JsonMessage(json)
     is AppDTO -> LightApp(content)
