@@ -79,8 +79,9 @@ data class AppDTO(val content: String) : MessageDTO()
 @SerialName("Quote")
 data class QuoteDTO(
     val id: Int,
-    val groupId: Long,
     val senderId: Long,
+    val targetId: Long,
+    val groupId: Long,
     val origin: MessageChainDTO
 ) : MessageDTO()
 
@@ -147,8 +148,13 @@ suspend fun Message.toDTO() = when (this) {
     is JsonMessage -> JsonDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
+        groupId = when {
+            source is OfflineMessageSource && (source as OfflineMessageSource).kind == OfflineMessageSource.Kind.GROUP ||
+            source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
+            else -> 0L
+        },
         // 避免套娃
-        source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
+        origin = source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[type])
     else -> UnknownMessageDTO
 }
