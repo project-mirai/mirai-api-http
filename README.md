@@ -391,75 +391,78 @@ Content-Type：multipart/form-data
 #### 响应: 返回JSON对象
 
 ```json5
-[
-  {
-    "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
-	"messageChain": [              // 消息链，是一个消息对象构成的数组
-      {
-	    "type": "Source",
-	    "id": 123456,
-        "time": 123456789
-	  },
-      {
-        "type": "Plain",
-        "text": "Miral牛逼"
-      }
-    ],
-    "sender": {                      // 发送者信息
-        "id": 123456789,             // 发送者的QQ号码
-        "memberName": "化腾",        // 发送者的群名片
-        "permission": "MEMBER",      // 发送者的群限权：OWNER、ADMINISTRATOR或MEMBER
-        "group": {                   // 消息发送群的信息
-            "id": 1234567890,        // 发送群的群号
-            "name": "Miral Technology", // 发送群的群名称
-            "permission": "MEMBER"      // 发送群中，Bot的群限权
+{
+  "code": 0,
+  "data": [
+    {
+      "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
+      "messageChain": [              // 消息链，是一个消息对象构成的数组
+        {
+          "type": "Source",
+          "id": 123456,
+          "time": 123456789
+        },
+        {
+          "type": "Plain",
+          "text": "Miral牛逼"
         }
-    }
-  },
-  {
-    "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
-    "messageChain": [                // 消息链，是一个消息对象构成的数组
-      {
-        "type": "Source",
-        "id": 123456,
-        "time": 123456789
-      },
-      {
-        "type": "Plain",
-        "text": "Miral牛逼"
+      ],
+      "sender": {                      // 发送者信息
+          "id": 123456789,             // 发送者的QQ号码
+          "memberName": "化腾",        // 发送者的群名片
+          "permission": "MEMBER",      // 发送者的群限权：OWNER、ADMINISTRATOR或MEMBER
+          "group": {                   // 消息发送群的信息
+              "id": 1234567890,        // 发送群的群号
+              "name": "Miral Technology", // 发送群的群名称
+              "permission": "MEMBER"      // 发送群中，Bot的群限权
+          }
       }
-    ],
-    "sender": {                      // 发送者信息
-        "id": 1234567890,            // 发送者的QQ号码
-        "nickname": "",              // 发送者的昵称
-        "remark": ""                 // 发送者的备注
-    }
-  },
-  {
-    "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或各类Event
-    "durationSeconds": 600,
-    "member":{
-        "id": 123456789,
-        "memberName": "禁言对象",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
     },
-    "operator":{
-        "id": 987654321, 
-        "memberName": "群主大人", 
-        "permission": "OWNER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
+    {
+      "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
+      "messageChain": [                // 消息链，是一个消息对象构成的数组
+        {
+          "type": "Source",
+          "id": 123456,
+          "time": 123456789
+        },
+        {
+          "type": "Plain",
+          "text": "Miral牛逼"
         }
+      ],
+      "sender": {                      // 发送者信息
+          "id": 1234567890,            // 发送者的QQ号码
+          "nickname": "",              // 发送者的昵称
+          "remark": ""                 // 发送者的备注
+      }
+    },
+    {
+      "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或各类Event
+      "durationSeconds": 600,
+      "member":{
+          "id": 123456789,
+          "memberName": "禁言对象",
+          "permission": "MEMBER",
+          "group": {
+              "id": 123456789,
+              "name": "Miral Technology",
+              "permission": "MEMBER"
+          }
+      },
+      "operator":{
+          "id": 987654321, 
+          "memberName": "群主大人", 
+          "permission": "OWNER",
+          "group": {
+              "id": 123456789,
+              "name": "Miral Technology",
+              "permission": "MEMBER"
+          }
+      }
     }
-  }
-]
+  ]
+}
 ```
 
 

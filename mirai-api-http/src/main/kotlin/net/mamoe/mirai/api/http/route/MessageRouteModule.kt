@@ -23,8 +23,11 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.getFriendOrNull
-import net.mamoe.mirai.message.*
+import net.mamoe.mirai.message.FriendMessage
+import net.mamoe.mirai.message.GroupMessage
+import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.uploadImage
 import java.net.URL
 
 fun Application.messageModule() {
@@ -34,7 +37,7 @@ fun Application.messageModule() {
             val count: Int = paramOrNull("count")
             val fetch = it.messageQueue.fetch(count)
 
-            call.respondJson(fetch.toJson())
+            call.respondDTO(FetchRetDTO(data = fetch))
         }
 
         miraiGet("/messageFromId") {
@@ -149,6 +152,12 @@ fun Application.messageModule() {
         }
     }
 }
+
+@Serializable
+private data class FetchRetDTO(
+    val code: Int = 0,
+    val data: List<EventDTO>
+) : DTO
 
 @Serializable
 private data class SendDTO(
