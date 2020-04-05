@@ -59,7 +59,8 @@ object MiraiHttpAPIServer : CoroutineScope {
                 connector {
                     this.port = port
                 }
-            }).start(wait = true)
+            })
+            server.start(true)
         }
 
         logger.info("Http api server is running with authKey: ${SessionManager.authKey}")
