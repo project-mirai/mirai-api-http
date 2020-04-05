@@ -104,8 +104,8 @@
 | 名字                      | 类型    | 说明                                             |
 | ------------------------- | ------- | ------------------------------------------------ |
 | authorId                  | Long    | 原消息发送者的QQ号                               |
-| messageId                 | Long    | 原消息messageId                                  |
-| time                      | Long    | 原消息发送时间                                   |
+| messageId                 | Int     | 原消息messageId                                  |
+| time                      | Int     | 原消息发送时间                                   |
 | group                     | Object  | 消息撤回所在的群                                 |
 | group.id                  | Long    | 群号                                             |
 | group.name                | String  | 群名                                             |
@@ -133,8 +133,8 @@
 | 名字      | 类型 | 说明               |
 | --------- | ---- | ------------------ |
 | authorId  | Long | 原消息发送者的QQ号 |
-| messageId | Long | 原消息messageId    |
-| time      | Long | 原消息发送时间     |
+| messageId | Int  | 原消息messageId    |
+| time      | Int  | 原消息发送时间     |
 | operator  | Long | 好友QQ号或BotQQ号  |
 
 

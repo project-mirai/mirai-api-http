@@ -210,7 +210,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标好友的QQ号           |
-| quote        | Long   | true  | 135798642   | 引用一条消息的messageId进行回复  |
+| quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
 #### 响应: 返回统一状态码（并携带messageId）
@@ -250,7 +250,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标群的群号             |
-| quote        | Long   | true  | 135798642   | 引用一条消息的messageId进行回复  |
+| quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
 #### 响应: 返回统一状态码（并携带messageId）
@@ -359,7 +359,7 @@ Content-Type：multipart/form-data
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
-| target       | Long   | false | 987654321   | 需要撤回的消息的messageId        |
+| target       | Int    | false | 987654321   | 需要撤回的消息的messageId        |
 
 #### 响应: 返回统一状态码
 
