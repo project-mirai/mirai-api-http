@@ -41,6 +41,7 @@ import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.util.jsonParseOrNull
 import net.mamoe.mirai.api.http.util.toJson
+import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
 import kotlin.time.DurationUnit
@@ -179,7 +180,7 @@ internal inline fun Route.intercept(crossinline blk: suspend PipelineContext<Uni
         call.respondStateCode(StateCode.NoFile(e.file))
     } catch (e: PermissionDeniedException) { // 缺少权限
         call.respondStateCode(StateCode.PermissionDenied)
-    } catch (e: IllegalStateException) { // Bot被禁言
+        } catch (e: BotIsBeingMutedException) { // Bot被禁言
         call.respondStateCode(StateCode.BotMuted)
     } catch (e: IllegalAccessException) { // 错误访问
         call.respondStateCode(StateCode(400, e.message), HttpStatusCode.BadRequest)
