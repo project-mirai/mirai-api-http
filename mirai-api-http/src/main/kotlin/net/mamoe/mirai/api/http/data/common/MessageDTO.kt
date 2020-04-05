@@ -40,7 +40,7 @@ data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 // Message
 @Serializable
 @SerialName("Source")
-data class MessageSourceDTO(val id: Int, val time: Long) : MessageDTO()
+data class MessageSourceDTO(val id: Int, val time: Int) : MessageDTO()
 
 @Serializable
 @SerialName("At")
@@ -149,7 +149,7 @@ suspend fun Message.toDTO() = when (this) {
     is XmlMessage -> XmlDTO(content)
     is JsonMessage -> JsonDTO(content)
     is LightApp -> AppDTO(content)
-    is QuoteReply -> QuoteDTO(source.id, source.groupId, source.senderId,
+    is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
         // 避免套娃
         source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[type])
