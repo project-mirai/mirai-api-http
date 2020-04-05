@@ -8,6 +8,24 @@
 
 * 更新 `core` 依赖到 0.33.0
 * 所有 `messageId`, `time` 由 `Long` 变更为 `Int`
+* `Quote` 消息类型增加 `targetId` 作为获取原消息发送目标的依据
+* Breaking Change: `/fetchMessage` 接口返回带状态码对象， [详情](https://github.com/mamoe/mirai-api-http/blob/master/README.md#%E5%93%8D%E5%BA%94-%E8%BF%94%E5%9B%9Ejson%E5%AF%B9%E8%B1%A1)
+
+### 新增
+* 支持 `FlashImage` 闪照类型，处理同 `Image`, `imageId` 可通用
+
+### 修复
+* 处理 `消息过长` 异常 (code: 30)
+* 处理意料之外的 `Bot被禁言` 异常 (code: 20), #34
+
+
+
+## \[1.5.0-pre\] - 2020-04-05
+
+### 变更
+
+* 更新 `core` 依赖到 0.33.0
+* 所有 `messageId`, `time` 由 `Long` 变更为 `Int`
 * `Quote` 消息类型
 
 > 已知BUG： Quote的id错误。该问题将在1.5.0正式版本中修复
