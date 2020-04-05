@@ -42,6 +42,7 @@ import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.util.jsonParseOrNull
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.BotIsBeingMutedException
+import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
 import kotlin.time.DurationUnit
@@ -176,12 +177,14 @@ internal inline fun Route.intercept(crossinline blk: suspend PipelineContext<Uni
         call.respondStateCode(StateCode.NotVerifySession)
     } catch (e: NoSuchElementException) { // 指定对象不存在
         call.respondStateCode(StateCode.NoElement)
-    } catch (e: NoSuchFileException) {
+    } catch (e: NoSuchFileException) { // 文件不存在
         call.respondStateCode(StateCode.NoFile(e.file))
     } catch (e: PermissionDeniedException) { // 缺少权限
         call.respondStateCode(StateCode.PermissionDenied)
-        } catch (e: BotIsBeingMutedException) { // Bot被禁言
+    } catch (e: BotIsBeingMutedException) { // Bot被禁言
         call.respondStateCode(StateCode.BotMuted)
+    } catch (e: MessageTooLargeException) { // 消息过长
+        call.respondStateCode(StateCode.MessageTooLarge)
     } catch (e: IllegalAccessException) { // 错误访问
         call.respondStateCode(StateCode(400, e.message), HttpStatusCode.BadRequest)
     } catch (e: Throwable) {
