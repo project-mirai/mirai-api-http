@@ -16,11 +16,8 @@ import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.FriendMessage
-import net.mamoe.mirai.message.GroupMessage
-import net.mamoe.mirai.message.MessagePacket
+import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.uploadImage
 import java.net.URL
 
 /*
@@ -114,7 +111,7 @@ sealed class MessageDTO : DTO
 /*
     Extend function
  */
-suspend fun MessagePacket<*, *>.toDTO() = when (this) {
+suspend fun ContactMessage.toDTO() = when (this) {
     is FriendMessage -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessage -> GroupMessagePacketDTO(MemberDTO(sender))
     else -> IgnoreEventDTO

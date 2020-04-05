@@ -48,7 +48,7 @@ fun Application.messageModule() {
             quote: QuoteReply?,
             messageChain: MessageChain,
             target: C
-        ): MessageReceipt<out Contact> {
+        ): MessageReceipt<Contact> {
             val send = if (quote == null) {
                 messageChain
             } else {
