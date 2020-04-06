@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import net.mamoe.mirai.api.http.route.HttpCommandSender
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
