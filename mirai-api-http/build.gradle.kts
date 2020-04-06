@@ -21,7 +21,8 @@ val serializationVersion: String by rootProject.ext
 
 val kotlinXIoVersion: String by rootProject.ext
 
-fun kotlinx(id: String, version: String = this@Build_gradle.kotlinXIoVersion) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
+fun kotlinx(id: String, version: String = this@Build_gradle.kotlinXIoVersion) =
+    "org.jetbrains.kotlinx:kotlinx-$id:$version"
 
 
 fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
@@ -108,3 +109,48 @@ compileTestKotlin.kotlinOptions {
 project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
+
+tasks {
+    val runMiraiConsole by creating(JavaExec::class.java) {
+        group = "mirai"
+        dependsOn(project.tasks.getByName("shadowJar"))
+        dependsOn(testClasses)
+
+        val testConsoleDir = "test"
+
+        doFirst {
+            fun removeOldVersions() {
+                File("$testConsoleDir/plugins/").walk()
+                    .filter { it.name.matches(Regex("""${project.name}-.*-all.jar""")) }
+                    .forEach {
+                        it.delete()
+                        println("deleting old files: ${it.name}")
+                    }
+            }
+
+            fun copyBuildOutput() {
+                File("build/libs/").walk()
+                    .filter { it.name.contains("-all") }
+                    .maxBy { it.lastModified() }
+                    ?.let {
+                        println("Coping ${it.name}")
+                        it.inputStream()
+                            .transferTo(File("$testConsoleDir/plugins/${it.name}").apply { createNewFile() }
+                                .outputStream())
+                        println("Copied ${it.name}")
+                    }
+            }
+
+            workingDir = File(testConsoleDir)
+            workingDir.mkdir()
+            File(workingDir, "plugins").mkdir()
+            removeOldVersions()
+            copyBuildOutput()
+
+            classpath = sourceSets["test"].runtimeClasspath
+            main = "mirai.RunMirai"
+            standardInput = System.`in`
+            args(miraiVersion, miraiConsoleVersion)
+        }
+    }
+}
