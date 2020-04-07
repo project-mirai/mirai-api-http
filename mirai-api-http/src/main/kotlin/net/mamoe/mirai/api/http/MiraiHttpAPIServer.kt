@@ -22,6 +22,8 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.route.mirai
 import net.mamoe.mirai.utils.DefaultLogger
 import org.slf4j.helpers.NOPLoggerFactory
+import java.io.OutputStream
+import java.io.PrintStream
 import kotlin.coroutines.CoroutineContext
 
 object MiraiHttpAPIServer : CoroutineScope {
@@ -51,16 +53,28 @@ object MiraiHttpAPIServer : CoroutineScope {
 
         // TODO: start是无阻塞的，理应获取启动状态后再执行后续代码
         launch {
-            server = embeddedServer(CIO, environment = applicationEngineEnvironment {
-                this.parentCoroutineContext = coroutineContext
-                this.log = NOPLoggerFactory().getLogger("NMYSL")
-                this.module(Application::mirai)
-
-                connector {
-                    this.port = port
+            val err = System.err
+            System.setErr(PrintStream(object : OutputStream() {
+                override fun write(b: Int) {
+                    // noop
                 }
-            })
+            })) // ignore slf4j's log
+            try {
+                server = embeddedServer(CIO, environment = applicationEngineEnvironment {
+                    this.parentCoroutineContext = coroutineContext
+                    this.log = NOPLoggerFactory().getLogger("NMYSL")
+                    this.module(Application::mirai)
+
+                    connector {
+                        this.port = port
+                    }
+                })
+            } finally {
+                System.setErr(err)
+            }
             server.start(true)
+
+
         }
 
         logger.info("Http api server is running with authKey: ${SessionManager.authKey}")
