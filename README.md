@@ -379,7 +379,25 @@ Content-Type：multipart/form-data
 [GET] /fetchMessage?sessionKey=YourSessionKey&count=10
 ```
 
-使用此方法获取bot接收到的消息和各类事件
+使用此方法获取bot接收到的最老消息和最老各类事件(会从MiraiApiHttp消息记录中删除)
+
+```
+[GET] /fetchLatestMessage?sessionKey=YourSessionKey&count=10
+```
+
+使用此方法获取bot接收到的最新消息和最新各类事件(会从MiraiApiHttp消息记录中删除)
+
+```
+[GET] /peekMessage?sessionKey=YourSessionKey&count=10
+```
+
+使用此方法获取bot接收到的最老消息和最老各类事件(不会从MiraiApiHttp消息记录中删除)
+
+```
+[GET] /peekLatestMessage?sessionKey=YourSessionKey&count=10
+```
+
+使用此方法获取bot接收到的最新消息和最新各类事件(不会从MiraiApiHttp消息记录中删除)
 
 #### 请求:
 
@@ -505,6 +523,30 @@ Content-Type：multipart/form-data
         "remark": ""                 // 发送者的备注
     }
  }
+```
+
+### 查看缓存的消息总数
+
+```
+[GET] /countMessage?sessionKey=YourSessionKey
+```
+
+使用此方法获取bot接收并缓存的消息总数，注意不包含被删除的。
+
+#### 请求:
+
+| 名字       | 可选  | 举例           | 说明                 |
+| ---------- | ----- | -------------- | -------------------- |
+| sessionKey | false | YourSessionKey | 你的session key      |
+
+#### 响应: 返回JSON对象
+
+```json5
+{
+    "code": 0,
+    "errorMessage": "",
+    "data": 520,   
+}
 ```
 
 

@@ -37,13 +37,52 @@ fun Application.messageModule() {
     routing {
 
         /**
-         * 获取消息并从MessageQueue删除获取的消息
+         * 获取MessageQueue剩余消息数量
+         */
+        miraiGet("/countMessage") {
+            val count: Int = it.messageQueue.size;
+
+            call.respondDTO(IntRestfulResult(data = count));
+        }
+
+        /**
+         * 获取指定条数最老的消息并从MessageQueue删除获取的消息
          */
         miraiGet("/fetchMessage") {
             val count: Int = paramOrNull("count")
-            val fetch = it.messageQueue.fetch(count)
+            val list = it.messageQueue.fetch(count)
 
-            call.respondDTO(FetchRetDTO(data = fetch))
+            call.respondDTO(EventListRestfulResult(data = list))
+        }
+
+        /**
+         * 获取指定条数最新的消息并从MessageQueue删除获取的消息
+         */
+        miraiGet("/fetchLatestMessage") {
+            val count: Int = paramOrNull("count");
+            val list = it.messageQueue.fetchLatest(count)
+
+            call.respondDTO(EventListRestfulResult(data = list))
+        }
+
+        /**
+         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
+         */
+        miraiGet("/peakMessage") {
+            val count: Int = paramOrNull("count");
+            val list = it.messageQueue.peek(count)
+
+            call.respondDTO(EventListRestfulResult(data = list))
+        }
+
+        /**
+         * 获取指定条数最新的消息，和/fetchLatestMessage不一样，这个方法不会删除消息
+         */
+        miraiGet("/peekLatestMessage") {
+            val count: Int = paramOrNull("count")
+            val list = it.messageQueue.peekLatest(count)
+
+            call.respondDTO(EventListRestfulResult(data = list))
         }
 
         /**
