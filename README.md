@@ -379,7 +379,7 @@ Content-Type：multipart/form-data
 [GET] /fetchMessage?sessionKey=YourSessionKey&count=10
 ```
 
-使用此方法获取bot接收到的最久远消息和最久远各类事件(会从MiraiApiHttp消息记录中删除)
+使用此方法获取bot接收到的最老消息和最老各类事件(会从MiraiApiHttp消息记录中删除)
 
 ```
 [GET] /fetchLatestMessage?sessionKey=YourSessionKey&count=10
@@ -391,7 +391,7 @@ Content-Type：multipart/form-data
 [GET] /peekMessage?sessionKey=YourSessionKey&count=10
 ```
 
-使用此方法获取bot接收到的最久远消息和最久远各类事件(不会从MiraiApiHttp消息记录中删除)
+使用此方法获取bot接收到的最老消息和最老各类事件(不会从MiraiApiHttp消息记录中删除)
 
 ```
 [GET] /peekLatestMessage?sessionKey=YourSessionKey&count=10

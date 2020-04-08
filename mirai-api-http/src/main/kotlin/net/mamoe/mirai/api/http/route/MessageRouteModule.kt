@@ -46,7 +46,7 @@ fun Application.messageModule() {
         }
 
         /**
-         * 获取指定条数最久远的消息并从MessageQueue删除获取的消息
+         * 获取指定条数最老的消息并从MessageQueue删除获取的消息
          */
         miraiGet("/fetchMessage") {
             val count: Int = paramOrNull("count")
@@ -66,7 +66,7 @@ fun Application.messageModule() {
         }
 
         /**
-         * 获取指定条数最久远的消息，和/fetchMessage不一样，这个方法不会删除消息
+         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
          */
         miraiGet("/peakMessage") {
             val count: Int = paramOrNull("count");
