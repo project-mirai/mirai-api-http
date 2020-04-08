@@ -33,4 +33,49 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
         }
         return ret
     }
+
+    suspend fun fetchLatest(size: Int = 10): List<EventDTO> {
+        var count = size
+
+        val ret = ArrayList<EventDTO>(count)
+        while (!this.isEmpty() && count > 0) {
+            val event = removeLast()
+
+            event.toDTO().also {
+                if (it != IgnoreEventDTO) {
+                    ret.add(it)
+                    count--
+                }
+            }
+        }
+        return ret
+    }
+
+    suspend fun peek(size: Int): List<EventDTO> {
+        var count = size
+        val ret = ArrayList<EventDTO>(count)
+
+        val iterator: Iterator<BotEvent> = iterator();
+
+        while(iterator.hasNext() && count > 0) {
+            ret.add(iterator.next().toDTO())
+            count--
+        }
+
+        return ret
+    }
+
+    suspend fun peekLatest(size: Int): List<EventDTO> {
+        var count = size
+        val ret = ArrayList<EventDTO>(count)
+
+        val iterator: Iterator<BotEvent> = reversed().iterator();
+
+        while(iterator.hasNext() && count > 0) {
+            ret.add(iterator.next().toDTO())
+            count--
+        }
+
+        return ret
+    }
 }
