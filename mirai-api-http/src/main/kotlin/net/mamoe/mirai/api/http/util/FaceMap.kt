@@ -21,7 +21,10 @@ class FaceMap {
         init {
             Face.IdList::class.memberProperties.forEach {
                 val n = it.name
-                val i = it.get(Face.IdList) as Int
+                val i = with(it.get(Face.IdList)) {
+                    if (this is Int) this
+                    else return@forEach
+                }
                 id2Name[i] = n
                 name2Id[n] = i
             }

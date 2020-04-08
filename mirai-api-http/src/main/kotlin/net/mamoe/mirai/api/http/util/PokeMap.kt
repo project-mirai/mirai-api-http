@@ -13,7 +13,10 @@ class PokeMap {
         init {
             PokeMessage.Types::class.memberProperties.forEach {
                 val n = it.name
-                val p = it.get(PokeMessage.Types) as PokeMessage
+                val p = with(it.get(PokeMessage.Types)) {
+                    if (this is PokeMessage) this
+                    else return@forEach
+                }
                 type2name[p.type] = n
                 name2Poke[n] = p
             }
