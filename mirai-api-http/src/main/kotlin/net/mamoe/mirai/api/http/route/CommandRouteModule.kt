@@ -24,9 +24,15 @@ import net.mamoe.mirai.console.command.UnknownCommandException
 import net.mamoe.mirai.console.utils.managers
 import net.mamoe.mirai.message.data.Message
 
+/**
+ * 命令行路由
+ */
 fun Application.commandModule() {
 
     routing {
+        /**
+         * 注册命令
+         */
         miraiAuth<PostCommandDTO>("/command/register") {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
@@ -36,6 +42,9 @@ fun Application.commandModule() {
             }
         }
 
+        /**
+         * 执行命令
+         */
         miraiAuth<PostCommandDTO>("/command/send") {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
@@ -55,6 +64,9 @@ fun Application.commandModule() {
             }
         }
 
+        /**
+         * 获取Manager
+         */
         route("/managers", HttpMethod.Get) {
             intercept {
                 val qq = call.parameters["qq"] ?: throw IllegalParamException("参数格式错误")
@@ -63,6 +75,9 @@ fun Application.commandModule() {
             }
         }
 
+        /**
+         * 广播命令
+         */
         webSocket("/command") {
             // 校验Auth key
             val authKey = call.parameters["authKey"]

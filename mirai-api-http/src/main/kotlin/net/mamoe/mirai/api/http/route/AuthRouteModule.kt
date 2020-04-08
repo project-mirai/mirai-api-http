@@ -22,9 +22,15 @@ import net.mamoe.mirai.api.http.data.common.AuthDTO
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 
-
+/**
+ * 授权路由
+ */
 fun Application.authModule() {
     routing {
+
+        /**
+         * 获取授权
+         */
         miraiAuth<AuthDTO>("/auth") {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
@@ -33,12 +39,18 @@ fun Application.authModule() {
             }
         }
 
+        /**
+         * 验证并分配session
+         */
         miraiVerify<BindDTO>("/verify", verifiedSessionKey = false) {
             val bot = getBotOrThrow(it.qq)
             SessionManager.createAuthedSession(bot, it.sessionKey)
             call.respondStateCode(StateCode.Success)
         }
 
+        /**
+         * 释放session
+         */
         miraiVerify<BindDTO>("/release") {
             val bot = getBotOrThrow(it.qq)
             val session = SessionManager[it.sessionKey] as AuthedSession

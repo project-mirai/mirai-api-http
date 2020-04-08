@@ -30,9 +30,15 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadImage
 import java.net.URL
 
+/**
+ * 消息路由
+ */
 fun Application.messageModule() {
     routing {
 
+        /**
+         * 获取消息并从MessageQueue删除获取的消息
+         */
         miraiGet("/fetchMessage") {
             val count: Int = paramOrNull("count")
             val fetch = it.messageQueue.fetch(count)
@@ -40,6 +46,9 @@ fun Application.messageModule() {
             call.respondDTO(FetchRetDTO(data = fetch))
         }
 
+        /**
+         * 获取指定ID消息（从CacheQueue获取）
+         */
         miraiGet("/messageFromId") {
             val id: Int = paramOrNull("id")
             it.cacheQueue[id].apply {
@@ -47,6 +56,9 @@ fun Application.messageModule() {
             }
         }
 
+        /**
+         * 发送消息
+         */
         suspend fun <C : Contact> sendMessage(
             quote: QuoteReply?,
             messageChain: MessageChain,
@@ -60,6 +72,9 @@ fun Application.messageModule() {
             return target.sendMessage(send)
         }
 
+        /**
+         * 发送消息给好友
+         */
         miraiVerify<SendDTO>("/sendFriendMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
@@ -75,6 +90,9 @@ fun Application.messageModule() {
             }
         }
 
+        /**
+         * 发送消息到QQ群
+         */
         miraiVerify<SendDTO>("/sendGroupMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
@@ -97,6 +115,9 @@ fun Application.messageModule() {
             }
         }
 
+        /**
+         * 发送图片消息
+         */
         miraiVerify<SendImageDTO>("sendImageMessage") {
             val bot = it.session.bot
             val contact = when {
@@ -144,6 +165,9 @@ fun Application.messageModule() {
             } ?: throw IllegalAccessException("未知错误")
         }
 
+        /**
+         * 撤回消息
+         */
         miraiVerify<RecallDTO>("recall") {
             it.session.cacheQueue[it.target].apply {
                 it.session.bot.recall(get(MessageSource))

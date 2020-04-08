@@ -19,28 +19,39 @@ import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
 
-
+/**
+ * 群管理路由
+ */
 fun Application.groupManageModule() {
     routing {
 
         /**
-         * 禁言（需要相关权限）
+         * 禁言所有人（需要相关权限）
          */
         miraiVerify<MuteDTO>("/muteAll") {
             it.session.bot.getGroup(it.target).settings.isMuteAll = true
             call.respondStateCode(StateCode.Success)
         }
 
+        /**
+         * 取消禁言所有人（需要相关权限）
+         */
         miraiVerify<MuteDTO>("/unmuteAll") {
             it.session.bot.getGroup(it.target).settings.isMuteAll = false
             call.respondStateCode(StateCode.Success)
         }
 
+        /**
+         * 禁言指定群成员（需要相关权限）
+         */
         miraiVerify<MuteDTO>("/mute") {
             it.session.bot.getGroup(it.target)[it.memberId].mute(it.time)
             call.respondStateCode(StateCode.Success)
         }
 
+        /**
+         * 取消禁言指定群成员（需要相关权限）
+         */
         miraiVerify<MuteDTO>("/unmute") {
             it.session.bot.getGroup(it.target).members[it.memberId].unmute()
             call.respondStateCode(StateCode.Success)
@@ -55,13 +66,16 @@ fun Application.groupManageModule() {
         }
 
         /**
-         * 群设置（需要相关权限）
+         * 获取群设置（需要相关权限）
          */
         miraiGet("/groupConfig") {
             val group = it.bot.getGroup(paramOrNull("target"))
             call.respondDTO(GroupDetailDTO(group))
         }
 
+        /**
+         * 修改群设置（需要相关权限）
+         */
         miraiVerify<GroupConfigDTO>("/groupConfig") { dto ->
             val group = dto.session.bot.getGroup(dto.target)
             with(dto.config) {

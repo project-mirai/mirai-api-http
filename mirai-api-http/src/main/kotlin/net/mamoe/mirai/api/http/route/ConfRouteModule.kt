@@ -17,14 +17,23 @@ import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 
+/**
+ * 配置路由
+ */
 fun Application.configRouteModule() {
 
     routing {
 
+        /**
+         * 获取API-HTTP配置
+         */
         miraiGet("config") {
             call.respondDTO(ConfigDTO(it))
         }
 
+        /**
+         * 修改API-HTTP配置
+         */
         miraiVerify<ConfigDTO>("config") {
             val sessionConfig = it.session.config
             it.cacheSize?.apply { sessionConfig.cacheSize = this }

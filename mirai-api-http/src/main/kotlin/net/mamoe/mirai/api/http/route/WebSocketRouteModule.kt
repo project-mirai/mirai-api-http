@@ -30,9 +30,15 @@ import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.ContactMessage
 
+/**
+ * 广播路由
+ */
 fun Application.websocketRouteModule() {
     routing {
 
+        /**
+         * 广播通知消息
+         */
         miraiWebsocket("/message") {
             val listener = it.bot.subscribeMessages {
                 always {
@@ -49,6 +55,9 @@ fun Application.websocketRouteModule() {
             }
         }
 
+        /**
+         * 广播通知事件
+         */
         miraiWebsocket("/event") {
             val listener = it.bot.subscribeAlways<BotEvent> {
                 if (this !is ContactMessage) {
@@ -65,6 +74,9 @@ fun Application.websocketRouteModule() {
             }
         }
 
+        /**
+         * 广播通知所有信息（消息，事件）
+         */
         miraiWebsocket("/all") {
             val listener = it.bot.subscribeAlways<BotEvent> {
                 this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
