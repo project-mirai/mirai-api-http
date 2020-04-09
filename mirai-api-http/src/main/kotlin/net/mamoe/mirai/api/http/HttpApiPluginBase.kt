@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
@@ -32,21 +33,29 @@ object HttpApiPluginBase: PluginBase() {
     val cacheSize by setting.withDefault { 4096 }
     val enableWebsocket by setting.withDefault { false }
 
+    var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
+
     override fun onLoad() {
         logger.info("Loading Mirai HTTP API plugin")
         logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
         if(authKey.startsWith("INITKEY")){
             logger.warning("USING INITIAL KEY, please edit the key")
         }
+
+        services.onLoad()
     }
 
     override fun onEnable() {
         logger.info("Starting Mirai HTTP Server in 0.0.0.0:$port")
         MiraiHttpAPIServer.start(port, authKey)
+
+        services.onEnable()
     }
 
     override fun onDisable() {
         MiraiHttpAPIServer.stop()
+
+        services.onDisable()
     }
 
     private val subscribers = mutableListOf<CommandSubscriber>()
