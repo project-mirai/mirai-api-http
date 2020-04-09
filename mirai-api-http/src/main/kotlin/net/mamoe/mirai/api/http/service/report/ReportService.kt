@@ -39,7 +39,7 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     private var subscription: Listener<BotEvent>? = null
 
     override fun onLoad() {
-        console.logger.debug("上报模块已加载")
+        console.logger.info("上报模块已加载")
     }
 
     override fun onEnable() {
@@ -81,7 +81,10 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     }
 
     private suspend fun report(destination: String, json: String) {
-        val result = HttpClient.post(destination, json, reportConfig.extraHeaders)
-        console.logger.debug(result)
+        try {
+            HttpClient.post(destination, json, reportConfig.extraHeaders)
+        } catch (e: Exception) {
+            console.logger.error("上报${destination}失败: ${e.message}")
+        }
     }
 }

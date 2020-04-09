@@ -21,7 +21,7 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
     private var timer: Timer = Timer("HeartBeat", false)
 
     override fun onLoad() {
-        console.logger.debug("心跳模块已加载")
+        console.logger.info("心跳模块已加载")
     }
 
     override fun onEnable() {
@@ -53,10 +53,9 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
      */
     private suspend fun ping(destination: String) {
         try {
-            val result = HttpClient.post(destination, config.extraBody, config.extraHeaders)
-            console.logger.debug(result)
+            HttpClient.post(destination, config.extraBody, config.extraHeaders)
         } catch (e: Exception) {
-            console.logger.error("发送心跳失败=>${destination}: ${e.message}")
+            console.logger.error("发送${destination}心跳失败: ${e.message}")
         }
     }
 }
