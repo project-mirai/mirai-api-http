@@ -72,6 +72,9 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
         subscription?.complete()
     }
 
+    /**
+     * 上报到所有目标地址
+     */
     private fun reportAllDestinations(json: String) {
         reportConfig.destinations.forEach {
             runBlocking {
@@ -80,6 +83,9 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
         }
     }
 
+    /**
+     * 上报到指定目标地址
+     */
     private suspend fun report(destination: String, json: String) {
         try {
             HttpClient.post(destination, json, reportConfig.extraHeaders)
