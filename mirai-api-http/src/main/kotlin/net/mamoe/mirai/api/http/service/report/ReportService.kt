@@ -39,7 +39,6 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     private var subscription: Listener<BotEvent>? = null
 
     override fun onLoad() {
-        console.logger.info("上报模块已加载")
     }
 
     override fun onEnable() {
@@ -66,10 +65,14 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
                         }
                 }
         }
+
+        console.logger.info("上报模块已启用")
     }
 
     override fun onDisable() {
         subscription?.complete()
+
+        console.logger.info("上报模块已禁用")
     }
 
     /**

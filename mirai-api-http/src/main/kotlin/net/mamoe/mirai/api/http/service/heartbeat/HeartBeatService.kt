@@ -21,7 +21,6 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
     private var timer: Timer = Timer("HeartBeat", false)
 
     override fun onLoad() {
-        console.logger.info("心跳模块已加载")
     }
 
     override fun onEnable() {
@@ -30,11 +29,15 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
                 pingAllDestinations()
             }
         }, config.delay, config.period)
+
+        console.logger.info("心跳模块已启用")
     }
 
     override fun onDisable() {
         timer.cancel()
         timer.purge()
+
+        console.logger.info("心跳模块已禁用")
     }
 
     /**
