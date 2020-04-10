@@ -44,12 +44,13 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     override fun onEnable() {
         subscription = console.subscribeAlways<BotEvent> {
             this.takeIf { reportConfig.enable }
-                ?.takeIf { botEvent -> botEvent.toDTO() != IgnoreEventDTO }
                 ?.apply {
                     this.takeIf { reportConfig.eventMessage.report }
                         ?.takeIf { event -> event !is ContactMessage }
+                        ?.toDTO()
+                        ?.takeIf { dto -> dto != IgnoreEventDTO }
                         ?.apply {
-                            reportAllDestinations(this.toDTO().toJson())
+                            reportAllDestinations(this.toJson())
                         }
 
                     this.takeIf { reportConfig.groupMessage.report }
