@@ -1235,3 +1235,9 @@ Content-Type：multipart/form-data
 ```
 
 > 响应Manager的qq号数组，当QQ号不存在时返回状态码(StateCode 2)
+
+## 其他服务
+
+- [心跳服务](docs/heartbeat.md)
+
+- [上报服务](docs/report.md)
