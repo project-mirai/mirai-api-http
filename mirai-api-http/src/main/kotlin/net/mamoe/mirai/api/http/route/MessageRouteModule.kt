@@ -94,28 +94,17 @@ fun Application.messageModule() {
         miraiGet("/messageFromId") {
             val id: Int = paramOrNull("id")
             it.cacheQueue[id].apply {
-                val senderDTO: Any? = when (sender) {
-                    is Member -> MemberDTO(sender as Member)
-                    is QQ -> QQDTO(sender as QQ)
-                    else -> null
-                }
+
                 val dto = when (this) {
-                    is Outgoing.ToGroup -> {
-                        GroupMessagePacketDTO(senderDTO as MemberDTO)
-                    }
-                    is Incoming.FromGroup -> {
-                        GroupMessagePacketDTO(senderDTO as MemberDTO)
-                    }
-                    is Outgoing.ToFriend -> {
-                        FriendMessagePacketDTO(senderDTO as QQDTO)
-                    }
-                    is Incoming.FromFriend -> {
-                        FriendMessagePacketDTO(senderDTO as QQDTO)
-                    }
-                    else -> null
+                    is Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(target.botAsMember))
+                    is Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(sender))
+                    is Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(sender.selfQQ))
+                    is Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(sender))
+                    is Outgoing.ToTemp -> TODO()
+                    is Incoming.FromTemp -> TODO()
                 }
 
-                dto?.messageChain = this.originalMessage.toMessageChainDTO { it != UnknownMessageDTO }
+                dto.messageChain = originalMessage.toMessageChainDTO { d -> d != UnknownMessageDTO }
                 call.respondDTO(EventRestfulResult(
                     errorMessage = this.javaClass.toString(),
                     data = dto
@@ -170,9 +159,7 @@ fun Application.messageModule() {
             it.session.bot.getGroup(it.target).also { group ->
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
 
-                it.session.cacheQueue.add(
-                    receipt.source
-                )
+                it.session.cacheQueue.add(receipt.source)
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -189,7 +176,9 @@ fun Application.messageModule() {
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
             val ls = it.urls.map { url -> contact.uploadImage(URL(url)) }
-            contact.sendMessage(buildMessageChain { addAll(ls) })
+            val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
+
+            it.session.cacheQueue.add(receipt.source)
             call.respondJson(ls.map { image -> image.imageId }.toJson())
         }
 
@@ -231,9 +220,7 @@ fun Application.messageModule() {
          * 撤回消息
          */
         miraiVerify<RecallDTO>("recall") {
-            it.session.cacheQueue[it.target].apply {
-                it.session.bot.recall(this)
-            }
+            it.session.cacheQueue[it.target].recall()
             call.respondStateCode(StateCode.Success)
         }
     }
