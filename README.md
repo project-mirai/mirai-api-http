@@ -225,6 +225,44 @@ cors:
 ```
 
 
+### 发送临时会话消息
+
+```
+[POST] /sendTempMessage
+```
+
+使用此方法向指定好友发送消息
+
+#### 请求
+
+```json5
+{
+    "sessionKey": "YourSession",
+    "target": 987654321,
+    "messageChain": [
+        { "type": "Plain", "text":"hello\n" },
+        { "type": "Plain", "text":"world" }
+    ]
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | false | YourSession | 已经激活的Session                |
+| target       | Long   | false | 987654321   | 高32位为临时会话群号，低32位为临时会话对象QQ号 |
+| quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
+| messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
+
+#### 响应: 返回统一状态码（并携带messageId）
+
+```json5
+{
+    "code": 0,
+    "msg": "success",
+    "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
+}
+```
+
 
 ### 发送群消息
 
@@ -413,7 +451,7 @@ Content-Type：multipart/form-data
   "code": 0,
   "data": [
     {
-      "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
+      "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
       "messageChain": [              // 消息链，是一个消息对象构成的数组
         {
           "type": "Source",
@@ -437,7 +475,7 @@ Content-Type：multipart/form-data
       }
     },
     {
-      "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
+      "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
       "messageChain": [                // 消息链，是一个消息对象构成的数组
         {
           "type": "Source",
@@ -456,7 +494,7 @@ Content-Type：multipart/form-data
       }
     },
     {
-      "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或各类Event
+      "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
       "durationSeconds": 600,
       "member":{
           "id": 123456789,
@@ -505,7 +543,7 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-    "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或各类Event
+    "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
     "messageChain": [                // 消息链，是一个消息对象构成的数组
       {
         "type": "Source",
@@ -1008,7 +1046,7 @@ Content-Type：multipart/form-data
 
 ```josn5
 {
-    "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或各类Event
+    "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
 	"messageChain": [              // 消息链，是一个消息对象构成的数组
       {
 	    "type": "Source",
