@@ -68,7 +68,7 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
                 }
         }
 
-        console.logger.info("上报模块已启用")
+        console.logger.info("上报模块启用状态: ${reportConfig.enable}")
     }
 
     override fun onDisable() {

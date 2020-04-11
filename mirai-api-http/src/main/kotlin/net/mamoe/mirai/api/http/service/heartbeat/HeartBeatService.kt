@@ -33,7 +33,7 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
             }
         }, config.delay, config.period)
 
-        console.logger.info("心跳模块已启用")
+        console.logger.info("心跳模块启用状态: ${config.enable}")
     }
 
     override fun onDisable() {
