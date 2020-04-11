@@ -127,6 +127,7 @@ sealed class MessageDTO : DTO
 suspend fun ContactMessage.toDTO() = when (this) {
     is FriendMessage -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessage -> GroupMessagePacketDTO(MemberDTO(sender))
+    is TempMessage -> TempMessagePacketDto(MemberDTO(sender))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
