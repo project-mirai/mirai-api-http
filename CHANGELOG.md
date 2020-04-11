@@ -2,6 +2,29 @@
 
 
 
+## \[1.6.0\] - 2020-04-11
+
+### 变更
+
+* 更新 `core` 依赖到 0.36.1
+* 更新 `console` 依赖到 0.4.8
+
+### 新增
+
+* 新增对 `TempMessage` 的支持， 可通过 `sendTempMessage` 接口发送临时会话消息，详情见文档
+* 添加 `fetchMessage` 接口的扩展接口， `countMessage`, `peekMessage` 等，@copydog
+* 添加心跳服务，用于外部程序检测 `api-http` 插件是否存活，[详情](https://github.com/mamoe/mirai-api-http/blob/master/docs/heartbeat.md) @copydog
+* 添加消息上报服务，方便无公网IP的程序或其他三方程序对接，[详情](https://github.com/mamoe/mirai-api-http/blob/master/docs/report.md) @copydog
+
+### 修复
+
+* 启动时出现 `SLF4J` 日志丢失的命令行日志
+* `Face` 和 `Poke` 消息类型解析失败， #39
+* 修复 `sendGroupMessage` 没有返回的问题，#51
+
+
+
+
 ## \[1.5.1\] - 2020-04-07
 
 ### 变更
