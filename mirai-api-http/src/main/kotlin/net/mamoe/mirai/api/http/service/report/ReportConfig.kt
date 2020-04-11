@@ -30,15 +30,15 @@ class ReportConfig(config: Config) {
     /**
      *  群消息子配置
      */
-    val groupMessage = ReportMessageConfig(serviceConfig.getValue("groupMessage") as Map<String, Any>)
+    val groupMessage = ReportMessageConfig(serviceConfig.getOrDefault("groupMessage", emptyMap<String, Any>()) as Map<String, Any>)
 
     /**
      *  好友消息子配置
      */
-    val friendMessage = ReportMessageConfig(serviceConfig.getValue("friendMessage") as Map<String, Any>)
+    val friendMessage = ReportMessageConfig(serviceConfig.getOrDefault("friendMessage", emptyMap<String, Any>()) as Map<String, Any>)
 
     /**
      *  事件消息子配置
      */
-    val eventMessage = ReportMessageConfig(serviceConfig.getValue("eventMessage") as Map<String, Any>)
+    val eventMessage = ReportMessageConfig(serviceConfig.getOrDefault("eventMessage", emptyMap<String, Any>()) as Map<String, Any>)
 }

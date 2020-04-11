@@ -101,7 +101,8 @@ suspend fun BotEvent.toDTO() = when (this) {
             new,
             new,
             MemberDTO(member),
-            operator?.let(::MemberDTO)
+            null // TODO: core改动，暂时使用null
+            //  operator?.let(::MemberDTO)
         )
         is MemberSpecialTitleChangeEvent -> MemberSpecialTitleChangeEventDTO(
             origin,

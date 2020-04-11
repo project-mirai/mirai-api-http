@@ -1,5 +1,6 @@
 package net.mamoe.mirai.api.http.data.common
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.message.ContactMessage
 
@@ -28,4 +29,11 @@ data class EventListRestfulResult(
     val code: Int = 0,
     val errorMessage: String = "",
     val data: List<EventDTO>
+) : DTO
+
+@Serializable
+data class EventRestfulResult(
+    val code: Int = 0,
+    val errorMessage: String = "",
+    val data: EventDTO?
 ) : DTO
