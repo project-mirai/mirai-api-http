@@ -1,5 +1,6 @@
 package net.mamoe.mirai.api.http.service.report
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
@@ -79,9 +80,11 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     /**
      * 上报到所有目标地址
      */
-    private suspend fun reportAllDestinations(json: String) {
-        reportConfig.destinations.forEach {
-            report(it, json)
+    private fun reportAllDestinations(json: String) {
+        console.launch {
+            reportConfig.destinations.forEach {
+                report(it, json)
+            }
         }
     }
 
