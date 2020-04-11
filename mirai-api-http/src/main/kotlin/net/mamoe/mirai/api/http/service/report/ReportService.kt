@@ -79,11 +79,9 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
     /**
      * 上报到所有目标地址
      */
-    private fun reportAllDestinations(json: String) {
+    private suspend fun reportAllDestinations(json: String) {
         reportConfig.destinations.forEach {
-            runBlocking {
-                report(it, json)
-            }
+            report(it, json)
         }
     }
 
