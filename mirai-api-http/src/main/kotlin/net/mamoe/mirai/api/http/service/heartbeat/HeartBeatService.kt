@@ -1,6 +1,7 @@
 package net.mamoe.mirai.api.http.service.heartbeat
 
 import io.ktor.util.InternalAPI
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.service.MiraiApiHttpService
 import net.mamoe.mirai.api.http.util.HttpClient
@@ -26,11 +27,13 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
     override fun onEnable() {
         timer.schedule(timerTask {
             if (config.enable) {
-                pingAllDestinations()
+                console.launch {
+                    pingAllDestinations()
+                }
             }
         }, config.delay, config.period)
 
-        console.logger.info("心跳模块已启用")
+        console.logger.info("心跳模块启用状态: ${config.enable}")
     }
 
     override fun onDisable() {
@@ -43,11 +46,9 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
     /**
      * 发送心跳到所有目标地址
      */
-    private fun pingAllDestinations() {
+    private suspend fun pingAllDestinations() {
         config.destinations.forEach {
-            runBlocking {
-                ping(it)
-            }
+            ping(it)
         }
     }
 

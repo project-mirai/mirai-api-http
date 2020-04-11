@@ -1,5 +1,6 @@
 package net.mamoe.mirai.api.http.service.report
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
@@ -67,7 +68,7 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
                 }
         }
 
-        console.logger.info("上报模块已启用")
+        console.logger.info("上报模块启用状态: ${reportConfig.enable}")
     }
 
     override fun onDisable() {
@@ -80,8 +81,8 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
      * 上报到所有目标地址
      */
     private fun reportAllDestinations(json: String) {
-        reportConfig.destinations.forEach {
-            runBlocking {
+        console.launch {
+            reportConfig.destinations.forEach {
                 report(it, json)
             }
         }
