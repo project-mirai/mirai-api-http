@@ -107,7 +107,6 @@ fun Application.messageModule() {
 
                 dto.messageChain = originalMessage.toMessageChainDTO { d -> d != UnknownMessageDTO }
                 call.respondDTO(EventRestfulResult(
-                    errorMessage = this.javaClass.toString(),
                     data = dto
                 ))
             }
