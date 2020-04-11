@@ -57,8 +57,7 @@ class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
      */
     private suspend fun ping(destination: String) {
         try {
-            val result = HttpClient.post(destination, config.extraBody, config.extraHeaders)
-            console.logger.debug(result)
+            HttpClient.post(destination, config.extraBody, config.extraHeaders)
         } catch (e: Exception) {
             console.logger.error("发送${destination}心跳失败: ${e.message}")
         }
