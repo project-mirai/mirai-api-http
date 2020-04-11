@@ -33,6 +33,10 @@ data class FriendMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
 @SerialName("GroupMessage")
 data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 
+@Serializable
+@SerialName("TempMessage")
+data class TempMessagePacketDto(val sender: MemberDTO) : MessagePacketDTO()
+
 
 // Message
 @Serializable

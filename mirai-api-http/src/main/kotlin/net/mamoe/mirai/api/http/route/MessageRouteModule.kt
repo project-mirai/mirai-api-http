@@ -97,11 +97,12 @@ fun Application.messageModule() {
 
                 val dto = when (this) {
                     is Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(target.botAsMember))
-                    is Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(sender))
                     is Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(sender.selfQQ))
+                    is Outgoing.ToTemp -> TempMessagePacketDto(MemberDTO(target))
+
+                    is Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(sender))
                     is Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(sender))
-                    is Outgoing.ToTemp -> TODO()
-                    is Incoming.FromTemp -> TODO()
+                    is Incoming.FromTemp -> TempMessagePacketDto(MemberDTO(sender))
                 }
 
                 dto.messageChain = originalMessage.toMessageChainDTO { d -> d != UnknownMessageDTO }
