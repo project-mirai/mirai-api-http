@@ -14,6 +14,7 @@ import io.ktor.application.call
 import io.ktor.http.content.streamProvider
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
@@ -22,11 +23,13 @@ import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.QQ
 import net.mamoe.mirai.getFriendOrNull
-import net.mamoe.mirai.message.FriendMessage
-import net.mamoe.mirai.message.GroupMessage
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.OnlineMessageSource.Incoming
+import net.mamoe.mirai.message.data.OnlineMessageSource.Outgoing
 import net.mamoe.mirai.message.uploadImage
 import java.net.URL
 
@@ -91,7 +94,32 @@ fun Application.messageModule() {
         miraiGet("/messageFromId") {
             val id: Int = paramOrNull("id")
             it.cacheQueue[id].apply {
-                call.respondDTO(this.toDTO())
+                val senderDTO: Any? = when (sender) {
+                    is Member -> MemberDTO(sender as Member)
+                    is QQ -> QQDTO(sender as QQ)
+                    else -> null
+                }
+                val dto = when (this) {
+                    is Outgoing.ToGroup -> {
+                        GroupMessagePacketDTO(senderDTO as MemberDTO)
+                    }
+                    is Incoming.FromGroup -> {
+                        GroupMessagePacketDTO(senderDTO as MemberDTO)
+                    }
+                    is Outgoing.ToFriend -> {
+                        FriendMessagePacketDTO(senderDTO as QQDTO)
+                    }
+                    is Incoming.FromFriend -> {
+                        FriendMessagePacketDTO(senderDTO as QQDTO)
+                    }
+                    else -> null
+                }
+
+                dto?.messageChain = this.originalMessage.toMessageChainDTO { it != UnknownMessageDTO }
+                call.respondDTO(EventRestfulResult(
+                    errorMessage = this.javaClass.toString(),
+                    data = dto
+                ))
             }
         }
 
@@ -117,14 +145,14 @@ fun Application.messageModule() {
         miraiVerify<SendDTO>("/sendFriendMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
-                    this[MessageSource].quote()
+                    this.quote()
                 }
             }
 
             it.session.bot.getFriend(it.target).also { qq ->
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(qq), qq)
 
-                it.session.cacheQueue.add(FriendMessage(qq.bot.selfQQ, receipt.source.asMessageChain()))
+                it.session.cacheQueue.add(receipt.source)
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
         }
@@ -135,7 +163,7 @@ fun Application.messageModule() {
         miraiVerify<SendDTO>("/sendGroupMessage") {
             val quote = it.quote?.let { q ->
                 it.session.cacheQueue[q].run {
-                    this[MessageSource].quote()
+                    this.quote()
                 }
             }
 
@@ -143,12 +171,7 @@ fun Application.messageModule() {
                 val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
 
                 it.session.cacheQueue.add(
-                    GroupMessage(
-                        "",
-                        group.botPermission,
-                        group.botAsMember,
-                        receipt.source.asMessageChain()
-                    )
+                    receipt.source
                 )
                 call.respondDTO(SendRetDTO(messageId = receipt.source.id))
             }
@@ -209,7 +232,7 @@ fun Application.messageModule() {
          */
         miraiVerify<RecallDTO>("recall") {
             it.session.cacheQueue[it.target].apply {
-                it.session.bot.recall(get(MessageSource))
+                it.session.bot.recall(this)
             }
             call.respondStateCode(StateCode.Success)
         }

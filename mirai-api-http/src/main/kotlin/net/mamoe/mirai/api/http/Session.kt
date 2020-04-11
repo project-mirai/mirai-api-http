@@ -131,7 +131,9 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
 
     init {
         _listener = bot.subscribeAlways{ this.run(messageQueue::add) }
-        _cache = bot.subscribeAlways { this.run(cacheQueue::add) }
+        _cache = bot.subscribeAlways {
+            cacheQueue.add(this.source)
+        }
 
         if (config.enableWebsocket) {
             _listener.complete()

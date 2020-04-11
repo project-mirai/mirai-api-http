@@ -9,22 +9,21 @@
 
 package net.mamoe.mirai.api.http.queue
 
-import net.mamoe.mirai.message.ContactMessage
-import net.mamoe.mirai.message.data.MessageSource
+import net.mamoe.mirai.message.data.OnlineMessageSource
 
-class CacheQueue : LinkedHashMap<Int, ContactMessage>() {
+class CacheQueue : LinkedHashMap<Int, OnlineMessageSource>() {
 
     var cacheSize = 4096
 
-    override fun get(key: Int): ContactMessage = super.get(key) ?: throw NoSuchElementException()
+    override fun get(key: Int): OnlineMessageSource = super.get(key) ?: throw NoSuchElementException()
 
-    override fun put(key: Int, value: ContactMessage): ContactMessage? = super.put(key, value).also {
+    override fun put(key: Int, value: OnlineMessageSource): OnlineMessageSource? = super.put(key, value).also {
         if (size > cacheSize) {
             remove(this.entries.first().key)
         }
     }
 
-    fun add(packet: ContactMessage) {
-        put(packet[MessageSource].id, packet)
+    fun add(source: OnlineMessageSource) {
+        put(source.id, source)
     }
 }
