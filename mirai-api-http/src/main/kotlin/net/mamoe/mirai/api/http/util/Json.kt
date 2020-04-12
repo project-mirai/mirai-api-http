@@ -12,10 +12,7 @@ package net.mamoe.mirai.api.http.util
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import net.mamoe.mirai.api.http.data.common.BotEventDTO
-import net.mamoe.mirai.api.http.data.common.EventDTO
-import net.mamoe.mirai.api.http.data.common.FriendMessagePacketDTO
-import net.mamoe.mirai.api.http.data.common.GroupMessagePacketDTO
+import net.mamoe.mirai.api.http.data.common.*
 import kotlin.reflect.KClass
 
 // 解析失败时直接返回null，由路由判断响应400状态
@@ -63,6 +60,7 @@ object MiraiJson {
 
                 GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
                 FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
+                TempMessagePacketDto::class with TempMessagePacketDto.serializer()
 
 
                 /*
