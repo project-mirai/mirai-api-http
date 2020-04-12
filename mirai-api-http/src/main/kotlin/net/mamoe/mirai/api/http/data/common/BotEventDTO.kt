@@ -125,6 +125,21 @@ suspend fun BotEvent.toDTO() = when (this) {
             MemberDTO(member),
             operator?.let(::MemberDTO)
         )
+        is NewFriendRequestEvent -> NewFriendRequestEventDTO(
+            eventId,
+            message,
+            fromId,
+            fromGroupId,
+            fromNick
+        )
+        is MemberJoinRequestEvent -> MemberJoinRequestEventDTO(
+            eventId,
+            message,
+            fromId,
+            groupId,
+            groupName,
+            fromNick
+        )
         else -> IgnoreEventDTO
     }
 }
@@ -312,4 +327,25 @@ data class MemberMuteEventDTO(
 data class MemberUnmuteEventDTO(
     val member: MemberDTO,
     val operator: MemberDTO?
+) : BotEventDTO()
+
+@Serializable
+@SerialName("NewFriendRequestEvent")
+data class NewFriendRequestEventDTO(
+    val eventId: Long,
+    val message: String,
+    val fromId: Long,
+    val groupId: Long,
+    val nick: String
+) : BotEventDTO()
+
+@Serializable
+@SerialName("MemberJoinRequestEvent")
+data class MemberJoinRequestEventDTO(
+    val eventId: Long,
+    val message: String,
+    val fromId: Long,
+    val groupId: Long,
+    val groupName: String,
+    val nick: String
 ) : BotEventDTO()
