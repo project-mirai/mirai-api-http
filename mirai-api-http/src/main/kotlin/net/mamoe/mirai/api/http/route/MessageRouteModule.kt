@@ -26,6 +26,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.QQ
 import net.mamoe.mirai.getFriendOrNull
+import net.mamoe.mirai.getGroupOrNull
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.OnlineMessageSource.Incoming
@@ -147,27 +148,6 @@ fun Application.messageModule() {
         }
 
         /**
-         * 发送消息给临时会话
-         */
-        miraiVerify<SendDTO>("/sendTempMessage") {
-            val quote = it.quote?.let { q ->
-                it.session.cacheQueue[q].run {
-                    this.quote()
-                }
-            }
-
-            val grp = it.target shr 32 and 0xFFFFFFFF
-            val mem = it.target and 0xFFFFFFFF
-
-            it.session.bot.getGroup(grp)[mem].also { member ->
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(member), member)
-
-                it.session.cacheQueue.add(receipt.source)
-                call.respondDTO(SendRetDTO(messageId = receipt.source.id))
-            }
-        }
-
-        /**
          * 发送消息到QQ群
          */
         miraiVerify<SendDTO>("/sendGroupMessage") {
@@ -185,13 +165,37 @@ fun Application.messageModule() {
             }
         }
 
+        fun Bot.getMember(target: Long) : Member {
+            val grp = target shr 32 and 0xFFFFFFFF
+            val mem = target and 0xFFFFFFFF
+            return getGroup(grp)[mem]
+        }
+
+        /**
+         * 发送消息给临时会话
+         */
+        miraiVerify<SendDTO>("/sendTempMessage") {
+            val quote = it.quote?.let { q ->
+                it.session.cacheQueue[q].run {
+                    this.quote()
+                }
+            }
+
+            it.session.bot.getMember(it.target).also { member ->
+                val receipt = sendMessage(quote, it.messageChain.toMessageChain(member), member)
+
+                it.session.cacheQueue.add(receipt.source)
+                call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            }
+        }
+
         /**
          * 发送图片消息
          */
         miraiVerify<SendImageDTO>("sendImageMessage") {
             val bot = it.session.bot
             val contact = when {
-                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroup(it.target)
+                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroupOrNull(it.target) ?: bot.getMember(it.target)
                 it.qq != null -> bot.getFriend(it.qq)
                 it.group != null -> bot.getGroup(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
