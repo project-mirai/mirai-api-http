@@ -139,12 +139,17 @@ fun Application.messageModule() {
                 }
             }
 
-            it.session.bot.getFriend(it.target).also { qq ->
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(qq), qq)
-
-                it.session.cacheQueue.add(receipt.source)
-                call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            val bot = it.session.bot
+            val qq = when {
+                it.target != null -> bot.getFriend(it.target)
+                it.qq != null -> bot.getGroup(it.qq)
+                else -> throw NoSuchElementException()
             }
+
+            val receipt = sendMessage(quote, it.messageChain.toMessageChain(qq), qq)
+            it.session.cacheQueue.add(receipt.source)
+
+            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
         }
 
         /**
@@ -157,12 +162,17 @@ fun Application.messageModule() {
                 }
             }
 
-            it.session.bot.getGroup(it.target).also { group ->
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
-
-                it.session.cacheQueue.add(receipt.source)
-                call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            val bot = it.session.bot
+            val group = when {
+                it.target != null -> bot.getGroup(it.target)
+                it.group != null -> bot.getGroup(it.group)
+                else -> throw NoSuchElementException()
             }
+
+            val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
+            it.session.cacheQueue.add(receipt.source)
+
+            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
         }
 
         fun Bot.getMember(target: Long) : Member {
@@ -181,12 +191,16 @@ fun Application.messageModule() {
                 }
             }
 
-            it.session.bot.getMember(it.target).also { member ->
-                val receipt = sendMessage(quote, it.messageChain.toMessageChain(member), member)
-
-                it.session.cacheQueue.add(receipt.source)
-                call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            val bot = it.session.bot
+            val member = when {
+                it.qq != null && it.group != null -> bot.getGroup(it.group)[it.qq]
+                else -> throw NoSuchElementException()
             }
+
+            val receipt = sendMessage(quote, it.messageChain.toMessageChain(member), member)
+            it.session.cacheQueue.add(receipt.source)
+
+            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
         }
 
         /**
@@ -254,16 +268,12 @@ fun Application.messageModule() {
 }
 
 @Serializable
-private data class FetchRetDTO(
-    val code: Int = 0,
-    val data: List<EventDTO>
-) : DTO
-
-@Serializable
 private data class SendDTO(
     override val sessionKey: String,
     val quote: Int? = null,
-    val target: Long,
+    val target: Long? = null,
+    val qq: Long? = null,
+    val group: Long? = null,
     val messageChain: MessageChainDTO
 ) : VerifyDTO()
 
