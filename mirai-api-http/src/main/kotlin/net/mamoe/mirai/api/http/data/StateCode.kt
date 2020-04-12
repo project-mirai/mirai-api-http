@@ -21,6 +21,7 @@ open class StateCode(val code: Int, var msg: String) : DTO {
     object IllegalSession : StateCode(3, "Session失效或不存在")
     object NotVerifySession : StateCode(4, "Session未认证")
     object NoElement : StateCode(5, "指定对象不存在")
+    object NoOperateSupport : StateCode(6, "指定操作不支持")
     object PermissionDenied : StateCode(10, "无操作权限")
     object BotMuted : StateCode(20, "Bot被禁言")
     object MessageTooLarge : StateCode(30, "消息过长")

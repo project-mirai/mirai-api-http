@@ -67,6 +67,7 @@ fun Application.mirai() {
     authModule()
     commandModule()
     messageModule()
+    eventRouteModule()
     infoModule()
     groupManageModule()
     configRouteModule()
