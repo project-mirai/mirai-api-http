@@ -1195,9 +1195,9 @@ Content-Type：multipart/form-data
 | 名字        | 可选  | 类型   | 举例          | 说明                             |
 | ----------- | ----- | ------ | ------------- | -------------------------------- |
 | authKey     | false | String | "YourAuthKey" | 你的authKey                      |
-| name        | false | Long   | 123456789     | 指令名                           |
-| alias       | false | Long   | 987654321     | 群员QQ号                         |
-| description | false | Object | {}            | 指令描述                         |
+| name        | false | String | "login"       | 指令名                           |
+| alias       | false | String[] | -           | 群员QQ号                         |
+| description | false | String | ""            | 指令描述                         |
 | usage       | true  | String | "Name"        | 指令描述，会在指令执行错误时显示 |
 
 #### 响应
@@ -1225,8 +1225,8 @@ Content-Type：multipart/form-data
 | 名字    | 可选  | 类型   | 举例          | 说明        |
 | ------- | ----- | ------ | ------------- | ----------- |
 | authKey | false | String | "YourAuthKey" | 你的authKey |
-| name    | false | Long   | 123456789     | 指令名      |
-| args    | false | Long   | 987654321     | 指令参数    |
+| name    | false | String | 123456789     | 指令名      |
+| args    | false | String[] | 987654321     | 指令参数    |
 
 
 #### 响应
