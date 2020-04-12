@@ -84,17 +84,14 @@ object HttpApiPluginBase: PluginBase() {
 
     override fun onCommand(command: Command, sender: CommandSender, args: List<String>) {
         launch {
-            val (friend: Long, group: Long) = when(sender) {
-                is ContactCommandSender -> when(sender.contact) {
-                    is Group -> 0L to sender.contact.id
-                    is QQ -> sender.contact.id to 0L
-                    else -> 0L to 0L // assert unreachable
-                }
+            val (from: Long, group: Long) = when(sender) {
+                is GroupContactCommandSender -> sender.realSender.id to sender.contact.id
+                is ContactCommandSender -> sender.contact.id to 0L
                 else -> 0L to 0L // 考虑保留对其他Sender类型的扩展，先统一默认为ConsoleSender
             }
 
             subscribers.forEach {
-                it(command.name, friend, group, args)
+                it(command.name, from, group, args)
             }
         }
     }

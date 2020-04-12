@@ -1246,17 +1246,17 @@ Content-Type：multipart/form-data
 ```json5
 {
     "name": "commandName",
-    "friend": 12345,
+    "sender": 12345,
     "group": 54321,
     "args": ["arg1", "arg2"]
 }
 ```
 
-> 当指令通过好友消息发送时，friend为好友QQ好，group为0
+> 当指令通过好友消息发送时，sender为好友QQ号，group为0
 >
-> 当指令通过群组消息发送时，friend为0，group为群号
+> 当指令通过群组消息发送时，sender为发送人QQ号，group为群号
 >
-> 当指令通过其他方式发送时，如控制台、HTTP接口等，friend和group均为0
+> 当指令通过其他方式发送时，如控制台、HTTP接口等，sender和group均为0
 
 
 
