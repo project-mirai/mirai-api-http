@@ -211,6 +211,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标好友的QQ号           |
+| qq           | Long?  | true  | 987654321   | 可选，同target  |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
@@ -249,7 +250,8 @@ cors:
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
-| target       | Long   | false | 987654321   | 高32位为临时会话群号，低32位为临时会话对象QQ号 |
+| qq           | Long   | false | 987654321   | 临时会话对象QQ号 |
+| group        | Long   | false | 987654321   | 临时会话群号 |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
@@ -289,6 +291,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标群的群号             |
+| group        | Long?   | true | 987654321   | 可选，同target             |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
@@ -335,6 +338,8 @@ cors:
 | qq           | Long   | true  | 123456789   | 发送对象的QQ号                     |
 | group        | Long   | true  | 987654321   | 发送对象的群号                     |
 | urls         | Array  | false | []          | 是一个url字符串构成的数组          |
+
+> 当qq和group同时存在时，表示发送临时会话图片，qq为临时会话对象QQ号，group为临时会话发起的群号
 
 #### 响应: 图片的imageId数组
 

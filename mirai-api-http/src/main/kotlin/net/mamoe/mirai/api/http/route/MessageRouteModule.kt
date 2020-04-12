@@ -209,7 +209,8 @@ fun Application.messageModule() {
         miraiVerify<SendImageDTO>("sendImageMessage") {
             val bot = it.session.bot
             val contact = when {
-                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroupOrNull(it.target) ?: bot.getMember(it.target)
+                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroup(it.target)
+                it.qq != null && it.group != null -> bot.getGroup(it.group)[it.qq]
                 it.qq != null -> bot.getFriend(it.qq)
                 it.group != null -> bot.getGroup(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
