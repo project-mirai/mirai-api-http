@@ -2,6 +2,23 @@
 
 
 
+## \[1.6.1\] - 2020-04-12
+
+### 变更
+
+* Breaking change: websocket 监听命令返回字段 `friend` 变更为 `sender`，具体含义见 [README.md](https://github.com/mamoe/mirai-api-http/blob/master/README.md)
+
+### 新增
+
+* 新增 `uploadImage` 接口的 `type` 字段为 `temp`
+* 新增 `sendImageMessage` 接口发送临时会话图片， `target` 字段同 `sendTempMessge`，高32位为群号，低32为为群员QQ号
+
+### 修复
+
+* 修复 `TempMessage` 解析异常， #54
+
+
+
 ## \[1.6.0\] - 2020-04-11
 
 ### 变更
