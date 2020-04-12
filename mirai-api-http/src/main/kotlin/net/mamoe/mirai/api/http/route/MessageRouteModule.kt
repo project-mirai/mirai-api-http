@@ -218,7 +218,9 @@ fun Application.messageModule() {
 
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
-                        "friend" -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
+                        "friend",
+                        "temp"
+                        -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
                         else -> null
                     }.apply {
                         // 使用apply不影响when返回

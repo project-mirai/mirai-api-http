@@ -362,7 +362,7 @@ Content-Type：multipart/form-data
 | 名字         | 类型   | 可选  | 举例        | 说明                               |
 | ------------ | ------ | ----- | ----------- | ---------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                  |
-| type         | String | false | "friend "   | "friend" 或 "group"                |
+| type         | String | false | "friend "   | "friend" 或 "group" 或 "temp"        |
 | img          | File   | false | -           | 图片文件                           |
 
 
