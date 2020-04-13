@@ -812,3 +812,112 @@
 | operator.group          | Object  | 同member.group                                      |
 
 
+
+#### 添加好友申请
+
+```json
+{
+    "type": "NewFriendRequestEvent",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "nick": "Nick Name"
+}
+```
+
+| 名字    | 类型   | 说明                                                  |
+| ------- | ------ | ----------------------------------------------------- |
+| eventId | Long   | 事件标识，响应该事件时的标识                          |
+| fromId  | Long   | 申请人QQ号                                            |
+| groupId | Long   | 申请人如果通过某个群添加好友，该项为该群群号；否则为0 |
+| nick    | String | 申请人的昵称或群名片                                  |
+
+##### 响应
+
+```
+[POST] /resp/newFriendRequestEvent
+```
+
+```json
+{
+    "sessionKey": "YourSessionKey",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "operate": 0,
+    "message": ""
+}
+```
+
+| 名字       | 类型   | 说明                          |
+| ---------- | ------ | ----------------------------- |
+| sessionKey | String | session key                   |
+| eventId    | Long   | 响应申请事件的标识            |
+| fromId     | Long   | 事件对应申请人QQ号            |
+| groupId    | Long   | 事件对应申请人的群号，可能为0 |
+| operate    | Int    | 响应的操作类型                |
+| message    | String | 回复的信息                    |
+
+| operate | 说明                                               |
+| ------- | -------------------------------------------------- |
+| 0       | 同意添加好友                                       |
+| 1       | 拒绝添加好友                                       |
+| 2       | 拒绝添加好友并添加黑名单，不再接收该用户的好友申请 |
+
+
+
+#### 用户入群申请（Bot需要有管理员权限）
+
+```json
+{
+    "type": "MemberJoinRequestEvent",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "groupName": "Group",
+    "nick": "Nick Name"
+}
+```
+
+| 名字      | 类型   | 说明                         |
+| --------- | ------ | ---------------------------- |
+| eventId   | Long   | 事件标识，响应该事件时的标识 |
+| fromId    | Long   | 申请人QQ号                   |
+| groupId   | Long   | 申请人申请入群的群号         |
+| groupName | String | 申请人申请入群的群名称       |
+| nick      | String | 申请人的昵称或群名片         |
+
+##### 响应
+
+```
+[POST] /resp/memberJoinRequestEvent
+```
+
+```json
+{
+    "sessionKey": "YourSessionKey",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "operate": 0,
+    "message": ""
+}
+```
+
+| 名字       | 类型   | 说明                          |
+| ---------- | ------ | ----------------------------- |
+| sessionKey | String | session key                   |
+| eventId    | Long   | 响应申请事件的标识            |
+| fromId     | Long   | 事件对应申请人QQ号            |
+| groupId    | Long   | 事件对应申请人的群号，可能为0 |
+| operate    | Int    | 响应的操作类型                |
+| message    | String | 回复的信息                    |
+
+| operate | 说明                                           |
+| ------- | ---------------------------------------------- |
+| 0       | 同意入群                                       |
+| 1       | 拒绝入群                                       |
+| 2       | 忽略请求                                       |
+| 3       | 拒绝入群并添加黑名单，不再接收该用户的入群申请 |
+| 4       | 忽略入群并添加黑名单，不再接收该用户的入群申请 |
+
