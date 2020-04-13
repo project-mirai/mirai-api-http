@@ -21,9 +21,13 @@ import java.io.File
 
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
-object HttpApiPluginBase: PluginBase() {
-    val setting by lazy{
-        this.loadConfig("setting.yml")
+object HttpApiPluginBase : PluginBase() {
+    val setting by lazy {
+        loadConfig("setting.yml")
+    }
+
+    val config by lazy {
+        getResourcesConfig("plugin.yml")
     }
 
     val cors by setting.withDefault { listOf("*") }
@@ -38,7 +42,7 @@ object HttpApiPluginBase: PluginBase() {
     override fun onLoad() {
         logger.info("Loading Mirai HTTP API plugin")
         logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
-        if(authKey.startsWith("INITKEY")){
+        if (authKey.startsWith("INITKEY")) {
             logger.warning("USING INITIAL KEY, please edit the key")
         }
 
@@ -60,7 +64,8 @@ object HttpApiPluginBase: PluginBase() {
 
     private val subscribers = mutableListOf<CommandSubscriber>()
 
-    internal fun subscribeCommand(subscriber: CommandSubscriber): CommandSubscriber = subscriber.also { subscribers.add(it) }
+    internal fun subscribeCommand(subscriber: CommandSubscriber): CommandSubscriber =
+        subscriber.also { subscribers.add(it) }
 
     internal fun unSubscribeCommand(subscriber: CommandSubscriber) = subscribers.remove(subscriber)
 
@@ -84,7 +89,7 @@ object HttpApiPluginBase: PluginBase() {
 
     override fun onCommand(command: Command, sender: CommandSender, args: List<String>) {
         launch {
-            val (from: Long, group: Long) = when(sender) {
+            val (from: Long, group: Long) = when (sender) {
                 is GroupContactCommandSender -> sender.realSender.id to sender.contact.id
                 is ContactCommandSender -> sender.contact.id to 0L
                 else -> 0L to 0L // 考虑保留对其他Sender类型的扩展，先统一默认为ConsoleSender

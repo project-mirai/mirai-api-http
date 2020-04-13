@@ -37,3 +37,10 @@ data class EventRestfulResult(
     val errorMessage: String = "",
     val data: EventDTO?
 ) : DTO
+
+@Serializable
+data class StringMapRestfulResult(
+    val code: Int = 0,
+    val errorMessage: String = "",
+    val data: Map<String, String>
+) : DTO
