@@ -2,6 +2,20 @@
 
 
 
+## \[1.6.2\] - 2020-04-13
+
+### 变更
+
+* 调整 `sendFriendMessage`, `sendGroupMessage` 和 `sendTempMessage` 的接口参数，`sendTempMessage`的调整为不兼容调整。
+* 调整 `sendImageMessage` 接口， 当 `qq` 和 `group` 参数同时存在时标识发送临时会话图片。发送好友图片和发送群消息图片的用法不变。
+
+### 新增
+
+* 新增添加好友申请事情和用户入群申请事件的解析和处理
+* 新增 `about` 接口获取 `apit-http` 插件的基本信息
+
+
+
 ## \[1.6.1\] - 2020-04-12
 
 ### 变更
@@ -11,7 +25,7 @@
 ### 新增
 
 * 新增 `uploadImage` 接口的 `type` 字段为 `temp`
-* 新增 `sendImageMessage` 接口发送临时会话图片， `target` 字段同 `sendTempMessge`，高32位为群号，低32为为群员QQ号
+* 新增 `sendImageMessage` 接口发送临时会话图片， `target` 字段同 `sendTempMessge`，高32位为群号，低32位为群员QQ号
 
 ### 修复
 
