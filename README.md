@@ -67,7 +67,7 @@ cors:
 ```json
 {
     "code": 0,
-    "errormsg": ""
+    "errorMessage": "",
     "data": {
         "version": "v1.0.0"
     }
@@ -235,7 +235,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标好友的QQ号           |
-| qq           | Long?  | true  | 987654321   | 可选，同target  |
+| qq           | Long   | true  | 987654321   | 可选，同target  |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
@@ -315,7 +315,7 @@ cors:
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
 | target       | Long   | false | 987654321   | 发送消息目标群的群号             |
-| group        | Long?   | true | 987654321   | 可选，同target             |
+| group        | Long   | true  | 987654321   | 可选，同target             |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
