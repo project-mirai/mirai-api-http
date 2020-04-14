@@ -26,7 +26,7 @@ fun Application.eventRouteModule() {
 
     routing {
 
-        miraiAuth<EventRespDTO>("/resp/newFriendRequestEvent") {
+        miraiVerify<EventRespDTO>("/resp/newFriendRequestEvent") {
             val event = NewFriendRequestEvent(
                 it.session.bot,
                 it.eventId,
@@ -41,13 +41,13 @@ fun Application.eventRouteModule() {
                 2 -> event.reject(blackList = true) // black list
                 else -> {
                     call.respondDTO(StateCode.NoOperateSupport)
-                    return@miraiAuth
+                    return@miraiVerify
                 }
             }
             call.respondDTO(StateCode.Success)
         }
 
-        miraiAuth<EventRespDTO>("/resp/memberJoinRequestEvent") {
+        miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
             val event = MemberJoinRequestEvent(
                 it.session.bot,
                 it.eventId,
@@ -65,7 +65,7 @@ fun Application.eventRouteModule() {
                 4 -> event.ignore(blackList = true) // ignore and black list
                 else -> {
                     call.respondDTO(StateCode.NoOperateSupport)
-                    return@miraiAuth
+                    return@miraiVerify
                 }
             }
             call.respondDTO(StateCode.Success)
