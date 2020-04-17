@@ -1049,7 +1049,7 @@ Content-Type：multipart/form-data
 ```json5
 {
     "name": "群名片",
-    "announcement": "群头衔"
+    "specialTitle": "群头衔"
 }
 ```
 
