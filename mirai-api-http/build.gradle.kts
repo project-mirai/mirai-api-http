@@ -37,8 +37,8 @@ val miraiConsoleVersion: String by rootProject.ext
 kotlin {
     sourceSets["main"].apply {
         dependencies {
-            compileOnly("net.mamoe:mirai-core-jvm:$miraiVersion")
-            compileOnly("net.mamoe:mirai-core-qqandroid-jvm:$miraiVersion")
+            compileOnly("net.mamoe:mirai-core:$miraiVersion")
+            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
             compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
 
 
@@ -56,8 +56,8 @@ kotlin {
 
     sourceSets["test"].apply {
         dependencies {
-            api("net.mamoe:mirai-core-jvm:$miraiVersion")
-            api("net.mamoe:mirai-core-qqandroid-jvm:$miraiVersion")
+            api("net.mamoe:mirai-core:$miraiVersion")
+            api("net.mamoe:mirai-core-qqandroid:$miraiVersion")
             api("net.mamoe:mirai-console:$miraiConsoleVersion")
 
 
