@@ -48,6 +48,8 @@ suspend fun BotEvent.toDTO() = when (this) {
         is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
         is BotUnmuteEvent -> BotUnmuteEventDTO(MemberDTO(operator))
         is BotJoinGroupEvent -> BotJoinGroupEventDTO(GroupDTO(group))
+        is BotLeaveEvent.Active -> BotLeaveEventActiveDTO(GroupDTO(group))
+        is BotLeaveEvent.Kick -> BotLeaveEventKickDTO(GroupDTO(group))
         is GroupNameChangeEvent -> GroupNameChangeEventDTO(
             origin,
             new,
@@ -210,6 +212,18 @@ data class BotUnmuteEventDTO(val operator: MemberDTO) : BotEventDTO()
 @Serializable
 @SerialName("BotJoinGroupEvent")
 data class BotJoinGroupEventDTO(val group: GroupDTO) : BotEventDTO()
+
+@Serializable
+@SerialName("BotLeaveEvent")
+data class BotLeaveEventActiveDTO(
+    val group: GroupDTO
+) : BotEventDTO()
+
+@Serializable
+@SerialName("BotKickEvent")
+data class BotLeaveEventKickDTO(
+    val group: GroupDTO
+) : BotEventDTO()
 
 @Serializable
 @SerialName("GroupNameChangeEvent")
