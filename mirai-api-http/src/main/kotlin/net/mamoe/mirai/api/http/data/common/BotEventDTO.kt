@@ -55,7 +55,7 @@ suspend fun BotEvent.toDTO() = when (this) {
             new,
             new,
             GroupDTO(group),
-            isByBot
+            operator?.let(::MemberDTO)
         )
         is GroupEntranceAnnouncementChangeEvent -> GroupEntranceAnnouncementChangeEventDTO(
             origin,
@@ -232,7 +232,7 @@ data class GroupNameChangeEventDTO(
     val new: String,
     val current: String,
     val group: GroupDTO,
-    val isByBot: Boolean
+    val operator: MemberDTO?
 ) : BotEventDTO()
 
 @Serializable
