@@ -66,6 +66,17 @@ fun Application.groupManageModule() {
         }
 
         /**
+         * Bot退出群聊（Bot不能为群主）
+         */
+        miraiVerify<QuitDTO>("/quit") {
+            val success = it.session.bot.getGroup(it.target).quit()
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
+        }
+
+        /**
          * 获取群设置（需要相关权限）
          */
         miraiGet("/groupConfig") {
@@ -125,6 +136,12 @@ private data class KickDTO(
     val target: Long,
     val memberId: Long,
     val msg: String = ""
+) : VerifyDTO()
+
+@Serializable
+private data class QuitDTO(
+    override val sessionKey: String,
+    val target: Long
 ) : VerifyDTO()
 
 @Serializable
