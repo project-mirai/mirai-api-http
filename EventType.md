@@ -253,6 +253,50 @@
 
 
 
+#### Bot主动退出一个群
+
+```json5
+{
+    "type": "BotLeaveEventActive",
+    "group": {
+        "id": 123456789,
+        "name": "Miral Technology",
+        "permission": "MEMBER"
+    }
+}
+```
+
+| 名字             | 类型   | 说明                                                         |
+| ---------------- | ------ | ------------------------------------------------------------ |
+| group            | Object | Bot退出的群的信息                                            |
+| group.id         | Long   | 群号                                                         |
+| group.name       | String | 群名                                                         |
+| group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
+
+
+
+#### Bot被踢出一个群
+
+```json5
+{
+    "type": "BotLeaveEventKick",
+    "group": {
+        "id": 123456789,
+        "name": "Miral Technology",
+        "permission": "MEMBER"
+    }
+}
+```
+
+| 名字             | 类型   | 说明                                                         |
+| ---------------- | ------ | ------------------------------------------------------------ |
+| group            | Object | Bot被踢出的群的信息                                            |
+| group.id         | Long   | 群号                                                         |
+| group.name       | String | 群名                                                         |
+| group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
+
+
+
 #### 某个群名改变
 
 ```json5

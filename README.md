@@ -906,6 +906,42 @@ Content-Type：multipart/form-data
 
 
 
+### 退出群聊
+
+使用此方法使Bot退出群聊
+
+```
+[POST] /kick
+```
+
+#### 请求:
+
+```json5
+{
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+}
+```
+
+| 名字       | 可选  | 类型   | 举例             | 说明            |
+| ---------- | ----- | ------ | ---------------- | --------------- |
+| sessionKey | false | String | "YourSessionKey" | 你的session key |
+| target     | false | Long   | 123456789        | 群出的群号    |
+
+#### 响应
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
+> bot为该群群主时退出失败并返回code 10(无操作权限)
+
+
 ### 群设置
 
 使用此方法修改群设置（需要有相关限权）
