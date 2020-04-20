@@ -214,13 +214,13 @@ data class BotUnmuteEventDTO(val operator: MemberDTO) : BotEventDTO()
 data class BotJoinGroupEventDTO(val group: GroupDTO) : BotEventDTO()
 
 @Serializable
-@SerialName("BotLeaveEvent")
+@SerialName("BotLeaveEventActive")
 data class BotLeaveEventActiveDTO(
     val group: GroupDTO
 ) : BotEventDTO()
 
 @Serializable
-@SerialName("BotKickEvent")
+@SerialName("BotLeaveEventKick")
 data class BotLeaveEventKickDTO(
     val group: GroupDTO
 ) : BotEventDTO()
