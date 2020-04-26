@@ -369,8 +369,8 @@ cors:
 
 ```json5
 [
-    "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg",
-    "{YYYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY}.jpg"
+    "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
+    "{YYYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY}.mirai"
 ]
 ```
 
@@ -399,7 +399,7 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg",
+    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
     "url": "xxxxxxxxxxxxxxxxxxxx",
     "path": "xxxxxxxxxx"
 }
