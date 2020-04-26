@@ -399,7 +399,7 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.jpg",
+    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
     "url": "xxxxxxxxxxxxxxxxxxxx",
     "path": "xxxxxxxxxx"
 }
