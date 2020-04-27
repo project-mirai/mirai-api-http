@@ -15,8 +15,6 @@ import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugins.PluginBase
 import net.mamoe.mirai.console.plugins.withDefault
-import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.QQ
 import java.io.File
 
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit

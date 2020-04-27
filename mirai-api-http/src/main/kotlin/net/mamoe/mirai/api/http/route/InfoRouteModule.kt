@@ -49,34 +49,34 @@ fun Application.infoModule() {
             call.respondJson(ls.toJson())
         }
 
-        /**
-         * 查询机器人个人信息
-         */
-        miraiGet("/botProfile") {
-            // TODO: 等待queryProfile()支持
-            val profile = it.bot.selfQQ.queryProfile();
-            call.respondJson(profile.toJson())
-        }
-
-        /**
-         * 查询好友个人信息
-         */
-        miraiGet("/friendProfile") {
-            // TODO: 等待queryProfile()支持
-            val profile = it.bot.getFriend(paramOrNull("friendId")).queryProfile()
-            call.respondJson(profile.toJson())
-        }
-
-        /**
-         * 查询QQ群成员个人信息
-         */
-        miraiGet("/memberProfile") {
-            // TODO: 等待queryProfile()支持
-            val profile = it.bot
-                .getGroup(paramOrNull("groupId"))
-                .get(paramOrNull("memberId"))
-                .queryProfile()
-            call.respondJson(profile.toJson())
-        }
+//        /**
+//         * 查询机器人个人信息
+//         */
+//        miraiGet("/botProfile") {
+//            // TODO: 等待queryProfile()支持
+//            val profile = it.bot.selfQQ
+//            call.respondJson(profile.toJson())
+//        }
+//
+//        /**
+//         * 查询好友个人信息
+//         */
+//        miraiGet("/friendProfile") {
+//            // TODO: 等待queryProfile()支持
+//            val profile = it.bot.getFriend(paramOrNull("friendId"))
+//            call.respondJson(profile.toJson())
+//        }
+//
+//        /**
+//         * 查询QQ群成员个人信息
+//         */
+//        miraiGet("/memberProfile") {
+//            // TODO: 等待queryProfile()支持
+//            val profile = it.bot
+//                .getGroup(paramOrNull("groupId"))
+//                .get(paramOrNull("memberId"))
+//                .queryProfile()
+//            call.respondJson(profile.toJson())
+//        }
     }
 }

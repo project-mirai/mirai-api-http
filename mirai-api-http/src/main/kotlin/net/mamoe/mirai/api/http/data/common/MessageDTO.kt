@@ -142,7 +142,7 @@ suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolea
     mutableListOf(this[MessageSource].toDTO()).apply {
         // `QuoteReply`会被`foreachContent`过滤，手动添加
         this@toMessageChainDTO.getOrNull(QuoteReply)?.let { this.add(it.toDTO()) }
-        foreachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
+        forEachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
     }
 
 
@@ -202,7 +202,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }?.flash()
-    is XmlDTO -> XmlMessage(xml)
+    is XmlDTO -> XmlMessage(60, xml)
     is JsonDTO -> JsonMessage(json)
     is AppDTO -> LightApp(content)
     is PokeMessageDTO -> PokeMap[name]

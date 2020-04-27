@@ -24,9 +24,7 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.contact.QQ
 import net.mamoe.mirai.getFriendOrNull
-import net.mamoe.mirai.getGroupOrNull
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.OnlineMessageSource.Incoming
