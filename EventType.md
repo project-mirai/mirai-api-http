@@ -310,7 +310,16 @@
         "name": "MIRAI TECHNOLOGY",
         "permission": "MEMBER"
     },
-    "isByBot": false
+    "operator": {
+        "id": 123456,
+        "memberName": "我是群主",
+        "permission": "ADMINISTRATOR",
+        "group": {
+            "id": 123456789,
+            "name": "Miral Technology",
+            "permission": "OWNER"
+        }
+    }
 }
 ```
 
@@ -323,7 +332,11 @@
 | group.id         | Long    | 群号                                          |
 | group.name       | String  | 群名                                          |
 | group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER |
-| isByBot          | Boolean | 是否Bot进行该操作                             |
+| operator                  | Object | 操作的管理员或群主信息                           |
+| operator.id               | Long   | 操作者的QQ号                                     |
+| operator.memberName       | String | 操作者的群名片                                   |
+| operator.permission       | String | 操作者在群中的权限，OWNER或ADMINISTRATOR |
+| operator.group            | Object | 同group                 |
 
 
 
