@@ -140,7 +140,7 @@ fun Application.messageModule() {
             val bot = it.session.bot
             val qq = when {
                 it.target != null -> bot.getFriend(it.target)
-                it.qq != null -> bot.getGroup(it.qq)
+                it.qq != null -> bot.getFriend(it.qq)
                 else -> throw NoSuchElementException()
             }
 
