@@ -234,8 +234,8 @@ cors:
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
-| target       | Long   | false | 987654321   | 发送消息目标好友的QQ号           |
-| qq           | Long   | true  | 987654321   | 可选，同target  |
+| target       | Long   | true(false) | 987654321   | 可选，发送消息目标好友的QQ号           |
+| qq           | Long   | true  | 987654321   | 可选，target与qq中需要有一个参数不为空，当target不为空时qq将被忽略，同target  |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
@@ -263,7 +263,8 @@ cors:
 ```json5
 {
     "sessionKey": "YourSession",
-    "target": 987654321,
+    "qq": 1413525235,
+    "group": 987654321,
     "messageChain": [
         { "type": "Plain", "text":"hello\n" },
         { "type": "Plain", "text":"world" }
@@ -314,8 +315,8 @@ cors:
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session                |
-| target       | Long   | false | 987654321   | 发送消息目标群的群号             |
-| group        | Long   | true  | 987654321   | 可选，同target             |
+| target       | Long   | false(true)  | 987654321   | 可选，发送消息目标群的群号        |
+| group        | Long   | true  | 987654321   | 可选，target与group中需要有一个参数不为空，当target不为空时group将被忽略，同target |
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
