@@ -912,7 +912,7 @@ Content-Type：multipart/form-data
 使用此方法使Bot退出群聊
 
 ```
-[POST] /kick
+[POST] /quit
 ```
 
 #### 请求:
