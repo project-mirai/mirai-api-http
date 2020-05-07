@@ -20,7 +20,8 @@ class HeartBeatConfig(config: Config) {
     /**
      * 心跳配置
      */
-    private val serviceConfig = config.asMap().getOrDefault("heartbeat", emptyMap<String, Any>()) as Map<String, Any>
+    @Suppress("UNCHECKED_CAST")
+    private val serviceConfig = config["heartbeat"] as? Map<String, Any> ?: emptyMap()
 
     /**
      * 是否开启

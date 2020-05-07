@@ -9,6 +9,8 @@
 
 package net.mamoe.mirai.api.http.data.common
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
@@ -124,10 +126,10 @@ sealed class MessageDTO : DTO
 /*
     Extend function
  */
-suspend fun ContactMessage.toDTO() = when (this) {
-    is FriendMessage -> FriendMessagePacketDTO(QQDTO(sender))
-    is GroupMessage -> GroupMessagePacketDTO(MemberDTO(sender))
-    is TempMessage -> TempMessagePacketDto(MemberDTO(sender))
+suspend fun MessageEvent.toDTO() = when (this) {
+    is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
+    is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
+    is TempMessageEvent -> TempMessagePacketDto(MemberDTO(sender))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
@@ -139,9 +141,9 @@ suspend fun ContactMessage.toDTO() = when (this) {
 
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     // `foreachContent`会忽略`MessageSource`，手动添加
-    mutableListOf(this[MessageSource].toDTO()).apply {
+    mutableListOf(this.getOrFail(MessageSource).toDTO()).apply {
         // `QuoteReply`会被`foreachContent`过滤，手动添加
-        this@toMessageChainDTO.getOrNull(QuoteReply)?.let { this.add(it.toDTO()) }
+        this@toMessageChainDTO[QuoteReply]?.let { this.add(it.toDTO()) }
         forEachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
     }
 
@@ -155,16 +157,15 @@ suspend fun Message.toDTO() = when (this) {
     is At -> AtDTO(target, display)
     is AtAll -> AtAllDTO(0L)
     is Face -> FaceDTO(id, FaceMap[id])
-    is PlainText -> PlainDTO(stringValue)
+    is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl())
     is FlashImage -> FlashImageDTO(image.imageId, image.queryUrl())
-    is XmlMessage -> XmlDTO(content)
-    is JsonMessage -> JsonDTO(content)
+    is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
         groupId = when {
             source is OfflineMessageSource && (source as OfflineMessageSource).kind == OfflineMessageSource.Kind.GROUP ||
-            source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
+                    source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
             else -> 0L
         },
         // 避免套娃
@@ -184,7 +185,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is PlainDTO -> PlainText(text)
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(URL(url))
+        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url) })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
                 contact.uploadImage(this)
@@ -194,7 +195,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     }
     is FlashImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(URL(url))
+        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url) })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
                 contact.uploadImage(this)
@@ -202,8 +203,8 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }?.flash()
-    is XmlDTO -> XmlMessage(60, xml)
-    is JsonDTO -> JsonMessage(json)
+    is XmlDTO -> ServiceMessage(60, xml)
+    is JsonDTO -> ServiceMessage(1, json)
     is AppDTO -> LightApp(content)
     is PokeMessageDTO -> PokeMap[name]
     // ignore

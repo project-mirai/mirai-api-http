@@ -17,7 +17,7 @@ import net.mamoe.mirai.api.http.queue.MessageQueue
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.message.ContactMessage
+import net.mamoe.mirai.message.MessageEvent
 import net.mamoe.mirai.utils.currentTimeSeconds
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -124,7 +124,7 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
         enableWebsocket = HttpApiPluginBase.enableWebsocket
     )
     private var _listener: Listener<BotEvent>
-    private val _cache: Listener<ContactMessage>
+    private val _cache: Listener<MessageEvent>
     private val releaseJob: Job //手动释放将会在下一次检查时回收Session
 
     internal var latestUsed = currentTimeSeconds

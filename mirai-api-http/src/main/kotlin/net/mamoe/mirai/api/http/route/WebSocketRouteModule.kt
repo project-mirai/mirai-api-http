@@ -28,7 +28,7 @@ import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.event.subscribeMessages
-import net.mamoe.mirai.message.ContactMessage
+import net.mamoe.mirai.message.MessageEvent
 
 /**
  * 广播路由
@@ -49,7 +49,9 @@ fun Application.websocketRouteModule() {
             }
 
             try {
-                for (frame in incoming) { outgoing.send(frame) }
+                for (frame in incoming) {
+                    outgoing.send(frame)
+                }
             } finally {
                 listener.complete()
             }
@@ -60,7 +62,7 @@ fun Application.websocketRouteModule() {
          */
         miraiWebsocket("/event") {
             val listener = it.bot.subscribeAlways<BotEvent> {
-                if (this !is ContactMessage) {
+                if (this !is MessageEvent) {
                     this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
                         outgoing.send(Frame.Text(this.toJson()))
                     }
@@ -68,7 +70,9 @@ fun Application.websocketRouteModule() {
             }
 
             try {
-                for (frame in incoming) { outgoing.send(frame) }
+                for (frame in incoming) {
+                    outgoing.send(frame)
+                }
             } finally {
                 listener.complete()
             }
@@ -85,14 +89,15 @@ fun Application.websocketRouteModule() {
             }
 
             try {
-                for (frame in incoming) { outgoing.send(frame) }
+                for (frame in incoming) {
+                    outgoing.send(frame)
+                }
             } finally {
                 listener.complete()
             }
         }
     }
 }
-
 
 
 @ContextDsl

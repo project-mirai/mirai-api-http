@@ -14,7 +14,7 @@
 
 ### 变更
 
-* 更新 `core` 依赖到 0.49.4
+* 更新 `core` 依赖到 0.39.4
 * 更新 `console` 依赖到 0.4.11
 * (Breaking change): 群名修改事件 `GroupNameChangeEvent` 移除 `isByBot` 字段， 修改为 `operator` 字段 [详情](https://github.com/mamoe/mirai-api-http/blob/master/EventType.md#%E6%9F%90%E4%B8%AA%E7%BE%A4%E5%90%8D%E6%94%B9%E5%8F%98)
 
