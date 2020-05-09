@@ -128,31 +128,29 @@
 
 > 三个参数任选其一，出现多个参数时，按照imageId > url > file的优先级
 
+
 #### Xml
 
-```json5
-{
-    "type": "Xml",
-    "xml": "XML"
-}
-```
-
-| 名字 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| xml  | String | XML文本 |
+已废弃, 请使用 [ServiceMessage](#ServiceMessage), 并将 serviceId 设置成 60
 
 #### Json
 
+
+已废弃, 请使用 [ServiceMessage](#ServiceMessage), 并将 serviceId 设置成 1
+
+### ServiceMessage
 ```json5
 {
-    "type": "Json",
-    "json": "{}"
+  "type": "Service",
+  "serviceId": 0,
+  "content": "<>"
 }
 ```
 
-| 名字 | 类型   | 说明     |
-| ---- | ------ | -------- |
-| json | String | Json文本 |
+| 名字      | 类型   | 说明     |
+| -------- | ------ | ------- |
+| serviceId| Int    | 服务id   |
+| content  | String | 内容     |
 
 #### App
 

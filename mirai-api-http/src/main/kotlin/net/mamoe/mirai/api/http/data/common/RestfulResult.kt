@@ -1,8 +1,6 @@
 package net.mamoe.mirai.api.http.data.common
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.message.ContactMessage
 
 @Serializable
 data class RestfulResult(

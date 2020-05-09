@@ -15,9 +15,9 @@ import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.event.subscribeMessages
-import net.mamoe.mirai.message.ContactMessage
-import net.mamoe.mirai.message.FriendMessage
-import net.mamoe.mirai.message.GroupMessage
+import net.mamoe.mirai.message.FriendMessageEvent
+import net.mamoe.mirai.message.GroupMessageEvent
+import net.mamoe.mirai.message.MessageEvent
 
 /**
  * 上报服务
@@ -47,7 +47,7 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
             this.takeIf { reportConfig.enable }
                 ?.apply {
                     this.takeIf { reportConfig.eventMessage.report }
-                        ?.takeIf { event -> event !is ContactMessage }
+                        ?.takeIf { event -> event !is MessageEvent }
                         ?.toDTO()
                         ?.takeIf { dto -> dto != IgnoreEventDTO }
                         ?.apply {
@@ -55,13 +55,13 @@ class ReportService(console: PluginBase) : MiraiApiHttpService {
                         }
 
                     this.takeIf { reportConfig.groupMessage.report }
-                        ?.takeIf { event -> event is GroupMessage }
+                        ?.takeIf { event -> event is GroupMessageEvent }
                         ?.apply {
                             reportAllDestinations(this.toDTO().toJson())
                         }
 
                     this.takeIf { reportConfig.friendMessage.report }
-                        ?.takeIf { event -> event is FriendMessage }
+                        ?.takeIf { event -> event is FriendMessageEvent }
                         ?.apply {
                             reportAllDestinations(this.toDTO().toJson())
                         }

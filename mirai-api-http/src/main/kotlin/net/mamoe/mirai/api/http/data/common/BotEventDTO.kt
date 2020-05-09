@@ -13,13 +13,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.ContactMessage
+import net.mamoe.mirai.message.MessageEvent
 
 @Serializable
 sealed class BotEventDTO : EventDTO()
 
 suspend fun BotEvent.toDTO() = when (this) {
-    is ContactMessage -> toDTO()
+    is MessageEvent -> toDTO()
     else -> when (this) {
         is BotOnlineEvent -> BotOnlineEventDTO(bot.id)
         is BotOfflineEvent.Active -> BotOfflineEventActiveDTO(bot.id)

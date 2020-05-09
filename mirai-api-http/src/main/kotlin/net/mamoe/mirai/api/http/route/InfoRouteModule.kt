@@ -16,8 +16,6 @@ import net.mamoe.mirai.api.http.data.common.GroupDTO
 import net.mamoe.mirai.api.http.data.common.MemberDTO
 import net.mamoe.mirai.api.http.data.common.QQDTO
 import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.contact.toMutableList
-import net.mamoe.mirai.utils.MiraiExperimentalAPI
 
 /**
  * 基本信息路由
