@@ -1,5 +1,5 @@
 name: MiraiAPIHTTP
 path: net.mamoe.mirai.api.http.HttpApiPluginBase
-version: v1.6.5
+version: v1.7.0
 info: Mirai HTTP API Server Plugin
 author: "ryoii"
