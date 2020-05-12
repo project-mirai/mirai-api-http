@@ -248,7 +248,7 @@ fun Application.messageModule() {
                 image?.apply {
                     call.respondDTO(UploadImageRetDTO(
                         imageId,
-                        trickImageUrl(this, type),
+                        queryUrl(),
                         path
                     ))
                 } ?: throw IllegalAccessException("图片上传错误")
@@ -306,12 +306,3 @@ private data class RecallDTO(
     override val sessionKey: String,
     val target: Int
 ) : VerifyDTO()
-
-private fun trickImageUrl(image: Image, type: String) = when (type) {
-    "friend" -> "http://c2cpicdw.qpic.cn/offpic_new/0/${image.imageId}/0"
-    "group" -> "http://gchat.qpic.cn/gchatpic_new/0/0-0-${image.imageId.parseGId()}/0"
-    else -> "未知"
-}
-
-private fun String.parseGId() =
-    substringAfter('{').substringBefore('}').replace("-", "").toUpperCase()
