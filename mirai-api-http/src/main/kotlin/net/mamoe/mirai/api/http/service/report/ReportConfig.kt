@@ -20,7 +20,7 @@ class ReportConfig(config: Config) {
      * 上报配置
      */
     @Suppress("UNCHECKED_CAST")
-    private val serviceConfig = config["heartbeat"] as? Map<String, Any> ?: emptyMap()
+    private val serviceConfig = config["report"] as? Map<String, Any> ?: emptyMap()
 
     /**
      * 是否开启上报
