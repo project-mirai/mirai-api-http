@@ -44,7 +44,7 @@ fun Application.eventRouteModule() {
                     return@miraiVerify
                 }
             }
-            call.respondDTO(StateCode.Success)
+            call.respondStateCode(StateCode.Success)
         }
 
         miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
@@ -68,7 +68,7 @@ fun Application.eventRouteModule() {
                     return@miraiVerify
                 }
             }
-            call.respondDTO(StateCode.Success)
+            call.respondStateCode(StateCode.Success)
         }
 
     }
