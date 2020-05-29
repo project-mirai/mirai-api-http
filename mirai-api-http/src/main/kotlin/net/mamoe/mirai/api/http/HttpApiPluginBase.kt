@@ -29,6 +29,7 @@ object HttpApiPluginBase : PluginBase() {
     }
 
     val cors by setting.withDefault { listOf("*") }
+    val host by setting.withDefault { "0.0.0.0" }
 
     val port by setting.withDefault { 8080 }
     val authKey by setting.withDefault { "INITKEY" + generateSessionKey() }
@@ -48,8 +49,8 @@ object HttpApiPluginBase : PluginBase() {
     }
 
     override fun onEnable() {
-        logger.info("Starting Mirai HTTP Server in 0.0.0.0:$port")
-        MiraiHttpAPIServer.start(port, authKey)
+        logger.info("Starting Mirai HTTP Server in $host:$port")
+        MiraiHttpAPIServer.start(host, port, authKey)
 
         services.onEnable()
     }

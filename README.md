@@ -33,6 +33,9 @@ Mirai HTTP API (console) plugin
 ```yaml
 ## 该配置为全局配置，对所有Session有效
 
+# 可选，默认值为0.0.0.0
+host: '0.0.0.0'
+
 # 可选，默认值为8080
 port: 8080          
 

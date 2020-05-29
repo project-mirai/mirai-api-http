@@ -44,6 +44,7 @@ object MiraiHttpAPIServer : CoroutineScope {
 
     @OptIn(KtorExperimentalAPI::class)
     fun start(
+        host: String = "0.0.0.0",
         port: Int = 8080,
         authKey: String,
         callback: (() -> Unit)? = null
@@ -66,6 +67,7 @@ object MiraiHttpAPIServer : CoroutineScope {
                     this.module(Application::mirai)
 
                     connector {
+                        this.host = host
                         this.port = port
                     }
                 })
