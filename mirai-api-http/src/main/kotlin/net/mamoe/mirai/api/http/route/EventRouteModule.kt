@@ -27,47 +27,47 @@ fun Application.eventRouteModule() {
     routing {
 
         miraiVerify<EventRespDTO>("/resp/newFriendRequestEvent") {
-            val event = NewFriendRequestEvent(
-                it.session.bot,
-                it.eventId,
-                "",
-                it.fromId,
-                it.groupId,
-                ""
-            )
-            when(it.operate) {
-                0 -> event.accept() // accept
-                1 -> event.reject(blackList = false) // reject
-                2 -> event.reject(blackList = true) // black list
-                else -> {
-                    call.respondDTO(StateCode.NoOperateSupport)
-                    return@miraiVerify
-                }
-            }
+//            val event = NewFriendRequestEvent(
+//                it.session.bot,
+//                it.eventId,
+//                "",
+//                it.fromId,
+//                it.groupId,
+//                ""
+//            )
+//            when(it.operate) {
+//                0 -> event.accept() // accept
+//                1 -> event.reject(blackList = false) // reject
+//                2 -> event.reject(blackList = true) // black list
+//                else -> {
+//                    call.respondDTO(StateCode.NoOperateSupport)
+//                    return@miraiVerify
+//                }
+//            }
             call.respondStateCode(StateCode.Success)
         }
 
         miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
-            val event = MemberJoinRequestEvent(
-                it.session.bot,
-                it.eventId,
-                "",
-                it.fromId,
-                it.groupId,
-                "",
-                ""
-            )
-            when(it.operate) {
-                0 -> event.accept() // accept
-                1 -> event.reject(blackList = false) // reject
-                2 -> event.ignore(blackList = false) //ignore
-                3 -> event.reject(blackList = true) // reject and black list
-                4 -> event.ignore(blackList = true) // ignore and black list
-                else -> {
-                    call.respondDTO(StateCode.NoOperateSupport)
-                    return@miraiVerify
-                }
-            }
+//            val event = MemberJoinRequestEvent(
+//                it.session.bot,
+//                it.eventId,
+//                "",
+//                it.fromId,
+//                it.groupId,
+//                "",
+//                ""
+//            )
+//            when(it.operate) {
+//                0 -> event.accept() // accept
+//                1 -> event.reject(blackList = false) // reject
+//                2 -> event.ignore(blackList = false) //ignore
+//                3 -> event.reject(blackList = true) // reject and black list
+//                4 -> event.ignore(blackList = true) // ignore and black list
+//                else -> {
+//                    call.respondDTO(StateCode.NoOperateSupport)
+//                    return@miraiVerify
+//                }
+//            }
             call.respondStateCode(StateCode.Success)
         }
 
