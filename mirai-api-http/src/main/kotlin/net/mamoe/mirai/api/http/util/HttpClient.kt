@@ -33,11 +33,12 @@ class HttpClient {
         /**
          * POST请求 (String)
          */
-        suspend fun post(path: String, json: String, headerMap: Map<String, Any>): String {
+        suspend fun post(path: String, json: String, headerMap: Map<String, Any>, botId: Long? = null): String {
             return client.request {
                 url(path)
                 headers {
                     headerMap.forEach { (k, v) -> append(k, v.toString()) }
+                    botId?.let { append("bot", it.toString()) }
                 }
                 method = HttpMethod.Post
                 body = TextContent(json, ContentType.Application.Json)
@@ -47,12 +48,13 @@ class HttpClient {
         /**
          * POST请求（PartData）
          */
-        suspend fun post(path: String, contentMap: Map<String, Any>, headerMap: Map<String, Any>): String {
+        suspend fun post(path: String, contentMap: Map<String, Any>, headerMap: Map<String, Any>, botId: Long? = null): String {
             return client.request {
                 url(path)
                 method = HttpMethod.Post
                 headers {
                     headerMap.forEach { (k, v) -> append(k, v.toString()) }
+                    botId?.let { append("bot", it.toString()) }
                 }
                 body = MultiPartFormDataContent(convertMapToPartDataList(contentMap))
             }

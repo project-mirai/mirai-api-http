@@ -56,19 +56,19 @@ class ReportService(
                         ?.toDTO()
                         ?.takeIf { dto -> dto != IgnoreEventDTO }
                         ?.apply {
-                            reportAllDestinations(this.toJson())
+                            reportAllDestinations(this.toJson(), bot.id)
                         }
 
                     this.takeIf { reportConfig.groupMessage.report }
                         ?.takeIf { event -> event is GroupMessageEvent }
                         ?.apply {
-                            reportAllDestinations(this.toDTO().toJson())
+                            reportAllDestinations(this.toDTO().toJson(), bot.id)
                         }
 
                     this.takeIf { reportConfig.friendMessage.report }
                         ?.takeIf { event -> event is FriendMessageEvent }
                         ?.apply {
-                            reportAllDestinations(this.toDTO().toJson())
+                            reportAllDestinations(this.toDTO().toJson(), bot.id)
                         }
                 }
         }
@@ -85,10 +85,10 @@ class ReportService(
     /**
      * 上报到所有目标地址
      */
-    private fun reportAllDestinations(json: String) {
+    private fun reportAllDestinations(json: String, botId: Long) {
         console.launch {
             reportConfig.destinations.forEach {
-                report(it, json)
+                report(it, json, botId)
             }
         }
     }
@@ -96,9 +96,9 @@ class ReportService(
     /**
      * 上报到指定目标地址
      */
-    private suspend fun report(destination: String, json: String) {
+    private suspend fun report(destination: String, json: String, botId: Long) {
         try {
-            HttpClient.post(destination, json, reportConfig.extraHeaders)
+            HttpClient.post(destination, json, reportConfig.extraHeaders, botId)
         } catch (e: Exception) {
             console.logger.error { "上报${destination}失败: ${e.message}" }
         }
