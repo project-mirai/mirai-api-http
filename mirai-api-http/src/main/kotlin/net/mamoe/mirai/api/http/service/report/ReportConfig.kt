@@ -48,6 +48,11 @@ class ReportConfig(config: Config) {
     val friendMessage = ReportMessageConfig(serviceConfig.getOrDefault("friendMessage", emptyMap<String, Any>()) as Map<String, Any>)
 
     /**
+     *  临时消息子配置
+     */
+    val tempMessage = ReportMessageConfig(serviceConfig.getOrDefault("tempMessage", emptyMap<String, Any>()) as Map<String, Any>)
+
+    /**
      *  事件消息子配置
      */
     val eventMessage = ReportMessageConfig(serviceConfig.getOrDefault("eventMessage", emptyMap<String, Any>()) as Map<String, Any>)

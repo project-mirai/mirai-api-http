@@ -22,6 +22,7 @@ import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.MessageEvent
+import net.mamoe.mirai.message.TempMessageEvent
 import net.mamoe.mirai.utils.error
 
 /**
@@ -61,6 +62,12 @@ class ReportService(
 
                     this.takeIf { reportConfig.groupMessage.report }
                         ?.takeIf { event -> event is GroupMessageEvent }
+                        ?.apply {
+                            reportAllDestinations(this.toDTO().toJson(), bot.id)
+                        }
+
+                    this.takeIf { reportConfig.tempMessage.report }
+                        ?.takeIf { event -> event is TempMessageEvent }
                         ?.apply {
                             reportAllDestinations(this.toDTO().toJson(), bot.id)
                         }
