@@ -13,6 +13,7 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.LowLevelAPI
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent
@@ -22,19 +23,19 @@ import net.mamoe.mirai.event.events.NewFriendRequestEvent
  * 事件响应路由
  */
 
+@OptIn(LowLevelAPI::class)
 fun Application.eventRouteModule() {
 
     routing {
 
         miraiVerify<EventRespDTO>("/resp/newFriendRequestEvent") {
-//            val event = NewFriendRequestEvent(
-//                it.session.bot,
-//                it.eventId,
-//                "",
-//                it.fromId,
-//                it.groupId,
-//                ""
-//            )
+            it.session.bot._lowLevelSolveNewFriendRequestEvent(
+                eventId = it.eventId,
+                fromId = it.fromId,
+                fromNick = "",
+                accept = it.operate == 0,
+                blackList = it.operate == 2
+            )
 //            when(it.operate) {
 //                0 -> event.accept() // accept
 //                1 -> event.reject(blackList = false) // reject
@@ -48,15 +49,14 @@ fun Application.eventRouteModule() {
         }
 
         miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
-//            val event = MemberJoinRequestEvent(
-//                it.session.bot,
-//                it.eventId,
-//                "",
-//                it.fromId,
-//                it.groupId,
-//                "",
-//                ""
-//            )
+            it.session.bot._lowLevelSolveMemberJoinRequestEvent(
+                eventId = it.eventId,
+                fromId = it.fromId,
+                fromNick = "",
+                groupId = it.groupId,
+                accept = if (it.operate == 0) true else if (it.operate % 2 == 0) null else false,
+                blackList = it.operate == 3 || it.operate == 4
+            )
 //            when(it.operate) {
 //                0 -> event.accept() // accept
 //                1 -> event.reject(blackList = false) // reject
