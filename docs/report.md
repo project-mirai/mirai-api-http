@@ -19,6 +19,10 @@ report:
   friendMessage:
     # 可选，是否上报，默认不上报
     report: true
+  # 可选，上报临时消息的配置
+  tempMessage:
+    # 可选，是否上报，默认不上报
+    report: true
   # 可选，上报事件消息的配置
   eventMessage:
     report: true
