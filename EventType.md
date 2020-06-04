@@ -878,7 +878,8 @@
     "eventId": 12345678,
     "fromId": 123456,
     "groupId": 654321,
-    "nick": "Nick Name"
+    "nick": "Nick Name",
+    "message": ""
 }
 ```
 
@@ -888,6 +889,7 @@
 | fromId  | Long   | 申请人QQ号                                            |
 | groupId | Long   | 申请人如果通过某个群添加好友，该项为该群群号；否则为0 |
 | nick    | String | 申请人的昵称或群名片                                  |
+| message | String | 申请消息                                           |
 
 ##### 响应
 
@@ -932,7 +934,8 @@
     "fromId": 123456,
     "groupId": 654321,
     "groupName": "Group",
-    "nick": "Nick Name"
+    "nick": "Nick Name",
+    "message": ""
 }
 ```
 
@@ -943,6 +946,7 @@
 | groupId   | Long   | 申请人申请入群的群号         |
 | groupName | String | 申请人申请入群的群名称       |
 | nick      | String | 申请人的昵称或群名片         |
+| message   | String | 申请消息                  |
 
 ##### 响应
 
@@ -966,7 +970,7 @@
 | sessionKey | String | session key                   |
 | eventId    | Long   | 响应申请事件的标识            |
 | fromId     | Long   | 事件对应申请人QQ号            |
-| groupId    | Long   | 事件对应申请人的群号，可能为0 |
+| groupId    | Long   | 事件对应申请人的群号           |
 | operate    | Int    | 响应的操作类型                |
 | message    | String | 回复的信息                    |
 
@@ -978,3 +982,58 @@
 | 3       | 拒绝入群并添加黑名单，不再接收该用户的入群申请 |
 | 4       | 忽略入群并添加黑名单，不再接收该用户的入群申请 |
 
+
+
+#### Bot被邀请入群申请
+
+```json
+{
+    "type": "BotInvitedJoinGroupRequestEvent",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "groupName": "Group",
+    "nick": "Nick Name",
+    "message": ""
+}
+```
+
+| 名字      | 类型   | 说明                         |
+| --------- | ------ | ---------------------------- |
+| eventId   | Long   | 事件标识，响应该事件时的标识 |
+| fromId    | Long   | 邀请人（好友）的QQ号              |
+| groupId   | Long   | 被邀请进入群的群号         |
+| groupName | String | 被邀请进入群的群名称       |
+| nick      | String | 邀请人（好友）的昵称         |
+| message   | String | 邀请消息                  |
+
+##### 响应
+
+```
+[POST] /resp/memberJoinRequestEvent
+```
+
+```json
+{
+    "sessionKey": "YourSessionKey",
+    "eventId": 12345678,
+    "fromId": 123456,
+    "groupId": 654321,
+    "operate": 0,
+    "message": ""
+}
+```
+
+| 名字       | 类型   | 说明                          |
+| ---------- | ------ | ----------------------------- |
+| sessionKey | String | session key                   |
+| eventId    | Long   | 事件标识            |
+| fromId     | Long   | 邀请人（好友）的QQ号            |
+| groupId    | Long   | 被邀请进入群的群号 |
+| operate    | Int    | 响应的操作类型                |
+| message    | String | 回复的信息                    |
+
+| operate | 说明                                           |
+| ------- | ---------------------------------------------- |
+| 0       | 同意邀请                                       |
+| 1       | 拒绝邀请                                       |
