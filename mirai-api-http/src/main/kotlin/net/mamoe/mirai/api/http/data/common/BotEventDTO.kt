@@ -142,6 +142,14 @@ suspend fun BotEvent.toDTO() = when (this) {
             groupName,
             fromNick
         )
+        is BotInvitedJoinGroupRequestEvent -> BotInvitedJoinGroupRequestEventDTO(
+            eventId,
+            "",
+            invitorId,
+            groupId,
+            groupName,
+            invitorNick
+        )
         else -> IgnoreEventDTO
     }
 }
@@ -357,6 +365,17 @@ data class NewFriendRequestEventDTO(
 @Serializable
 @SerialName("MemberJoinRequestEvent")
 data class MemberJoinRequestEventDTO(
+    val eventId: Long,
+    val message: String,
+    val fromId: Long,
+    val groupId: Long,
+    val groupName: String,
+    val nick: String
+) : BotEventDTO()
+
+@Serializable
+@SerialName("BotInvitedJoinGroupRequestEvent")
+data class BotInvitedJoinGroupRequestEventDTO(
     val eventId: Long,
     val message: String,
     val fromId: Long,

@@ -71,6 +71,16 @@ fun Application.eventRouteModule() {
             call.respondStateCode(StateCode.Success)
         }
 
+        miraiVerify<EventRespDTO>("/resp/botInvitedJoinGroupRequestEvent") {
+            it.session.bot._lowLevelSolveBotInvitedJoinGroupRequestEvent(
+                eventId = it.eventId,
+                invitorId = it.fromId,
+                groupId = it.groupId,
+                accept = it.operate == 0
+            )
+            call.respondStateCode(StateCode.Success)
+        }
+
     }
 }
 
