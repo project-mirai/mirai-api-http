@@ -1257,7 +1257,7 @@ Content-Type：multipart/form-data
     "name": "login",
     "alias": ["lg", "SignIn"],
     "description": "用于登录",
-    "usage": "/login qq password",
+    "usage": "/login qq password"
 }
 ```
 
