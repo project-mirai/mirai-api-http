@@ -17,6 +17,7 @@ import net.mamoe.mirai.api.http.queue.MessageQueue
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
+import net.mamoe.mirai.event.subscribeTempMessages
 import net.mamoe.mirai.message.MessageEvent
 import net.mamoe.mirai.utils.currentTimeSeconds
 import kotlin.coroutines.CoroutineContext
@@ -130,9 +131,15 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
     internal var latestUsed = currentTimeSeconds
 
     init {
-        _listener = bot.subscribeAlways{ this.run(messageQueue::add) }
+        _listener = bot.subscribeAlways{
+            if (this.bot === this@AuthedSession.bot) {
+                this.run(messageQueue::add)
+            }
+        }
         _cache = bot.subscribeAlways {
-            cacheQueue.add(this.source)
+            if (this.bot === this@AuthedSession.bot) {
+                cacheQueue.add(this.source)
+            }
         }
 
         if (config.enableWebsocket) {
@@ -159,7 +166,11 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
 
     fun disableWebSocket() {
         if (_listener.isCompleted) {
-            _listener = bot.subscribeAlways{ this.run(messageQueue::add) }
+            _listener = bot.subscribeAlways{
+                if (this.bot === this@AuthedSession.bot) {
+                    this.run(messageQueue::add)
+                }
+            }
         }
     }
 
