@@ -259,7 +259,7 @@ cors:
 [POST] /sendTempMessage
 ```
 
-使用此方法向指定好友发送消息
+使用此方法向临时会话对象发送消息
 
 #### 请求
 
@@ -849,7 +849,7 @@ Content-Type：multipart/form-data
 
 ### 群解除群成员禁言
 
-使用此方法令指定群解除全体禁言（需要有相关限权）
+使用此方法指定群解除群成员禁言（需要有相关限权）
 
 ```
 [POST] /unmute
@@ -930,7 +930,7 @@ Content-Type：multipart/form-data
 | 名字       | 可选  | 类型   | 举例             | 说明            |
 | ---------- | ----- | ------ | ---------------- | --------------- |
 | sessionKey | false | String | "YourSessionKey" | 你的session key |
-| target     | false | Long   | 123456789        | 群出的群号    |
+| target     | false | Long   | 123456789        | 退出的群号    |
 
 #### 响应
 
