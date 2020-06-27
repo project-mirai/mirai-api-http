@@ -979,7 +979,7 @@ Content-Type：multipart/form-data
 | name              | true  | String  | "Name"           | 群名                 |
 | announcement      | true  | String  | "Announcement"   | 群公告               |
 | confessTalk       | true  | Boolean | true             | 是否开启坦白说       |
-| allowMemberInvite | true  | Boolean | true             | 是否运行群员邀请     |
+| allowMemberInvite | true  | Boolean | true             | 是否允许群员邀请     |
 | autoApprove       | true  | Boolean | true             | 是否开启自动审批入群 |
 | anonymousChat     | true  | Boolean | true             | 是否允许匿名聊天     |
 
@@ -1265,7 +1265,7 @@ Content-Type：multipart/form-data
 | ----------- | ----- | ------ | ------------- | -------------------------------- |
 | authKey     | false | String | "YourAuthKey" | 你的authKey                      |
 | name        | false | String | "login"       | 指令名                           |
-| alias       | false | String[] | -           | 群员QQ号                         |
+| alias       | false | String[] | -           | 指令别名                         |
 | description | false | String | ""            | 指令描述                         |
 | usage       | true  | String | "Name"        | 指令描述，会在指令执行错误时显示 |
 
