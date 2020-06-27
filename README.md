@@ -977,7 +977,7 @@ Content-Type：multipart/form-data
 | target            | false | Long    | 123456789        | 指定群的群号         |
 | config            | false | Object  | {}               | 群设置               |
 | name              | true  | String  | "Name"           | 群名                 |
-| announcement      | true  | Boolean | true             | 群公告               |
+| announcement      | true  | String  | "Announcement"   | 群公告               |
 | confessTalk       | true  | Boolean | true             | 是否开启坦白说       |
 | allowMemberInvite | true  | Boolean | true             | 是否运行群员邀请     |
 | autoApprove       | true  | Boolean | true             | 是否开启自动审批入群 |
