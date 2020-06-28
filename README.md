@@ -259,7 +259,7 @@ cors:
 [POST] /sendTempMessage
 ```
 
-使用此方法向指定好友发送消息
+使用此方法向临时会话对象发送消息
 
 #### 请求
 
@@ -849,7 +849,7 @@ Content-Type：multipart/form-data
 
 ### 群解除群成员禁言
 
-使用此方法令指定群解除全体禁言（需要有相关限权）
+使用此方法指定群解除群成员禁言（需要有相关限权）
 
 ```
 [POST] /unmute
@@ -930,7 +930,7 @@ Content-Type：multipart/form-data
 | 名字       | 可选  | 类型   | 举例             | 说明            |
 | ---------- | ----- | ------ | ---------------- | --------------- |
 | sessionKey | false | String | "YourSessionKey" | 你的session key |
-| target     | false | Long   | 123456789        | 群出的群号    |
+| target     | false | Long   | 123456789        | 退出的群号    |
 
 #### 响应
 
@@ -977,9 +977,9 @@ Content-Type：multipart/form-data
 | target            | false | Long    | 123456789        | 指定群的群号         |
 | config            | false | Object  | {}               | 群设置               |
 | name              | true  | String  | "Name"           | 群名                 |
-| announcement      | true  | Boolean | true             | 群公告               |
+| announcement      | true  | String  | "Announcement"   | 群公告               |
 | confessTalk       | true  | Boolean | true             | 是否开启坦白说       |
-| allowMemberInvite | true  | Boolean | true             | 是否运行群员邀请     |
+| allowMemberInvite | true  | Boolean | true             | 是否允许群员邀请     |
 | autoApprove       | true  | Boolean | true             | 是否开启自动审批入群 |
 | anonymousChat     | true  | Boolean | true             | 是否允许匿名聊天     |
 
@@ -1265,7 +1265,7 @@ Content-Type：multipart/form-data
 | ----------- | ----- | ------ | ------------- | -------------------------------- |
 | authKey     | false | String | "YourAuthKey" | 你的authKey                      |
 | name        | false | String | "login"       | 指令名                           |
-| alias       | false | String[] | -           | 群员QQ号                         |
+| alias       | false | String[] | -           | 指令别名                         |
 | description | false | String | ""            | 指令描述                         |
 | usage       | true  | String | "Name"        | 指令描述，会在指令执行错误时显示 |
 
