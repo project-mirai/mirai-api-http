@@ -1010,7 +1010,7 @@
 ##### 响应
 
 ```
-[POST] /resp/memberJoinRequestEvent
+[POST] /resp/botInvitedJoinGroupRequestEvent
 ```
 
 ```json
