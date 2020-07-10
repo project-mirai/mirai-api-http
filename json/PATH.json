@@ -1,0 +1,46 @@
+{
+  "version": 6,
+  "environments": [
+    {
+      "id": "ce31596f-f459-49ae-afdc-d0b988270f9e",
+      "name": "test1",
+      "variables": {
+        "d72c14e1-63da-4602-9b69-b71a51480d4d": {
+          "createdAt": "2020-06-22T22:17:47.393+08:00",
+          "name": "host",
+          "value": "http://127.0.0.1:8080",
+          "enabled": true,
+          "private": false
+        },
+        "ae044744-773b-4bb4-b601-0123e4e61025": {
+          "createdAt": "2020-06-22T22:18:07.966+08:00",
+          "name": "session",
+          "value": "DB5ZTK6v",
+          "enabled": true,
+          "private": false
+        },
+        "2398d457-d73b-41b7-9f59-0e1511e7182d": {
+          "createdAt": "2020-06-22T22:18:07.966+08:00",
+          "name": "authKey",
+          "value": "1234567890",
+          "enabled": true,
+          "private": false
+        },
+        "a45b4383-1441-4db4-84c2-87018ea48728": {
+          "createdAt": "2020-07-10T20:20:57.210+08:00",
+          "name": "",
+          "value": "",
+          "enabled": true,
+          "private": false
+        },
+        "9a0df312-04ab-4224-b7ac-7d9267bb4a11": {
+          "createdAt": "2020-07-10T20:20:57.210+08:00",
+          "name": "qq",
+          "value": "3220147636",
+          "enabled": true,
+          "private": false
+        }
+      }
+    }
+  ]
+}

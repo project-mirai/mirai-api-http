@@ -1,0 +1,1199 @@
+{
+  "version": 6,
+  "entities": [
+    {
+      "entity": {
+        "type": "Project",
+        "description": "",
+        "id": "74c7ae05-c41c-41c6-ac91-1890ffcdf848",
+        "name": "mirai-api"
+      },
+      "children": [
+        {
+          "entity": {
+            "type": "Service",
+            "description": "管理相关",
+            "id": "90f7ccba-0c0b-41a1-8a08-867c94730efb",
+            "name": "API-HTTP插件相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/about"
+                },
+                "id": "a068480f-e1e7-459a-afaa-e95a26b385aa",
+                "name": "获取插件信息",
+                "headers": []
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
+            "id": "1dfde690-348c-4af1-969a-5a9fd6eb0828",
+            "name": "插件相关、Console相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"authKey\": \"${authKey}\",\n  \"name\": \"gin\",\n  \"args\": [\"123\", \"pwd\"]\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/command/send"
+                },
+                "id": "d8dbe8fd-3ad7-45b2-ac88-bab055ecea3e",
+                "name": "发送指令",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"authKey\": \"${authKey}\",\n  \"name\": \"gin\",\n  \"alias\": [\"lg\",\"SignIn\"],\n  \"description\": \"用于登录\",\n  \"usage\": \"/gin qq password\"\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/command/register"
+                },
+                "id": "71f85e70-4296-44a2-b526-47d7759c2928",
+                "name": "注册指令",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  }
+                },
+                "id": "23e8aef7-ae45-4b24-8b93-2b102c92a70c",
+                "name": "获取Mangers",
+                "headers": []
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
+            "id": "b736f2a8-e31b-4fbf-b9f4-b0a24e9995d9",
+            "name": "消息相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"qq\": 211995046,\n  \"group\": 1035121964,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/sendTempMessage"
+                },
+                "id": "c448c8cf-2a4f-44a6-9de9-77263b7733d8",
+                "name": "发送临时会话消息",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"urls\": [\n    \"https://i1.hdslb.com/bfs/archive/04cbc0a251acc36bf44741f93517a6a0bbdbb1fc.jpg\"\n  ]\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/sendImageMessage"
+                },
+                "id": "d5823b26-7a09-4b42-bb81-746c1ca8268d",
+                "name": "发送图片消息（通过URL）",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 201215049,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/sendFriendMessage"
+                },
+                "id": "f2278e70-aca7-4e90-9271-0bc168a53ded",
+                "name": "发送好友消息",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/sendGroupMessage"
+                },
+                "id": "5edc6284-7dbc-4708-922c-e5c918151772",
+                "name": "发送群消息",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "multipart/form-data",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "type": "Text",
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "type": "Text",
+                        "name": "type",
+                        "value": "group"
+                      },
+                      {
+                        "enabled": true,
+                        "type": "File",
+                        "name": "img"
+                      }
+                    ]
+                  },
+                  "bodyType": "Form",
+                  "textBody": ""
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/uploadImage"
+                },
+                "id": "3850bf71-e4fb-473b-aedc-5a6366bb59bb",
+                "name": "图片文件上传",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "multipart/form-data"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 9018\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/recall"
+                },
+                "id": "b217eaba-3366-4c3e-a846-5295760cf03d",
+                "name": "撤回消息",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/countMessage"
+                },
+                "id": "c4df569b-f877-4c13-aa50-f83a11c03231",
+                "name": "查看缓存的消息总数",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "count",
+                        "value": "10"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/fetchMessage"
+                },
+                "id": "4b4e38fd-e7aa-44f7-b069-d006ab12f839",
+                "name": "获取Bot收到的消息和事件",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "id",
+                        "value": "9018"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/messageFromId"
+                },
+                "id": "75133b53-cbcf-40fe-bcb5-4d24167ed63d",
+                "name": "通过messageId获取一条被缓存的消息",
+                "headers": []
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
+            "id": "99185c7f-ad79-4411-9d4c-21c5df65cf48",
+            "name": "管理相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046,\n  \"info\": {\n    \"name\": \"2333\"\n  }\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/memberInfo"
+                },
+                "id": "5b904212-1464-4b1a-9fed-3f28b33c96f6",
+                "name": "修改群员资料",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046,\n  \"msg\": \"测试踢人\"\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/kick"
+                },
+                "id": "22b5567a-5bbf-4b72-bb44-5485ce159f68",
+                "name": "移出群成员",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/muteAll"
+                },
+                "id": "cf5417fe-baad-42c5-a113-ca18d5856ceb",
+                "name": "群全体禁言",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\":211995046,\n  \"time\": 1800\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/mute"
+                },
+                "id": "cdff6874-440d-4565-9f88-93ec63ae8d86",
+                "name": "群禁言群成员",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/unmuteAll"
+                },
+                "id": "e055e0f5-32fd-466e-b52c-f8ea9b4d9b37",
+                "name": "群解除全体禁言",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/unmute"
+                },
+                "id": "69379912-abe1-4791-8056-33f674c8a42a",
+                "name": "群解除群成员禁言",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"config\": {\n    \"name\": \"群名称\",\n    \"announcement\": \"群公告\",\n    \"confessTalk\": true,\n    \"allowMemberInvite\": true,\n    \"autoApprove\": true,\n    \"anonymousChat\": true\n  }\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/groupConfig"
+                },
+                "id": "5b4a50ff-1bb1-43b1-b813-509f5a2d9ba7",
+                "name": "群设置",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json;charset=utf-8"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/friendList"
+                },
+                "id": "3e659c2b-1db0-46f6-8cde-3307453b7f3d",
+                "name": "获取好友列表",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/groupList"
+                },
+                "id": "c10ed8d6-0cb7-4610-8f3a-2dec53ff3849",
+                "name": "获取群列表",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "target",
+                        "value": "1035121964"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "memberId",
+                        "value": "211995046"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/memberInfo"
+                },
+                "id": "11c6a492-4c2a-421d-af10-1a95213b88d0",
+                "name": "获取群员资料",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "target",
+                        "value": "1035121964"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/memberList"
+                },
+                "id": "7df27fbe-1ef9-460e-aef1-418dd7454b9e",
+                "name": "获取群成员列表",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "target",
+                        "value": "1035121964"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/groupConfig"
+                },
+                "id": "fc2d806c-570a-43af-af62-eba4e67db58f",
+                "name": "获取群设置",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/quit"
+                },
+                "id": "350df36e-e7cd-4cec-8001-85e5db80d6dd",
+                "name": "退出群聊",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
+            "id": "8c385f1b-9cd1-427e-884a-06798d694637",
+            "name": "认证相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"authKey\": \"${authKey}\"\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "//auth"
+                },
+                "id": "96f6db46-dd04-4686-a3cf-c4def044c9fd",
+                "name": "开始会话-认证(Authorize)",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"qq\": ${qq}\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "//verify"
+                },
+                "id": "233ec8e3-5de3-48c2-ad73-1975ce9ec164",
+                "name": "校验会话",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"qq\": ${\n  qq\n}\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/release"
+                },
+                "id": "c1322235-1168-43e0-a260-e89091156012",
+                "name": "释放会话",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
+            "id": "c1c2f7c0-8f6f-46ba-843e-3f6934d708b3",
+            "name": "配置相关"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+                  "name": "GET"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "sessionKey",
+                        "value": "${session}"
+                      }
+                    ]
+                  },
+                  "host": "${host}",
+                  "path": "/config"
+                },
+                "id": "f25756b8-e64d-46ed-9b1d-c4a15e63014b",
+                "name": "获取指定Session的配置",
+                "headers": []
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text",
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"cacheSize\": 4096,\n  \"enableWebsocket\": true\n}"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "host": "${host}",
+                  "path": "/config"
+                },
+                "id": "e6da57ef-772a-4dd0-9f91-5134bce5c028",
+                "name": "设置指定Session的配置",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
