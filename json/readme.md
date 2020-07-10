@@ -2,7 +2,7 @@
 
 ![](https://cdn.jsdelivr.net/gh/daofeng2015/image/img/20200710224754.png)
 
-## 2.下载[mirai-http-api.json](https://raw.githubusercontent.com/daofeng2015/mirai-api-http/master/json/mirai-http-api.json.json)配置好的api文件，环境变量配置文件[PATH.json](https://raw.githubusercontent.com/daofeng2015/mirai-api-http/master/json/PATH.json)
+## 2.下载[mirai-http-api.json](https://raw.githubusercontent.com/daofeng2015/mirai-api-http/master/json/mirai-http-api.json)配置好的api文件，环境变量配置文件[PATH.json](https://raw.githubusercontent.com/daofeng2015/mirai-api-http/master/json/PATH.json)
 
 ## 3.导入配置文件.
 ### 3.1 点击 ![](https://cdn.jsdelivr.net/gh/daofeng2015/image/img/20200710225505.png) 新建环境变量名称,名称随意
