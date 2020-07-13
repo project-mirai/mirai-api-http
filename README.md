@@ -62,7 +62,7 @@ cors:
 
 ### 调试API已完成,点击下方查看
 
-**[点我查看](json/readme.md)**
+**[点我查看](API-Tester/install.md)**
 
 ### 获取插件信息
 

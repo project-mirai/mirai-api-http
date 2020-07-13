@@ -177,7 +177,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"qq\": 211995046,\n  \"group\": 1035121964,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"qq\": 211995046,\n  \"group\": 123456789,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
                 },
                 "uri": {
                   "query": {
@@ -213,7 +213,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"urls\": [\n    \"https://i1.hdslb.com/bfs/archive/04cbc0a251acc36bf44741f93517a6a0bbdbb1fc.jpg\"\n  ]\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"urls\": [\n    \"https://i1.hdslb.com/bfs/archive/04cbc0a251acc36bf44741f93517a6a0bbdbb1fc.jpg\"\n  ]\n}"
                 },
                 "uri": {
                   "query": {
@@ -249,7 +249,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 201215049,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
                 },
                 "uri": {
                   "query": {
@@ -285,7 +285,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"messageChain\": [\n    {\n      \"type\": \"Plain\",\n      \"text\":\"hello\\n\" \n    },\n    {\n      \"type\": \"Plain\",\n      \"text\":\"world\" \n    }\n  ]\n}"
                 },
                 "uri": {
                   "query": {
@@ -532,7 +532,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046,\n  \"info\": {\n    \"name\": \"2333\"\n  }\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"memberId\": 211995046,\n  \"info\": {\n    \"name\": \"2333\"\n  }\n}"
                 },
                 "uri": {
                   "query": {
@@ -568,7 +568,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046,\n  \"msg\": \"测试踢人\"\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"memberId\": 211995046,\n  \"msg\": \"测试踢人\"\n}"
                 },
                 "uri": {
                   "query": {
@@ -604,7 +604,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789\n}"
                 },
                 "uri": {
                   "query": {
@@ -640,7 +640,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\":211995046,\n  \"time\": 1800\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"memberId\":211995046,\n  \"time\": 1800\n}"
                 },
                 "uri": {
                   "query": {
@@ -676,7 +676,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789\n}"
                 },
                 "uri": {
                   "query": {
@@ -712,7 +712,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"memberId\": 211995046\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"memberId\": 211995046\n}"
                 },
                 "uri": {
                   "query": {
@@ -748,7 +748,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964,\n  \"config\": {\n    \"name\": \"群名称\",\n    \"announcement\": \"群公告\",\n    \"confessTalk\": true,\n    \"allowMemberInvite\": true,\n    \"autoApprove\": true,\n    \"anonymousChat\": true\n  }\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789,\n  \"config\": {\n    \"name\": \"群名称\",\n    \"announcement\": \"群公告\",\n    \"confessTalk\": true,\n    \"allowMemberInvite\": true,\n    \"autoApprove\": true,\n    \"anonymousChat\": true\n  }\n}"
                 },
                 "uri": {
                   "query": {
@@ -864,7 +864,7 @@
                       {
                         "enabled": true,
                         "name": "target",
-                        "value": "1035121964"
+                        "value": "123456789"
                       },
                       {
                         "enabled": true,
@@ -908,7 +908,7 @@
                       {
                         "enabled": true,
                         "name": "target",
-                        "value": "1035121964"
+                        "value": "123456789"
                       }
                     ]
                   },
@@ -947,7 +947,7 @@
                       {
                         "enabled": true,
                         "name": "target",
-                        "value": "1035121964"
+                        "value": "123456789"
                       }
                     ]
                   },
@@ -974,7 +974,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 1035121964\n}"
+                  "textBody": "{\n  \"sessionKey\": \"${session}\",\n  \"target\": 123456789\n}"
                 },
                 "uri": {
                   "query": {
