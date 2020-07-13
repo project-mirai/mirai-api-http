@@ -22,7 +22,9 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.readAllParts
+import io.ktor.request.contentCharset
 import io.ktor.request.receive
+import io.ktor.request.receiveChannel
 import io.ktor.request.receiveMultipart
 import io.ktor.response.defaultTextContentType
 import io.ktor.response.respond
@@ -31,6 +33,8 @@ import io.ktor.routing.Route
 import io.ktor.routing.route
 import io.ktor.util.pipeline.ContextDsl
 import io.ktor.util.pipeline.PipelineContext
+import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.streams.inputStream
 import io.ktor.websocket.WebSockets
 import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
@@ -45,6 +49,7 @@ import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
+import java.nio.charset.Charset
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -204,7 +209,12 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(dto: T,
 internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
     respondText(json, defaultTextContentType(ContentType("application", "json")), status)
 
-internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? = receive<String>().jsonParseOrNull()
+internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
+    receiveChannel().readRemaining().use {
+        val charset = request.contentCharset() ?: Charsets.UTF_8
+        if (charset == Charsets.UTF_8) it.readText()
+        else it.inputStream().reader(charset).readText()
+    }.jsonParseOrNull()
 
 
 fun PipelineContext<Unit, ApplicationCall>.illegalParam(
