@@ -583,24 +583,28 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-    "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
-    "messageChain": [                // 消息链，是一个消息对象构成的数组
-      {
-        "type": "Source",
-        "id": 123456,
-        "time": 123456789
-      },
-      {
-        "type": "Plain",
-        "text": "Miral牛逼"
-      }
-    ],
-    "sender": {                      // 发送者信息
-        "id": 1234567890,            // 发送者的QQ号码
-        "nickname": "",              // 发送者的昵称
-        "remark": ""                 // 发送者的备注
+    "code": 0,
+    "errorMessage": "",
+    "data":{
+        "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
+        "messageChain": [                // 消息链，是一个消息对象构成的数组
+        {
+            "type": "Source",
+            "id": 123456,
+            "time": 123456789
+        },
+        {
+            "type": "Plain",
+            "text": "Miral牛逼"
+        }
+        ],
+        "sender": {                      // 发送者信息
+            "id": 1234567890,            // 发送者的QQ号码
+            "nickname": "",              // 发送者的昵称
+            "remark": ""                 // 发送者的备注
+        }
     }
- }
+}
 ```
 
 ### 查看缓存的消息总数
