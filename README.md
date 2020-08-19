@@ -441,7 +441,7 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-    "imageId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr",
+    "voiceId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr",
     "url": "xxxxxxxxxxxxxxxxxxxx",
     "path": "xxxxxxxxxx"
 }

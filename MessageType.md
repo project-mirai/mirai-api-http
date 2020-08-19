@@ -133,7 +133,7 @@
 ```json5
 {
     "type": "Voice",
-    "imageId": "23C477720A37FEB6A9EE4BCCF654014F.amr",
+    "voiceId": "23C477720A37FEB6A9EE4BCCF654014F.amr",
     "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "path": null
 }
