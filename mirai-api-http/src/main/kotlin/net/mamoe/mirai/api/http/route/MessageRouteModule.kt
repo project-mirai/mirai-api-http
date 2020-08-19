@@ -213,7 +213,7 @@ fun Application.messageModule() {
                 it.group != null -> bot.getGroup(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
-            val ls = it.urls.map { url -> contact.uploadImage(URL(url)) }
+            val ls = it.urls.map { url -> contact.uploadImage(URL(url).openStream()) }
             val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
 
             it.session.cacheQueue.add(receipt.source)
@@ -223,7 +223,7 @@ fun Application.messageModule() {
         // TODO: 重构
         miraiMultiPart("uploadImage") { session, parts ->
 
-            var path: String? = null
+            var path: String?
 
             val type = parts.value("type")
             parts.file("img")?.apply {
@@ -252,6 +252,40 @@ fun Application.messageModule() {
                         path
                     ))
                 } ?: throw IllegalAccessException("图片上传错误")
+
+            } ?: throw IllegalAccessException("未知错误")
+        }
+
+        miraiMultiPart("uploadVoice") { session, parts ->
+
+            var path: String?
+
+            val type = parts.value("type")
+            parts.file("voice")?.apply {
+
+                val voice = streamProvider().use {
+                    // originalFileName assert not null
+                    val newFile = HttpApiPluginBase.saveVoiceAsync(
+                            originalFileName ?: generateSessionKey(), it.readBytes())
+
+                    when (type) {
+                        "group" -> session.bot.groups.firstOrNull()?.uploadVoice(newFile.await().inputStream())
+                        else -> null
+                    }.apply {
+                        // 使用apply不影响when返回
+                        path = newFile.await().absolutePath
+
+                    }
+                }
+
+                voice?.apply {
+                    call.respondDTO(UploadVoiceRetDTO(
+                            url,
+                            fileName,
+                            fileSize,
+                            path
+                    ))
+                } ?: throw IllegalAccessException("语音上传错误")
 
             } ?: throw IllegalAccessException("未知错误")
         }
@@ -298,6 +332,15 @@ private class SendRetDTO(
 private class UploadImageRetDTO(
     val imageId: String,
     val url: String,
+    val path: String?
+) : DTO
+
+@Serializable
+@Suppress("unused")
+private class UploadVoiceRetDTO(
+    val url: String?,
+    val fileName: String,
+    val fileSize: Long,
     val path: String?
 ) : DTO
 

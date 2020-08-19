@@ -78,6 +78,13 @@ data class FlashImageDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("Voice")
+data class VoiceDTO(
+    val url: String? = null,
+    val path: String? = null
+) : MessageDTO()
+
+@Serializable
 @SerialName("Xml")
 data class XmlDTO(val xml: String) : MessageDTO()
 
@@ -160,6 +167,7 @@ suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl())
     is FlashImage -> FlashImageDTO(image.imageId, image.queryUrl())
+    is Voice -> VoiceDTO(url, fileName)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
@@ -185,7 +193,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is PlainDTO -> PlainText(text)
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url) })
+        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url).openStream() })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
                 contact.uploadImage(this)
@@ -195,7 +203,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     }
     is FlashImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url) })
+        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url).openStream() })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
                 contact.uploadImage(this)
@@ -203,6 +211,18 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }?.flash()
+    is VoiceDTO -> when {
+        contact !is Group -> null
+        !url.isNullOrBlank() -> contact.uploadVoice(withContext(Dispatchers.IO) { URL(url).openStream() }).also {
+            println("${it.url} ${it.fileName} ${it.fileSize} ${it.md5}")
+        }
+        !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
+            if (exists()) {
+                contact.uploadVoice(this.inputStream())
+            } else throw NoSuchFileException(this)
+        }
+        else -> null
+    }
     is XmlDTO -> ServiceMessage(60, xml)
     is JsonDTO -> ServiceMessage(1, json)
     is AppDTO -> LightApp(content)

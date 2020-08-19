@@ -41,12 +41,12 @@ kotlin {
             compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
             compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
 
-
             compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
             compileOnly(kotlin("stdlib-jdk7", kotlinVersion))
             compileOnly(kotlin("reflect", kotlinVersion))
 
             api(ktor("server-cio"))
+            api(ktor("client"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
             compileOnly(kotlinx("io-jvm"))
@@ -90,7 +90,7 @@ kotlin {
             compileOnly(kotlinx("io"))
             compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
             compileOnly(kotlinx("coroutines-core", coroutinesVersion))
-            compileOnly(kotlinx("serialization-runtime", serializationVersion))
+            compileOnly(kotlinx("serialization-core", serializationVersion))
             implementation(ktor("server-core"))
             implementation(ktor("http"))
         }
