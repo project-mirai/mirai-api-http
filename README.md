@@ -418,6 +418,37 @@ Content-Type：multipart/form-data
 
 
 
+### 语音文件上传
+
+```
+[POST] /uploadVoice
+```
+
+使用此方法上传语音文件至服务器并返回VoiceId
+
+#### 请求
+
+Content-Type：multipart/form-data
+
+| 名字         | 类型   | 可选  | 举例        | 说明                               |
+| ------------ | ------ | ----- | ----------- | ---------------------------------- |
+| sessionKey   | String | false | YourSession | 已经激活的Session                  |
+| type         | String | false | "group"     | 当前仅支持 "group"                   |
+| voice        | File   | false | -           | 语音文件                           |
+
+
+#### 响应: 语音的VoiceId
+
+```json5
+{
+    "imageId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr",
+    "url": "xxxxxxxxxxxxxxxxxxxx",
+    "path": "xxxxxxxxxx"
+}
+```
+
+
+
 ### 撤回消息
 
 ```

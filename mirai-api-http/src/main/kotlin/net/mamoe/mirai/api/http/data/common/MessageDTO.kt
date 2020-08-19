@@ -80,6 +80,7 @@ data class FlashImageDTO(
 @Serializable
 @SerialName("Voice")
 data class VoiceDTO(
+    val voiceId: String? = null,
     val url: String? = null,
     val path: String? = null
 ) : MessageDTO()
@@ -167,7 +168,7 @@ suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl())
     is FlashImage -> FlashImageDTO(image.imageId, image.queryUrl())
-    is Voice -> VoiceDTO(url, fileName)
+    is Voice -> VoiceDTO(fileName, url)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
@@ -213,9 +214,8 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     }?.flash()
     is VoiceDTO -> when {
         contact !is Group -> null
-        !url.isNullOrBlank() -> contact.uploadVoice(withContext(Dispatchers.IO) { URL(url).openStream() }).also {
-            println("${it.url} ${it.fileName} ${it.fileSize} ${it.md5}")
-        }
+        !voiceId.isNullOrBlank() -> Voice(voiceId, ByteArray(0), 0, "")
+        !url.isNullOrBlank() -> contact.uploadVoice(withContext(Dispatchers.IO) { URL(url).openStream() })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
             if (exists()) {
                 contact.uploadVoice(this.inputStream())
@@ -233,4 +233,3 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is UnknownMessageDTO
     -> null
 }
-

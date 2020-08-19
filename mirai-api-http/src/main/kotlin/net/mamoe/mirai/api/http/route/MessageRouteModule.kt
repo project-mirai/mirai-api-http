@@ -280,10 +280,9 @@ fun Application.messageModule() {
 
                 voice?.apply {
                     call.respondDTO(UploadVoiceRetDTO(
-                            url,
-                            fileName,
-                            fileSize,
-                            path
+                        fileName,
+                        url,
+                        path
                     ))
                 } ?: throw IllegalAccessException("语音上传错误")
 
@@ -338,9 +337,8 @@ private class UploadImageRetDTO(
 @Serializable
 @Suppress("unused")
 private class UploadVoiceRetDTO(
+    val voiceId: String,
     val url: String?,
-    val fileName: String,
-    val fileSize: Long,
     val path: String?
 ) : DTO
 
