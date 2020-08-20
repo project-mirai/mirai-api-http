@@ -12,91 +12,58 @@ package net.mamoe.mirai.api.http.util
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
 import net.mamoe.mirai.api.http.data.common.*
 import kotlin.reflect.KClass
 
 // 解析失败时直接返回null，由路由判断响应400状态
-@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> String.jsonParseOrNull(
     serializer: DeserializationStrategy<T>? = null
 ): T? = try {
-    if (serializer == null) MiraiJson.json.parse(this) else Json.parse(this)
+    if (serializer == null) MiraiJson.json.decodeFromString(this) else Json.decodeFromString(this)
 } catch (e: Exception) {
     null
 }
 
 
-@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
 inline fun <reified T : Any> T.toJson(
     serializer: SerializationStrategy<T>? = null
-): String = if (serializer == null) MiraiJson.json.stringify(this)
-else MiraiJson.json.stringify(serializer, this)
+): String = if (serializer == null) MiraiJson.json.encodeToString(this)
+else MiraiJson.json.encodeToString(serializer, this)
 
 
 // 序列化列表时，stringify需要使用的泛型是T，而非List<T>
 // 因为使用的stringify的stringify(objs: List<T>)重载
-@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
+
 inline fun <reified T : Any> List<T>.toJson(
     serializer: SerializationStrategy<List<T>>? = null
-): String = if (serializer == null) MiraiJson.json.stringify(this)
-else MiraiJson.json.stringify(serializer, this)
+): String = if (serializer == null) MiraiJson.json.encodeToString(this)
+else MiraiJson.json.encodeToString(serializer, this)
 
 
 /**
  * Json解析规则，需要注册支持的多态的类
  */
 object MiraiJson {
-    @OptIn(ImplicitReflectionSerializer::class)
-    @UnstableDefault
+
+    @OptIn(InternalSerializationApi::class)
     val json = Json {
 
         isLenient = true
         ignoreUnknownKeys = true
 
         @Suppress("UNCHECKED_CAST")
-        serialModule = SerializersModule {
-
-            polymorphic(EventDTO::class) {
-
-                GroupMessagePacketDTO::class with GroupMessagePacketDTO.serializer()
-                FriendMessagePacketDTO::class with FriendMessagePacketDTO.serializer()
-                TempMessagePacketDto::class with TempMessagePacketDto.serializer()
+        serializersModule = SerializersModule {
 
 
-                /*
-                 * BotEventDTO为sealed Class，以BotEventDTO为接收者的函数可以自动进行多态序列化
-                 * 这里通过向EventDTO为接收者的方法进行所有事件类型的多态注册
-                 */
-                BotEventDTO::class.sealedSubclasses.forEach {
-                    val clazz = it as KClass<BotEventDTO>
-                    clazz with clazz.serializer()
-                }
+            polymorphic(EventDTO::class, GroupMessagePacketDTO::class, GroupMessagePacketDTO.serializer())
+            polymorphic(EventDTO::class, FriendMessagePacketDTO::class, FriendMessagePacketDTO.serializer())
+            polymorphic(EventDTO::class, TempMessagePacketDto::class, TempMessagePacketDto.serializer())
 
-//                BotOnlineEventDTO::class with BotOnlineEventDTO.serializer()
-//                BotOfflineEventActiveDTO::class with BotOfflineEventActiveDTO.serializer()
-//                BotOfflineEventForceDTO::class with BotOfflineEventForceDTO.serializer()
-//                BotOfflineEventDroppedDTO::class with BotOfflineEventDroppedDTO.serializer()
-//                BotReloginEventDTO::class with BotReloginEventDTO.serializer()
-//                GroupRecallEventDTO::class with GroupRecallEventDTO.serializer()
-//                FriendRecallEventDTO::class with FriendRecallEventDTO.serializer()
-//                BotGroupPermissionChangeEventDTO::class with BotGroupPermissionChangeEventDTO.serializer()
-//                BotMuteEventDTO::class with BotMuteEventDTO.serializer()
-//                BotUnmuteEventDTO::class with BotUnmuteEventDTO.serializer()
-//                BotJoinGroupEventDTO::class with BotJoinGroupEventDTO.serializer()
-//                GroupNameChangeEventDTO::class with GroupNameChangeEventDTO.serializer()
-//                GroupEntranceAnnouncementChangeEventDTO::class with GroupEntranceAnnouncementChangeEventDTO.serializer()
-//                GroupMuteAllEventDTO::class with GroupMuteAllEventDTO.serializer()
-//                GroupAllowAnonymousChatEventDTO::class with GroupAllowAnonymousChatEventDTO.serializer()
-//                GroupAllowConfessTalkEventDTO::class with GroupAllowConfessTalkEventDTO.serializer()
-//                GroupAllowMemberInviteEventDTO::class with GroupAllowMemberInviteEventDTO.serializer()
-//                MemberJoinEventDTO::class with MemberJoinEventDTO.serializer()
-//                MemberLeaveEventKickDTO::class with MemberLeaveEventKickDTO.serializer()
-//                MemberLeaveEventQuitDTO::class with MemberLeaveEventQuitDTO.serializer()
-//                MemberCardChangeEventDTO::class with MemberCardChangeEventDTO.serializer()
-//                MemberSpecialTitleChangeEventDTO::class with MemberSpecialTitleChangeEventDTO.serializer()
-//                MemberPermissionChangeEventDTO::class with MemberPermissionChangeEventDTO.serializer()
-//                MemberMuteEventDTO::class with MemberMuteEventDTO.serializer()
-//                MemberUnmuteEventDTO::class with MemberUnmuteEventDTO.serializer()
+            BotEventDTO::class.sealedSubclasses.forEach {
+                val clazz = it as KClass<BotEventDTO>
+                polymorphic(EventDTO::class, clazz, clazz.serializer())
+
             }
         }
     }
