@@ -37,38 +37,29 @@ val miraiConsoleVersion: String by rootProject.ext
 kotlin {
     sourceSets["main"].apply {
         dependencies {
-            compileOnly("net.mamoe:mirai-core:$miraiVersion")
-            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
-            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
+//            compileOnly("net.mamoe:mirai-core:$miraiVersion")
+//            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
+//            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
 
-            compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
-            compileOnly(kotlin("stdlib-jdk7", kotlinVersion))
-            compileOnly(kotlin("reflect", kotlinVersion))
 
-            api(ktor("server-cio"))
-            api(ktor("client"))
-            api(ktor("http-jvm"))
-            api(ktor("websockets"))
-            compileOnly(kotlinx("io-jvm"))
-            api("org.slf4j:slf4j-simple:1.7.26")
+//            compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
+//            compileOnly(kotlin("stdlib-jdk7", kotlinVersion))
+//            compileOnly(kotlin("reflect", kotlinVersion))
+//            api("org.slf4j:slf4j-simple:1.7.26")
         }
     }
 
     sourceSets["test"].apply {
         dependencies {
-            api("net.mamoe:mirai-core:$miraiVersion")
-            api("net.mamoe:mirai-core-qqandroid:$miraiVersion")
-            api("net.mamoe:mirai-console:$miraiConsoleVersion")
+//            api("net.mamoe:mirai-core:$miraiVersion")
+//            api("net.mamoe:mirai-core-qqandroid:$miraiVersion")
+//            api("net.mamoe:mirai-console:$miraiConsoleVersion")
 
 
-            api(kotlin("stdlib-jdk8", kotlinVersion))
-            api(kotlin("stdlib-jdk7", kotlinVersion))
-            api(kotlin("reflect", kotlinVersion))
-
-            api(ktor("server-cio"))
-            api(ktor("websockets"))
-            api(ktor("http-jvm"))
-            api(kotlinx("io-jvm"))
+//            api(kotlin("stdlib-jdk8", kotlinVersion))
+//            api(kotlin("stdlib-jdk7", kotlinVersion))
+//            api(kotlin("reflect", kotlinVersion))
+//            api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
             api("org.yaml:snakeyaml:1.25")
         }
@@ -83,14 +74,22 @@ kotlin {
         languageSettings.useExperimentalAnnotation("kotlin.Experimental")
 
         dependencies {
-            compileOnly(kotlin("stdlib", kotlinVersion))
-            compileOnly(kotlin("serialization", kotlinVersion))
+//            compileOnly("net.mamoe:mirai-core:$miraiVersion")
+            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
+            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
+//            compileOnly(kotlinx("io-jvm"))
+
+            api(ktor("server-cio"))
+            api(ktor("http-jvm"))
+            api(ktor("websockets"))
+//            compileOnly(kotlin("stdlib", kotlinVersion))
+//            compileOnly(kotlin("serialization", kotlinVersion))
 
             //implementation("org.jetbrains.kotlinx:atomicfu:$atomicFuVersion")
-            compileOnly(kotlinx("io"))
-            compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
-            compileOnly(kotlinx("coroutines-core", coroutinesVersion))
-            compileOnly(kotlinx("serialization-core", serializationVersion))
+//            compileOnly(kotlinx("io"))
+//            compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
+//            compileOnly(kotlinx("coroutines-core", coroutinesVersion))
+//            compileOnly(kotlinx("serialization-runtime", serializationVersion))
             implementation(ktor("server-core"))
             implementation(ktor("http"))
         }
