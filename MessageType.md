@@ -126,7 +126,26 @@
 
 同 `Image`
 
-> 三个参数任选其一，出现多个参数时，按照imageId > url > file的优先级
+> 三个参数任选其一，出现多个参数时，按照imageId > url > path的优先级
+
+#### Voice
+
+```json5
+{
+    "type": "Voice",
+    "voiceId": "23C477720A37FEB6A9EE4BCCF654014F.amr",
+    "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "path": null
+}
+```
+
+| 名字    | 类型   | 说明                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| voiceId | String | 语音的voiceId，不为空时将忽略url属性 |
+| url     | String | 语音的URL，发送时可作网络语音的链接；接收时为腾讯语音服务器的链接，可用于语音下载 |
+| path    | String | 语音的路径，发送本地语音，相对路径于`plugins/MiraiAPIHTTP/voices` |
+
+> 三个参数任选其一，出现多个参数时，按照voiceId > url > path的优先级
 
 #### Xml
 

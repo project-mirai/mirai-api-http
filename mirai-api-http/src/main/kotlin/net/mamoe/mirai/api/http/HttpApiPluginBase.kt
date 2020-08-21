@@ -108,4 +108,14 @@ object HttpApiPluginBase : PluginBase() {
         async {
             image(name).apply { writeBytes(data) }
         }
+
+    private val voiceFold: File = File(dataFolder, "voices").apply { mkdirs() }
+
+    internal fun voice(voiceName: String) = File(voiceFold, voiceName)
+
+    fun saveVoiceAsync(name: String, data: ByteArray) =
+        async {
+            voice(name).apply { writeBytes(data) }
+        }
+
 }

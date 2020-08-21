@@ -17,11 +17,7 @@ class CacheQueue : LinkedHashMap<Int, OnlineMessageSource>() {
 
     override fun get(key: Int): OnlineMessageSource = super.get(key) ?: throw NoSuchElementException()
 
-    override fun put(key: Int, value: OnlineMessageSource): OnlineMessageSource? = super.put(key, value).also {
-        if (size > cacheSize) {
-            remove(this.entries.first().key)
-        }
-    }
+    override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Int, OnlineMessageSource>?): Boolean = size > cacheSize
 
     fun add(source: OnlineMessageSource) {
         put(source.id, source)
