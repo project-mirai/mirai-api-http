@@ -90,6 +90,8 @@ kotlin {
 //            compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
 //            compileOnly(kotlinx("coroutines-core", coroutinesVersion))
 //            compileOnly(kotlinx("serialization-runtime", serializationVersion))
+            api("org.yaml:snakeyaml:1.25")
+
             implementation(ktor("server-core"))
             implementation(ktor("http"))
         }
