@@ -10,7 +10,7 @@ internal class RegisterCommand(
 ) : SimpleCommand(
     HttpApiPluginBase,
     *names,
-    description
+    description = description
 ) {
     // do nothing
 }
