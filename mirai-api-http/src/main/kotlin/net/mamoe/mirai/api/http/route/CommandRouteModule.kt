@@ -23,14 +23,12 @@ import io.ktor.websocket.webSocket
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
+import net.mamoe.mirai.api.http.command.RegisterCommand
 import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.console.command.AbstractCommandSender
 import net.mamoe.mirai.console.command.CommandManager
-import net.mamoe.mirai.console.command.UnknownCommandException
-import net.mamoe.mirai.console.utils.managers
 import net.mamoe.mirai.message.data.Message
 
 /**
@@ -46,7 +44,12 @@ fun Application.commandModule() {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
             } else {
-                HttpApiPluginBase.registerCommand(it.name, it.alias, it.description, it.usage)
+                val names = ArrayList<String>(1 + it.alias.size).apply {
+                    add(it.name)
+                    addAll(it.alias)
+                }
+
+                RegisterCommand(it.description, it.usage, *names.toTypedArray())
                 call.respondStateCode(StateCode.Success)
             }
         }
