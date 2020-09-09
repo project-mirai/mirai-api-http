@@ -40,6 +40,7 @@ import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.TempSession
+import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.*
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
@@ -65,7 +66,7 @@ fun Application.mirai() {
         allowNonSimpleContentTypes = true
         maxAgeDuration = 1.toDuration(DurationUnit.DAYS)
 
-        HttpApiPluginBase.cors.forEach {
+        Setting.cors.forEach {
             host(it, schemes = listOf("http", "https"))
         }
     }

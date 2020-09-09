@@ -35,7 +35,7 @@ fun Application.configRouteModule() {
         get("/about") {
             call.respondDTO(StringMapRestfulResult(
                 data = mapOf(
-                    "version" to HttpApiPluginBase.config.getString("version")
+                    "version" to HttpApiPluginBase.config["version"].toString()
                 )
             ))
         }
