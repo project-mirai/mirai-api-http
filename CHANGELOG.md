@@ -1,5 +1,17 @@
 # 更新日志
 
+## \[1.8.0\] - 2020-09-09
+
+### 变更
+
+* 更新 `console` 依赖到 1.0-M4-dev-3 @HoshinoTented
+
+> console 本次更新为不兼容更新
+> 使用 mirai-api-http 1.7 版本使用 console 0.5.2
+> 使用 mirai-api-http 1.8 版本使用 console 1.0-M4-dev-3 +
+
+
+
 ## \[1.8.0-pre\] - 2020-08-24
 
 ### 变更
