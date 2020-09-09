@@ -21,6 +21,7 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.websocket.webSocket
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
 import net.mamoe.mirai.api.http.command.RegisterCommand
@@ -28,7 +29,11 @@ import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.util.toJson
+import net.mamoe.mirai.console.command.CommandExecuteResult
 import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
+import net.mamoe.mirai.console.command.CommandSender
+import net.mamoe.mirai.console.util.BotManager.INSTANCE.managers
 import net.mamoe.mirai.message.data.Message
 
 /**
@@ -49,7 +54,7 @@ fun Application.commandModule() {
                     addAll(it.alias)
                 }
 
-                RegisterCommand(it.description, it.usage, *names.toTypedArray())
+                RegisterCommand(it.description, it.usage, *names.toTypedArray()).register(true)
                 call.respondStateCode(StateCode.Success)
             }
         }
@@ -61,17 +66,14 @@ fun Application.commandModule() {
             if (it.authKey != SessionManager.authKey) {
                 call.respondStateCode(StateCode.AuthKeyFail)
             } else {
-                try {
-                    val sender = HttpCommandSender(call)
+                val sender = HttpCommandSender(call)
 
-                    CommandManager.dispatchCommandBlocking(
-                        sender = sender,
-                        command = "${it.name} ${it.args.joinToString(" ")}"
-                    )
-
-                    if (!sender.consume) call.respondText("")
-                } catch (e: UnknownCommandException) {
-                    call.respondStateCode(StateCode.NoElement)
+                CommandManager.run {
+                    val result = sender.executeCommand("${it.name} ${it.args.joinToString(" ")}")
+                    when (result) {
+                        is CommandExecuteResult.Success -> if (!sender.consume) call.respondText("")
+                        else -> call.respondStateCode(StateCode.NoElement)
+                    }
                 }
             }
         }
@@ -123,7 +125,9 @@ fun Application.commandModule() {
 }
 
 // TODO: 将command输出返回给请求
-class HttpCommandSender(private val call: ApplicationCall) : AbstractCommandSender() {
+class HttpCommandSender(private val call: ApplicationCall) : CommandSender {
+    override val bot: Bot? = null
+    override val name: String = "Mirai Http Api"
 
     var consume = false
 
@@ -155,7 +159,7 @@ data class CommandDTO(
     val name: String,
     val friend: Long,
     val group: Long,
-    val args: List<String>
+    val args: List<String>,
 ) : DTO
 
 @Serializable
@@ -165,5 +169,5 @@ private data class PostCommandDTO(
     val alias: List<String> = emptyList(),
     val description: String = "",
     val usage: String = "",
-    val args: List<String> = emptyList()
+    val args: List<String> = emptyList(),
 ) : DTO
