@@ -9,7 +9,7 @@ typealias Destination = String
 typealias Destinations = List<Destination>
 
 /**
- * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onLoad] 时被初始化
+ * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
 object Setting : AutoSavePluginConfig() {
     /**

@@ -27,16 +27,12 @@ import java.nio.file.Path
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
 object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
-    val storage: PluginDataStorage = MultiFilePluginDataStorage(Path.of("."))
-
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
 
     override fun onLoad() {
         with(Setting) {
             logger.info("Loading Mirai HTTP API plugin")
             logger.info("Loading setting.yml")
-
-            storage.load(HttpApiPluginBase, Setting)
 
             logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
             if (authKey.startsWith("INITKEY")) {
@@ -48,6 +44,8 @@ object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     }
 
     override fun onEnable() {
+        Setting.reload()
+
         with(Setting) {
             logger.info("Starting Mirai HTTP Server in $host:$port")
             MiraiHttpAPIServer.start(host, port, authKey)
