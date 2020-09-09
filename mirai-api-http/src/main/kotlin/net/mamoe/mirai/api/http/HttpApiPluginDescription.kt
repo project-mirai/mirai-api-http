@@ -2,7 +2,6 @@ package net.mamoe.mirai.api.http
 
 import com.vdurmont.semver4j.Semver
 import net.mamoe.mirai.console.plugin.description.PluginDependency
-import net.mamoe.mirai.console.plugin.description.PluginDescription
 import net.mamoe.mirai.console.plugin.description.PluginKind
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 
