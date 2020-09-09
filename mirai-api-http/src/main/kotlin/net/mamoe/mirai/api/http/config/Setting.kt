@@ -2,11 +2,8 @@ package net.mamoe.mirai.api.http.config
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.generateSessionKey
-import net.mamoe.mirai.console.data.AutoSavePluginConfig
-import net.mamoe.mirai.console.data.PluginDataHolder
-import net.mamoe.mirai.console.data.getValue
-import net.mamoe.mirai.console.data.value
 import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.console.data.*
 
 typealias Destination = String
 typealias Destinations = List<Destination>
@@ -14,9 +11,7 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onLoad] 时被初始化
  */
-object Setting : AutoSavePluginConfig(), PluginDataHolder {
-    override val name: String = "setting.yml"
-
+object Setting : AutoSavePluginConfig() {
     /**
      * 上报子消息配置
      *
