@@ -30,8 +30,6 @@ object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     override fun onLoad() {
         with(Setting) {
             logger.info("Loading Mirai HTTP API plugin")
-            logger.info("Loading setting.yml")
-
             logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
             if (authKey.startsWith("INITKEY")) {
                 logger.warning("USING INITIAL KEY, please edit the key")
