@@ -34,7 +34,14 @@ import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.util.BotManager.INSTANCE.managers
+import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.User
+import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
+import org.jetbrains.annotations.Contract
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * 命令行路由
@@ -125,27 +132,39 @@ fun Application.commandModule() {
 }
 
 // TODO: 将command输出返回给请求
-class HttpCommandSender(private val call: ApplicationCall) : CommandSender {
+class HttpCommandSender(private val call: ApplicationCall, override val coroutineContext: CoroutineContext = EmptyCoroutineContext) : CommandSender {
     override val bot: Bot? = null
     override val name: String = "Mirai Http Api"
+    override val subject: Contact? = null
+    override val user: User? = null
 
     var consume = false
 
-    override suspend fun sendMessage(message: String) {
+    override suspend fun sendMessage(message: String): MessageReceipt<Contact>? {
 //        appendMessage(message)
         if (!consume) {
             call.respondText(message)
             consume = true
         }
+
+        return null
     }
 
-    override suspend fun sendMessage(messageChain: Message) {
+    override suspend fun sendMessage(messageChain: Message): MessageReceipt<Contact>? {
 //        appendMessage(messageChain.toString())
         if (!consume) {
             call.respondText(messageChain.toString())
             consume = true
         }
+
+        return null
     }
+
+    @ConsoleExperimentalAPI
+    override suspend fun catchExecutionException(e: Throwable) {
+        // Nothing
+    }
+
 
 //    override suspend fun flushMessage() {
 //        if (builder.isNotEmpty()) {
