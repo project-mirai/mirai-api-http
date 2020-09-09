@@ -7,7 +7,7 @@ import net.mamoe.mirai.console.plugin.description.PluginKind
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 
 object HttpApiPluginDescription : JvmPluginDescription {
-    override val author: String = "ryoii and her wife: HoshinoTented"       // FIXME: remove this
+    override val author: String = "ryoii and HoshinoTented"
     override val dependencies: List<PluginDependency> = emptyList()
     override val info: String = "Mirai HTTP API Server Plugin"
     override val kind: PluginKind = PluginKind.NORMAL
