@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.Config
 import net.mamoe.mirai.api.http.queue.CacheQueue
 import net.mamoe.mirai.api.http.queue.MessageQueue
@@ -121,8 +122,8 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
     val cacheQueue = CacheQueue()
     val config = Config(
         session = this,
-        cacheSize = HttpApiPluginBase.cacheSize,
-        enableWebsocket = HttpApiPluginBase.enableWebsocket
+        cacheSize = Setting.cacheSize,
+        enableWebsocket = Setting.enableWebsocket
     )
     private var _listener: Listener<BotEvent>
     private val _cache: Listener<MessageEvent>
