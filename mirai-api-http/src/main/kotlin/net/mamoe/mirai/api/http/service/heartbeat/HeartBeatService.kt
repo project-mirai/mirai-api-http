@@ -10,18 +10,20 @@
 package net.mamoe.mirai.api.http.service.heartbeat
 
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.service.MiraiApiHttpService
 import net.mamoe.mirai.api.http.util.HttpClient
-import net.mamoe.mirai.console.plugins.PluginBase
+import net.mamoe.mirai.console.plugin.Plugin
+import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import java.util.*
 import kotlin.concurrent.timerTask
 
 /**
  * 心跳服务
  */
-class HeartBeatService(override val console: PluginBase) : MiraiApiHttpService {
+class HeartBeatService(override val console: JvmPlugin) : MiraiApiHttpService {
 
-    val config = HeartBeatConfig(console.loadConfig("setting.yml"))
+    val config = Setting.heartbeat
 
     /**
      * 心跳计时器
