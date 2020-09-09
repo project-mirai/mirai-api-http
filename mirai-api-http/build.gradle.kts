@@ -51,12 +51,11 @@ kotlin {
 
     sourceSets["test"].apply {
         dependencies {
-//            api("net.mamoe:mirai-core:$miraiVersion")
-//            api("net.mamoe:mirai-core-qqandroid:$miraiVersion")
-//            api("net.mamoe:mirai-console:$miraiConsoleVersion")
+            api("net.mamoe:mirai-core:$miraiVersion")
+            api("net.mamoe:mirai-console:$miraiConsoleVersion")
+            api("net.mamoe:mirai-console-pure:$miraiConsoleVersion")
 
-
-//            api(kotlin("stdlib-jdk8", kotlinVersion))
+            api(kotlin("stdlib-jdk8", kotlinVersion))
 //            api(kotlin("stdlib-jdk7", kotlinVersion))
 //            api(kotlin("reflect", kotlinVersion))
 //            api(kotlinx("io-jvm"))
