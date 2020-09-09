@@ -18,7 +18,6 @@ import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.data.MultiFilePluginDataStorage
 import net.mamoe.mirai.console.data.PluginDataStorage
 import net.mamoe.mirai.console.plugin.ResourceContainer
-import net.mamoe.mirai.console.plugin.ResourceContainer.Companion.asResourceContainer
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.contact.User
 import org.yaml.snakeyaml.Yaml
@@ -27,16 +26,8 @@ import java.nio.file.Path
 
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
-object HttpApiPluginBase : KotlinPlugin() {
+object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     val storage: PluginDataStorage = MultiFilePluginDataStorage(Path.of("."))
-
-    val config: MutableMap<String, Any> by lazy {
-        ResourceContainer.run {
-            val plugin = HttpApiPluginBase::class.asResourceContainer().getResourceAsStream("plugin.yml")
-                ?: return@run mutableMapOf()
-            Yaml().load(plugin)
-        }
-    }
 
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
 
@@ -45,7 +36,7 @@ object HttpApiPluginBase : KotlinPlugin() {
             logger.info("Loading Mirai HTTP API plugin")
             logger.info("Loading setting.yml")
 
-            storage.load(Setting, Setting)
+            storage.load(HttpApiPluginBase, Setting)
 
             logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
             if (authKey.startsWith("INITKEY")) {

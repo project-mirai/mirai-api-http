@@ -17,6 +17,7 @@ import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.HttpApiPluginDescription
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.StringMapRestfulResult
@@ -35,7 +36,7 @@ fun Application.configRouteModule() {
         get("/about") {
             call.respondDTO(StringMapRestfulResult(
                 data = mapOf(
-                    "version" to HttpApiPluginBase.config["version"].toString()
+                    "version" to HttpApiPluginDescription.version.value
                 )
             ))
         }
