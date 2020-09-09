@@ -9,23 +9,21 @@
 
 package net.mamoe.mirai.api.http
 
+import com.google.auto.service.AutoService
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.command.HttpApiCommandOwner
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
-import net.mamoe.mirai.console.command.*
-import net.mamoe.mirai.console.data.MultiFilePluginDataStorage
-import net.mamoe.mirai.console.data.PluginDataStorage
-import net.mamoe.mirai.console.plugin.ResourceContainer
+import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.command.SimpleCommand
+import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.contact.User
-import org.yaml.snakeyaml.Yaml
 import java.io.File
-import java.nio.file.Path
 
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
+@AutoService(JvmPlugin::class)
 object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
 
