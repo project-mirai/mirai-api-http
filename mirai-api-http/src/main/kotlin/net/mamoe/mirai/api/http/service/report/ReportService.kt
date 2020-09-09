@@ -9,13 +9,16 @@
 
 package net.mamoe.mirai.api.http.service.report
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
 import net.mamoe.mirai.api.http.service.MiraiApiHttpService
 import net.mamoe.mirai.api.http.util.HttpClient
 import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.console.plugins.PluginBase
+import net.mamoe.mirai.console.plugin.Plugin
+import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.subscribeAlways
@@ -32,13 +35,13 @@ class ReportService(
     /**
      * 插件对象
      */
-    override val console: PluginBase
+    override val console: JvmPlugin
 ) : MiraiApiHttpService {
 
     /**
      * 心跳配置
      */
-    private val reportConfig = ReportConfig(console.loadConfig("setting.yml"))
+    private val reportConfig = Setting.report
 
     /**
      * 事件监听器
