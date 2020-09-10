@@ -1,6 +1,7 @@
 plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
+    kotlin("kapt")
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
@@ -32,11 +33,16 @@ val miraiConsoleVersion: String by rootProject.ext
 
 
 
-
+dependencies {
+    val autoService = "1.0-rc7"
+    kapt("com.google.auto.service", "auto-service", autoService)
+    compileOnly("com.google.auto.service", "auto-service-annotations", autoService)
+}
 
 kotlin {
     sourceSets["main"].apply {
         dependencies {
+
 //            compileOnly("net.mamoe:mirai-core:$miraiVersion")
 //            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
 //            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
@@ -60,7 +66,6 @@ kotlin {
 //            api(kotlin("reflect", kotlinVersion))
 //            api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
-            api("org.yaml:snakeyaml:1.25")
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
         kotlin.setSrcDirs(listOf("src/$name/kotlin"))
