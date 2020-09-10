@@ -1,10 +1,19 @@
 # 更新日志
 
+## \[1.8.2\] - 2020-09-10
+
+### 修复
+
+* 修复配置文件读取错误的问题 @HoshinoTented
+
+> 由于某些原因，如果配置文件无法加载，请将配置文件名称修改为 net.mamoe.mirai.api.http.config.Setting.yaml
+
+
 ## \[1.8.1\] - 2020-09-10
 
 ### 修复
 
-* 修复无法加载插件的问题
+* 修复无法加载插件的问题 @HoshinoTented
 * 暴打了 @HoshinoTented
 
 

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.console.data.*
+import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import net.mamoe.mirai.console.util.ConsoleInternalAPI
 
 typealias Destination = String
@@ -12,6 +13,8 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
+@OptIn(ExperimentalPluginConfig::class, ConsoleExperimentalAPI::class)
+@ValueName("setting")
 object Setting : AbstractPluginData(), PluginConfig {
 
     /**
@@ -102,6 +105,8 @@ object Setting : AbstractPluginData(), PluginConfig {
      */
     val heartbeat: HeartBeat by value(HeartBeat())
 
+    @ConsoleExperimentalAPI
+    @ExperimentalPluginConfig
     @ConsoleInternalAPI
     override fun onStored(owner: PluginDataHolder, storage: PluginDataStorage) {
         // do nothing
