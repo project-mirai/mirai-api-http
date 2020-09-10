@@ -214,7 +214,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     }?.flash()
     is VoiceDTO -> when {
         contact !is Group -> null
-        !voiceId.isNullOrBlank() -> Voice(voiceId, ByteArray(0), 0, "")
+        !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, "")
         !url.isNullOrBlank() -> contact.uploadVoice(withContext(Dispatchers.IO) { URL(url).openStream() })
         !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
             if (exists()) {
@@ -232,4 +232,8 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is MessageSourceDTO,
     is UnknownMessageDTO
     -> null
+}
+
+internal fun String.toHexArray(): ByteArray = ByteArray(length / 2) {
+    ((Character.digit(this[it * 2], 16) shl 4) + Character.digit(this[it * 2 + 1], 16)).toByte()
 }
