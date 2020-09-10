@@ -28,23 +28,23 @@ object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
 
     override fun onLoad() {
-        with(Setting) {
-            logger.info("Loading Mirai HTTP API plugin")
-            logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
-            if (authKey.startsWith("INITKEY")) {
-                logger.warning("USING INITIAL KEY, please edit the key")
-            }
-
-            services.onLoad()
-        }
+        logger.info("Loading Mirai HTTP API plugin")
     }
 
     override fun onEnable() {
         Setting.reload()
 
+        logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:${Setting.port}")
+
+        if (Setting.nonNullAuthKey == Setting.randomSessionKey) {
+            logger.warning("USING INITIAL KEY, please edit the key")
+        }
+
+        services.onLoad()
+
         with(Setting) {
             logger.info("Starting Mirai HTTP Server in $host:$port")
-            MiraiHttpAPIServer.start(host, port, authKey)
+            MiraiHttpAPIServer.start(host, port, nonNullAuthKey)
 
             services.onEnable()
         }
