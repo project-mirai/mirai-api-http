@@ -34,17 +34,17 @@ object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
     override fun onEnable() {
         Setting.reload()
 
-        logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:${Setting.port}")
-
-        if (Setting.nonNullAuthKey == Setting.randomSessionKey) {
-            logger.warning("USING INITIAL KEY, please edit the key")
-        }
-
-        services.onLoad()
-
         with(Setting) {
+            logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
+
+            if (authKey.startsWith("INITKEY")) {
+                logger.warning("USING INITIAL KEY, please edit the key")
+            }
+
+            services.onLoad()
+
             logger.info("Starting Mirai HTTP Server in $host:$port")
-            MiraiHttpAPIServer.start(host, port, nonNullAuthKey)
+            MiraiHttpAPIServer.start(host, port, authKey)
 
             services.onEnable()
         }

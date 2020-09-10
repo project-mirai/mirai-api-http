@@ -1,13 +1,10 @@
 package net.mamoe.mirai.api.http.config
 
-import kotlinx.atomicfu.AtomicRef
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.console.data.*
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
+import net.mamoe.mirai.console.util.ConsoleInternalAPI
 
 typealias Destination = String
 typealias Destinations = List<Destination>
@@ -15,10 +12,7 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-object Setting : AutoSavePluginConfig() {
-    private const val NIL = "nil"
-
-    val randomSessionKey = "INITKEY" + generateSessionKey()
+object Setting : AbstractPluginData(), PluginConfig {
 
     /**
      * 上报子消息配置
@@ -83,17 +77,9 @@ object Setting : AutoSavePluginConfig() {
     val port: Int by value(8080)
 
     /**
-     * 认证密钥，默认为 "nil"
+     * 认证密钥，默认为随机
      */
-    val authKey: String by value(NIL)
-
-    /**
-     * 非空的认证密钥
-     * 由于 `by value` 在没有填写字段的情况下会取默认值并自动存进去，所以随机 session key 不能放在 `by value` 里
-     */
-    val nonNullAuthKey: String by lazy { authKey.takeIf {
-        it != NIL
-    } ?: randomSessionKey }
+    val authKey: String by value("INITKEY" + generateSessionKey())
 
     /**
      * FIXME: 什么的缓存区
@@ -115,4 +101,14 @@ object Setting : AutoSavePluginConfig() {
      * 心跳服务配置
      */
     val heartbeat: HeartBeat by value(HeartBeat())
+
+    @ConsoleInternalAPI
+    override fun onStored(owner: PluginDataHolder, storage: PluginDataStorage) {
+        // do nothing
+    }
+
+    @ConsoleInternalAPI
+    override fun onValueChanged(value: Value<*>) {
+        // do nothing
+    }
 }
