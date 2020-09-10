@@ -235,8 +235,9 @@ cors:
     "sessionKey": "YourSession",
     "target": 987654321,
     "messageChain": [
-        { "type": "Plain", "text":"hello\n" },
-        { "type": "Plain", "text":"world" }
+        { "type": "Plain", "text": "hello\n" },
+        { "type": "Plain", "text": "world" },
+	{ "type": "Image", "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png" }
     ]
 }
 ```
@@ -316,8 +317,9 @@ cors:
     "sessionKey": "YourSession",
     "target": 987654321,
     "messageChain": [
-        { "type": "Plain", "text":"hello\n" },
-        { "type": "Plain", "text":"world" }
+        { "type": "Plain", "text": "hello\n" },
+        { "type": "Plain", "text": "world" },
+	{ "type": "Image", "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png" }
     ]
 }
 ```
