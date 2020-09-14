@@ -9,17 +9,12 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.CloseReason
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.close
-import io.ktor.response.respondText
-import io.ktor.routing.route
-import io.ktor.routing.routing
-import io.ktor.websocket.webSocket
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.websocket.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
@@ -33,13 +28,12 @@ import net.mamoe.mirai.console.command.CommandExecuteResult
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandSender
-import net.mamoe.mirai.console.util.BotManager.INSTANCE.managers
-import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
+import net.mamoe.mirai.console.permission.AbstractPermitteeId
+import net.mamoe.mirai.console.permission.PermitteeId
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
-import org.jetbrains.annotations.Contract
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -91,7 +85,7 @@ fun Application.commandModule() {
         route("/managers", HttpMethod.Get) {
             intercept {
                 val qq = call.parameters["qq"] ?: throw IllegalParamException("参数格式错误")
-                val managers = getBotOrThrow(qq.toLong()).managers
+                val managers = listOf<Long>()
                 call.respondJson(managers.toJson())
             }
         }
@@ -132,9 +126,21 @@ fun Application.commandModule() {
 }
 
 // TODO: 将command输出返回给请求
-class HttpCommandSender(private val call: ApplicationCall, override val coroutineContext: CoroutineContext = EmptyCoroutineContext) : CommandSender {
+class HttpCommandSender(
+    private val call: ApplicationCall,
+    override val coroutineContext: CoroutineContext = EmptyCoroutineContext
+) : CommandSender {
     override val bot: Bot? = null
     override val name: String = "Mirai Http Api"
+    override val permitteeId: PermitteeId
+        get() = object : PermitteeId {
+            override val directParents: Array<out PermitteeId>
+                get() = arrayOf(AbstractPermitteeId.Console)
+
+            override fun asString(): String = "http-api"
+        }
+
+
     override val subject: Contact? = null
     override val user: User? = null
 
@@ -150,17 +156,16 @@ class HttpCommandSender(private val call: ApplicationCall, override val coroutin
         return null
     }
 
-    override suspend fun sendMessage(messageChain: Message): MessageReceipt<Contact>? {
+    override suspend fun sendMessage(message: Message): MessageReceipt<Contact>? {
 //        appendMessage(messageChain.toString())
         if (!consume) {
-            call.respondText(messageChain.toString())
+            call.respondText(message.toString())
             consume = true
         }
 
         return null
     }
 
-    @ConsoleExperimentalAPI
     override suspend fun catchExecutionException(e: Throwable) {
         // Nothing
     }

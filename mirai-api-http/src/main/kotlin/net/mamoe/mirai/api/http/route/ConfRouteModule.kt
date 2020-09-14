@@ -9,19 +9,15 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.application.*
+import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
-import net.mamoe.mirai.api.http.HttpApiPluginDescription
 import net.mamoe.mirai.api.http.data.StateCode
-import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.StringMapRestfulResult
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
+import net.mamoe.mirai.console.plugin.version
 
 /**
  * 配置路由
@@ -34,11 +30,13 @@ fun Application.configRouteModule() {
          * 获取API-HTTP插件信息
          */
         get("/about") {
-            call.respondDTO(StringMapRestfulResult(
-                data = mapOf(
-                    "version" to HttpApiPluginDescription.version.value
+            call.respondDTO(
+                StringMapRestfulResult(
+                    data = mapOf(
+                        "version" to HttpApiPluginBase.version.value
+                    )
                 )
-            ))
+            )
         }
 
         /**

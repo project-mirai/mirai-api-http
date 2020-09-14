@@ -4,8 +4,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.console.data.*
-import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
-import net.mamoe.mirai.console.util.ConsoleInternalAPI
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 
 typealias Destination = String
 typealias Destinations = List<Destination>
@@ -13,14 +12,13 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-@OptIn(ExperimentalPluginConfig::class, ConsoleExperimentalAPI::class)
 @ValueName("setting")
 object Setting : AbstractPluginData(), PluginConfig {
 
     /**
      * 上报子消息配置
      *
-     * @param report 是否上报
+     * @property report 是否上报
      */
     @Serializable
     data class Reportable(val report: Boolean)
@@ -28,13 +26,13 @@ object Setting : AbstractPluginData(), PluginConfig {
     /**
      * 上报服务配置
      *
-     * @param enable 是否开启上报
-     * @param groupMessage 群消息子配置
-     * @param friendMessage 好友消息子配置
-     * @param tempMessage 临时消息子配置
-     * @param eventMessage 事件消息子配置
-     * @param destinations 上报地址（多个），必选
-     * @param extraHeaders 上报时的额外头信息
+     * @property enable 是否开启上报
+     * @property groupMessage 群消息子配置
+     * @property friendMessage 好友消息子配置
+     * @property tempMessage 临时消息子配置
+     * @property eventMessage 事件消息子配置
+     * @property destinations 上报地址（多个），必选
+     * @property extraHeaders 上报时的额外头信息
      */
     @Serializable
     data class Report(
@@ -50,12 +48,12 @@ object Setting : AbstractPluginData(), PluginConfig {
     /**
      * 心跳服务配置
      *
-     * @param enable 是否启动心跳服务
-     * @param delay 心跳启动延迟
-     * @param period 心跳周期
-     * @param destinations 心跳 PING 的地址列表，必选
-     * @param extraBody 心跳额外请求体
-     * @param extraHeaders 心跳额外请求头
+     * @property enable 是否启动心跳服务
+     * @property delay 心跳启动延迟
+     * @property period 心跳周期
+     * @property destinations 心跳 PING 的地址列表，必选
+     * @property extraBody 心跳额外请求体
+     * @property extraHeaders 心跳额外请求头
      */
     @Serializable
     data class HeartBeat(
@@ -105,15 +103,12 @@ object Setting : AbstractPluginData(), PluginConfig {
      */
     val heartbeat: HeartBeat by value(HeartBeat())
 
-    @ConsoleExperimentalAPI
-    @ExperimentalPluginConfig
-    @ConsoleInternalAPI
-    override fun onStored(owner: PluginDataHolder, storage: PluginDataStorage) {
-        // do nothing
+    @ConsoleExperimentalApi
+    override fun onInit(owner: PluginDataHolder, storage: PluginDataStorage) {
+        // no-op
     }
 
-    @ConsoleInternalAPI
     override fun onValueChanged(value: Value<*>) {
-        // do nothing
+        // no-op
     }
 }

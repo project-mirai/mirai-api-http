@@ -6,7 +6,7 @@ plugins {
 
 apply(plugin = "com.github.johnrengelman.shadow")
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 
 }
 
@@ -69,7 +69,6 @@ kotlin {
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
         kotlin.setSrcDirs(listOf("src/$name/kotlin"))
-
     }
 
     sourceSets.all {
@@ -114,6 +113,16 @@ compileTestKotlin.kotlinOptions {
 project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
+
+
+kotlin {
+    target.compilations.all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
+        }
+    }
+}
 
 tasks {
     val runMiraiConsole by creating(JavaExec::class.java) {

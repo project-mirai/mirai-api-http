@@ -11,12 +11,12 @@ package net.mamoe.mirai.api.http
 
 import com.google.auto.service.AutoService
 import kotlinx.coroutines.async
-import net.mamoe.mirai.api.http.command.HttpApiCommandOwner
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.command.SimpleCommand
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.contact.User
 import java.io.File
@@ -24,18 +24,20 @@ import java.io.File
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
 @AutoService(JvmPlugin::class)
-object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
-    var services: MiraiApiHttpServices = MiraiApiHttpServices(this);
-
-    override fun onLoad() {
-        logger.info("Loading Mirai HTTP API plugin")
+object HttpApiPluginBase : KotlinPlugin(
+    JvmPluginDescription("net.mamoe.mirai-api-http", "1.8.0") {
+        name("MiraiApiHttp")
+        author("ryoii")
+        info("Mirai HTTP API Server Plugin")
     }
+) {
+    var services: MiraiApiHttpServices = MiraiApiHttpServices(this)
 
     override fun onEnable() {
         Setting.reload()
 
         with(Setting) {
-            logger.info("Trying to Start Mirai HTTP Server in 0.0.0.0:$port")
+            logger.info("Starting Mirai HTTP Server in 0.0.0.0:$port")
 
             if (authKey.startsWith("INITKEY")) {
                 logger.warning("USING INITIAL KEY, please edit the key")
@@ -70,7 +72,7 @@ object HttpApiPluginBase : KotlinPlugin(HttpApiPluginDescription) {
         usage: String,
     ) {
         CommandManager.INSTANCE.run {
-            object : SimpleCommand(HttpApiCommandOwner, *names, description = description) {
+            object : SimpleCommand(HttpApiPluginBase, *names, description = description) {
                 override val usage: String = usage
 
                 @Handler
