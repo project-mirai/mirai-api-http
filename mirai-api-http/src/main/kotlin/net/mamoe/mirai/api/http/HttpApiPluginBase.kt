@@ -25,7 +25,7 @@ internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>
 
 @AutoService(JvmPlugin::class)
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescription("net.mamoe.mirai-api-http", "1.8.0") {
+    JvmPluginDescription("net.mamoe.mirai-api-http", "1.8.3") {
         name("MiraiApiHttp")
         author("ryoii")
         info("Mirai HTTP API Server Plugin")
