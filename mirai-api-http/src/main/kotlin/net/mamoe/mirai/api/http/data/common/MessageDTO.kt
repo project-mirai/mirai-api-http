@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
+import net.mamoe.mirai.api.http.util.toHexArray
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.*
@@ -234,6 +235,4 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     -> null
 }
 
-internal fun String.toHexArray(): ByteArray = ByteArray(length / 2) {
-    ((Character.digit(this[it * 2], 16) shl 4) + Character.digit(this[it * 2 + 1], 16)).toByte()
-}
+
