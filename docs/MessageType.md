@@ -1,4 +1,4 @@
-## Mirai-api-http消息类型一览
+## 消息类型
 
 #### Source
 

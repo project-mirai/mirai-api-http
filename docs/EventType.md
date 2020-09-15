@@ -1,5 +1,6 @@
-## Mirai-api-http事件类型一览
+## 事件类型
 
+### Bot自身事件
 #### Bot登录成功
 
 ```json5
@@ -60,7 +61,7 @@
 
 
 
-#### Bot主动重新登录.
+#### Bot主动重新登录
 
 ```json5
 {
@@ -72,71 +73,6 @@
 | 名字 | 类型 | 说明                    |
 | ---- | ---- | ----------------------- |
 | qq   | Long | 主动重新登录的Bot的QQ号 |
-
-
-
-#### 群消息撤回
-
-```json5
-{
-    "type": "GroupRecallEvent",
-    "authorId": 123456,
-    "messageId": 123456789,
-    "time": 1234679,
-    "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "ADMINISTRATOR"
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    }
-}
-```
-
-| 名字                      | 类型    | 说明                                             |
-| ------------------------- | ------- | ------------------------------------------------ |
-| authorId                  | Long    | 原消息发送者的QQ号                               |
-| messageId                 | Int     | 原消息messageId                                  |
-| time                      | Int     | 原消息发送时间                                   |
-| group                     | Object  | 消息撤回所在的群                                 |
-| group.id                  | Long    | 群号                                             |
-| group.name                | String  | 群名                                             |
-| group.permission          | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER    |
-| operator                  | Object? | 撤回消息的操作人，当null时为bot操作              |
-| operator.id               | Long    | 操作者的QQ号                                     |
-| operator.memberName       | String  | 操作者的群名片                                   |
-| operator.permission       | String  | 操作者在群中的权限，OWNER、ADMINISTRATOR或MEMBER |
-| operator.group            | Object  | 同group                                          |
-
-
-
-#### 好友消息撤回
-
-```json5
-{
-    "type": "FriendRecallEvent",
-    "authorId": 123456,
-    "messageId": 123456789,
-    "time": 1234679,
-    "operator": 123456
-}
-```
-
-| 名字      | 类型 | 说明               |
-| --------- | ---- | ------------------ |
-| authorId  | Long | 原消息发送者的QQ号 |
-| messageId | Int  | 原消息messageId    |
-| time      | Int  | 原消息发送时间     |
-| operator  | Long | 好友QQ号或BotQQ号  |
-
 
 
 #### Bot在群里的权限被改变. 操作人一定是群主
@@ -296,6 +232,72 @@
 | group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
 
 
+### 消息撤回
+
+#### 群消息撤回
+
+```json5
+{
+    "type": "GroupRecallEvent",
+    "authorId": 123456,
+    "messageId": 123456789,
+    "time": 1234679,
+    "group": {
+            "id": 123456789,
+            "name": "Miral Technology",
+            "permission": "ADMINISTRATOR"
+    },
+    "operator": {
+        "id": 123456789,
+        "memberName": "我是管理员",
+        "permission": "ADMINISTRATOR",
+        "group": {
+            "id": 123456789,
+            "name": "Miral Technology",
+            "permission": "MEMBER"
+        }
+    }
+}
+```
+
+| 名字                      | 类型    | 说明                                             |
+| ------------------------- | ------- | ------------------------------------------------ |
+| authorId                  | Long    | 原消息发送者的QQ号                               |
+| messageId                 | Int     | 原消息messageId                                  |
+| time                      | Int     | 原消息发送时间                                   |
+| group                     | Object  | 消息撤回所在的群                                 |
+| group.id                  | Long    | 群号                                             |
+| group.name                | String  | 群名                                             |
+| group.permission          | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER    |
+| operator                  | Object? | 撤回消息的操作人，当null时为bot操作              |
+| operator.id               | Long    | 操作者的QQ号                                     |
+| operator.memberName       | String  | 操作者的群名片                                   |
+| operator.permission       | String  | 操作者在群中的权限，OWNER、ADMINISTRATOR或MEMBER |
+| operator.group            | Object  | 同group                                          |
+
+
+
+#### 好友消息撤回
+
+```json5
+{
+    "type": "FriendRecallEvent",
+    "authorId": 123456,
+    "messageId": 123456789,
+    "time": 1234679,
+    "operator": 123456
+}
+```
+
+| 名字      | 类型 | 说明               |
+| --------- | ---- | ------------------ |
+| authorId  | Long | 原消息发送者的QQ号 |
+| messageId | Int  | 原消息messageId    |
+| time      | Int  | 原消息发送时间     |
+| operator  | Long | 好友QQ号或BotQQ号  |
+
+
+## 群变化事件
 
 #### 某个群名改变
 
@@ -739,7 +741,7 @@
 
 
 
-#### 成员权限改变的事件（该成员不可能是Bot，见BotGroupPermissionChangeEvent）
+#### 成员权限改变的事件（该成员不是Bot）
 
 ```json5
 {
@@ -776,7 +778,7 @@
 
 
 
-#### 群成员被禁言事件（该成员不可能是Bot，见BotMuteEvent）
+#### 群成员被禁言事件（该成员不是Bot）
 
 ```json5
 {
@@ -824,7 +826,7 @@
 
 
 
-#### 群成员被取消禁言事件（该成员不可能是Bot，见BotUnmuteEvent）
+#### 群成员被取消禁言事件（该成员不是Bot）
 
 ```json5
 {
@@ -868,7 +870,7 @@
 | operator.permission     | String  | 操作者在群中的权限，OWNER、ADMINISTRATOR            |
 | operator.group          | Object  | 同member.group                                      |
 
-
+### 申请事件
 
 #### 添加好友申请
 
