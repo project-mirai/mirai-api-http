@@ -92,7 +92,7 @@ heartbeat:
   extraHeaders: {}
 
 ```
-有关配置的详细信息请参考文档.
+有关配置的详细信息请参考[文档-其他](#文档).
 
 ## 调试API
 调试API已完成,**[点我查看](API-Tester/install.md)**
@@ -102,7 +102,7 @@ heartbeat:
 
 ## 文档
 
-* #### [API文档参考](docs/API.md)
+* **[API文档参考](docs/API.md)**
   * [状态码](docs/API.md#状态码)
   * [获取插件信息](docs/API.md#获取插件信息)
   * [认证与会话](docs/API.md#认证与会话)
@@ -147,12 +147,12 @@ heartbeat:
     * [发送指令](docs/API.md#发送指令)
     * [监听指令](docs/API.md#监听指令)
     * [获取Mangers](docs/API.md#获取mangers)
-* #### [事件类型参考](docs/EventType.md)
+* **[事件类型参考](docs/EventType.md)**
   * [Bot自身事件](docs/EventType.md#bot自身事件)
   * [消息撤回](docs/EventType.md#消息撤回)
   * [群变化事件](docs/EventType.md#群变化事件)
   * [申请事件](docs/EventType.md#申请事件)
-* #### [消息类型参考](docs/MessageType.md)
-* #### 其他
+* **[消息类型参考](docs/MessageType.md)**
+* **其他**
   * [心跳](docs/Heartbeat.md)
   * [事件上报](docs/Report.md)

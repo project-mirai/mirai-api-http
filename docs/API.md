@@ -1146,7 +1146,7 @@ Content-Type：multipart/form-data
 }
 ```
 
-### 设置指定Session的配置
+### 修改指定Session的配置
 
 使用此方法设置指定Session的配置信息，注意该配置是Session范围有效
 
