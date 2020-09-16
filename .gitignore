@@ -1,2 +1,12 @@
 /.idea/
+
+# Gradle
 /gradle/
+.gradle/
+
+# Gen
+build/
+
+# config
+device.json
+/config/

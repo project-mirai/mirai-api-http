@@ -23,7 +23,7 @@ import kotlin.concurrent.timerTask
  */
 class HeartBeatService(override val console: JvmPlugin) : MiraiApiHttpService {
 
-    val config = Setting.heartbeat
+    val config get() = Setting.heartbeat
 
     /**
      * 心跳计时器
