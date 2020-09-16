@@ -41,7 +41,7 @@ class ReportService(
     /**
      * 心跳配置
      */
-    private val reportConfig = Setting.report
+    private val reportConfig get() = Setting.report
 
     /**
      * 事件监听器
