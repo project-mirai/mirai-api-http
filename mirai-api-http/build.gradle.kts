@@ -7,7 +7,14 @@ plugins {
 apply(plugin = "com.github.johnrengelman.shadow")
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-
+    val excluded = setOf(
+        "org.jetbrains.kotlin",
+        "org.jetbrains.kotlinx",
+        "org.slf4j" // included in mirai-core -> io.ktor:ktor-network-tls
+    )
+    dependencyFilter.exclude {
+        it.moduleGroup in excluded
+    }
 }
 
 val httpVersion: String by rootProject.ext
