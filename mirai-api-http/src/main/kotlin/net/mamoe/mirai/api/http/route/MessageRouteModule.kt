@@ -104,7 +104,8 @@ fun Application.messageModule() {
                     is Incoming.FromTemp -> TempMessagePacketDto(MemberDTO(sender))
                 }
 
-                dto.messageChain = originalMessage.toMessageChainDTO { d -> d != UnknownMessageDTO }
+                dto.messageChain = messageChainOf(this, originalMessage)
+                    .toMessageChainDTO { d -> d != UnknownMessageDTO }
                 call.respondDTO(EventRestfulResult(
                     data = dto
                 ))
