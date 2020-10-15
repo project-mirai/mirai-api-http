@@ -9,26 +9,27 @@
 
 package net.mamoe.mirai.api.http
 
-import io.ktor.application.Application
-import io.ktor.server.cio.CIO
-import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.engine.applicationEngineEnvironment
-import io.ktor.server.engine.connector
-import io.ktor.server.engine.embeddedServer
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.application.*
+import io.ktor.server.cio.*
+import io.ktor.server.engine.*
+import io.ktor.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.route.mirai
+import net.mamoe.mirai.console.plugin.PluginManager
+import net.mamoe.mirai.console.plugin.description
 import net.mamoe.mirai.utils.DefaultLogger
-import org.slf4j.helpers.NOPLoggerFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.OutputStream
 import java.io.PrintStream
 import kotlin.coroutines.CoroutineContext
 
 object MiraiHttpAPIServer : CoroutineScope {
+    private const val DEFAULT_LOGGER_NAME = "Mirai HTTP API"
 
-    var logger = DefaultLogger("Mirai HTTP API")
+    var logger = DefaultLogger(DEFAULT_LOGGER_NAME)
     override val coroutineContext: CoroutineContext =
         CoroutineExceptionHandler { _, throwable -> logger.error(throwable) }
 
@@ -54,26 +55,48 @@ object MiraiHttpAPIServer : CoroutineScope {
 
         // TODO: start是无阻塞的，理应获取启动状态后再执行后续代码
         launch {
-            val err = System.err
-            System.setErr(PrintStream(object : OutputStream() {
-                override fun write(b: Int) {
-                    // noop
-                }
-            })) // ignore slf4j's log
-            try {
-                server = embeddedServer(CIO, environment = applicationEngineEnvironment {
-                    this.parentCoroutineContext = coroutineContext
-                    this.log = NOPLoggerFactory().getLogger("NMYSL")
-                    this.module(Application::mirai)
 
-                    connector {
-                        this.host = host
-                        this.port = port
-                    }
-                })
-            } finally {
-                System.setErr(err)
+            val err = System.err
+
+            val logger = if (PluginManager.plugins.any {
+                    // plugin mode
+                    it.description.id == "net.mamoe.mirai.mirai-slf4j-bridge"
+                } || runCatching {
+                    // library mode
+                    Class.forName(
+                        "org.slf4j.impl.StaticLoggerBinder",
+                        false,
+                        Logger::class.java.classLoader
+                    )
+                }.isSuccess)
+                LoggerFactory.getLogger(DEFAULT_LOGGER_NAME)
+            else synchronized(err) {
+                try {
+                    System.setErr(PrintStream(object : OutputStream() {
+                        // noop
+                        override fun write(b: Int) {}
+                        override fun write(b: ByteArray) {}
+                        override fun write(b: ByteArray, off: Int, len: Int) {}
+                    })) // ignore slf4j's log
+
+                    // 使用 LoggerFactory 获取 logger, 以允许 log4j impl 已安装的情况下打印日志
+                    LoggerFactory.getLogger(DEFAULT_LOGGER_NAME)
+                } finally {
+                    System.setErr(err)
+                }
             }
+            server = embeddedServer(CIO, environment = applicationEngineEnvironment {
+                this.parentCoroutineContext = coroutineContext
+                // ktor 500 internal error 错误通过此 logger 打印
+                // 而不是 CoroutineExceptionHandler
+                this.log = logger
+                this.module(Application::mirai)
+
+                connector {
+                    this.host = host
+                    this.port = port
+                }
+            })
             server.start(true)
 
 

@@ -16,7 +16,7 @@ import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.command.SimpleCommand
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.contact.User
 import java.io.File
@@ -25,11 +25,11 @@ internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>
 
 @AutoService(JvmPlugin::class)
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescription("net.mamoe.mirai-api-http", "1.8.4") {
-        name("MiraiApiHttp")
-        author("ryoii")
-        info("Mirai HTTP API Server Plugin")
-    }
+    JvmPluginDescriptionBuilder(name = "MiraiApiHttp", version = "1.8.4")
+        .id("net.mamoe.mirai-api-http")
+        .author("ryoii")
+        .info("Mirai HTTP API Server Plugin")
+        .build()
 ) {
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this)
 
@@ -37,15 +37,14 @@ object HttpApiPluginBase : KotlinPlugin(
         Setting.reload()
 
         with(Setting) {
-            logger.info("Starting Mirai HTTP Server in 0.0.0.0:$port")
 
             if (authKey.startsWith("INITKEY")) {
                 logger.warning("USING INITIAL KEY, please edit the key")
             }
 
+            logger.info("Starting Mirai HTTP Server in $host:$port")
             services.onLoad()
 
-            logger.info("Starting Mirai HTTP Server in $host:$port")
             MiraiHttpAPIServer.start(host, port, authKey)
 
             services.onEnable()
