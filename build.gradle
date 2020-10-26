@@ -1,3 +1,5 @@
+assert org.gradle.api.JavaVersion.current().isJava11Compatible()
+
 buildscript {
     repositories {
         mavenLocal()
@@ -25,3 +27,4 @@ allprojects {
         mavenCentral()
     }
 }
+
