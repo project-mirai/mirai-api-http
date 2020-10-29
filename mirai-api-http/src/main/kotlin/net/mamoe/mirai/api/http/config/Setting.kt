@@ -12,8 +12,9 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-@ValueName("setting")
 object Setting : AbstractPluginData(), PluginConfig {
+    @ConsoleExperimentalApi
+    override val saveName: String get() = "setting"
 
     /**
      * 上报子消息配置

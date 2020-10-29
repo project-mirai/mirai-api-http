@@ -17,7 +17,19 @@ import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.StringMapRestfulResult
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.version
+import kotlin.reflect.full.memberProperties
+
+private val mahVersion by lazy {
+    runCatching {
+        HttpApiPluginBase.version.value // 1.0-M4
+    }.getOrElse { // 1.0-RC-dev
+        val desc = HttpApiPluginBase.description
+        JvmPluginDescription::class.memberProperties.first { it.name == "version" }
+            .get(desc).toString()
+    }
+}
 
 /**
  * 配置路由
@@ -33,7 +45,7 @@ fun Application.configRouteModule() {
             call.respondDTO(
                 StringMapRestfulResult(
                     data = mapOf(
-                        "version" to HttpApiPluginBase.version.value
+                        "version" to mahVersion
                     )
                 )
             )
