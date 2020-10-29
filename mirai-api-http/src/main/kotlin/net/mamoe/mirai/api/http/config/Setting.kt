@@ -12,8 +12,9 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-@ValueName("setting")
 object Setting : AbstractPluginData(), PluginConfig {
+    @ConsoleExperimentalApi
+    override val saveName: String get() = "setting"
 
     /**
      * 上报子消息配置
@@ -36,7 +37,7 @@ object Setting : AbstractPluginData(), PluginConfig {
      */
     @Serializable
     data class Report(
-        val enable: Boolean = true,
+        val enable: Boolean = false,
         val groupMessage: Reportable = Reportable(true),
         val friendMessage: Reportable = Reportable(true),
         val tempMessage: Reportable = Reportable(true),
@@ -57,7 +58,7 @@ object Setting : AbstractPluginData(), PluginConfig {
      */
     @Serializable
     data class HeartBeat(
-        val enable: Boolean = true,
+        val enable: Boolean = false,
         val delay: Long = 1000,
         val period: Long = 15000,
         val destinations: Destinations = emptyList(),
