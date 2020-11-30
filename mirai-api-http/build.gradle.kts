@@ -2,6 +2,7 @@ plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
     kotlin("kapt")
+    id("net.mamoe.mirai-console") version "1.0.0"
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
@@ -64,10 +65,6 @@ kotlin {
 
     sourceSets["test"].apply {
         dependencies {
-            api("net.mamoe:mirai-core:$miraiVersion")
-            api("net.mamoe:mirai-console:$miraiConsoleVersion")
-            api("net.mamoe:mirai-console-pure:$miraiConsoleVersion")
-
             api(kotlin("stdlib-jdk8", kotlinVersion))
 //            api(kotlin("stdlib-jdk7", kotlinVersion))
 //            api(kotlin("reflect", kotlinVersion))
@@ -85,10 +82,9 @@ kotlin {
 
         dependencies {
 //            compileOnly("net.mamoe:mirai-core:$miraiVersion")
-            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
-            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
 //            compileOnly(kotlinx("io-jvm"))
 
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))

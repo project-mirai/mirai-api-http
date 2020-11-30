@@ -23,7 +23,7 @@ import kotlin.reflect.full.memberProperties
 
 private val mahVersion by lazy {
     runCatching {
-        HttpApiPluginBase.version.value // 1.0-M4
+        HttpApiPluginBase.version.toString() // 1.0-M4
     }.getOrElse { // 1.0-RC-dev
         val desc = HttpApiPluginBase.description
         JvmPluginDescription::class.memberProperties.first { it.name == "version" }

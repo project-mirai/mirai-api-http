@@ -30,16 +30,19 @@ import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermitteeId
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.PlainText
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * 命令行路由
  */
+@OptIn(ConsoleExperimentalApi::class)
 fun Application.commandModule() {
 
     routing {
@@ -70,8 +73,7 @@ fun Application.commandModule() {
                 val sender = HttpCommandSender(call)
 
                 CommandManager.run {
-                    val result = sender.executeCommand("${it.name} ${it.args.joinToString(" ")}")
-                    when (result) {
+                    when (val result = executeCommand(sender, PlainText("${it.name} ${it.args.joinToString(" ")}"))) {
                         is CommandExecuteResult.Success -> if (!sender.consume) call.respondText("")
                         else -> call.respondStateCode(StateCode.NoElement)
                     }
@@ -166,9 +168,9 @@ class HttpCommandSender(
         return null
     }
 
-    override suspend fun catchExecutionException(e: Throwable) {
+    /*override suspend fun catchExecutionException(e: Throwable) {
         // Nothing
-    }
+    }*/
 
 
 //    override suspend fun flushMessage() {

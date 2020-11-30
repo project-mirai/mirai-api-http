@@ -11,7 +11,7 @@ internal class RegisterCommand(
     vararg names: String,
 ) : RawCommand(
     HttpApiPluginBase,
-    *names,
+    names.first(),
     description = description
 ) {
     override suspend fun CommandSender.onCommand(args: MessageChain) {

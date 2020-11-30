@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.route.mirai
 import net.mamoe.mirai.console.plugin.PluginManager
-import net.mamoe.mirai.console.plugin.description
+import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.description
 import net.mamoe.mirai.utils.DefaultLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
