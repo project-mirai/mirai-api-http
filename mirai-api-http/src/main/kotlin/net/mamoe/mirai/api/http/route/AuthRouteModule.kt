@@ -44,7 +44,9 @@ fun Application.authModule() {
          */
         miraiVerify<BindDTO>("/verify", verifiedSessionKey = false) {
             val bot = getBotOrThrow(it.qq)
-            SessionManager.createAuthedSession(bot, it.sessionKey)
+            if (SessionManager[it.sessionKey] !is AuthedSession) {
+                SessionManager.createAuthedSession(bot, it.sessionKey)
+            }
             call.respondStateCode(StateCode.Success)
         }
 
