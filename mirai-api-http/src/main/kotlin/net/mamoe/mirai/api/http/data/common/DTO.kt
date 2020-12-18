@@ -11,7 +11,7 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.mamoe.mirai.api.http.AuthedSession
+import net.mamoe.mirai.api.http.context.session.manager.AuthedSession
 
 interface DTO
 

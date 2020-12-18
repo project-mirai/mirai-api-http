@@ -16,6 +16,8 @@ import io.ktor.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.api.http.context.session.SessionManager
+import net.mamoe.mirai.api.http.context.session.manager.generateSessionKey
 import net.mamoe.mirai.api.http.route.mirai
 import net.mamoe.mirai.console.plugin.PluginManager
 import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.description

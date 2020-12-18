@@ -14,8 +14,8 @@ import io.ktor.application.call
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.AuthedSession
-import net.mamoe.mirai.api.http.SessionManager
+import net.mamoe.mirai.api.http.context.session.manager.AuthedSession
+import net.mamoe.mirai.api.http.context.session.SessionManager
 import net.mamoe.mirai.api.http.data.NoSuchBotException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.AuthDTO

@@ -23,7 +23,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.readAllParts
 import io.ktor.request.contentCharset
-import io.ktor.request.receive
 import io.ktor.request.receiveChannel
 import io.ktor.request.receiveMultipart
 import io.ktor.response.defaultTextContentType
@@ -36,10 +35,10 @@ import io.ktor.util.pipeline.PipelineContext
 import io.ktor.utils.io.readRemaining
 import io.ktor.utils.io.streams.inputStream
 import io.ktor.websocket.WebSockets
-import net.mamoe.mirai.api.http.AuthedSession
+import net.mamoe.mirai.api.http.context.session.manager.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
-import net.mamoe.mirai.api.http.SessionManager
-import net.mamoe.mirai.api.http.TempSession
+import net.mamoe.mirai.api.http.context.session.SessionManager
+import net.mamoe.mirai.api.http.context.session.manager.TempSession
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.*
 import net.mamoe.mirai.api.http.data.common.DTO
@@ -50,7 +49,6 @@ import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
-import java.nio.charset.Charset
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration

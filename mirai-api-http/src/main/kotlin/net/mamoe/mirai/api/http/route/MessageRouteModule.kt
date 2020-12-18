@@ -18,7 +18,7 @@ import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.*
-import net.mamoe.mirai.api.http.generateSessionKey
+import net.mamoe.mirai.api.http.context.session.manager.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.message.MessageReceipt

@@ -9,7 +9,7 @@
 
 package net.mamoe.mirai.api.http.data
 
-import net.mamoe.mirai.api.http.AuthedSession
+import net.mamoe.mirai.api.http.context.session.manager.AuthedSession
 
 class Config(
     private val session: AuthedSession,
