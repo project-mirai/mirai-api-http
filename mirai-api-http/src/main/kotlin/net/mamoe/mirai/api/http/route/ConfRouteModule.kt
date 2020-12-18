@@ -22,13 +22,9 @@ import net.mamoe.mirai.console.plugin.version
 import kotlin.reflect.full.memberProperties
 
 private val mahVersion by lazy {
-    runCatching {
-        HttpApiPluginBase.version.toString() // 1.0-M4
-    }.getOrElse { // 1.0-RC-dev
-        val desc = HttpApiPluginBase.description
-        JvmPluginDescription::class.memberProperties.first { it.name == "version" }
-            .get(desc).toString()
-    }
+    val desc = HttpApiPluginBase.description
+    JvmPluginDescription::class.memberProperties.first { it.name == "version" }
+        .get(desc).toString()
 }
 
 /**

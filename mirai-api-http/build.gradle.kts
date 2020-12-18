@@ -2,7 +2,6 @@ plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
     kotlin("kapt")
-    id("net.mamoe.mirai-console") version "1.0.0"
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
@@ -48,27 +47,13 @@ dependencies {
 }
 
 kotlin {
-    sourceSets["main"].apply {
-        dependencies {
-
-//            compileOnly("net.mamoe:mirai-core:$miraiVersion")
-//            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
-//            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
-
-
-//            compileOnly(kotlin("stdlib-jdk8", kotlinVersion))
-//            compileOnly(kotlin("stdlib-jdk7", kotlinVersion))
-//            compileOnly(kotlin("reflect", kotlinVersion))
-//            api("org.slf4j:slf4j-simple:1.7.26")
-        }
-    }
-
     sourceSets["test"].apply {
         dependencies {
+            api("net.mamoe:mirai-core:$miraiVersion")
+            api("net.mamoe:mirai-console:$miraiConsoleVersion")
+            api("net.mamoe:mirai-console-terminal:$miraiConsoleVersion")
+
             api(kotlin("stdlib-jdk8", kotlinVersion))
-//            api(kotlin("stdlib-jdk7", kotlinVersion))
-//            api(kotlin("reflect", kotlinVersion))
-//            api(kotlinx("io-jvm"))
             api("org.slf4j:slf4j-simple:1.7.26")
         }
         kotlin.outputDir = file("build/classes/kotlin/jvm/test")
@@ -81,21 +66,13 @@ kotlin {
         languageSettings.useExperimentalAnnotation("kotlin.Experimental")
 
         dependencies {
-//            compileOnly("net.mamoe:mirai-core:$miraiVersion")
-//            compileOnly(kotlinx("io-jvm"))
+            compileOnly("net.mamoe:mirai-core-qqandroid:$miraiVersion")
+            compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
+            api(kotlinx("serialization-json", serializationVersion))
 
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
-//            compileOnly(kotlin("stdlib", kotlinVersion))
-//            compileOnly(kotlin("serialization", kotlinVersion))
-
-            //implementation("org.jetbrains.kotlinx:atomicfu:$atomicFuVersion")
-//            compileOnly(kotlinx("io"))
-//            compileOnly(kotlinx("coroutines-io", coroutinesIoVersion))
-//            compileOnly(kotlinx("coroutines-core", coroutinesVersion))
-//            compileOnly(kotlinx("serialization-runtime", serializationVersion))
             api("org.yaml:snakeyaml:1.25")
 
             implementation(ktor("server-core"))

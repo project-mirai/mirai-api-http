@@ -12,7 +12,6 @@ package net.mamoe.mirai.api.http.util
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.SerializersModuleBuilder
 import net.mamoe.mirai.api.http.data.common.*
 import kotlin.reflect.KClass
 

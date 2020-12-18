@@ -25,8 +25,8 @@ internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>
 
 @AutoService(JvmPlugin::class)
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescriptionBuilder("net.mamoe.mirai-api-http", "1.8.4")
-        .name("MiraiApiHttp")
+    JvmPluginDescriptionBuilder(id = "MiraiApiHttp", version = "1.9.0")
+        .id("net.mamoe.mirai-api-http")
         .author("ryoii")
         .info("Mirai HTTP API Server Plugin")
         .build()
@@ -70,16 +70,16 @@ object HttpApiPluginBase : KotlinPlugin(
         description: String,
         usage: String,
     ) {
-        CommandManager.INSTANCE.run {
-            object : SimpleCommand(HttpApiPluginBase, names.first(), description = description) {
-                override val usage: String = usage
-
-                @Handler
-                suspend fun onCommand(target: User, message: String) {
-                    // TODO
-                }
-            }
-        }
+//        CommandManager.INSTANCE.run {
+//            object : SimpleCommand(HttpApiPluginBase, *names, description = description) {
+//                override val usage: String = usage
+//
+//                @Handler
+//                suspend fun onCommand(target: User, message: String) {
+//                    // TODO
+//                }
+//            }
+//        }
 
         /* registerCommand {
         this.name = name

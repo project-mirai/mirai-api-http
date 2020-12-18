@@ -19,7 +19,6 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.SessionManager
-import net.mamoe.mirai.api.http.command.RegisterCommand
 import net.mamoe.mirai.api.http.data.IllegalParamException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
@@ -28,6 +27,7 @@ import net.mamoe.mirai.console.command.CommandExecuteResult
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandSender
+import net.mamoe.mirai.console.command.executeCommand
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermitteeId
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -58,8 +58,8 @@ fun Application.commandModule() {
                     addAll(it.alias)
                 }
 
-                RegisterCommand(it.description, it.usage, *names.toTypedArray()).register(true)
-                call.respondStateCode(StateCode.Success)
+//                RegisterCommand(it.description, it.usage, *names.toTypedArray()).register(true)
+                call.respondStateCode(StateCode(-1, "未支持操作"))
             }
         }
 
