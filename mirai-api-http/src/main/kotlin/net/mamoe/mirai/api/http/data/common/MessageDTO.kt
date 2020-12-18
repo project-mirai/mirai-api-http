@@ -19,8 +19,14 @@ import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexArray
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.event.events.FriendMessageEvent
+import net.mamoe.mirai.event.events.GroupMessageEvent
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.TempMessageEvent
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.uploadImage
 import java.net.URL
 
 /*
@@ -148,6 +154,7 @@ suspend fun MessageEvent.toDTO() = when (this) {
     }
 }
 
+@OptIn(ExperimentalMessageKey::class)
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     // `foreachContent`会忽略`MessageSource`，手动添加
     mutableListOf(this.getOrFail(MessageSource).toDTO()).apply {
@@ -162,8 +169,8 @@ suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
 
 
 suspend fun Message.toDTO() = when (this) {
-    is MessageSource -> MessageSourceDTO(id, time)
-    is At -> AtDTO(target, display)
+    is MessageSource -> MessageSourceDTO(ids.firstOrNull() ?: 0, time)
+    is At -> AtDTO(target, "")
     is AtAll -> AtAllDTO(0L)
     is Face -> FaceDTO(id, FaceMap[id])
     is PlainText -> PlainDTO(content)
@@ -172,20 +179,20 @@ suspend fun Message.toDTO() = when (this) {
     is Voice -> VoiceDTO(fileName, url)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
-    is QuoteReply -> QuoteDTO(source.id, source.fromId, source.targetId,
+    is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,
         groupId = when {
-            source is OfflineMessageSource && (source as OfflineMessageSource).kind == OfflineMessageSource.Kind.GROUP ||
+            source is OfflineMessageSource && (source as OfflineMessageSource).kind == MessageSourceKind.GROUP ||
                     source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
             else -> 0L
         },
         // 避免套娃
         origin = source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
-    is PokeMessage -> PokeMessageDTO(PokeMap[type])
+    is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     else -> UnknownMessageDTO
 }
 
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
-    is AtDTO -> At((contact as Group)[target])
+    is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
         faceId >= 0 -> Face(faceId)
@@ -224,8 +231,8 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }
-    is XmlDTO -> ServiceMessage(60, xml)
-    is JsonDTO -> ServiceMessage(1, json)
+    is XmlDTO -> SimpleServiceMessage(60, xml)
+    is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
     is PokeMessageDTO -> PokeMap[name]
     // ignore

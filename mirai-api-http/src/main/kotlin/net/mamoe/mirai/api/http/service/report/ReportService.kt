@@ -9,7 +9,6 @@
 
 package net.mamoe.mirai.api.http.service.report
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
@@ -17,15 +16,10 @@ import net.mamoe.mirai.api.http.data.common.toDTO
 import net.mamoe.mirai.api.http.service.MiraiApiHttpService
 import net.mamoe.mirai.api.http.util.HttpClient
 import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.console.plugin.Plugin
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.event.Listener
-import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.message.FriendMessageEvent
-import net.mamoe.mirai.message.GroupMessageEvent
-import net.mamoe.mirai.message.MessageEvent
-import net.mamoe.mirai.message.TempMessageEvent
 import net.mamoe.mirai.utils.error
 
 /**

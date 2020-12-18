@@ -9,27 +9,26 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.call
+import io.ktor.application.*
 import io.ktor.routing.routing
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.LowLevelAPI
+import net.mamoe.mirai.LowLevelApi
+import net.mamoe.mirai.Mirai
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import net.mamoe.mirai.event.events.MemberJoinRequestEvent
-import net.mamoe.mirai.event.events.NewFriendRequestEvent
 
 /**
  * 事件响应路由
  */
 
-@OptIn(LowLevelAPI::class)
+@OptIn(LowLevelApi::class)
 fun Application.eventRouteModule() {
 
     routing {
 
         miraiVerify<EventRespDTO>("/resp/newFriendRequestEvent") {
-            it.session.bot._lowLevelSolveNewFriendRequestEvent(
+            Mirai._lowLevelSolveNewFriendRequestEvent(
+                it.session.bot,
                 eventId = it.eventId,
                 fromId = it.fromId,
                 fromNick = "",
@@ -49,7 +48,8 @@ fun Application.eventRouteModule() {
         }
 
         miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
-            it.session.bot._lowLevelSolveMemberJoinRequestEvent(
+            Mirai._lowLevelSolveMemberJoinRequestEvent(
+                it.session.bot,
                 eventId = it.eventId,
                 fromId = it.fromId,
                 fromNick = "",
@@ -72,7 +72,8 @@ fun Application.eventRouteModule() {
         }
 
         miraiVerify<EventRespDTO>("/resp/botInvitedJoinGroupRequestEvent") {
-            it.session.bot._lowLevelSolveBotInvitedJoinGroupRequestEvent(
+            Mirai._lowLevelSolveBotInvitedJoinGroupRequestEvent(
+                it.session.bot,
                 eventId = it.eventId,
                 invitorId = it.fromId,
                 groupId = it.groupId,

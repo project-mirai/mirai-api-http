@@ -9,27 +9,20 @@
 
 package net.mamoe.mirai.api.http
 
-import com.google.auto.service.AutoService
 import kotlinx.coroutines.async
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.service.MiraiApiHttpServices
-import net.mamoe.mirai.console.command.CommandManager
-import net.mamoe.mirai.console.command.SimpleCommand
-import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.contact.User
 import java.io.File
 
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
-@AutoService(JvmPlugin::class)
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescriptionBuilder(id = "MiraiApiHttp", version = "1.9.0")
-        .id("net.mamoe.mirai-api-http")
-        .author("ryoii")
-        .info("Mirai HTTP API Server Plugin")
-        .build()
+    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "1.9.0") {
+        author("ryoii")
+        info("Mirai HTTP API Server Plugin")
+    }
 ) {
     var services: MiraiApiHttpServices = MiraiApiHttpServices(this)
 

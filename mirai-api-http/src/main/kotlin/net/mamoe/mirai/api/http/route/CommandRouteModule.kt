@@ -25,9 +25,7 @@ import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.console.command.CommandExecuteResult
 import net.mamoe.mirai.console.command.CommandManager
-import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandSender
-import net.mamoe.mirai.console.command.executeCommand
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermitteeId
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi

@@ -3,8 +3,9 @@ package net.mamoe.mirai.api.http.config
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.generateSessionKey
-import net.mamoe.mirai.console.data.*
-import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import net.mamoe.mirai.console.data.PluginConfig
+import net.mamoe.mirai.console.data.ReadOnlyPluginData
+import net.mamoe.mirai.console.data.value
 
 typealias Destination = String
 typealias Destinations = List<Destination>
@@ -12,10 +13,7 @@ typealias Destinations = List<Destination>
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-object Setting : AbstractPluginData(), PluginConfig {
-    @ConsoleExperimentalApi
-    override val saveName: String get() = "setting"
-
+object Setting : ReadOnlyPluginData("setting"), PluginConfig {
     /**
      * 上报子消息配置
      *
@@ -103,13 +101,4 @@ object Setting : AbstractPluginData(), PluginConfig {
      * 心跳服务配置
      */
     val heartbeat: HeartBeat by value(HeartBeat())
-
-    @ConsoleExperimentalApi
-    override fun onInit(owner: PluginDataHolder, storage: PluginDataStorage) {
-        // no-op
-    }
-
-    override fun onValueChanged(value: Value<*>) {
-        // no-op
-    }
 }

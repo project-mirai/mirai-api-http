@@ -19,9 +19,9 @@ class FaceMap {
         private val name2Id = mutableMapOf<String, Int>()
 
         init {
-            Face.IdList::class.memberProperties.forEach {
+            Face.Companion::class.memberProperties.forEach {
                 val n = it.name
-                val i = with(it.get(Face.IdList)) {
+                val i = with(it.get(Face.Companion)) {
                     if (this is Int) this
                     else return@forEach
                 }

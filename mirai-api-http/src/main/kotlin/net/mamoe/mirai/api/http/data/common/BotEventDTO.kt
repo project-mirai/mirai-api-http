@@ -13,7 +13,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.MessageEvent
 
 @Serializable
 sealed class BotEventDTO : EventDTO()
@@ -28,14 +27,14 @@ suspend fun BotEvent.toDTO() = when (this) {
         is BotReloginEvent -> BotReloginEventDTO(bot.id)
         is MessageRecallEvent.GroupRecall -> GroupRecallEventDTO(
             authorId,
-            messageId,
+            messageIds.firstOrNull() ?: 0,
             messageTime.toLong() and 0xFFFF,
             GroupDTO(group),
             operator?.let(::MemberDTO)
         )
         is MessageRecallEvent.FriendRecall -> FriendRecallEventDTO(
             authorId,
-            messageId,
+            messageIds.firstOrNull() ?: 0,
             messageTime.toLong() and 0xFFFF,
             operator
         )

@@ -20,6 +20,6 @@ class CacheQueue : LinkedHashMap<Int, OnlineMessageSource>() {
     override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Int, OnlineMessageSource>?): Boolean = size > cacheSize
 
     fun add(source: OnlineMessageSource) {
-        put(source.id, source)
+        put(source.ids.firstOrNull() ?: 0, source)
     }
 }

@@ -9,9 +9,8 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.routing.routing
+import io.ktor.application.*
+import io.ktor.routing.*
 import net.mamoe.mirai.api.http.data.common.GroupDTO
 import net.mamoe.mirai.api.http.data.common.MemberDTO
 import net.mamoe.mirai.api.http.data.common.QQDTO
@@ -27,7 +26,7 @@ fun Application.infoModule() {
          * 查询好友列表
          */
         miraiGet("/friendList") {
-            val ls = it.bot.friends.toMutableList().map { qq -> QQDTO(qq) }
+            val ls = it.bot.friends.toList().map { qq -> QQDTO(qq) }
             call.respondJson(ls.toJson())
         }
 
@@ -35,7 +34,7 @@ fun Application.infoModule() {
          * 查询QQ群列表
          */
         miraiGet("/groupList") {
-            val ls = it.bot.groups.toMutableList().map { group -> GroupDTO(group) }
+            val ls = it.bot.groups.toList().map { group -> GroupDTO(group) }
             call.respondJson(ls.toJson())
         }
 
@@ -43,7 +42,7 @@ fun Application.infoModule() {
          * 查询QQ群成员列表
          */
         miraiGet("/memberList") {
-            val ls = it.bot.getGroup(paramOrNull("target")).members.toMutableList().map { member -> MemberDTO(member) }
+            val ls = it.bot.getGroupOrFail(paramOrNull("target")).members.toList().map { member -> MemberDTO(member) }
             call.respondJson(ls.toJson())
         }
 

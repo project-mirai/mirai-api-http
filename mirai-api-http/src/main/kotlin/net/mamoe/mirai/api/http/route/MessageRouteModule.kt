@@ -9,12 +9,10 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.http.content.streamProvider
-import io.ktor.routing.routing
+import io.ktor.application.*
+import io.ktor.http.content.*
+import io.ktor.routing.*
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
@@ -23,13 +21,14 @@ import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.message.data.MessageSource.Key.quote
+import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.message.data.OnlineMessageSource.Incoming
 import net.mamoe.mirai.message.data.OnlineMessageSource.Outgoing
-import net.mamoe.mirai.message.uploadImage
+import net.mamoe.mirai.utils.uploadImage
 import java.net.URL
 
 /**
@@ -42,9 +41,9 @@ fun Application.messageModule() {
          * 获取MessageQueue剩余消息数量
          */
         miraiGet("/countMessage") {
-            val count: Int = it.messageQueue.size;
+            val count: Int = it.messageQueue.size
 
-            call.respondDTO(IntRestfulResult(data = count));
+            call.respondDTO(IntRestfulResult(data = count))
         }
 
         /**
@@ -61,7 +60,7 @@ fun Application.messageModule() {
          * 获取指定条数最新的消息并从MessageQueue删除获取的消息
          */
         miraiGet("/fetchLatestMessage") {
-            val count: Int = paramOrNull("count");
+            val count: Int = paramOrNull("count")
             val list = it.messageQueue.fetchLatest(count)
 
             call.respondDTO(EventListRestfulResult(data = list))
@@ -71,7 +70,7 @@ fun Application.messageModule() {
          * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
          */
         miraiGet("/peakMessage") {
-            val count: Int = paramOrNull("count");
+            val count: Int = paramOrNull("count")
             val list = it.messageQueue.peek(count)
 
             call.respondDTO(EventListRestfulResult(data = list))
@@ -96,7 +95,7 @@ fun Application.messageModule() {
 
                 val dto = when (this) {
                     is Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(target.botAsMember))
-                    is Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(sender.selfQQ))
+                    is Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(sender.asFriend))
                     is Outgoing.ToTemp -> TempMessagePacketDto(MemberDTO(target))
 
                     is Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(sender))
@@ -106,9 +105,11 @@ fun Application.messageModule() {
 
                 dto.messageChain = messageChainOf(this, originalMessage)
                     .toMessageChainDTO { d -> d != UnknownMessageDTO }
-                call.respondDTO(EventRestfulResult(
-                    data = dto
-                ))
+                call.respondDTO(
+                    EventRestfulResult(
+                        data = dto
+                    )
+                )
             }
         }
 
@@ -140,15 +141,15 @@ fun Application.messageModule() {
 
             val bot = it.session.bot
             val qq = when {
-                it.target != null -> bot.getFriend(it.target)
-                it.qq != null -> bot.getFriend(it.qq)
+                it.target != null -> bot.getFriendOrFail(it.target)
+                it.qq != null -> bot.getFriendOrFail(it.qq)
                 else -> throw NoSuchElementException()
             }
 
             val receipt = sendMessage(quote, it.messageChain.toMessageChain(qq), qq)
             it.session.cacheQueue.add(receipt.source)
 
-            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            call.respondDTO(SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: 0))
         }
 
         /**
@@ -163,21 +164,15 @@ fun Application.messageModule() {
 
             val bot = it.session.bot
             val group = when {
-                it.target != null -> bot.getGroup(it.target)
-                it.group != null -> bot.getGroup(it.group)
+                it.target != null -> bot.getGroupOrFail(it.target)
+                it.group != null -> bot.getGroupOrFail(it.group)
                 else -> throw NoSuchElementException()
             }
 
             val receipt = sendMessage(quote, it.messageChain.toMessageChain(group), group)
             it.session.cacheQueue.add(receipt.source)
 
-            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
-        }
-
-        fun Bot.getMember(target: Long) : Member {
-            val grp = target shr 32 and 0xFFFFFFFF
-            val mem = target and 0xFFFFFFFF
-            return getGroup(grp)[mem]
+            call.respondDTO(SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: 0))
         }
 
         /**
@@ -192,14 +187,14 @@ fun Application.messageModule() {
 
             val bot = it.session.bot
             val member = when {
-                it.qq != null && it.group != null -> bot.getGroup(it.group)[it.qq]
+                it.qq != null && it.group != null -> bot.getGroupOrFail(it.group).getOrFail(it.qq)
                 else -> throw NoSuchElementException()
             }
 
             val receipt = sendMessage(quote, it.messageChain.toMessageChain(member), member)
             it.session.cacheQueue.add(receipt.source)
 
-            call.respondDTO(SendRetDTO(messageId = receipt.source.id))
+            call.respondDTO(SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: 0))
         }
 
         /**
@@ -208,10 +203,10 @@ fun Application.messageModule() {
         miraiVerify<SendImageDTO>("sendImageMessage") {
             val bot = it.session.bot
             val contact = when {
-                it.target != null -> bot.getFriendOrNull(it.target) ?: bot.getGroup(it.target)
-                it.qq != null && it.group != null -> bot.getGroup(it.group)[it.qq]
-                it.qq != null -> bot.getFriend(it.qq)
-                it.group != null -> bot.getGroup(it.group)
+                it.target != null -> bot.getFriend(it.target) ?: bot.getGroupOrFail(it.target)
+                it.qq != null && it.group != null -> bot.getGroupOrFail(it.group).getOrFail(it.qq)
+                it.qq != null -> bot.getFriendOrFail(it.qq)
+                it.group != null -> bot.getGroupOrFail(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
             val ls = it.urls.map { url -> contact.uploadImage(URL(url).openStream()) }
@@ -232,7 +227,8 @@ fun Application.messageModule() {
                 val image = streamProvider().use {
                     // originalFileName assert not null
                     val newFile = HttpApiPluginBase.saveImageAsync(
-                        originalFileName ?: generateSessionKey(), it.readBytes())
+                        originalFileName ?: generateSessionKey(), it.readBytes()
+                    )
 
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
@@ -247,11 +243,13 @@ fun Application.messageModule() {
                 }
 
                 image?.apply {
-                    call.respondDTO(UploadImageRetDTO(
-                        imageId,
-                        queryUrl(),
-                        path
-                    ))
+                    call.respondDTO(
+                        UploadImageRetDTO(
+                            imageId,
+                            queryUrl(),
+                            path
+                        )
+                    )
                 } ?: throw IllegalAccessException("图片上传错误")
 
             } ?: throw IllegalAccessException("未知错误")
@@ -267,7 +265,8 @@ fun Application.messageModule() {
                 val voice = streamProvider().use {
                     // originalFileName assert not null
                     val newFile = HttpApiPluginBase.saveVoiceAsync(
-                            originalFileName ?: generateSessionKey(), it.readBytes())
+                        originalFileName ?: generateSessionKey(), it.readBytes()
+                    )
 
                     when (type) {
                         "group" -> session.bot.groups.firstOrNull()?.uploadVoice(newFile.await().inputStream())
@@ -280,11 +279,13 @@ fun Application.messageModule() {
                 }
 
                 voice?.apply {
-                    call.respondDTO(UploadVoiceRetDTO(
-                        fileName,
-                        url,
-                        path
-                    ))
+                    call.respondDTO(
+                        UploadVoiceRetDTO(
+                            fileName,
+                            url,
+                            path
+                        )
+                    )
                 } ?: throw IllegalAccessException("语音上传错误")
 
             } ?: throw IllegalAccessException("未知错误")

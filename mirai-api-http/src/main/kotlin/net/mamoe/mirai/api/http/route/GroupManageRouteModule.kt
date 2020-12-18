@@ -9,9 +9,8 @@
 
 package net.mamoe.mirai.api.http.route
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.routing.routing
+import io.ktor.application.*
+import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
@@ -29,7 +28,7 @@ fun Application.groupManageModule() {
          * 禁言所有人（需要相关权限）
          */
         miraiVerify<MuteDTO>("/muteAll") {
-            it.session.bot.getGroup(it.target).settings.isMuteAll = true
+            it.session.bot.getGroupOrFail(it.target).settings.isMuteAll = true
             call.respondStateCode(StateCode.Success)
         }
 
@@ -37,7 +36,7 @@ fun Application.groupManageModule() {
          * 取消禁言所有人（需要相关权限）
          */
         miraiVerify<MuteDTO>("/unmuteAll") {
-            it.session.bot.getGroup(it.target).settings.isMuteAll = false
+            it.session.bot.getGroupOrFail(it.target).settings.isMuteAll = false
             call.respondStateCode(StateCode.Success)
         }
 
@@ -45,7 +44,7 @@ fun Application.groupManageModule() {
          * 禁言指定群成员（需要相关权限）
          */
         miraiVerify<MuteDTO>("/mute") {
-            it.session.bot.getGroup(it.target)[it.memberId].mute(it.time)
+            it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).mute(it.time)
             call.respondStateCode(StateCode.Success)
         }
 
@@ -53,7 +52,7 @@ fun Application.groupManageModule() {
          * 取消禁言指定群成员（需要相关权限）
          */
         miraiVerify<MuteDTO>("/unmute") {
-            it.session.bot.getGroup(it.target).members[it.memberId].unmute()
+            it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).unmute()
             call.respondStateCode(StateCode.Success)
         }
 
@@ -61,7 +60,7 @@ fun Application.groupManageModule() {
          * 移出群聊（需要相关权限）
          */
         miraiVerify<KickDTO>("/kick") {
-            it.session.bot.getGroup(it.target)[it.memberId].kick(it.msg)
+            it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).kick(it.msg)
             call.respondStateCode(StateCode.Success)
         }
 
@@ -69,7 +68,7 @@ fun Application.groupManageModule() {
          * Bot退出群聊（Bot不能为群主）
          */
         miraiVerify<QuitDTO>("/quit") {
-            val success = it.session.bot.getGroup(it.target).quit()
+            val success = it.session.bot.getGroupOrFail(it.target).quit()
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
@@ -80,7 +79,7 @@ fun Application.groupManageModule() {
          * 获取群设置（需要相关权限）
          */
         miraiGet("/groupConfig") {
-            val group = it.bot.getGroup(paramOrNull("target"))
+            val group = it.bot.getGroupOrFail(paramOrNull("target"))
             call.respondDTO(GroupDetailDTO(group))
         }
 
@@ -88,11 +87,11 @@ fun Application.groupManageModule() {
          * 修改群设置（需要相关权限）
          */
         miraiVerify<GroupConfigDTO>("/groupConfig") { dto ->
-            val group = dto.session.bot.getGroup(dto.target)
+            val group = dto.session.bot.getGroupOrFail(dto.target)
             with(dto.config) {
                 name?.let { group.name = it }
                 announcement?.let { group.settings.entranceAnnouncement = it }
-                confessTalk?.let { group.settings.isConfessTalkEnabled = it }
+                // confessTalk?.let { group.settings.isConfessTalkEnabled = it }
                 allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
                 // TODO: 待core接口实现设置可改
 //                autoApprove?.let { group.autoApprove = it }
@@ -105,12 +104,12 @@ fun Application.groupManageModule() {
          * 群员信息管理（需要相关权限）
          */
         miraiGet("/memberInfo") {
-            val member = it.bot.getGroup(paramOrNull("target"))[paramOrNull("memberId")]
+            val member = it.bot.getGroupOrFail(paramOrNull("target")).getOrFail(paramOrNull("memberId"))
             call.respondDTO(MemberDetailDTO(member))
         }
 
         miraiVerify<MemberInfoDTO>("/memberInfo") { dto ->
-            val member = dto.session.bot.getGroup(dto.target)[dto.memberId]
+            val member = dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId)
             with(dto.info) {
                 name?.let { member.nameCard = it }
                 specialTitle?.let { member.specialTitle = it }
@@ -163,7 +162,7 @@ private data class GroupDetailDTO(
     constructor(group: Group) : this(
         group.name,
         group.settings.entranceAnnouncement,
-        group.settings.isConfessTalkEnabled,
+        false,
         group.settings.isAllowMemberInvite,
         group.settings.isAutoApproveEnabled,
         group.settings.isAnonymousChatEnabled
