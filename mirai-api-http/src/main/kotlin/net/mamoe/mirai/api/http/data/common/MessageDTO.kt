@@ -26,6 +26,7 @@ import net.mamoe.mirai.event.events.TempMessageEvent
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.MiraiInternalApi
 import net.mamoe.mirai.utils.uploadImage
 import java.net.URL
 
@@ -191,6 +192,7 @@ suspend fun Message.toDTO() = when (this) {
     else -> UnknownMessageDTO
 }
 
+@OptIn(MiraiInternalApi::class)
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
