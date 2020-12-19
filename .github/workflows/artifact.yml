@@ -1,4 +1,4 @@
-name: Gradle CI
+name: Artifact
 
 on: [push, pull_request]
 
