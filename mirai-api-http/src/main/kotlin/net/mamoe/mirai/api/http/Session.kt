@@ -132,12 +132,12 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
     internal var latestUsed = currentTimeSeconds()
 
     init {
-        _listener = bot.subscribeAlways{
+        _listener = bot.eventChannel.subscribeAlways{
             if (this.bot === this@AuthedSession.bot) {
                 this.run(messageQueue::add)
             }
         }
-        _cache = bot.subscribeAlways {
+        _cache = bot.eventChannel.subscribeAlways {
             if (this.bot === this@AuthedSession.bot) {
                 cacheQueue.add(this.source)
             }
@@ -167,7 +167,7 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
 
     fun disableWebSocket() {
         if (_listener.isCompleted) {
-            _listener = bot.subscribeAlways{
+            _listener = bot.eventChannel.subscribeAlways{
                 if (this.bot === this@AuthedSession.bot) {
                     this.run(messageQueue::add)
                 }

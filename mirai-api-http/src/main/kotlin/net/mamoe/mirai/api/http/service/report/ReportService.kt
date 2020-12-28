@@ -17,6 +17,7 @@ import net.mamoe.mirai.api.http.service.MiraiApiHttpService
 import net.mamoe.mirai.api.http.util.HttpClient
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
+import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.event.subscribeAlways
@@ -46,7 +47,7 @@ class ReportService(
     }
 
     override fun onEnable() {
-        subscription = console.subscribeAlways {
+        subscription = GlobalEventChannel.subscribeAlways {
             this.takeIf { reportConfig.enable }
                 ?.apply {
                     this.takeIf { reportConfig.eventMessage.report }

@@ -26,8 +26,11 @@ import net.mamoe.mirai.event.events.TempMessageEvent
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsVoice
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiInternalApi
-import net.mamoe.mirai.utils.uploadImage
 import java.net.URL
 
 /*
@@ -155,7 +158,6 @@ suspend fun MessageEvent.toDTO() = when (this) {
     }
 }
 
-@OptIn(ExperimentalMessageKey::class)
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     // `foreachContent`会忽略`MessageSource`，手动添加
     mutableListOf(this.getOrFail(MessageSource).toDTO()).apply {
@@ -192,43 +194,43 @@ suspend fun Message.toDTO() = when (this) {
     else -> UnknownMessageDTO
 }
 
-@OptIn(MiraiInternalApi::class)
+@OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
         faceId >= 0 -> Face(faceId)
         name.isNotEmpty() -> Face(FaceMap[name])
-        else -> Face(Face.unknown)
+        else -> Face(255)
     }
     is PlainDTO -> PlainText(text)
     is ImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url).openStream() })
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) { URL(url).openStream().uploadAsImage(contact) }
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
-                contact.uploadImage(this)
+                uploadAsImage(contact)
             } else throw NoSuchFileException(this)
         }
         else -> null
     }
     is FlashImageDTO -> when {
         !imageId.isNullOrBlank() -> Image(imageId)
-        !url.isNullOrBlank() -> contact.uploadImage(withContext(Dispatchers.IO) { URL(url).openStream() })
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) { URL(url).openStream().uploadAsImage(contact) }
         !path.isNullOrBlank() -> with(HttpApiPluginBase.image(path)) {
             if (exists()) {
-                contact.uploadImage(this)
+                uploadAsImage(contact)
             } else throw NoSuchFileException(this)
         }
         else -> null
     }?.flash()
     is VoiceDTO -> when {
         contact !is Group -> null
-        !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, "")
-        !url.isNullOrBlank() -> contact.uploadVoice(withContext(Dispatchers.IO) { URL(url).openStream() })
+        !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, 0, "")
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) { URL(url).openStream().toExternalResource().uploadAsVoice(contact) }
         !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
             if (exists()) {
-                contact.uploadVoice(this.inputStream())
+                inputStream().toExternalResource().uploadAsVoice(contact)
             } else throw NoSuchFileException(this)
         }
         else -> null

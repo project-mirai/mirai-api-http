@@ -28,7 +28,8 @@ import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.message.data.OnlineMessageSource.Incoming
 import net.mamoe.mirai.message.data.OnlineMessageSource.Outgoing
-import net.mamoe.mirai.utils.uploadImage
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.net.URL
 
 /**
@@ -209,7 +210,7 @@ fun Application.messageModule() {
                 it.group != null -> bot.getGroupOrFail(it.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
-            val ls = it.urls.map { url -> contact.uploadImage(URL(url).openStream()) }
+            val ls = it.urls.map { url -> URL(url).openStream().uploadAsImage(contact) }
             val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
 
             it.session.cacheQueue.add(receipt.source)
@@ -231,10 +232,10 @@ fun Application.messageModule() {
                     )
 
                     when (type) {
-                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
+                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await().toExternalResource())
                         "friend",
                         "temp"
-                        -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
+                        -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await().toExternalResource())
                         else -> null
                     }.apply {
                         // 使用apply不影响when返回
@@ -269,7 +270,7 @@ fun Application.messageModule() {
                     )
 
                     when (type) {
-                        "group" -> session.bot.groups.firstOrNull()?.uploadVoice(newFile.await().inputStream())
+                        "group" -> session.bot.groups.firstOrNull()?.uploadVoice(newFile.await().toExternalResource())
                         else -> null
                     }.apply {
                         // 使用apply不影响when返回

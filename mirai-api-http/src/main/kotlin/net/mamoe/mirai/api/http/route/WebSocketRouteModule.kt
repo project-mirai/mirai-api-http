@@ -36,7 +36,7 @@ fun Application.websocketRouteModule() {
          * 广播通知消息
          */
         miraiWebsocket("/message") { session ->
-            val listener = session.bot.subscribeMessages {
+            val listener = session.bot.eventChannel.subscribeMessages {
                 content { bot === session.bot }.invoke {
                     this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
                         outgoing.send(Frame.Text(this.toJson()))
@@ -57,7 +57,7 @@ fun Application.websocketRouteModule() {
          * 广播通知事件
          */
         miraiWebsocket("/event") { session ->
-            val listener = session.bot.subscribeAlways<BotEvent> {
+            val listener = session.bot.eventChannel.subscribeAlways<BotEvent> {
                 if (it.bot === session.bot && this !is MessageEvent) {
                     this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
                         outgoing.send(Frame.Text(this.toJson()))
@@ -78,7 +78,7 @@ fun Application.websocketRouteModule() {
          * 广播通知所有信息（消息，事件）
          */
         miraiWebsocket("/all") { session ->
-            val listener = session.bot.subscribeAlways<BotEvent> {
+            val listener = session.bot.eventChannel.subscribeAlways<BotEvent> {
                 if (it.bot === session.bot) {
                     this.toDTO().takeIf { dto -> dto != IgnoreEventDTO }?.apply {
                         outgoing.send(Frame.Text(this.toJson()))
