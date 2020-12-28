@@ -1,7 +1,7 @@
 <div align="center">
-   <img width="160" src="http://img.mamoe.net/2020/02/16/a759783b42f72.png" alt="logo"></br>
+   <img width="160" src="https://github.com/mamoe/mirai/blob/dev/docs/mirai.png" alt="logo"></br>
 
-   <img width="95" src="http://img.mamoe.net/2020/02/16/c4aece361224d.png" alt="title">
+   <img width="95" src="https://github.com/mamoe/mirai/blob/dev/docs/mirai.svg" alt="title">
 
 ----
 
