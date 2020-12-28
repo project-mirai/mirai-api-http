@@ -1,7 +1,7 @@
 plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
-    id("net.mamoe.mirai-console") version "2.0-M1"
+    id("net.mamoe.mirai-console") version "2.0-M2"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
