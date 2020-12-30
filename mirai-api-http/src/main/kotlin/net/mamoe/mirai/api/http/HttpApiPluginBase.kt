@@ -19,7 +19,7 @@ import java.io.File
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "1.9.4") {
+    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "1.9.5") {
         author("ryoii")
         info("Mirai HTTP API Server Plugin")
     }
