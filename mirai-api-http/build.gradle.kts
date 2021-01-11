@@ -67,3 +67,16 @@ mirai {
         override = true
     }
 }
+tasks.create("buildCiJar", Jar::class) {
+    dependsOn("buildPlugin")
+    doLast {
+        val buildPluginTask = tasks.getByName("buildPlugin", Jar::class)
+        val buildPluginFile = buildPluginTask.archiveFile.get().asFile
+        project.buildDir.resolve("ci").also {
+            it.mkdirs()
+        }.resolve("mirai-api-http.jar").let {
+            buildPluginFile.copyTo(it, true)
+        }
+    }
+}
+
