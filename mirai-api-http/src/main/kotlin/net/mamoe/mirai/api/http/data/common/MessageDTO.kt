@@ -50,6 +50,10 @@ data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 @SerialName("TempMessage")
 data class TempMessagePacketDto(val sender: MemberDTO) : MessagePacketDTO()
 
+@Serializable
+@SerialName("StrangerMessage")
+data class StrangerMessagePacketDto(val sender: QQDTO) : MessagePacketDTO()
+
 
 // Message
 @Serializable
@@ -163,7 +167,9 @@ suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolea
     mutableListOf(this.getOrFail(MessageSource).toDTO()).apply {
         // `QuoteReply`会被`foreachContent`过滤，手动添加
         this@toMessageChainDTO[QuoteReply]?.let { this.add(it.toDTO()) }
-        forEachContent { content -> content.toDTO().takeIf { filter(it) }?.let(::add) }
+        this@toMessageChainDTO.forEach { content ->
+            (content as? MessageContent)?.toDTO()?.takeIf { filter(it) }?.let(::add)
+        }
     }
 
 

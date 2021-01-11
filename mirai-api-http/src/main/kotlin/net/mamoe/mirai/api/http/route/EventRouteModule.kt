@@ -27,7 +27,7 @@ fun Application.eventRouteModule() {
     routing {
 
         miraiVerify<EventRespDTO>("/resp/newFriendRequestEvent") {
-            Mirai._lowLevelSolveNewFriendRequestEvent(
+            Mirai.solveNewFriendRequestEvent(
                 it.session.bot,
                 eventId = it.eventId,
                 fromId = it.fromId,
@@ -48,7 +48,7 @@ fun Application.eventRouteModule() {
         }
 
         miraiVerify<EventRespDTO>("/resp/memberJoinRequestEvent") {
-            Mirai._lowLevelSolveMemberJoinRequestEvent(
+            Mirai.solveMemberJoinRequestEvent(
                 it.session.bot,
                 eventId = it.eventId,
                 fromId = it.fromId,
@@ -72,7 +72,7 @@ fun Application.eventRouteModule() {
         }
 
         miraiVerify<EventRespDTO>("/resp/botInvitedJoinGroupRequestEvent") {
-            Mirai._lowLevelSolveBotInvitedJoinGroupRequestEvent(
+            Mirai.solveBotInvitedJoinGroupRequestEvent(
                 it.session.bot,
                 eventId = it.eventId,
                 invitorId = it.fromId,

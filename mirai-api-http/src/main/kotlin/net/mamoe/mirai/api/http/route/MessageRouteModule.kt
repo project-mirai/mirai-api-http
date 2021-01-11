@@ -98,10 +98,12 @@ fun Application.messageModule() {
                     is Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(target.botAsMember))
                     is Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(sender.asFriend))
                     is Outgoing.ToTemp -> TempMessagePacketDto(MemberDTO(target))
+                    is Outgoing.ToStranger -> StrangerMessagePacketDto(QQDTO(target))
 
                     is Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(sender))
                     is Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(sender))
                     is Incoming.FromTemp -> TempMessagePacketDto(MemberDTO(sender))
+                    is Incoming.FromStranger -> StrangerMessagePacketDto(QQDTO(sender))
                 }
 
                 dto.messageChain = messageChainOf(this, originalMessage)
@@ -125,7 +127,7 @@ fun Application.messageModule() {
             val send = if (quote == null) {
                 messageChain
             } else {
-                ((quote + messageChain) as Iterable<Message>).asMessageChain()
+                ((quote + messageChain) as Iterable<Message>).toMessageChain()
             }
             return target.sendMessage(send)
         }
@@ -141,9 +143,14 @@ fun Application.messageModule() {
             }
 
             val bot = it.session.bot
+
+            fun findQQ(qq: Long): Contact = bot.getFriend(qq)
+                    ?: bot.getStranger(qq)
+                    ?: throw NoSuchElementException("friend $qq not found")
+
             val qq = when {
-                it.target != null -> bot.getFriendOrFail(it.target)
-                it.qq != null -> bot.getFriendOrFail(it.qq)
+                it.target != null -> findQQ(it.target)
+                it.qq != null -> findQQ(it.qq)
                 else -> throw NoSuchElementException()
             }
 
