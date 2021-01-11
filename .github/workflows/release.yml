@@ -56,3 +56,8 @@ jobs:
           asset_path: ./mirai-api-http/build/mirai/mirai-api-http-${{ steps.tag.outputs.tag }}.mirai.jar
           asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai.jar
           asset_content_type: application/zip
+      - name: Gradle publishPlugin
+        run: >
+          ./gradlew publishPlugin --info
+          -Dbintray_user=${{ secrets.BINTRAY_USER }} -Pbintray_user=${{ secrets.BINTRAY_USER }}
+          -Dbintray_key=${{ secrets.BINTRAY_KEY }} -Pbintray_key=${{ secrets.BINTRAY_KEY }}
