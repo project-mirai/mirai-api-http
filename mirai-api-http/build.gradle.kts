@@ -61,4 +61,9 @@ mirai {
             EXCLUDED_FILES.any { it.matches(elm.path) }
         }
     }
+    publishing {
+        repo = "mirai"
+        packageName = "mirai-api-http"
+        override = true
+    }
 }
