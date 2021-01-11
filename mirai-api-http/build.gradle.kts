@@ -4,17 +4,6 @@ plugins {
     id("net.mamoe.mirai-console") version "2.0-M2"
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    val excluded = setOf(
-        "org.jetbrains.kotlin",
-        "org.jetbrains.kotlinx",
-        "org.slf4j" // included in mirai-core -> io.ktor:ktor-network-tls
-    )
-    dependencyFilter.exclude {
-        it.moduleGroup in excluded
-    }
-}
-
 val httpVersion: String by rootProject.ext
 
 val ktorVersion: String by rootProject.ext
@@ -56,3 +45,20 @@ kotlin {
 project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
+
+internal val EXCLUDED_FILES = listOf(
+    "kotlin-stdlib-.*",
+    "kotlin-reflect-.*",
+    "kotlinx-serialization-json.*",
+    "kotlinx-coroutines.*",
+    "kotlinx-serialization-core.*",
+    "slf4j-api.*"
+).map { "^$it\$".toRegex() }
+
+mirai {
+    this.configureShadow {
+        exclude { elm ->
+            EXCLUDED_FILES.any { it.matches(elm.path) }
+        }
+    }
+}
