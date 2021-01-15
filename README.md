@@ -23,7 +23,7 @@ Mirai HTTP API (console) plugin
 
 ## 安装`mirai-api-http`
 
-### 使用 [Mirai Console Loader](https://github.com/iTXTech/mirai-console-loader) 安装`Mirai Native`
+### 使用 [Mirai Console Loader](https://github.com/iTXTech/mirai-console-loader) 安装`mirai-api-http`
 
 * `MCL` 支持自动更新插件，支持设置插件更新频道等功能
 
@@ -37,7 +37,7 @@ Mirai HTTP API (console) plugin
 ## 开始使用
 
 1. 编辑`config/MiraiApiHttp/setting.yml`配置文件 (没有则自行创建)
-1. 再次启动[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端
+1. 启动 [Mirai Console](https://github.com/mamoe/mirai-console)
 1. 记录日志中出现的`authKey`
 
 #### setting.yml模板
