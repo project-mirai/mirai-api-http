@@ -164,7 +164,9 @@ suspend fun MessageEvent.toDTO() = when (this) {
 
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     // `foreachContent`会忽略`MessageSource`，手动添加
-    mutableListOf(this.getOrFail(MessageSource).toDTO()).apply {
+    mutableListOf<MessageDTO>().apply {
+        // `MessageSource` 在 `QuoteReplay` 中可能不存在
+        this@toMessageChainDTO[MessageSource]?.let { this.add(it.toDTO()) }
         // `QuoteReply`会被`foreachContent`过滤，手动添加
         this@toMessageChainDTO[QuoteReply]?.let { this.add(it.toDTO()) }
         this@toMessageChainDTO.forEach { content ->
