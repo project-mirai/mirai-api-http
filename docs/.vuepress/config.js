@@ -6,8 +6,9 @@ module.exports = {
   },
   theme: "antdocs",
   themeConfig: {
+    backToTop:true,
     sidebar: "auto",
-    sidebarDepth: 4,
+    sidebarDepth: 2,
     displayAllHeaders: true,
     repo: "project-mirai/mirai-api-http",
     logo: "https://raw.githubusercontent.com/mamoe/mirai/dev/docs/mirai.png",
@@ -32,6 +33,7 @@ module.exports = {
   },
   plugins: [
     "@vuepress/plugin-medium-zoom",
+    "@vuepress/nprogress",
     [
       "@vuepress/pwa",
       {
