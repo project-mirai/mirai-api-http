@@ -1184,7 +1184,7 @@
   dependencies:
     medium-zoom "^1.0.4"
 
-"@vuepress/plugin-nprogress@1.8.0", "@vuepress/plugin-nprogress@^1.7.1":
+"@vuepress/plugin-nprogress@1.8.0", "@vuepress/plugin-nprogress@^1.7.1", "@vuepress/plugin-nprogress@^1.8.0":
   version "1.8.0"
   resolved "https://registry.npm.taobao.org/@vuepress/plugin-nprogress/download/@vuepress/plugin-nprogress-1.8.0.tgz#8fd3d5415d4c8326ca569118e935b875e5fd7bb5"
   integrity sha1-j9PVQV1MgybKVpEY6TW4deX9e7U=
