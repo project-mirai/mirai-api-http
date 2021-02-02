@@ -1191,7 +1191,7 @@ Content-Type：multipart/form-data
 ```json5
 {
     "authKey": "U9HSaDXl39ksd918273hU",
-    "name": "ogin",
+    "name": "login",
     "alias": ["lg", "SignIn"],
     "description": "测试",
     "usage": "/login qq password"
@@ -1201,7 +1201,7 @@ Content-Type：multipart/form-data
 | 名字        | 可选  | 类型   | 举例          | 说明                             |
 | ----------- | ----- | ------ | ------------- | -------------------------------- |
 | authKey     | false | String | "YourAuthKey" | 你的authKey                      |
-| name        | false | String | "ogin"       | 指令名                           |
+| name        | false | String | "login"       | 指令名                           |
 | alias       | false | String[] | -           | 指令别名                         |
 | description | false | String | ""            | 指令描述                         |
 | usage       | true  | String | "Name"        | 指令描述，会在指令执行错误时显示 |
