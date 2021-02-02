@@ -1194,7 +1194,7 @@ Content-Type：multipart/form-data
     "name": "ogin",
     "alias": ["lg", "SignIn"],
     "description": "测试",
-    "usage": "/ogin qq password"
+    "usage": "/login qq password"
 }
 ```
 
