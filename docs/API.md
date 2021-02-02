@@ -1265,7 +1265,7 @@ Content-Type：multipart/form-data
 > 当指令通过其他方式发送时，如控制台、HTTP接口等，sender和group均为0
 
 
-### 获取Mangers
+### 获取Managers
 
 ```
 [GET] /managers?qq=123456
