@@ -36,7 +36,7 @@ suspend fun BotEvent.toDTO() = when (this) {
             authorId,
             messageIds.firstOrNull() ?: 0,
             messageTime.toLong() and 0xFFFF,
-            operator
+            operatorId
         )
         is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(
             origin,

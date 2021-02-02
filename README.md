@@ -1,7 +1,7 @@
 <div align="center">
-   <img width="160" src="http://img.mamoe.net/2020/02/16/a759783b42f72.png" alt="logo"></br>
+   <img width="160" src="https://github.com/mamoe/mirai/blob/dev/docs/mirai.png" alt="logo"></br>
 
-   <img width="95" src="http://img.mamoe.net/2020/02/16/c4aece361224d.png" alt="title">
+   <img width="95" src="https://github.com/mamoe/mirai/blob/dev/docs/mirai.svg" alt="title">
 
 ----
 
@@ -21,15 +21,24 @@ Mirai HTTP API (console) plugin
 
 <b>Mirai-API-http插件 提供HTTP API供所有语言使用mirai</b>
 
+## 安装`mirai-api-http`
 
+### 使用 [Mirai Console Loader](https://github.com/iTXTech/mirai-console-loader) 安装`mirai-api-http`
+
+* `MCL` 支持自动更新插件，支持设置插件更新频道等功能
+
+`.\mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin`
+
+### 手动安装`mirai-api-http`
+
+1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成plugins文件夹
+1. 从 [Releases](https://github.com/project-mirai/mirai-api-http/releases) 下载`jar`并将其放入`plugins`文件夹中
 
 ## 开始使用
-0. 请首先运行[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端生成plugins文件夹
-1. 将`mirai-api-http`生成的`jar包文件`放入`plugins`文件夹中
-2. 编辑`config/MiraiApiHttp/setting.yml`配置文件 (没有则自行创建)
-3. 再次启动[Mirai-console](https://github.com/mamoe/mirai-console)相关客户端
-4. 记录日志中出现的`authKey`
 
+1. 编辑`config/MiraiApiHttp/setting.yml`配置文件 (没有则自行创建)
+1. 启动 [Mirai Console](https://github.com/mamoe/mirai-console)
+1. 记录日志中出现的`authKey`
 
 #### setting.yml模板
 

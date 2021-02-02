@@ -1,18 +1,7 @@
 plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
-    id("net.mamoe.mirai-console") version "2.0-M1"
-}
-
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    val excluded = setOf(
-        "org.jetbrains.kotlin",
-        "org.jetbrains.kotlinx",
-        "org.slf4j" // included in mirai-core -> io.ktor:ktor-network-tls
-    )
-    dependencyFilter.exclude {
-        it.moduleGroup in excluded
-    }
+    id("net.mamoe.mirai-console") version "2.0-RC-dev-1"
 }
 
 val httpVersion: String by rootProject.ext
@@ -56,3 +45,38 @@ kotlin {
 project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
+
+internal val EXCLUDED_FILES = listOf(
+    "kotlin-stdlib-.*",
+    "kotlin-reflect-.*",
+    "kotlinx-serialization-json.*",
+    "kotlinx-coroutines.*",
+    "kotlinx-serialization-core.*",
+    "slf4j-api.*"
+).map { "^$it\$".toRegex() }
+
+mirai {
+    this.configureShadow {
+        exclude { elm ->
+            EXCLUDED_FILES.any { it.matches(elm.path) }
+        }
+    }
+    publishing {
+        repo = "mirai"
+        packageName = "mirai-api-http"
+        override = true
+    }
+}
+tasks.create("buildCiJar", Jar::class) {
+    dependsOn("buildPlugin")
+    doLast {
+        val buildPluginTask = tasks.getByName("buildPlugin", Jar::class)
+        val buildPluginFile = buildPluginTask.archiveFile.get().asFile
+        project.buildDir.resolve("ci").also {
+            it.mkdirs()
+        }.resolve("mirai-api-http.jar").let {
+            buildPluginFile.copyTo(it, true)
+        }
+    }
+}
+

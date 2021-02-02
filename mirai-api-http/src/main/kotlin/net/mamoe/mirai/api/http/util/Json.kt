@@ -48,6 +48,7 @@ object MiraiJson {
     @OptIn(InternalSerializationApi::class)
     val json = Json {
 
+        encodeDefaults = true
         isLenient = true
         ignoreUnknownKeys = true
 
