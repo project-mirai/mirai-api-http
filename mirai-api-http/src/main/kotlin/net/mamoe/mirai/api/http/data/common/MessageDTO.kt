@@ -19,10 +19,7 @@ import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexArray
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.events.TempMessageEvent
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -152,7 +149,8 @@ sealed class MessageDTO : DTO
 suspend fun MessageEvent.toDTO() = when (this) {
     is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
-    is TempMessageEvent -> TempMessagePacketDto(MemberDTO(sender))
+    // TODO: TempMessageEvent
+    is GroupTempMessageEvent -> TempMessagePacketDto(MemberDTO(sender))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
@@ -163,14 +161,9 @@ suspend fun MessageEvent.toDTO() = when (this) {
 }
 
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
-    // `foreachContent`会忽略`MessageSource`，手动添加
     mutableListOf<MessageDTO>().apply {
-        // `MessageSource` 在 `QuoteReplay` 中可能不存在
-        this@toMessageChainDTO[MessageSource]?.let { this.add(it.toDTO()) }
-        // `QuoteReply`会被`foreachContent`过滤，手动添加
-        this@toMessageChainDTO[QuoteReply]?.let { this.add(it.toDTO()) }
         this@toMessageChainDTO.forEach { content ->
-            (content as? MessageContent)?.toDTO()?.takeIf { filter(it) }?.let(::add)
+            content.toDTO().takeIf(filter)?.let(::add)
         }
     }
 
@@ -196,8 +189,7 @@ suspend fun Message.toDTO() = when (this) {
                     source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
             else -> 0L
         },
-        // 避免套娃
-        origin = source.originalMessage.toMessageChainDTO { it != UnknownMessageDTO && it !is QuoteDTO })
+        origin = (source.originalMessage + source).toMessageChainDTO { it != UnknownMessageDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     else -> UnknownMessageDTO
 }

@@ -65,7 +65,8 @@ class ReportService(
                         }
 
                     this.takeIf { reportConfig.tempMessage.report }
-                        ?.takeIf { event -> event is TempMessageEvent }
+                        // TODO: TempMessageEvent
+                        ?.takeIf { event -> event is GroupTempMessageEvent }
                         ?.apply {
                             reportAllDestinations(this.toDTO().toJson(), bot.id)
                         }
