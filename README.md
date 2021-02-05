@@ -27,7 +27,7 @@ Mirai HTTP API (console) plugin
 
 * `MCL` 支持自动更新插件，支持设置插件更新频道等功能
 
-`.\mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin`
+`./mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin`
 
 ### 手动安装`mirai-api-http`
 
