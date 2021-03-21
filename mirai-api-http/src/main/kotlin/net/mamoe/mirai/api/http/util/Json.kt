@@ -55,7 +55,7 @@ object MiraiJson {
         @Suppress("UNCHECKED_CAST")
         serializersModule = SerializersModule {
 
-
+            polymorphic(EventDTO::class, IgnoreEventDTO::class, IgnoreEventDTO.serializer())
             polymorphic(EventDTO::class, GroupMessagePacketDTO::class, GroupMessagePacketDTO.serializer())
             polymorphic(EventDTO::class, FriendMessagePacketDTO::class, FriendMessagePacketDTO.serializer())
             polymorphic(EventDTO::class, TempMessagePacketDto::class, TempMessagePacketDto.serializer())

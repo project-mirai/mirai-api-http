@@ -25,7 +25,7 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
             val event = pop()
 
             event.toDTO().also {
-                if (it != IgnoreEventDTO) {
+                if (it !== IgnoreEventDTO) {
                     ret.add(it)
                     count--
                 }
@@ -42,7 +42,7 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
             val event = removeLast()
 
             event.toDTO().also {
-                if (it != IgnoreEventDTO) {
+                if (it !== IgnoreEventDTO) {
                     ret.add(it)
                     count--
                 }
@@ -51,31 +51,25 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
         return ret
     }
 
-    suspend fun peek(size: Int): List<EventDTO> {
-        var count = size
-        val ret = ArrayList<EventDTO>(count)
+    private suspend fun peekBy(iter: Iterator<BotEvent>, capacity: Int): List<EventDTO> {
+        val ret = ArrayList<EventDTO>(capacity)
 
-        val iterator: Iterator<BotEvent> = iterator();
+        while (iter.hasNext()) {
+            val dto = iter.next().toDTO()
 
-        while(iterator.hasNext() && count > 0) {
-            ret.add(iterator.next().toDTO())
-            count--
+            if (dto !== IgnoreEventDTO) {
+                ret.add(dto)
+            }
         }
 
         return ret
     }
 
+    suspend fun peek(size: Int): List<EventDTO> {
+        return peekBy(asSequence().take(size).iterator(), size)
+    }
+
     suspend fun peekLatest(size: Int): List<EventDTO> {
-        var count = size
-        val ret = ArrayList<EventDTO>(count)
-
-        val iterator: Iterator<BotEvent> = reversed().iterator();
-
-        while(iterator.hasNext() && count > 0) {
-            ret.add(iterator.next().toDTO())
-            count--
-        }
-
-        return ret
+        return peekBy(reversed().asSequence().take(size).iterator(), size)
     }
 }
