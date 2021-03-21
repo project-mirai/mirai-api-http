@@ -71,7 +71,7 @@ fun Application.messageModule() {
         /**
          * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
          */
-        miraiGet("/peakMessage") {
+        miraiGet("/peekMessage") {
             val count: Int = paramOrNull("count")
             val list = it.messageQueue.peek(count)
 
