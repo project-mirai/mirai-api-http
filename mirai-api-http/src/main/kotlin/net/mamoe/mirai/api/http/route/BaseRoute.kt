@@ -78,6 +78,7 @@ fun Application.mirai() {
     groupManageModule()
     configRouteModule()
     websocketRouteModule()
+    nudgeModule()
 }
 
 /**

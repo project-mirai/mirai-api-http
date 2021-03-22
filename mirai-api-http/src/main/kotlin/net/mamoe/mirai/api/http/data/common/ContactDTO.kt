@@ -52,14 +52,14 @@ data class GroupDTO(
 }
 
 @Serializable
-data class UserOrBotTDO(
+data class UserOrBotDTO(
     override val id: Long
 ) : ContactDTO() {
     constructor(userOrBot: UserOrBot) : this(userOrBot.id)
 }
 
 @Serializable
-data class SubjectTDO(
+data class SubjectDTO(
     override val id: Long,
     val environment: String
 ) : ContactDTO() {
@@ -68,8 +68,8 @@ data class SubjectTDO(
             is Friend -> "Friend"
             is Group -> "Group"
             is Stranger -> "Stranger"
-            is OtherClient -> "OtherClient"
-            else -> "null"
+            else -> "OtherClient"
+
         }
     )
 

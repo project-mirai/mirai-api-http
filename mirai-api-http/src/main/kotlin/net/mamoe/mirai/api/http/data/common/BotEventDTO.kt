@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.events.*
 
@@ -22,9 +21,9 @@ suspend fun BotEvent.toDTO() = when (this) {
     is MessageEvent -> toDTO()
     else -> when (this) {
         is NudgeEvent -> NudgeEventDTO(
-            UserOrBotTDO(from),
-            UserOrBotTDO(target),
-            SubjectTDO(subject),
+            UserOrBotDTO(from),
+            UserOrBotDTO(target),
+            SubjectDTO(subject),
             action,
             suffix
         )
@@ -394,9 +393,9 @@ data class BotInvitedJoinGroupRequestEventDTO(
 @Serializable
 @SerialName("NudgeEvent")
 data class NudgeEventDTO(
-    val from: UserOrBotTDO,
-    val target: UserOrBotTDO,
-    val subject: SubjectTDO,
+    val from: UserOrBotDTO,
+    val target: UserOrBotDTO,
+    val subject: SubjectDTO,
     val action: String,
     val suffix: String,
 ) : BotEventDTO()
