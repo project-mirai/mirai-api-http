@@ -23,7 +23,6 @@ data class QQDTO(
     val nickname: String,
     val remark: String
 ) : ContactDTO() {
-    // TODO: queryProfile.nickname & queryRemark.value not support now
     constructor(qq: Friend) : this(qq.id, qq.nick, qq.remark)
     constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
 }
