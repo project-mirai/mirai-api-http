@@ -61,14 +61,16 @@ data class UserOrBotTDO(
 @Serializable
 data class SubjectTDO(
     override val id: Long,
-    var environment: String
+    val environment: String
 ) : ContactDTO() {
-    constructor(contact: Contact) : this(contact.id, "") {
-        when (contact) {
-            is Friend -> this.environment = "Friend"
-            is Group -> this.environment = "Group"
-            is Stranger -> this.environment = "Stranger"
-            is OtherClient -> this.environment = "OtherClient"
+    constructor(contact: Contact) : this(
+        contact.id, when (contact) {
+            is Friend -> "Friend"
+            is Group -> "Group"
+            is Stranger -> "Stranger"
+            is OtherClient -> "OtherClient"
+            else -> "null"
         }
-    }
+    )
+
 }
