@@ -50,3 +50,25 @@ data class GroupDTO(
 ) : ContactDTO() {
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
 }
+
+@Serializable
+data class UserOrBotTDO(
+    override val id: Long
+) : ContactDTO() {
+    constructor(userOrBot: UserOrBot) : this(userOrBot.id)
+}
+
+@Serializable
+data class SubjectTDO(
+    override val id: Long,
+    var environment: String
+) : ContactDTO() {
+    constructor(contact: Contact) : this(contact.id, "") {
+        when (contact) {
+            is Friend -> this.environment = "Friend"
+            is Group -> this.environment = "Group"
+            is Stranger -> this.environment = "Stranger"
+            is OtherClient -> this.environment = "OtherClient"
+        }
+    }
+}
