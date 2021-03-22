@@ -54,8 +54,8 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
     private suspend fun peekBy(iter: Iterator<BotEvent>, capacity: Int): List<EventDTO> {
         val ret = ArrayList<EventDTO>(capacity)
 
-        while (iter.hasNext()) {
-            val dto = iter.next().toDTO()
+        for (event in iter) {
+            val dto = event.toDTO()
 
             if (dto !== IgnoreEventDTO) {
                 ret.add(dto)

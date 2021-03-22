@@ -33,5 +33,4 @@ abstract class EventDTO : DTO
  * 该 DTO 不能被序列化
  * 尽管如此，还是有些 sabee 把这个 DTO 序列化了
  */
-@Serializable
 object IgnoreEventDTO : EventDTO()
