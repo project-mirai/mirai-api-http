@@ -110,7 +110,7 @@
 | ------- | ------ | ------------------------------------------------------------ |
 | imageId | String | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性 |
 | url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
-| path    | String | 图片的路径，发送本地图片，相对路径于`plugins/MiraiAPIHTTP/images` |
+| path    | String | 图片的路径，发送本地图片，相对路径于`data/net.mamoe.mirai-api-http/images` |
 
 #### FlashImage
 
@@ -143,7 +143,7 @@
 | ------- | ------ | ------------------------------------------------------------ |
 | voiceId | String | 语音的voiceId，不为空时将忽略url属性 |
 | url     | String | 语音的URL，发送时可作网络语音的链接；接收时为腾讯语音服务器的链接，可用于语音下载 |
-| path    | String | 语音的路径，发送本地语音，相对路径于`plugins/MiraiAPIHTTP/voices` |
+| path    | String | 语音的路径，发送本地语音，相对路径于`data/net.mamoe.mirai-api-http/voices` |
 
 > 三个参数任选其一，出现多个参数时，按照voiceId > url > path的优先级
 
