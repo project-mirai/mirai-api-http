@@ -50,25 +50,19 @@ data class GroupDTO(
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
 }
 
-@Serializable
-data class UserOrBotDTO(
-    override val id: Long
-) : ContactDTO() {
-    constructor(userOrBot: UserOrBot) : this(userOrBot.id)
-}
 
 @Serializable
-data class SubjectDTO(
+data class SubjectKindDTO(
     override val id: Long,
-    val environment: String
+    val kind: ContactDTO
 ) : ContactDTO() {
     constructor(contact: Contact) : this(
         contact.id, when (contact) {
-            is Friend -> "Friend"
-            is Group -> "Group"
-            is Stranger -> "Stranger"
-            else -> "OtherClient"
-
+            is Friend -> QQDTO(contact)
+            is Member -> MemberDTO(contact)
+            is Group -> GroupDTO(contact)
+            is Stranger -> QQDTO(contact)
+            else -> error("Not in support")
         }
     )
 

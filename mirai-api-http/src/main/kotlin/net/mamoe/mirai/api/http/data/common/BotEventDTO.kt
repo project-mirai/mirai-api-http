@@ -21,9 +21,9 @@ suspend fun BotEvent.toDTO() = when (this) {
     is MessageEvent -> toDTO()
     else -> when (this) {
         is NudgeEvent -> NudgeEventDTO(
-            UserOrBotDTO(from),
-            UserOrBotDTO(target),
-            SubjectDTO(subject),
+            from.id,
+            target.id,
+            SubjectKindDTO(subject),
             action,
             suffix
         )
@@ -393,9 +393,9 @@ data class BotInvitedJoinGroupRequestEventDTO(
 @Serializable
 @SerialName("NudgeEvent")
 data class NudgeEventDTO(
-    val from: UserOrBotDTO,
-    val target: UserOrBotDTO,
-    val subject: SubjectDTO,
+    val fromId: Long,
+    val target: Long,
+    val subject: SubjectKindDTO,
     val action: String,
     val suffix: String,
 ) : BotEventDTO()

@@ -25,15 +25,15 @@ fun Application.nudgeModule() {
          * 发送戳一戳
          */
         miraiVerify<NudgeDTO>("/sendNudge") { dto ->
-            when (dto.environment) {
+            when (dto.kind) {
 
                 "Friend" -> {
                     dto.session.bot.let { bot ->
-                        val to = bot.getFriend(dto.target)
+                        val target = bot.getFriend(dto.target)
                             ?: bot.getStrangerOrFail(dto.target)
-                        val from = bot.getFriend(dto.subject)
+                        val receiver = bot.getFriend(dto.subject)
                             ?: bot.getStrangerOrFail(dto.subject)
-                        from.nudge().sendTo(to)
+                        target.nudge().sendTo(receiver)
                     }
                 }
 
@@ -44,7 +44,7 @@ fun Application.nudgeModule() {
                 }
 
 
-                else -> throw IllegalArgumentException("戳一戳类型不存在")
+                else -> throw IllegalArgumentException("戳一戳类型${dto.kind}不存在")
             }
             call.respondStateCode(StateCode.Success)
         }
@@ -56,7 +56,7 @@ private data class NudgeDTO(
     override val sessionKey: String,
     val target: Long,
     val subject: Long,
-    val environment: String
+    val kind: String
 ) : VerifyDTO()
 
 
