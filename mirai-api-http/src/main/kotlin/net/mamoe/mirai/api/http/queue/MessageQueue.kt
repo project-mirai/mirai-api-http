@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.queue
 
+import kotlinx.coroutines.flow.*
 import net.mamoe.mirai.api.http.data.common.EventDTO
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
@@ -51,25 +52,20 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
         return ret
     }
 
-    private suspend fun peekBy(iter: Iterator<BotEvent>, capacity: Int): List<EventDTO> {
-        val ret = ArrayList<EventDTO>(capacity)
-
-        for (event in iter) {
-            val dto = event.toDTO()
-
-            if (dto !== IgnoreEventDTO) {
-                ret.add(dto)
-            }
-        }
-
-        return ret
-    }
-
     suspend fun peek(size: Int): List<EventDTO> {
-        return peekBy(asSequence().take(size).iterator(), size)
+        return asFlow()
+            .map { it.toDTO() }
+            .filter { it !== IgnoreEventDTO }
+            .take(size)
+            .toList()
     }
 
     suspend fun peekLatest(size: Int): List<EventDTO> {
-        return peekBy(reversed().asSequence().take(size).iterator(), size)
+        return reversed()
+            .asFlow()
+            .map { it.toDTO() }
+            .filter { it !== IgnoreEventDTO }
+            .take(size)
+            .toList()
     }
 }
