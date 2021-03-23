@@ -14,7 +14,6 @@ import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import net.mamoe.mirai.contact.getMember
 
 /**
  * 戳一戳发送
@@ -27,25 +26,25 @@ fun Application.nudgeModule() {
          */
         miraiVerify<NudgeDTO>("/sendNudge") { dto ->
             when (dto.environment) {
-                "Friend" -> {
-                    val friend = dto.session.bot.getFriend(dto.target) ?: throw IllegalArgumentException("好友不存在")
-                    friend.nudge().sendTo(friend)
 
+                "Friend" -> {
+                    dto.session.bot.getFriendOrFail(dto.target).let { friend ->
+                        friend.nudge().sendTo(friend)
+                    }
                 }
+
                 "Group" -> {
-                    val group = dto.session.bot.getGroup(dto.subject) ?: throw IllegalArgumentException("群号不存在")
-                    val member = group.getMember(dto.target) ?: throw IllegalArgumentException("群员不存在")
-                    member.nudge().sendTo(member)
-                }
-                "Stranger" -> {
-                    val stranger = dto.session.bot.getStranger(dto.target) ?: throw IllegalArgumentException("没这个陌生人")
-                    stranger.nudge().sendTo(stranger)
+                    dto.session.bot.getGroupOrFail(dto.subject).getOrFail(dto.target).let { normalMember ->
+                        normalMember.nudge().sendTo(normalMember)
+                    }
                 }
 
                 "Bot" -> {
-                    val friend = dto.session.bot.getFriend(dto.target) ?: throw IllegalArgumentException("好友不存在")
-                    dto.session.bot.nudge().sendTo(friend)
+                    dto.session.bot.let { bot ->
+                        bot.nudge().sendTo(bot.getFriendOrFail(dto.target))
+                    }
                 }
+
                 else -> throw IllegalArgumentException("戳一戳类型不存在")
             }
             call.respondStateCode(StateCode.Success)
