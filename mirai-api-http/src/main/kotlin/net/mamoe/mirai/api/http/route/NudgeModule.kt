@@ -28,22 +28,21 @@ fun Application.nudgeModule() {
             when (dto.environment) {
 
                 "Friend" -> {
-                    dto.session.bot.getFriendOrFail(dto.target).let { friend ->
-                        friend.nudge().sendTo(friend)
+                    dto.session.bot.let { bot ->
+                        val to = bot.getFriend(dto.target)
+                            ?: bot.getStrangerOrFail(dto.target)
+                        val from = bot.getFriend(dto.subject)
+                            ?: bot.getStrangerOrFail(dto.subject)
+                        from.nudge().sendTo(to)
                     }
                 }
 
                 "Group" -> {
                     dto.session.bot.getGroupOrFail(dto.subject).getOrFail(dto.target).let { normalMember ->
-                        normalMember.nudge().sendTo(normalMember)
+                        normalMember.nudge().sendTo(normalMember.group)
                     }
                 }
 
-                "Bot" -> {
-                    dto.session.bot.let { bot ->
-                        bot.nudge().sendTo(bot.getFriendOrFail(dto.target))
-                    }
-                }
 
                 else -> throw IllegalArgumentException("戳一戳类型不存在")
             }
