@@ -54,15 +54,15 @@ data class GroupDTO(
 @Serializable
 data class SubjectKindDTO(
     override val id: Long,
-    val kind: ContactDTO
+    val kind: String
 ) : ContactDTO() {
     constructor(contact: Contact) : this(
         contact.id, when (contact) {
-            is Friend -> QQDTO(contact)
-            is Member -> MemberDTO(contact)
-            is Group -> GroupDTO(contact)
-            is Stranger -> QQDTO(contact)
-            else -> error("Not in support")
+            is Friend -> "Friend"
+            is Group -> "Group"
+            is Stranger -> "Stranger"
+            else -> "OtherClient"
+
         }
     )
 
