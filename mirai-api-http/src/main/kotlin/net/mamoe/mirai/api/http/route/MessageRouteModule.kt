@@ -12,7 +12,9 @@ package net.mamoe.mirai.api.http.route
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
+import io.ktor.util.pipeline.*
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
@@ -68,14 +70,22 @@ fun Application.messageModule() {
             call.respondDTO(EventListRestfulResult(data = list))
         }
 
-        /**
-         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
-         */
-        miraiGet("/peekMessage") {
+        suspend fun PipelineContext<Unit, ApplicationCall>.傻逼黄色(it: AuthedSession) {
             val count: Int = paramOrNull("count")
             val list = it.messageQueue.peek(count)
 
             call.respondDTO(EventListRestfulResult(data = list))
+        }
+
+        /**
+         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
+         */
+        miraiGet("/peekMessage") {
+            傻逼黄色(it)
+        }
+
+        miraiGet("/peakMessage") {
+            傻逼黄色(it)
         }
 
         /**
