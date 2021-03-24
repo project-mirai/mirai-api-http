@@ -50,3 +50,20 @@ data class GroupDTO(
 ) : ContactDTO() {
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
 }
+
+@Serializable
+data class SubjectKindDTO(
+    override val id: Long,
+    val kind: String
+) : ContactDTO() {
+    constructor(contact: Contact) : this(
+        contact.id, when (contact) {
+            is Friend -> "Friend"
+            is Group -> "Group"
+            is Stranger -> "Stranger"
+            else -> "OtherClient"
+
+        }
+    )
+
+}
