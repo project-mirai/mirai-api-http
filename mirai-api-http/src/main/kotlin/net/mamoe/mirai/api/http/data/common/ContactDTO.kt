@@ -23,8 +23,9 @@ data class QQDTO(
     val nickname: String,
     val remark: String
 ) : ContactDTO() {
-    constructor(qq: Friend) : this(qq.id, qq.nick, qq.remark)
-    constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
+    // TODO: queryProfile.nickname & queryRemark.value not support now
+    constructor(qq: Friend) : this(qq.id, qq.nick, "")
+    constructor(qq: Stranger) : this(qq.id, qq.nick, "")
 }
 
 
@@ -48,22 +49,4 @@ data class GroupDTO(
     val permission: MemberPermission
 ) : ContactDTO() {
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
-}
-
-
-@Serializable
-data class SubjectKindDTO(
-    override val id: Long,
-    val kind: String
-) : ContactDTO() {
-    constructor(contact: Contact) : this(
-        contact.id, when (contact) {
-            is Friend -> "Friend"
-            is Group -> "Group"
-            is Stranger -> "Stranger"
-            else -> "OtherClient"
-
-        }
-    )
-
 }
