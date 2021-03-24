@@ -44,7 +44,7 @@ fun Application.nudgeModule() {
                 }
 
 
-                else -> throw IllegalArgumentException("戳一戳类型${dto.kind}不存在")
+                else -> throw IllegalArgumentException("戳一戳类型 ${dto.kind} 不存在")
             }
             call.respondStateCode(StateCode.Success)
         }
@@ -58,6 +58,5 @@ private data class NudgeDTO(
     val subject: Long,
     val kind: String
 ) : VerifyDTO()
-
 
 
