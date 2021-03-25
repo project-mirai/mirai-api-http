@@ -23,7 +23,7 @@ suspend fun BotEvent.toDTO() = when (this) {
         is NudgeEvent -> NudgeEventDTO(
             from.id,
             target.id,
-            SubjectKindDTO(subject),
+            ComplexSubjectDTO(subject),
             action,
             suffix
         )
@@ -395,7 +395,7 @@ data class BotInvitedJoinGroupRequestEventDTO(
 data class NudgeEventDTO(
     val fromId: Long,
     val target: Long,
-    val subject: SubjectKindDTO,
+    val subject: ComplexSubjectDTO,
     val action: String,
     val suffix: String,
 ) : BotEventDTO()
