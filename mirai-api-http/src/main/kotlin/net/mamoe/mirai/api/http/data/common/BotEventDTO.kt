@@ -133,6 +133,12 @@ suspend fun BotEvent.toDTO() = when (this) {
             fromGroupId,
             fromNick
         )
+        is FriendAddEvent -> FriendAddEventDTO(
+            QQDTO(friend)
+        )
+        is FriendDeleteEvent -> FriendDeleteEventDTO(
+            QQDTO(friend)
+        )
         is MemberJoinRequestEvent -> MemberJoinRequestEventDTO(
             eventId,
             message,
@@ -359,6 +365,18 @@ data class NewFriendRequestEventDTO(
     val fromId: Long,
     val groupId: Long,
     val nick: String
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendAddEvent")
+data class FriendAddEventDTO(
+    val friend: QQDTO
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendDeleteEvent")
+data class FriendDeleteEventDTO(
+    val friend: QQDTO
 ) : BotEventDTO()
 
 @Serializable

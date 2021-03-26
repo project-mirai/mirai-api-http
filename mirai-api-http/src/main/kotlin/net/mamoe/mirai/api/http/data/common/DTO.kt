@@ -28,4 +28,9 @@ abstract class VerifyDTO : DTO {
 @Serializable
 abstract class EventDTO : DTO
 
+/**
+ * IgnoreEventDTO
+ * 该 DTO 不能被序列化
+ * 尽管如此，还是有些 sabee 把这个 DTO 序列化了
+ */
 object IgnoreEventDTO : EventDTO()

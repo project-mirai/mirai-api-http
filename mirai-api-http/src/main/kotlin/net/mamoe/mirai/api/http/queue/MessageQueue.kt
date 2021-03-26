@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.queue
 
+import kotlinx.coroutines.flow.*
 import net.mamoe.mirai.api.http.data.common.EventDTO
 import net.mamoe.mirai.api.http.data.common.IgnoreEventDTO
 import net.mamoe.mirai.api.http.data.common.toDTO
@@ -25,7 +26,7 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
             val event = pop()
 
             event.toDTO().also {
-                if (it != IgnoreEventDTO) {
+                if (it !== IgnoreEventDTO) {
                     ret.add(it)
                     count--
                 }
@@ -42,7 +43,7 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
             val event = removeLast()
 
             event.toDTO().also {
-                if (it != IgnoreEventDTO) {
+                if (it !== IgnoreEventDTO) {
                     ret.add(it)
                     count--
                 }
@@ -52,30 +53,19 @@ class MessageQueue : ConcurrentLinkedDeque<BotEvent>() {
     }
 
     suspend fun peek(size: Int): List<EventDTO> {
-        var count = size
-        val ret = ArrayList<EventDTO>(count)
-
-        val iterator: Iterator<BotEvent> = iterator();
-
-        while(iterator.hasNext() && count > 0) {
-            ret.add(iterator.next().toDTO())
-            count--
-        }
-
-        return ret
+        return asFlow()
+            .map { it.toDTO() }
+            .filter { it !== IgnoreEventDTO }
+            .take(size)
+            .toList()
     }
 
     suspend fun peekLatest(size: Int): List<EventDTO> {
-        var count = size
-        val ret = ArrayList<EventDTO>(count)
-
-        val iterator: Iterator<BotEvent> = reversed().iterator();
-
-        while(iterator.hasNext() && count > 0) {
-            ret.add(iterator.next().toDTO())
-            count--
-        }
-
-        return ret
+        return reversed()
+            .asFlow()
+            .map { it.toDTO() }
+            .filter { it !== IgnoreEventDTO }
+            .take(size)
+            .toList()
     }
 }
