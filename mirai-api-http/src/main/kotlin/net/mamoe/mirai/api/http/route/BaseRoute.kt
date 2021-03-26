@@ -194,6 +194,8 @@ internal inline fun Route.intercept(crossinline blk: suspend PipelineContext<Uni
         call.respondStateCode(StateCode.MessageTooLarge)
     } catch (e: IllegalAccessException) { // 错误访问
         call.respondStateCode(StateCode(400, e.message), HttpStatusCode.BadRequest)
+    } catch (e: IllegalStateException) {  // 权限不足: issue #289
+        call.respondStateCode(StateCode(400, e.message.toString()), HttpStatusCode.BadRequest)
     } catch (e: Throwable) {
         HttpApiPluginBase.logger.error(e)
         call.respond(HttpStatusCode.InternalServerError, e.message!!)
