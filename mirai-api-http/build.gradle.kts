@@ -1,7 +1,7 @@
 plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
-    id("net.mamoe.mirai-console") version "2.3.2"
+    id("net.mamoe.mirai-console") version "2.5.0"
 }
 
 val httpVersion: String by rootProject.ext
