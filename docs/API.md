@@ -1119,6 +1119,36 @@ Content-Type：multipart/form-data
 }
 ```
 
+## 戳一戳
+```text
+[POST] /sendNudge
+```
+#### 请求:
+```json5
+{
+    "sessionKey": "YourSessionKey",
+    "target": 123456,
+    "subject": 654321,
+    "kind": "Group"
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
+| target            | false | Long    | 123456789        | 戳一戳的目标, QQ号, 可以为 bot QQ号      |
+| subject           | false | Long    | 987654321        | 戳一戳接受主体(上下文), 戳一戳信息会发送至该主体, 为群号/好友QQ号 |
+| kind              | false | Enum    | "Group"          | 上下文类型, 可选值 `Friend`, `Group`. |
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
 ------
 
 ## Session配置
