@@ -126,6 +126,52 @@ data class PokeMessageDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("File")
+data class FileMessageDTO(
+    val id: String,
+    val internalId: Int,
+    val name: String,
+    val size: Long
+) : MessageDTO()
+
+@Serializable
+@SerialName("Forward")
+data class ForwardMessageDTO(
+    val preview: List<String>,
+    val title: String,
+    val brief: String,
+    val source: String,
+    val summary: String,
+    val nodeList: List<NodeDTO>,
+) : MessageDTO() {
+    @Serializable
+    data class NodeDTO(
+        val senderId: Long,
+        val time: Int,
+        val senderName: String,
+        val messageChain: MessageChainDTO
+    )
+}
+
+suspend fun ForwardMessageDTO(origin: ForwardMessage): ForwardMessageDTO {
+    return ForwardMessageDTO(
+        origin.preview,
+        origin.title,
+        origin.brief,
+        origin.source,
+        origin.summary,
+        origin.nodeList.map {
+            ForwardMessageDTO.NodeDTO(
+                it.senderId,
+                it.time,
+                it.senderName,
+                it.messageChain.toMessageChainDTO()
+            )
+        }
+    )
+}
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
@@ -146,6 +192,7 @@ sealed class MessageDTO : DTO
 /*
     Extend function
  */
+
 suspend fun MessageEvent.toDTO() = when (this) {
     is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
@@ -159,7 +206,7 @@ suspend fun MessageEvent.toDTO() = when (this) {
         // else: `this` is bot event
     }
 }
-
+suspend inline fun MessageChain.toMessageChainDTO(): MessageChainDTO = toMessageChainDTO { it != UnknownMessageDTO }
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     mutableListOf<MessageDTO>().apply {
         this@toMessageChainDTO.forEach { content ->
@@ -183,6 +230,8 @@ suspend fun Message.toDTO() = when (this) {
     is Voice -> VoiceDTO(fileName, url)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
+    is FileMessage -> FileMessageDTO(id, internalId, name, size)
+    is ForwardMessage -> ForwardMessageDTO(this)
     is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,
         groupId = when {
             source is OfflineMessageSource && (source as OfflineMessageSource).kind == MessageSourceKind.GROUP ||
@@ -195,8 +244,8 @@ suspend fun Message.toDTO() = when (this) {
 }
 
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
-suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
-    is AtDTO -> (contact as Group).getOrFail(target).at()
+suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
+    is AtDTO -> At(target)
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
         faceId >= 0 -> Face(faceId)
@@ -224,6 +273,21 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
         }
         else -> null
     }?.flash()
+    is ForwardMessageDTO -> ForwardMessage(
+        preview = preview,
+        title = title,
+        brief = brief,
+        source = source,
+        summary = summary,
+        nodeList = nodeList.map {
+            ForwardMessage.Node(
+                senderId =  it.senderId,
+                time = it.time,
+                senderName = it.senderName,
+                messageChain = it.messageChain.toMessageChain(contact)
+            )
+        }
+    )
     is VoiceDTO -> when {
         contact !is Group -> null
         !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, 0, "")
@@ -242,6 +306,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
+    is FileMessageDTO,
     is UnknownMessageDTO
     -> null
 }
