@@ -48,13 +48,19 @@ fun Application.infoModule() {
         /**
          * 查询群文件列表
          */
-        miraiGet("/fileList") {
+        miraiGet("/fileList") { it ->
             val dir: String = call.parameters["dir"].orEmpty()
-            val ls =
-                it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolve("/$dir").listFiles()
+            val ls = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.let {
+                if (dir.isEmpty()) it.listFiles()
                     .toList().map { remoteFile ->
                         RemoteFileDTO(remoteFile, remoteFile.isFile())
                     }
+                else it.resolve("/$dir").listFiles()
+                    .toList().map { remoteFile ->
+                        RemoteFileDTO(remoteFile, true)
+                    }
+            }
+
             call.respondJson(ls.toJson())
         }
 

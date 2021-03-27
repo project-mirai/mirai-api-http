@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.utils.RemoteFile
 import net.mamoe.mirai.utils.RemoteFile.DownloadInfo
 import net.mamoe.mirai.utils.RemoteFile.FileInfo
+import net.mamoe.mirai.utils.toUHexString
 
 @Serializable
 sealed class FileDTO : DTO {
@@ -26,6 +27,7 @@ data class RemoteFileDTO(
     val id: String?,
     val path: String,
     val type: String
+
 ) : FileDTO() {
     constructor(remoteFile: RemoteFile, isFile: Boolean) : this(
         remoteFile.name,
@@ -48,8 +50,8 @@ data class FileInfoDTO(
     val uploadTime: Long,
     val lastModifyTime: Long,
     val downloadUrl: String,
-    val sha1: ByteArray,
-    val md5: ByteArray,
+    val sha1: String,
+    val md5: String,
 ) : FileDTO() {
     constructor(fileInfo: FileInfo, file: DownloadInfo) : this(
         fileInfo.name,
@@ -61,8 +63,8 @@ data class FileInfoDTO(
         fileInfo.uploadTime,
         fileInfo.lastModifyTime,
         file.url,
-        fileInfo.sha1,
-        fileInfo.md5,
+        fileInfo.sha1.toUHexString(""),
+        fileInfo.md5.toUHexString(""),
 
         )
 }
