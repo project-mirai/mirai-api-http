@@ -10,6 +10,9 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
 import io.ktor.routing.*
+import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.data.StateCode
+import net.mamoe.mirai.api.http.data.common.VerifyDTO
 
 /**
  * 群文件管理路由
@@ -19,9 +22,27 @@ fun Application.fileRouteModule() {
     routing {
 
         /**
-         *
+         * 修改群文件名字
          */
-
+        miraiVerify<FileRenameDTO>("/groupFileRename") { dto ->
+            val file =
+                dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
+            val success = file.renameTo(dto.rename)
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
+        }
 
     }
+
 }
+
+
+@Serializable
+data class FileRenameDTO(
+    override val sessionKey: String,
+    val id: String,
+    val target: Long,
+    val rename: String
+) : VerifyDTO()
