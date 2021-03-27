@@ -48,7 +48,7 @@ fun Application.infoModule() {
         /**
          * 查询群文件列表
          */
-        miraiGet("/fileList") { it ->
+        miraiGet("/groupFileList") { it ->
             val dir: String = call.parameters["dir"].orEmpty()
             val ls = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.let { file ->
                 if (dir.isEmpty()) file.listFiles()
@@ -67,7 +67,7 @@ fun Application.infoModule() {
         /**
          * 获取文件详细信息
          */
-        miraiGet("/fileInfo") {
+        miraiGet("/groupFileInfo") {
             val id: String = paramOrNull("id")
             val fileInfo = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolveById(id)
                 ?: error("文件ID $id 不存在")
