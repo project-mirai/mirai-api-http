@@ -196,7 +196,7 @@ suspend fun Message.toDTO() = when (this) {
 
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
 suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
-    is AtDTO -> (contact as Group).getOrFail(target).at()
+    is AtDTO -> At(target)
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
         faceId >= 0 -> Face(faceId)
