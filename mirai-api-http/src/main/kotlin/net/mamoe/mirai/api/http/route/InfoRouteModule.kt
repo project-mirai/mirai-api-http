@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
 import io.ktor.routing.*
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.toList
 import net.mamoe.mirai.api.http.data.common.GroupDTO
 import net.mamoe.mirai.api.http.data.common.MemberDTO
@@ -52,7 +53,7 @@ fun Application.infoModule() {
          * 查询群文件列表
          */
         miraiGet("/fileList") {
-            val dir :String? = paramOrNull("dir")
+            val dir: String? = paramOrNull("dir")
             val ls =
                 it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolve("/$dir").listFiles()
                     .toList().map { remoteFile ->

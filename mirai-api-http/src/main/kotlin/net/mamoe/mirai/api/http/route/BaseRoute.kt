@@ -237,10 +237,7 @@ internal inline fun <reified R> PipelineContext<Unit, ApplicationCall>.paramOrNu
             else -> illegalParam("boolean", name)
         }
 
-        String::class -> when (call.parameters[name]) {
-            null -> ""
-            else -> call.parameters[name]
-        }
+        String::class -> call.parameters[name].orEmpty()
 
         UByte::class -> call.parameters[name]?.toUByte()
         UInt::class -> call.parameters[name]?.toUInt()

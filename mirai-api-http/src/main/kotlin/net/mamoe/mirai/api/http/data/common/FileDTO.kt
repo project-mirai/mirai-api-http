@@ -34,17 +34,3 @@ data class RemoteFileDTO(
     )
 
 }
-
-@Serializable
-data class FileInfoDTO(
-    override val name: String,
-    val id: String?,
-    val path: String,
-    val length: Long,
-    val downloadTimes: Int,
-    val uploaderId: Long,
-    val uploadTime: Long,
-    val lastModifyTime: Long,
-    val sha1: ByteArray,
-    val md5: ByteArray,
-) : FileDTO()
