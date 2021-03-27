@@ -11,9 +11,11 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
 import io.ktor.routing.*
+import kotlinx.coroutines.flow.toList
 import net.mamoe.mirai.api.http.data.common.GroupDTO
 import net.mamoe.mirai.api.http.data.common.MemberDTO
 import net.mamoe.mirai.api.http.data.common.QQDTO
+import net.mamoe.mirai.api.http.data.common.RemoteFileDTO
 import net.mamoe.mirai.api.http.util.toJson
 
 /**
@@ -43,6 +45,19 @@ fun Application.infoModule() {
          */
         miraiGet("/memberList") {
             val ls = it.bot.getGroupOrFail(paramOrNull("target")).members.toList().map { member -> MemberDTO(member) }
+            call.respondJson(ls.toJson())
+        }
+
+        /**
+         * 查询群文件列表
+         */
+        miraiGet("/fileList") {
+            val dir :String? = paramOrNull("dir")
+            val ls =
+                it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolve("/$dir").listFiles()
+                    .toList().map { remoteFile ->
+                        RemoteFileDTO(remoteFile, remoteFile.isFile())
+                    }
             call.respondJson(ls.toJson())
         }
 
