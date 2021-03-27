@@ -99,10 +99,7 @@ fun Application.fileRouteModule() {
 
                         }
                         else -> error("上传类型 $type 不存在")
-                    }.apply {
-
                     }
-
                 }
                 file.apply {
                     call.respondDTO(UploadFileRetDTO(id = (source.originalMessage.last() as FileMessage).id))
