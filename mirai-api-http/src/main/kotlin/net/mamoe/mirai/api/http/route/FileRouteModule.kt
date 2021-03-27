@@ -9,15 +9,24 @@
 package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
+import io.ktor.http.content.*
 import io.ktor.routing.*
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.StateCode
+import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
+import net.mamoe.mirai.api.http.generateSessionKey
+import net.mamoe.mirai.message.data.FileMessage
+import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
  * 群文件管理路由
  */
 
+@MiraiExperimentalApi
 fun Application.fileRouteModule() {
     routing {
 
@@ -64,6 +73,44 @@ fun Application.fileRouteModule() {
             )
         }
 
+        /**
+         * 上传文件并且发送
+         */
+
+        miraiMultiPart("uploadFileAndSend") { session, parts ->
+            val type = parts.value("type")
+            val target: Long = parts.value("target").toLong()
+            val path = parts.value("path")
+            parts.file("file")?.apply {
+                val file = streamProvider().use {
+                    val newFile = HttpApiPluginBase.saveFileAsync(
+                        originalFileName ?: generateSessionKey(), it.readBytes()
+                    )
+                    when (type) {
+                        "Group" -> session.bot.getGroupOrFail(target).let { group ->
+                            group.filesRoot.resolve(path).let { remoteFile ->
+                                if (!remoteFile.exists()) {
+                                    if (!remoteFile.mkdir())
+                                        call.respondStateCode(StateCode.PermissionDenied);return@miraiMultiPart
+
+                                } else newFile.await().sendTo(group, "/$path/${newFile.await().name}")
+                            }
+
+
+                        }
+                        else -> error("上传类型 $type 不存在")
+                    }.apply {
+
+                    }
+
+                }
+                file.apply {
+                    call.respondDTO(UploadFileRetDTO(id = (source.originalMessage.last() as FileMessage).id))
+                }
+            } ?: throw IllegalAccessException("未知错误")
+
+        }
+
     }
 
 }
@@ -91,3 +138,11 @@ data class FileDeleteDTO(
     val id: String,
     val target: Long
 ) : VerifyDTO()
+
+@Serializable
+@Suppress("unused")
+private class UploadFileRetDTO(
+    val code: Int = 0,
+    val msg: String = "success",
+    val id: String
+) : DTO
