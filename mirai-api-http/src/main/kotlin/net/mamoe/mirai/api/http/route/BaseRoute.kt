@@ -20,10 +20,8 @@ import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.streams.*
 import io.ktor.websocket.*
-import net.mamoe.mirai.api.http.AuthedSession
-import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.*
 import net.mamoe.mirai.api.http.SessionManager
-import net.mamoe.mirai.api.http.TempSession
 import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.*
 import net.mamoe.mirai.api.http.data.common.DTO
@@ -101,6 +99,32 @@ internal fun Route.miraiGet(
         }
     }
 }
+
+/**
+ * Verity, 于 miraiVerify 不同的是,
+ * session 会从 http header 读取而不是 content 中读取
+ */
+@ContextDsl
+internal inline fun Route.miraiVerifyWithHeader(
+    path: String,
+    method: HttpMethod,
+    verifiedSessionKey: Boolean = true,
+    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(Session) -> Unit
+): Route {
+    return route(path, method) {
+        intercept {
+            val sessionKey = call.request.headers["Authorization"].orEmpty().removePrefix("Bearer").trimStart()
+            val session = SessionManager[sessionKey]?.also {
+                when {
+                    it is TempSession && verifiedSessionKey -> throw NotVerifiedSessionException
+                }
+            } ?: throw IllegalSessionException
+
+            this.body(session)
+        }
+    }
+}
+
 
 /**
  * Verify，用于处理bot的行为请求
