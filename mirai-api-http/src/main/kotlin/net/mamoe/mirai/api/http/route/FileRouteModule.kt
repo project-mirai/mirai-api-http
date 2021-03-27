@@ -27,7 +27,23 @@ fun Application.fileRouteModule() {
         miraiVerify<FileRenameDTO>("/groupFileRename") { dto ->
             val file =
                 dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
+            if (file.isFile()) error("文件ID ${dto.id} 是一个目录")
             val success = file.renameTo(dto.rename)
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
+        }
+
+        /**
+         * 移动群文件位置
+         */
+
+        miraiVerify<FilePathMoveDTO>("/groupFileMove") { dto ->
+            val file =
+                dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
+            if (file.isFile()) error("文件ID ${dto.id} 是一个目录")
+            val success = file.moveTo(dto.movePath)
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
@@ -45,4 +61,12 @@ data class FileRenameDTO(
     val id: String,
     val target: Long,
     val rename: String
+) : VerifyDTO()
+
+@Serializable
+data class FilePathMoveDTO(
+    override val sessionKey: String,
+    val id: String,
+    val target: Long,
+    val movePath: String
 ) : VerifyDTO()
