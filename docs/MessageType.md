@@ -205,3 +205,28 @@
 4. "Heartbroken": 心碎
 5. "SixSixSix": 666
 6. "FangDaZhao": 放大招
+
+#### Forward
+```json5
+{
+  "type": "Forward",
+  "title": "群聊的聊天记录",
+  "brief": "[聊天记录]",
+  "source": "聊天记录",
+  "summary": "查看 3 条转发消息",
+  "nodeList": [
+    {
+      "senderId": 123456789, // 发送者 id
+      "time": 987654321, // 时间戳, 单位 秒
+      "senderName": "张三",
+      "messageChain": [ // Type: MessageChain
+        // ...
+      ]
+    },
+    {
+      // ...
+    }
+  ]
+}
+```
+

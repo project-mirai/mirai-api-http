@@ -126,15 +126,6 @@ data class PokeMessageDTO(
 ) : MessageDTO()
 
 @Serializable
-@SerialName("File")
-data class FileMessageDTO(
-    val id: String,
-    val internalId: Int,
-    val name: String,
-    val size: Long
-) : MessageDTO()
-
-@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
@@ -200,7 +191,6 @@ suspend fun Message.toDTO() = when (this) {
         },
         origin = (source.originalMessage + source).toMessageChainDTO { it != UnknownMessageDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
-    is FileMessage -> FileMessageDTO(id, internalId, name, size)
     else -> UnknownMessageDTO
 }
 
@@ -237,9 +227,7 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is VoiceDTO -> when {
         contact !is Group -> null
         !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, 0, "")
-        !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-            URL(url).openStream().toExternalResource().uploadAsVoice(contact)
-        }
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) { URL(url).openStream().toExternalResource().uploadAsVoice(contact) }
         !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
             if (exists()) {
                 inputStream().toExternalResource().uploadAsVoice(contact)
@@ -254,7 +242,6 @@ suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
-    is FileMessageDTO,
     is UnknownMessageDTO
     -> null
 }
