@@ -11,6 +11,8 @@ package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.utils.RemoteFile
+import net.mamoe.mirai.utils.RemoteFile.DownloadInfo
+import net.mamoe.mirai.utils.RemoteFile.FileInfo
 
 @Serializable
 sealed class FileDTO : DTO {
@@ -29,8 +31,38 @@ data class RemoteFileDTO(
         remoteFile.name,
         remoteFile.id,
         remoteFile.path,
-        if (isFile)"File"
+        if (isFile) "File"
         else "Dir"
     )
 
+}
+
+@Serializable
+data class FileInfoDTO(
+    override val name: String,
+    val id: String?,
+    val path: String,
+    val length: Long,
+    val downloadTimes: Int,
+    val uploaderId: Long,
+    val uploadTime: Long,
+    val lastModifyTime: Long,
+    val downloadUrl: String,
+    val sha1: ByteArray,
+    val md5: ByteArray,
+) : FileDTO() {
+    constructor(fileInfo: FileInfo, file: DownloadInfo) : this(
+        fileInfo.name,
+        fileInfo.id,
+        fileInfo.path,
+        fileInfo.length,
+        fileInfo.downloadTimes,
+        fileInfo.uploaderId,
+        fileInfo.uploadTime,
+        fileInfo.lastModifyTime,
+        file.url,
+        fileInfo.sha1,
+        fileInfo.md5,
+
+        )
 }

@@ -11,12 +11,8 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
 import io.ktor.routing.*
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.toList
-import net.mamoe.mirai.api.http.data.common.GroupDTO
-import net.mamoe.mirai.api.http.data.common.MemberDTO
-import net.mamoe.mirai.api.http.data.common.QQDTO
-import net.mamoe.mirai.api.http.data.common.RemoteFileDTO
+import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.util.toJson
 
 /**
@@ -60,6 +56,22 @@ fun Application.infoModule() {
                         RemoteFileDTO(remoteFile, remoteFile.isFile())
                     }
             call.respondJson(ls.toJson())
+        }
+
+        /**
+         * 获取文件详细信息
+         */
+        miraiGet("/fileInfo") {
+            val id: String = paramOrNull("id")
+            val fileInfo = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolveById(id)
+                ?: throw error("文件ID $id 不存在")
+
+            call.respondJson(
+                FileInfoDTO(
+                    fileInfo.getInfo()!!,
+                    fileInfo.getDownloadInfo() ?: throw error("文件ID $id 是一个目录")
+                ).toJson()
+            )
         }
 
 //        /**
