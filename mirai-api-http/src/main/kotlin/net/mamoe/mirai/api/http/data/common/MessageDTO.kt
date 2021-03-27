@@ -126,7 +126,7 @@ data class PokeMessageDTO(
 ) : MessageDTO()
 
 @Serializable
-@SerialName("ForwardMessage")
+@SerialName("Forward")
 data class ForwardMessageDTO(
     val preview: List<String>,
     val title: String,
