@@ -59,6 +59,7 @@ fun Application.mirai() {
     configRouteModule()
     websocketRouteModule()
     nudgeModule()
+    fileRouteModule()
 }
 
 /**

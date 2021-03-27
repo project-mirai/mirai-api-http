@@ -15,33 +15,27 @@ import net.mamoe.mirai.utils.RemoteFile.DownloadInfo
 import net.mamoe.mirai.utils.RemoteFile.FileInfo
 import net.mamoe.mirai.utils.toUHexString
 
-@Serializable
-sealed class FileDTO : DTO {
-    abstract val name: String
-
-}
 
 @Serializable
 data class RemoteFileDTO(
-    override val name: String,
+    val name: String,
     val id: String?,
     val path: String,
-    val type: String
+    val isFile: Boolean
 
-) : FileDTO() {
+) : DTO {
     constructor(remoteFile: RemoteFile, isFile: Boolean) : this(
         remoteFile.name,
         remoteFile.id,
         remoteFile.path,
-        if (isFile) "File"
-        else "Dir"
+        isFile
     )
 
 }
 
 @Serializable
 data class FileInfoDTO(
-    override val name: String,
+    val name: String,
     val id: String?,
     val path: String,
     val length: Long,
@@ -52,7 +46,7 @@ data class FileInfoDTO(
     val downloadUrl: String,
     val sha1: String,
     val md5: String,
-) : FileDTO() {
+) : DTO {
     constructor(fileInfo: FileInfo, file: DownloadInfo) : this(
         fileInfo.name,
         fileInfo.id,

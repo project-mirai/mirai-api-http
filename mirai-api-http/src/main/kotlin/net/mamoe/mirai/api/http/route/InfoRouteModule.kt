@@ -50,12 +50,12 @@ fun Application.infoModule() {
          */
         miraiGet("/fileList") { it ->
             val dir: String = call.parameters["dir"].orEmpty()
-            val ls = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.let {
-                if (dir.isEmpty()) it.listFiles()
+            val ls = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.let { file ->
+                if (dir.isEmpty()) file.listFiles()
                     .toList().map { remoteFile ->
                         RemoteFileDTO(remoteFile, remoteFile.isFile())
                     }
-                else it.resolve("/$dir").listFiles()
+                else file.resolve("/$dir").listFiles()
                     .toList().map { remoteFile ->
                         RemoteFileDTO(remoteFile, true)
                     }
@@ -70,12 +70,12 @@ fun Application.infoModule() {
         miraiGet("/fileInfo") {
             val id: String = paramOrNull("id")
             val fileInfo = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolveById(id)
-                ?: throw error("文件ID $id 不存在")
+                ?: error("文件ID $id 不存在")
 
             call.respondJson(
                 FileInfoDTO(
                     fileInfo.getInfo()!!,
-                    fileInfo.getDownloadInfo() ?: throw error("文件ID $id 是一个目录")
+                    fileInfo.getDownloadInfo() ?: error("文件ID $id 是一个目录")
                 ).toJson()
             )
         }
