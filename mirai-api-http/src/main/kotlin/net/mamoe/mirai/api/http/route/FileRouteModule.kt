@@ -22,12 +22,11 @@ fun Application.fileRouteModule() {
     routing {
 
         /**
-         * 修改群文件名字
+         * 修改群文件/目录名字
          */
         miraiVerify<FileRenameDTO>("/groupFileRename") { dto ->
             val file =
                 dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
-            if (file.isFile()) error("文件ID ${dto.id} 是一个目录")
             val success = file.renameTo(dto.rename)
             call.respondStateCode(
                 if (success) StateCode.Success
@@ -44,6 +43,21 @@ fun Application.fileRouteModule() {
                 dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
             if (file.isFile()) error("文件ID ${dto.id} 是一个目录")
             val success = file.moveTo(dto.movePath)
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
+        }
+
+        /**
+         * 删除群文件/目录
+         */
+
+        miraiVerify<FileDeleteDTO>("/groupFileDelete") { dto ->
+            val file =
+                dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id)
+                    ?: error("文件/目录ID ${dto.id} 不存在")
+            val success = file.delete()
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
@@ -69,4 +83,11 @@ data class FilePathMoveDTO(
     val id: String,
     val target: Long,
     val movePath: String
+) : VerifyDTO()
+
+@Serializable
+data class FileDeleteDTO(
+    override val sessionKey: String,
+    val id: String,
+    val target: Long
 ) : VerifyDTO()
