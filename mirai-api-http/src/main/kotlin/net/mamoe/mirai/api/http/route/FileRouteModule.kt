@@ -117,7 +117,7 @@ fun Application.fileRouteModule() {
 
 
                         }
-                        else -> error("上传类型 $type 不存在")
+                        else -> error("不支持类型 $type")
                     }
                 }
                 file.apply {
