@@ -74,6 +74,25 @@ fun Application.fileRouteModule() {
         }
 
         /**
+         * 转发群文件
+         */
+
+        miraiVerify<FileCopyTODTO>("/FileCopyTO") {
+            TODO()
+            error("暂未支持，等待core更新")
+//            val file = when (dto.fromType) {
+//                "Group" ->
+//                    dto.session.bot.getGroupOrFail(dto.from).filesRoot.resolveById(dto.id)
+//                        ?: error("文件/目录ID ${dto.id} 不存在")
+//                else -> error("暂未支持，等待core更新")
+//            }
+//            val success = when (dto.type) {
+//                "Group" -> file.copyTo()....
+//                else -> error("暂未支持，等待core更新")
+//            }
+        }
+
+        /**
          * 上传文件并且发送
          */
 
@@ -143,3 +162,13 @@ private class UploadFileRetDTO(
     val msg: String = "success",
     val id: String
 ) : DTO
+
+@Serializable
+data class FileCopyTODTO(
+    override val sessionKey: String,
+    val id: String,
+    val from: Long,
+    val fromType: String,
+    val target: Long,
+    val type: String
+) : VerifyDTO()
