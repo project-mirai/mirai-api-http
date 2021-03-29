@@ -97,10 +97,10 @@ fun Application.fileRouteModule() {
 
         miraiMultiPart("uploadFileAndSend") { session, parts ->
             val type = parts.value("type")
-            val target: Long = parts.value("target").toLong()
+            val target = parts.value("target").toLongOrNull() ?: error("target不能为空")
             val path = parts.value("path")
             parts.file("file")?.apply {
-                val file = streamProvider().use { inPutStream->
+                val file = streamProvider().use { inPutStream ->
                     val newFile = HttpApiPluginBase.saveFileAsync(
                         originalFileName ?: generateSessionKey(), inPutStream.readBytes()
                     )
