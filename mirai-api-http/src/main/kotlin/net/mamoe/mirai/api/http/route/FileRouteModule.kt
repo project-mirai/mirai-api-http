@@ -20,7 +20,6 @@ import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.message.data.FileMessage
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
  * 群文件管理路由
@@ -77,9 +76,9 @@ fun Application.fileRouteModule() {
          * 转发群文件
          */
 
-        miraiVerify<FileCopyToDTO>("/FileCopyTO") {
-            TODO()
-            error("暂未支持，等待core更新")
+//        TODO() //等待以后支持
+//          miraiVerify<FileCopyToDTO>("/FileCopyTO") {
+//         error("暂未支持，等待core更新")
 //            val file = when (dto.fromType) {
 //                "Group" ->
 //                    dto.session.bot.getGroupOrFail(dto.from).filesRoot.resolveById(dto.id)
@@ -90,7 +89,7 @@ fun Application.fileRouteModule() {
 //                "Group" -> file.copyTo()....
 //                else -> error("暂未支持，等待core更新")
 //            }
-        }
+//    }
 
         /**
          * 上传文件并且发送
@@ -111,7 +110,7 @@ fun Application.fileRouteModule() {
                                 if (!remoteFile.exists()) {
                                     if (!remoteFile.mkdir())
                                         call.respondStateCode(StateCode.PermissionDenied)
-                                        return@miraiMultiPart
+                                    return@miraiMultiPart
                                 } else newFile.await().sendTo(group, "/$path/${newFile.await().name}")
                             }
 
