@@ -24,6 +24,7 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -235,6 +236,7 @@ fun Application.messageModule() {
             call.respondJson(ls.map { image -> image.imageId }.toJson())
         }
 
+
         // TODO: 重构
         miraiMultiPart("uploadImage") { session, parts ->
 
@@ -317,8 +319,18 @@ fun Application.messageModule() {
         /**
          * 撤回消息
          */
-        miraiVerify<RecallDTO>("recall") {
+        miraiVerify<RecallAndEssenceDTO>("recall") {
             it.session.cacheQueue[it.target].recall()
+            call.respondStateCode(StateCode.Success)
+        }
+
+        /**
+         * 设置群精华消息
+         */
+        miraiVerify<RecallAndEssenceDTO>("/setEssence") { dto ->
+            val source = dto.session.cacheQueue[dto.target]
+            val group: Group = dto.session.bot.getGroupOrFail(source.target.id)
+            group.setEssenceMessage(source)
             call.respondStateCode(StateCode.Success)
         }
     }
@@ -368,7 +380,7 @@ private class UploadVoiceRetDTO(
 ) : DTO
 
 @Serializable
-private data class RecallDTO(
+private data class RecallAndEssenceDTO(
     override val sessionKey: String,
     val target: Int
 ) : VerifyDTO()
