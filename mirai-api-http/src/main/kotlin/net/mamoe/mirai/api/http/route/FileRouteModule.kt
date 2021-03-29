@@ -9,17 +9,18 @@
 package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
-import io.ktor.http.content.*
 import io.ktor.routing.*
+import io.ktor.utils.io.core.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.HttpApiPluginBase
-import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.message.data.FileMessage
+import net.mamoe.mirai.message.data.OnlineMessageSource
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
+import kotlin.io.use
 
 /**
  * 群文件管理路由
@@ -99,31 +100,26 @@ fun Application.fileRouteModule() {
             val type = parts.value("type")
             val target = parts.value("target").toLongOrNull() ?: error("target不能为空")
             val path = parts.value("path")
-            parts.file("file")?.apply {
-                val file = streamProvider().use { inPutStream ->
-                    val newFile = HttpApiPluginBase.saveFileAsync(
-                        originalFileName ?: generateSessionKey(), inPutStream.readBytes()
-                    )
-                    when (type) {
-                        "Group" -> session.bot.getGroupOrFail(target).let { group ->
-                            group.filesRoot.resolve(path).let { remoteFile ->
-                                if (!remoteFile.exists()) {
-                                    if (!remoteFile.mkdir())
-                                        call.respondStateCode(StateCode.PermissionDenied)
-                                    return@miraiMultiPart
-                                } else newFile.await().sendTo(group, "/$path/${newFile.await().name}")
-                            }
-
-
+            var source: OnlineMessageSource.Outgoing
+            val file = parts.file("file") ?: error("file不能为空")
+            file.provider().use { inPutStream ->
+                val newFile = HttpApiPluginBase.saveFileAsync(
+                    file.originalFileName ?: generateSessionKey(), inPutStream.readBytes()
+                )
+                when (type) {
+                    "Group" -> session.bot.getGroupOrFail(target).let { group ->
+                        group.filesRoot.resolve(path).let { remoteFile ->
+                            if (!remoteFile.exists()) {
+                                if (!remoteFile.mkdir())
+                                    call.respondStateCode(StateCode.PermissionDenied)
+                                return@miraiMultiPart
+                            } else source = newFile.await().sendTo(group, "/$path/${newFile.await().name}").source
                         }
-                        else -> error("不支持类型 $type")
                     }
+                    else -> error("不支持类型 $type")
                 }
-                file.apply {
-                    call.respondDTO(UploadFileRetDTO(id = (source.originalMessage.last() as FileMessage).id))
-                }
-            } ?: throw IllegalAccessException("未知错误")
-
+            }
+            call.respondDTO(UploadFileRetDTO(id = (source.originalMessage.last() as FileMessage).id))
         }
 
     }
