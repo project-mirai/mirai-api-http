@@ -100,9 +100,9 @@ fun Application.fileRouteModule() {
             val target: Long = parts.value("target").toLong()
             val path = parts.value("path")
             parts.file("file")?.apply {
-                val file = streamProvider().use {
+                val file = streamProvider().use { inPutStream->
                     val newFile = HttpApiPluginBase.saveFileAsync(
-                        originalFileName ?: generateSessionKey(), it.readBytes()
+                        originalFileName ?: generateSessionKey(), inPutStream.readBytes()
                     )
                     when (type) {
                         "Group" -> session.bot.getGroupOrFail(target).let { group ->
