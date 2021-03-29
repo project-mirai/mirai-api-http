@@ -26,8 +26,8 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
  * 群文件管理路由
  */
 
-@MiraiExperimentalApi
 fun Application.fileRouteModule() {
+
     routing {
 
         /**
@@ -77,7 +77,7 @@ fun Application.fileRouteModule() {
          * 转发群文件
          */
 
-        miraiVerify<FileCopyTODTO>("/FileCopyTO") {
+        miraiVerify<FileCopyToDTO>("/FileCopyTO") {
             TODO()
             error("暂未支持，等待core更新")
 //            val file = when (dto.fromType) {
@@ -110,8 +110,8 @@ fun Application.fileRouteModule() {
                             group.filesRoot.resolve(path).let { remoteFile ->
                                 if (!remoteFile.exists()) {
                                     if (!remoteFile.mkdir())
-                                        call.respondStateCode(StateCode.PermissionDenied);return@miraiMultiPart
-
+                                        call.respondStateCode(StateCode.PermissionDenied)
+                                        return@miraiMultiPart
                                 } else newFile.await().sendTo(group, "/$path/${newFile.await().name}")
                             }
 
@@ -164,7 +164,7 @@ private class UploadFileRetDTO(
 ) : DTO
 
 @Serializable
-data class FileCopyTODTO(
+data class FileCopyToDTO(
     override val sessionKey: String,
     val id: String,
     val from: Long,
