@@ -161,13 +161,3 @@ private class UploadFileRetDTO(
     val msg: String = "success",
     val id: String
 ) : DTO
-
-@Serializable
-data class FileCopyToDTO(
-    override val sessionKey: String,
-    val id: String,
-    val from: Long,
-    val fromType: String,
-    val target: Long,
-    val type: String
-) : VerifyDTO()
