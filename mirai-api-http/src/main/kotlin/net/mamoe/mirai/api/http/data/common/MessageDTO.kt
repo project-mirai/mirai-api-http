@@ -192,7 +192,6 @@ sealed class MessageDTO : DTO
 /*
     Extend function
  */
-
 suspend fun MessageEvent.toDTO() = when (this) {
     is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
@@ -310,5 +309,4 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     is UnknownMessageDTO
     -> null
 }
-
 
