@@ -22,7 +22,6 @@ data class RemoteFileDTO(
     val id: String?,
     val path: String,
     val isFile: Boolean
-
 ) : DTO {
     constructor(remoteFile: RemoteFile, isFile: Boolean) : this(
         remoteFile.name,
