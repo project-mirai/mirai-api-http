@@ -117,7 +117,7 @@ fun Application.fileRouteModule() {
                 else -> error("不支持类型 $type")
             }
 
-            call.respondDTO(UploadFileRetDTO(id = messageChain[FileMessage]!!.id))
+            call.respondDTO(UploadFileRetDTO(id = messageChain.firstIsInstance<FileMessage>().id))
         }
 
     }
