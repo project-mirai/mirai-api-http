@@ -427,9 +427,9 @@ Content-Type：multipart/form-data
 | 名字         | 类型   | 可选  | 举例        | 说明                 |
 | ------------ | ------ | ----- | ----------- | ----------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session   |
-| type         | String | false | "group"     | 当前仅支持 "Group" |
+| type         | String | false | "Group"     | 当前仅支持 "Group" |
 | path         | String | false | 文件夹/文件名 | 文件上传目录与名字   |
-| file         | File   | false | -           | 文件              |
+| file         | File   | false | -           | 文件内容          |
 
 
 #### 响应:
