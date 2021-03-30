@@ -319,7 +319,7 @@ fun Application.messageModule() {
         /**
          * 撤回消息
          */
-        miraiVerify<RecallAndEssenceDTO>("recall") {
+        miraiVerify<RecallDTO>("recall") {
             it.session.cacheQueue[it.target].recall()
             call.respondStateCode(StateCode.Success)
         }
@@ -327,7 +327,7 @@ fun Application.messageModule() {
         /**
          * 设置群精华消息
          */
-        miraiVerify<RecallAndEssenceDTO>("/setEssence") { dto ->
+        miraiVerify<EssenceDTO>("/setEssence") { dto ->
             val source = dto.session.cacheQueue[dto.target]
             val group: Group = dto.session.bot.getGroupOrFail(source.target.id)
             group.setEssenceMessage(source)
@@ -380,7 +380,13 @@ private class UploadVoiceRetDTO(
 ) : DTO
 
 @Serializable
-private data class RecallAndEssenceDTO(
+private data class EssenceDTO(
+    override val sessionKey: String,
+    val target: Int
+) : VerifyDTO()
+
+@Serializable
+private data class RecallDTO(
     override val sessionKey: String,
     val target: Int
 ) : VerifyDTO()
