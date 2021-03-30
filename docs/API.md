@@ -410,6 +410,37 @@ Content-Type：multipart/form-data
     "path": "xxxxxxxxxx"
 }
 ```
+
+
+
+### 文件上传
+```
+[POST] /uploadFileAndSend
+```
+
+使用此方法上传文件至群/好友并返回FileId
+
+#### 请求
+
+Content-Type：multipart/form-data
+
+| 名字         | 类型   | 可选  | 举例        | 说明                               |
+| ------------ | ------ | ----- | ----------- | ---------------------------------- |
+| sessionKey   | String | false | YourSession | 已经激活的Session                  |
+| type         | String | false | "group"     | 当前仅支持 "Group" 
+| path         | String | false | 文件夹/文件名 | 文件上传目录与名字
+| file         | File   | false | -           | 文件                           |
+
+
+#### 响应:
+
+```json5
+{
+    "code": 0,
+    "msg": "success",
+    "id": "/xxx-xxx-xxx-xxx" //文件唯一id
+}
+```
 ------
 ## 接收消息与事件
 
