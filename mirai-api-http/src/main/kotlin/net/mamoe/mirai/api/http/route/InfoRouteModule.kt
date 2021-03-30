@@ -64,7 +64,7 @@ fun Application.infoModule() {
         }
 
         /**
-         * 获取文件详细信息
+         * 获取群文件详细信息
          */
         miraiGet("/groupFileInfo") {
             val id: String = paramOrNull("id")
