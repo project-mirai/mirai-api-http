@@ -424,12 +424,12 @@ Content-Type：multipart/form-data
 
 Content-Type：multipart/form-data
 
-| 名字         | 类型   | 可选  | 举例        | 说明                               |
-| ------------ | ------ | ----- | ----------- | ---------------------------------- |
-| sessionKey   | String | false | YourSession | 已经激活的Session                  |
-| type         | String | false | "group"     | 当前仅支持 "Group" 
-| path         | String | false | 文件夹/文件名 | 文件上传目录与名字
-| file         | File   | false | -           | 文件                           |
+| 名字         | 类型   | 可选  | 举例        | 说明                 |
+| ------------ | ------ | ----- | ----------- | ----------------- |
+| sessionKey   | String | false | YourSession | 已经激活的Session   |
+| type         | String | false | "group"     | 当前仅支持 "Group" |
+| path         | String | false | 文件夹/文件名 | 文件上传目录与名字   |
+| file         | File   | false | -           | 文件              |
 
 
 #### 响应:
@@ -1140,6 +1140,75 @@ Content-Type：multipart/form-data
 | info              | false | Object  | {}               | 群员资料             |
 | name              | true  | String  | "Name"           | 群名片，即群昵称     |
 | specialTitle      | true  | String  | "Title"          | 群头衔               |
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
+####重命名群文件/目录
+```text
+[POST] /groupFileRename
+```
+####请求
+```json5
+{
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx",
+   "rename": "new File Name"
+}
+```
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
+
+####移动群文件
+```text
+[POST] /groupFileMove
+```
+####请求
+```json5
+{
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx",
+   "movePath": "movePath" //移动到的目录，根目录为/，目录不存在时自动创建
+}
+```
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
+####删除群文件/目录
+```text
+[POST] /groupFileDelete
+```
+####请求
+```json5
+{
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx"
+}
+```
 
 #### 响应: 返回统一状态码
 
