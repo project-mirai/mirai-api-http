@@ -54,7 +54,6 @@ fun Application.fileRouteModule() {
                     call.respondStateCode(StateCode.PermissionDenied)
                     return@miraiVerify
                 }
-            if (file.isFile()) error("文件ID ${dto.id} 是一个目录")
             val success = file.moveTo(dto.movePath)
             call.respondStateCode(
                 if (success) StateCode.Success
