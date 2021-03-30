@@ -17,10 +17,8 @@ import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
-import net.mamoe.mirai.message.data.FileMessage
-import net.mamoe.mirai.message.data.OnlineMessageSource
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
-import kotlin.io.use
 
 /**
  * 群文件管理路由
@@ -96,30 +94,30 @@ fun Application.fileRouteModule() {
          * 上传文件并且发送
          */
 
-        miraiMultiPart("uploadFileAndSend") { session, parts ->
+        miraiMultiPart("/uploadFileAndSend") { session, parts ->
             val type = parts.value("type")
             val target = parts.value("target").toLongOrNull() ?: error("target不能为空")
             val path = parts.value("path")
-            var source: OnlineMessageSource.Outgoing
             val file = parts.file("file") ?: error("file不能为空")
-            file.provider().use { inPutStream ->
-                val newFile = HttpApiPluginBase.saveFileAsync(
-                    file.originalFileName ?: generateSessionKey(), inPutStream.readBytes()
-                )
-                when (type) {
-                    "Group" -> session.bot.getGroupOrFail(target).let { group ->
-                        group.filesRoot.resolve(path).let { remoteFile ->
-                            if (!remoteFile.exists()) {
-                                if (!remoteFile.mkdir())
-                                    call.respondStateCode(StateCode.PermissionDenied)
-                                return@miraiMultiPart
-                            } else source = newFile.await().sendTo(group, "/$path/${newFile.await().name}").source
-                        }
+            var messageChain: MessageChain
+            val newFile = HttpApiPluginBase.saveFileAsync(
+                file.originalFileName ?: generateSessionKey(), file.provider().readBytes()
+            )
+            when (type) {
+                "Group" -> session.bot.getGroupOrFail(target).let { group ->
+                    group.filesRoot.resolve(path).let { remoteFile ->
+                        if (remoteFile.parent != null && !remoteFile.exists()) {
+                            if (!remoteFile.mkdir())
+                                call.respondStateCode(StateCode.PermissionDenied)
+                            return@miraiMultiPart
+                        } else messageChain =
+                            newFile.await().sendTo(group, "/$path").source.originalMessage
                     }
-                    else -> error("不支持类型 $type")
                 }
+                else -> error("不支持类型 $type")
             }
-            call.respondDTO(UploadFileRetDTO(id = (source.originalMessage.last() as FileMessage).id))
+
+            call.respondDTO(UploadFileRetDTO(id = (messageChain[FileMessage.topmostKey] as FileMessage).id))
         }
 
     }
