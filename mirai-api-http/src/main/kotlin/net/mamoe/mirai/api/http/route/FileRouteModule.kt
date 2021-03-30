@@ -130,7 +130,6 @@ fun Application.fileRouteModule() {
 
 }
 
-
 @Serializable
 data class FileRenameDTO(
     override val sessionKey: String,
