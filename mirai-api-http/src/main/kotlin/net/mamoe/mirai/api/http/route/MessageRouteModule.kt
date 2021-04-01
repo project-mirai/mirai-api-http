@@ -330,8 +330,11 @@ fun Application.messageModule() {
         miraiVerify<EssenceDTO>("/setEssence") { dto ->
             val source = dto.session.cacheQueue[dto.target]
             val group: Group = dto.session.bot.getGroupOrFail(source.target.id)
-            group.setEssenceMessage(source)
-            call.respondStateCode(StateCode.Success)
+            val success = group.setEssenceMessage(source)
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
         }
     }
 }

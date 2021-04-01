@@ -147,6 +147,7 @@ heartbeat:
     * [修改群设置](docs/API.md#修改群设置)
     * [获取群员资料](docs/API.md#获取群员资料)
     * [修改群员资料](docs/API.md#修改群员资料)
+    * [设置群精华消息](docs/API.md#设置群精华消息)
   * [Session配置](docs/API.md#session配置)
     * [获取指定Session的配置](docs/API.md#获取指定session的配置)
     * [修改指定Session的配置](docs/API.md#修改指定session的配置)

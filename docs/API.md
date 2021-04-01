@@ -1119,6 +1119,37 @@ Content-Type：multipart/form-data
 }
 ```
 
+##设置群精华消息
+
+```text
+[POST]/setEssence
+```
+
+####请求
+
+```json5
+{
+    "sessionKey": "YourSessionKey",
+    "target": 123456
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
+| target            | false | Int     | 123456789        | 将被设置为精华消息ID      |
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
+
+------
+
 ## 戳一戳
 ```text
 [POST] /sendNudge
