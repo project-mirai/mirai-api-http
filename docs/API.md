@@ -1122,7 +1122,7 @@ Content-Type：multipart/form-data
 ##设置群精华消息
 
 ```text
-[POST]/setEssence
+[POST] /setEssence
 ```
 
 ####请求
