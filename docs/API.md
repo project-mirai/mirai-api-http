@@ -1,29 +1,25 @@
 # API 文档参考
-
 ## 状态码
-
 绝大部分API返回的数据包含一个`code`状态码,分别代表不同的状况.  
 所有API返回状态码的意义都一致.  
-以下是状态码表:
-
-| 状态码 | 原因                                 |
-|-------|-------------------------------------|
-| 0     | 正常                                |
-| 1     | 错误的auth key                       |
-| 2     | 指定的Bot不存在                       | 
-| 3     | Session失效或不存在                   |
-| 4     | Session未认证(未激活)                 | 
-| 5     | 发送消息目标不存在(指定对象不存在)        | 
-| 6     | 指定文件不存在，出现于发送本地图片        | 
-| 10    | 无操作权限，指Bot没有对应操作的限权       |
-| 20    | Bot被禁言，指Bot当前无法向指定群发送消息  |
-| 30    | 消息过长                             | 
-| 400   | 错误的访问，如参数错误等                |
-----
-
+以下是状态码表:  
+| 状态码 | 原因                                |
+| ------ | ----------------------------------- |
+| 0      | 正常                                |
+| 1      | 错误的auth key                      |
+| 2      | 指定的Bot不存在                     |
+| 3      | Session失效或不存在                 |
+| 4      | Session未认证(未激活)               |
+| 5      | 发送消息目标不存在(指定对象不存在)  |
+| 6      | 指定文件不存在，出现于发送本地图片  |
+| 10     | 无操作权限，指Bot没有对应操作的限权 |
+| 20     | Bot被禁言，指Bot当前无法向指定群发送消息 |
+| 30     | 消息过长                           |
+| 400    | 错误的访问，如参数错误等            |
+------
 ## 获取插件信息
 
-```text
+```
 [GET] /about
 ```
 
@@ -33,31 +29,28 @@
 
 ```json
 {
-  "code": 0,
-  "errorMessage": "",
-  "data": {
-    "version": "v1.0.0"
-  }
+    "code": 0,
+    "errorMessage": "",
+    "data": {
+        "version": "v1.0.0"
+    }
 }
 ```
-
 ------
-
 ## 认证与会话
 
 ### 开始认证
 
-```text
+```
 [POST] /auth
 ```
-
 使用此方法验证你的身份，并返回一个会话
 
 #### 请求:
 
 ```json5
 {
-  "authKey": "U9HSaDXl39ksd918273hU"
+    "authKey": "U9HSaDXl39ksd918273hU"
 }
 ```
 
@@ -65,12 +58,12 @@
 | ------- | ------ | ----- | ----------------------- | ---------------------------------------------------------- |
 | authKey | String | false | "U9HSaDXl39ksd918273hU" | 创建Mirai-Http-Server时生成的key，可在启动时指定或随机生成 |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "session": "UnVerifiedSession"
+    "code": 0,
+    "session": "UnVerifiedSession"
 }
 ```
 
@@ -86,12 +79,14 @@
 | 0    | 正常                          |
 | 1    | 错误的MIRAI API HTTP auth key |
 
-session key 是使用以下方法必须携带的 session key 使用前必须进行校验和绑定指定的Bot，**每个Session只能绑定一个Bot，但一个Bot可有多个Session**
-session Key 在未进行校验的情况下，一定时间后将会被自动释放
+ session key 是使用以下方法必须携带的
+ session key 使用前必须进行校验和绑定指定的Bot，**每个Session只能绑定一个Bot，但一个Bot可有多个Session**
+ session Key 在未进行校验的情况下，一定时间后将会被自动释放
+
 
 ### 校验Session
 
-```text
+```
 [POST] /verify
 ```
 
@@ -101,8 +96,8 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "UnVerifiedSession",
-  "qq": 123456789
+    "sessionKey": "UnVerifiedSession",
+    "qq": 123456789
 }
 ```
 
@@ -111,18 +106,19 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 | sessionKey | String | false | "UnVerifiedSession" | 你的session key            |
 | qq         | Long   | false | 123456789           | Session将要绑定的Bot的qq号 |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
+
 ### 释放Session
 
-```text
+```
 [POST] /release
 ```
 
@@ -133,8 +129,8 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "qq": 123456789
+    "sessionKey": "YourSessionKey",
+    "qq": 123456789
 }
 ```
 
@@ -143,23 +139,21 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 | sessionKey | String | false | "YourSessionKey" | 你的session key            |
 | qq         | Long   | false | 123456789        | 与该Session绑定Bot的QQ号码 |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
-
 > SessionKey与Bot 对应错误时将会返回状态码2：指定的Bot不存在
 ------
-
 ## 消息发送与撤回
 
 ### 发送好友消息
 
-```text
+```
 [POST] /sendFriendMessage
 ```
 
@@ -169,22 +163,13 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSession",
-  "target": 987654321,
-  "messageChain": [
-    {
-      "type": "Plain",
-      "text": "hello\n"
-    },
-    {
-      "type": "Plain",
-      "text": "world"
-    },
-    {
-      "type": "Image",
-      "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png"
-    }
-  ]
+    "sessionKey": "YourSession",
+    "target": 987654321,
+    "messageChain": [
+        { "type": "Plain", "text": "hello\n" },
+        { "type": "Plain", "text": "world" },
+	{ "type": "Image", "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png" }
+    ]
 }
 ```
 
@@ -196,16 +181,16 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "msg": "success",
-  "messageId": 1234567890
-  // 一个Int类型属性，标识本条消息，用于撤回和引用回复
+    "code": 0,
+    "msg": "success",
+    "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
 }
 ```
+
 
 ### 发送临时会话消息
 
@@ -219,19 +204,13 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSession",
-  "qq": 1413525235,
-  "group": 987654321,
-  "messageChain": [
-    {
-      "type": "Plain",
-      "text": "hello\n"
-    },
-    {
-      "type": "Plain",
-      "text": "world"
-    }
-  ]
+    "sessionKey": "YourSession",
+    "qq": 1413525235,
+    "group": 987654321,
+    "messageChain": [
+        { "type": "Plain", "text":"hello\n" },
+        { "type": "Plain", "text":"world" }
+    ]
 }
 ```
 
@@ -243,19 +222,19 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 | quote        | Int    | true  | 135798642   | 引用一条消息的messageId进行回复  |
 | messageChain | Array  | false | []          | 消息链，是一个消息对象构成的数组 |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "msg": "success",
-  "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
+    "code": 0,
+    "msg": "success",
+    "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
 }
 ```
 
 ### 发送群消息
 
-```text
+```
 [POST] /sendGroupMessage
 ```
 
@@ -265,22 +244,13 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSession",
-  "target": 987654321,
-  "messageChain": [
-    {
-      "type": "Plain",
-      "text": "hello\n"
-    },
-    {
-      "type": "Plain",
-      "text": "world"
-    },
-    {
-      "type": "Image",
-      "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png"
-    }
-  ]
+    "sessionKey": "YourSession",
+    "target": 987654321,
+    "messageChain": [
+        { "type": "Plain", "text": "hello\n" },
+        { "type": "Plain", "text": "world" },
+	{ "type": "Image", "url": "https://i0.hdslb.com/bfs/album/67fc4e6b417d9c68ef98ba71d5e79505bbad97a1.png" }
+    ]
 }
 ```
 
@@ -296,15 +266,15 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "code": 0,
-  "msg": "success",
-  "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
+    "code": 0,
+    "msg": "success",
+    "messageId": 1234567890 // 一个Int类型属性，标识本条消息，用于撤回和引用回复
 }
 ```
 
 ### 撤回消息
 
-```text
+```
 [POST] /recall
 ```
 
@@ -314,8 +284,8 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSession",
-  "target": 987654321
+    "sessionKey": "YourSession",
+    "target": 987654321
 }
 ```
 
@@ -328,14 +298,15 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
+
 ### 发送图片消息（通过URL）
 
-```text
+```
 [POST] /sendImageMessage
 ```
 
@@ -346,14 +317,14 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 ```json5
 {
-  "sessionKey": "YourSession",
-  "target": 987654321,
-  "qq": 1234567890,
-  "group": 987654321,
-  "urls": [
-    "https://xxx.yyy.zzz/",
-    "https://aaa.bbb.ccc/"
-  ]
+    "sessionKey": "YourSession",
+    "target": 987654321,
+    "qq": 1234567890,
+    "group": 987654321,
+    "urls": [
+        "https://xxx.yyy.zzz/",
+        "https://aaa.bbb.ccc/"
+    ]
 }
 ```
 
@@ -367,26 +338,22 @@ session Key 在未进行校验的情况下，一定时间后将会被自动释�
 
 > 当qq和group同时存在时，表示发送临时会话图片，qq为临时会话对象QQ号，group为临时会话发起的群号
 
-#### 响应:
-
+#### 响应: 
 一个包含图片imageId的数组:
-
 ```json5
 [
-  "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
-  "{YYYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY}.mirai"
+    "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
+    "{YYYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY}.mirai"
 ]
 ```
-
 ------
-
 ## 多媒体内容上传
 
 **如果发送错误的请求,API将不会返回任何数据,也不会断开连接.** 请确保发送了正确的`multipart`请求.
 
 ### 图片文件上传
 
-```text
+```
 [POST] /uploadImage
 ```
 
@@ -402,21 +369,22 @@ Content-Type：multipart/form-data
 | type         | String | false | "friend "   | "friend" 或 "group" 或 "temp"        |
 | img          | File   | false | -           | 图片文件                           |
 
-#### 响应:
 
+#### 响应: 
 图片的imageId,好友图片与群聊图片Id不同.
 
 ```json5
 {
-  "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
-  "url": "xxxxxxxxxxxxxxxxxxxx",
-  "path": "xxxxxxxxxx"
+    "imageId": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.mirai",
+    "url": "xxxxxxxxxxxxxxxxxxxx",
+    "path": "xxxxxxxxxx"
 }
 ```
 
-### 语音文件上传
 
-```text
+
+### 语音文件上传
+```
 [POST] /uploadVoice
 ```
 
@@ -432,19 +400,21 @@ Content-Type：multipart/form-data
 | type         | String | false | "group"     | 当前仅支持 "group"                   |
 | voice        | File   | false | -           | 语音文件                           |
 
-#### 响应:
+
+#### 响应: 
 
 ```json5
 {
-  "voiceId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr", //语音的VoiceId
-  "url": "xxxxxxxxxxxxxxxxxxxx",
-  "path": "xxxxxxxxxx"
+    "voiceId": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr", //语音的VoiceId
+    "url": "xxxxxxxxxxxxxxxxxxxx",
+    "path": "xxxxxxxxxx"
 }
 ```
 
-### 文件上传
 
-```text
+
+### 文件上传
+```
 [POST] /uploadFileAndSend
 ```
 
@@ -461,41 +431,40 @@ Content-Type：multipart/form-data
 | path         | String | false | 文件夹/文件名 | 文件上传目录与名字   |
 | file         | File   | false | -           | 文件内容          |
 
+
 #### 响应:
 
 ```json5
 {
-  "code": 0,
-  "msg": "success",
-  "id": "/xxx-xxx-xxx-xxx"//文件唯一id
+    "code": 0,
+    "msg": "success",
+    "id": "/xxx-xxx-xxx-xxx" //文件唯一id
 }
 ```
-
 ------
-
 ## 接收消息与事件
 
 ### 获取Bot收到的消息和事件
 
-```text
+```
 [GET] /fetchMessage?sessionKey=YourSessionKey&count=10
 ```
 
 使用此方法获取bot接收到的最老消息和最老各类事件(会从MiraiApiHttp消息记录中删除)
 
-```text
+```
 [GET] /fetchLatestMessage?sessionKey=YourSessionKey&count=10
 ```
 
 使用此方法获取bot接收到的最新消息和最新各类事件(会从MiraiApiHttp消息记录中删除)
 
-```text
+```
 [GET] /peekMessage?sessionKey=YourSessionKey&count=10
 ```
 
 使用此方法获取bot接收到的最老消息和最老各类事件(不会从MiraiApiHttp消息记录中删除)
 
-```text
+```
 [GET] /peekLatestMessage?sessionKey=YourSessionKey&count=10
 ```
 
@@ -515,8 +484,8 @@ Content-Type：multipart/form-data
   "code": 0,
   "data": [
     {
-      "type": "GroupMessage", // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
-      "messageChain": [// 消息链，是一个消息对象构成的数组
+      "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
+      "messageChain": [              // 消息链，是一个消息对象构成的数组
         {
           "type": "Source",
           "id": 123456,
@@ -527,20 +496,20 @@ Content-Type：multipart/form-data
           "text": "Miral牛逼"
         }
       ],
-      "sender": {// 发送者信息
-        "id": 123456789, // 发送者的QQ号码
-        "memberName": "化腾", // 发送者的群名片
-        "permission": "MEMBER", // 发送者的群限权：OWNER、ADMINISTRATOR或MEMBER
-        "group": {// 消息发送群的信息
-          "id": 1234567890, // 发送群的群号
-          "name": "Miral Technology", // 发送群的群名称
-          "permission": "MEMBER"// 发送群中，Bot的群限权
-        }
+      "sender": {                      // 发送者信息
+          "id": 123456789,             // 发送者的QQ号码
+          "memberName": "化腾",        // 发送者的群名片
+          "permission": "MEMBER",      // 发送者的群限权：OWNER、ADMINISTRATOR或MEMBER
+          "group": {                   // 消息发送群的信息
+              "id": 1234567890,        // 发送群的群号
+              "name": "Miral Technology", // 发送群的群名称
+              "permission": "MEMBER"      // 发送群中，Bot的群限权
+          }
       }
     },
     {
-      "type": "FriendMessage", // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
-      "messageChain": [// 消息链，是一个消息对象构成的数组
+      "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
+      "messageChain": [                // 消息链，是一个消息对象构成的数组
         {
           "type": "Source",
           "id": 123456,
@@ -551,43 +520,42 @@ Content-Type：multipart/form-data
           "text": "Miral牛逼"
         }
       ],
-      "sender": {// 发送者信息
-        "id": 1234567890, // 发送者的QQ号码
-        "nickname": "", // 发送者的昵称
-        "remark": ""// 发送者的备注
+      "sender": {                      // 发送者信息
+          "id": 1234567890,            // 发送者的QQ号码
+          "nickname": "",              // 发送者的昵称
+          "remark": ""                 // 发送者的备注
       }
     },
     {
-      "type": "MemberMuteEvent", // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
+      "type": "MemberMuteEvent",       // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
       "durationSeconds": 600,
-      "member": {
-        "id": 123456789,
-        "memberName": "禁言对象",
-        "permission": "MEMBER",
-        "group": {
+      "member":{
           "id": 123456789,
-          "name": "Miral Technology",
-          "permission": "MEMBER"
-        }
+          "memberName": "禁言对象",
+          "permission": "MEMBER",
+          "group": {
+              "id": 123456789,
+              "name": "Miral Technology",
+              "permission": "MEMBER"
+          }
       },
-      "operator": {
-        "id": 987654321,
-        "memberName": "群主大人",
-        "permission": "OWNER",
-        "group": {
-          "id": 123456789,
-          "name": "Miral Technology",
-          "permission": "MEMBER"
-        }
+      "operator":{
+          "id": 987654321, 
+          "memberName": "群主大人", 
+          "permission": "OWNER",
+          "group": {
+              "id": 123456789,
+              "name": "Miral Technology",
+              "permission": "MEMBER"
+          }
       }
     }
   ]
 }
 ```
-
 ### 通过messageId获取一条被缓存的消息
 
-```text
+```
 [GET] /messageFromId?sessionKey=YourSessionKey&id=1234567890
 ```
 
@@ -600,33 +568,33 @@ Content-Type：multipart/form-data
 | sessionKey | false | YourSessionKey | 你的session key      |
 | id         | false | 1234567890     | 获取消息的messageId  |
 
-#### 响应:
+#### 响应: 
 
 **当该messageId没有被缓存或缓存失效时，返回code 5(指定对象不存在)**
 
 ```json5
 {
-  "code": 0,
-  "errorMessage": "",
-  "data": {
-    "type": "FriendMessage", // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
-    "messageChain": [// 消息链，是一个消息对象构成的数组
-      {
-        "type": "Source",
-        "id": 123456,
-        "time": 123456789
-      },
-      {
-        "type": "Plain",
-        "text": "Miral牛逼"
-      }
-    ],
-    "sender": {// 发送者信息
-      "id": 1234567890, // 发送者的QQ号码
-      "nickname": "", // 发送者的昵称
-      "remark": ""// 发送者的备注
+    "code": 0,
+    "errorMessage": "",
+    "data":{
+        "type": "FriendMessage",         // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
+        "messageChain": [                // 消息链，是一个消息对象构成的数组
+        {
+            "type": "Source",
+            "id": 123456,
+            "time": 123456789
+        },
+        {
+            "type": "Plain",
+            "text": "Miral牛逼"
+        }
+        ],
+        "sender": {                      // 发送者信息
+            "id": 1234567890,            // 发送者的QQ号码
+            "nickname": "",              // 发送者的昵称
+            "remark": ""                 // 发送者的备注
+        }
     }
-  }
 }
 ```
 
@@ -644,13 +612,13 @@ Content-Type：multipart/form-data
 | ---------- | ----- | -------------- | -------------------- |
 | sessionKey | false | YourSessionKey | 你的session key      |
 
-#### 响应:
+#### 响应: 
 
 ```json5
 {
-  "code": 0,
-  "errorMessage": "",
-  "data": 520,
+    "code": 0,
+    "errorMessage": "",
+    "data": 520,   
 }
 ```
 
@@ -660,7 +628,7 @@ Content-Type：multipart/form-data
 
 监听该接口，插件将推送Bot收到的消息
 
-```text
+```
 [ws] /message?sessionKey=YourSessionKey
 ```
 
@@ -672,7 +640,7 @@ Content-Type：multipart/form-data
 
 #### 响应
 
-```json5
+```josn5
 {
     "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
 	"messageChain": [              // 消息链，是一个消息对象构成的数组
@@ -699,11 +667,12 @@ Content-Type：multipart/form-data
 }
 ```
 
+
 #### 接收事件
 
 监听该接口，插件将推送Bot收到的事件
 
-```text
+```
 [ws] /event?sessionKey=YourSessionKey
 ```
 
@@ -717,16 +686,17 @@ Content-Type：multipart/form-data
 
 ```json
 {
-  "type": "BotOfflineEventActive",
-  "qq": 123456
+    "type": "BotOfflineEventActive",
+    "qq": 123456
 }
 ```
+
 
 #### 同时接收事件与消息
 
 监听该接口，插件将推送Bot收到的事件和消息
 
-```text
+```
 [ws] /all?sessionKey=YourSessionKey
 ```
 
@@ -737,18 +707,16 @@ Content-Type：multipart/form-data
 | sessionKey        | false | String  | YourSessionKey   | 你的session key      |
 
 #### 响应
-
 参考上文
 
 ------
-
 ## 好友与群(成员)列表
 
 ### 获取好友列表
 
 使用此方法获取bot的好友列表
 
-```text
+```
 [GET] /friendList?sessionKey=YourSessionKey
 ```
 
@@ -763,17 +731,19 @@ Content-Type：multipart/form-data
 ```json5
 [
   {
-    "id": 123456789,
-    "nickname": "",
-    "remark": ""
+    "id":123456789,
+    "nickname":"",
+    "remark":""
   },
   {
-    "id": 987654321,
-    "nickname": "",
-    "remark": ""
+    "id":987654321,
+    "nickname":"",
+    "remark":""
   }
 ]
 ```
+
+
 
 ### 获取群列表
 
@@ -794,17 +764,19 @@ Content-Type：multipart/form-data
 ```json5
 [
   {
-    "id": 123456789,
-    "name": "群名1",
+    "id":123456789,
+    "name":"群名1",
     "permission": "MEMBER"
   },
   {
-    "id": 987654321,
-    "name": "群名2",
+    "id":987654321,
+    "name":"群名2",
     "permission": "MEMBER"
   }
 ]
 ```
+
+
 
 ### 获取群成员列表
 
@@ -826,30 +798,28 @@ Content-Type：multipart/form-data
 ```json5
 [
   {
-    "id": 1234567890,
-    "memberName": "",
-    "permission": "MEMBER",
-    "group": {
-      "id": 12345,
-      "name": "群名1",
-      "permission": "MEMBER"
+    "id":1234567890,
+    "memberName":"",
+    "permission":"MEMBER",
+    "group":{
+        "id":12345,
+        "name":"群名1",
+        "permission": "MEMBER"
     }
   },
   {
-    "id": 9876543210,
-    "memberName": "",
-    "permission": "OWNER",
-    "group": {
-      "id": 54321,
-      "name": "群名2",
-      "permission": "MEMBER"
+    "id":9876543210,
+    "memberName":"",
+    "permission":"OWNER",
+    "group":{
+        "id":54321,
+        "name":"群名2",
+        "permission": "MEMBER"
     }
   }
 ]
 ```
-
 ------
-
 ## 群管理
 
 ### 禁言群成员
@@ -864,10 +834,10 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789,
-  "memberId": 987654321,
-  "time": 1800
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "memberId": 987654321,
+    "time": 1800
 }
 ```
 
@@ -882,10 +852,12 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
+
+
 
 ### 解除群成员禁言
 
@@ -899,9 +871,9 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789,
-  "memberId": 987654321
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "memberId": 987654321
 }
 ```
 
@@ -921,10 +893,10 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789,
-  "memberId": 987654321,
-  "msg": "您已被移出群聊"
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "memberId": 987654321,
+    "msg": "您已被移出群聊"
 }
 ```
 
@@ -939,10 +911,12 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
+
+
 
 ### 退出群聊
 
@@ -956,8 +930,8 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789
+    "sessionKey": "YourSessionKey",
+    "target": 123456789
 }
 ```
 
@@ -970,14 +944,13 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
 > bot为该群群主时退出失败并返回code 10(无操作权限)
->
-
+> 
 ### 全体禁言
 
 使用此方法令指定群进行全体禁言（需要有相关限权）
@@ -990,8 +963,8 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789
+    "sessionKey": "YourSessionKey",
+    "target": 123456789
 }
 ```
 
@@ -1000,14 +973,17 @@ Content-Type：multipart/form-data
 | sessionKey | false | String | "YourSessionKey" | 你的session key |
 | target     | false | Long   | 123456789        | 指定群的群号    |
 
+
 #### 响应
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
+
+
 
 ### 解除全体禁言
 
@@ -1025,6 +1001,10 @@ Content-Type：multipart/form-data
 
 同全体禁言
 
+
+
+
+
 ### 获取群设置
 
 使用此方法获取群设置
@@ -1040,16 +1020,17 @@ Content-Type：multipart/form-data
 | sessionKey        | false | String  | YourSessionKey   | 你的session key      |
 | target            | false | Long    | 123456789        | 指定群的群号         |
 
+
 #### 响应
 
 ```json5
 {
-  "name": "群名称",
-  "announcement": "群公告",
-  "confessTalk": true,
-  "allowMemberInvite": true,
-  "autoApprove": true,
-  "anonymousChat": true
+    "name": "群名称",
+    "announcement": "群公告",
+    "confessTalk": true,
+    "allowMemberInvite": true,
+    "autoApprove": true,
+    "anonymousChat": true
 }
 ```
 
@@ -1060,23 +1041,21 @@ Content-Type：multipart/form-data
 ```
 [POST] /groupConfig
 ```
-
 注意:请求头部需要加上`charset=utf-8`,否则可能导致乱码.
-
 #### 请求:
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789,
-  "config": {
-    "name": "群名称",
-    "announcement": "群公告",
-    "confessTalk": true,
-    "allowMemberInvite": true,
-    "autoApprove": true,
-    "anonymousChat": true
-  }
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "config": {
+        "name": "群名称",
+        "announcement": "群公告",
+        "confessTalk": true,
+        "allowMemberInvite": true,
+        "autoApprove": true,
+        "anonymousChat": true
+    }
 }
 ```
 
@@ -1096,10 +1075,14 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
+
+
+
+
 
 ### 获取群员资料
 
@@ -1117,12 +1100,13 @@ Content-Type：multipart/form-data
 | target            | false | Long    | 123456789        | 指定群的群号         |
 | memberId          | false | Long    | 987654321        | 群员QQ号             |
 
+
 #### 响应
 
 ```json5
 {
-  "name": "群名片",
-  "specialTitle": "群头衔"
+    "name": "群名片",
+    "specialTitle": "群头衔"
 }
 ```
 
@@ -1138,13 +1122,13 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456789,
-  "memberId": 987654321,
-  "info": {
-    "name": "群名片",
-    "specialTitle": "群头衔"
-  }
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "memberId": 987654321,
+    "info": {
+        "name": "群名片",
+        "specialTitle": "群头衔"
+    }
 }
 ```
 
@@ -1161,25 +1145,22 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
-#### 重命名群文件/目录
-
+####重命名群文件/目录
 ```text
 [POST] /groupFileRename
 ```
-
-#### 请求
-
+####请求
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456,
-  "id": "/xxx-xxx-xxx-xxx",
-  "rename": "new File Name"
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx",
+   "rename": "new File Name"
 }
 ```
 
@@ -1187,25 +1168,23 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
-#### 移动群文件
 
+####移动群文件
 ```text
 [POST] /groupFileMove
 ```
-
-#### 请求
-
+####请求
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456,
-  "id": "/xxx-xxx-xxx-xxx",
-  "movePath": "movePath"//移动到的目录，根目录为/，目录不存在时自动创建
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx",
+   "movePath": "movePath" //移动到的目录，根目录为/，目录不存在时自动创建
 }
 ```
 
@@ -1213,24 +1192,21 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
-#### 删除群文件/目录
-
+####删除群文件/目录
 ```text
 [POST] /groupFileDelete
 ```
-
-#### 请求
-
+####请求
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456,
-  "id": "/xxx-xxx-xxx-xxx"
+   "sessionKey": "YourSessionKey",
+   "target": 123456,
+   "id": "/xxx-xxx-xxx-xxx"
 }
 ```
 
@@ -1238,91 +1214,22 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
-}
-```
-
-#### 查询群文件列表
-
-```text
-[GET] /groupFileList
-```
-
-#### 请求
-
-| 名字              | 可选  | 类型    | 举例             | 说明                 |
-| ----------------- | ----- | ------- | ---------------- | -------------------- |
-| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
-| target            | false | Long    | 123456789        | 群号     |
-| dir               | true  | String  | 文件夹            |指定文件夹下的文件|
-
-#### 响应
-
-```json5
-[
-  {
-    "name": "File Name",
-    "id": "/xxx-xxx-xxx-xxx", //文件的唯一ID
-    "path": "/path/File Name", //文件的绝对路径
-    "isFile": true
-  },
-  {
-    "name": "File Name",
-    "id": "/xxx-xxx-xxx-xxx",
-    "path": "/path/File Name",
-    "isFile": false
-  }
-  //.......
-]
-```
-
-#### 获取群文件详细信息
-
-```text
-[GET] /groupFileInfo
-```
-
-#### 请求
-
-| 名字              | 可选  | 类型    | 举例             | 说明                 |
-| ----------------- | ----- | ------- | ---------------- | -------------------- |
-| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
-| target            | false | Long    | 123456789        | 群号     |
-| id                | false | String  | /xxx-xxx-xxx-xxx |文件唯一ID|
-
-#### 响应
-
-```json5
-{
-  "name":"File Name", //
-  "id":"/xxx-xxx-xxx-xxx", //文件唯一ID
-  "path":"/path/File Name",
-  "length":"123456",
-  "downloadTimes":"0",
-  "uploaderId":"123789",
-  "uploadTime":"845185",
-  "lastModifyTime":"1553188", 
-  "downloadUrl":"https://www.baidu.com",
-  "sha1":"d8a64d68a",
-  "md5":"da57d5ad"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
 ## 戳一戳
-
 ```text
 [POST] /sendNudge
 ```
-
 #### 请求:
-
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "target": 123456,
-  "subject": 654321,
-  "kind": "Group"
+    "sessionKey": "YourSessionKey",
+    "target": 123456,
+    "subject": 654321,
+    "kind": "Group"
 }
 ```
 
@@ -1337,8 +1244,8 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "code": 0,
-  "msg": "success"
+    "code": 0,
+    "msg": "success"
 }
 ```
 
@@ -1364,8 +1271,8 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "cacheSize": 4096,
-  "enableWebsocket": false
+    "cacheSize": 4096,
+    "enableWebsocket": false
 }
 ```
 
@@ -1381,9 +1288,9 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "sessionKey": "YourSessionKey",
-  "cacheSize": 4096,
-  "enableWebsocket": false
+    "sessionKey": "YourSessionKey",
+    "cacheSize": 4096,
+    "enableWebsocket": false
 }
 ```
 
@@ -1394,13 +1301,12 @@ Content-Type：multipart/form-data
 | enableWebsocket   | true  | Boolean | false            | 是否开启Websocket    |
 
 ------
-
 ## 插件与Console
 
 ### 简介
 
-`Mirai-console`通过指令执行任务，如`/login qq password`进行登录，`Mirai-api-http`支持通过`POST`请求发送指令和注册指令， 帮助第三方开发语言进行符合`Mirai-console`
-规范的插件开发
+`Mirai-console`通过指令执行任务，如`/login qq password`进行登录，`Mirai-api-http`支持通过`POST`请求发送指令和注册指令，
+帮助第三方开发语言进行符合`Mirai-console`规范的插件开发
 
 `Mirai-console`通过`manager`列表进行对`bot`任务的鉴权。尽量避免各插件使用自己的鉴权方式而产生重复配置的混乱情况出现。
 
@@ -1414,14 +1320,11 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "authKey": "U9HSaDXl39ksd918273hU",
-  "name": "login",
-  "alias": [
-    "lg",
-    "SignIn"
-  ],
-  "description": "测试",
-  "usage": "/login qq password"
+    "authKey": "U9HSaDXl39ksd918273hU",
+    "name": "login",
+    "alias": ["lg", "SignIn"],
+    "description": "测试",
+    "usage": "/login qq password"
 }
 ```
 
@@ -1437,6 +1340,8 @@ Content-Type：multipart/form-data
 
 按普通文本处理
 
+
+
 ### 发送指令
 
 ```
@@ -1447,12 +1352,9 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "authKey": "U9HSaDXl39ksd918273hU",
-  "name": "ogin",
-  "args": [
-    "123",
-    "pwd"
-  ]
+    "authKey": "U9HSaDXl39ksd918273hU",
+    "name": "ogin",
+    "args": ["123", "pwd"]
 }
 ```
 
@@ -1462,9 +1364,12 @@ Content-Type：multipart/form-data
 | name    | false | String | 123456789     | 指令名      |
 | args    | false | String[] | 987654321     | 指令参数    |
 
+
 #### 响应
 
 按普通文本处理
+
+
 
 ### 监听指令
 
@@ -1476,13 +1381,10 @@ Content-Type：multipart/form-data
 
 ```json5
 {
-  "name": "commandName",
-  "sender": 12345,
-  "group": 54321,
-  "args": [
-    "arg1",
-    "arg2"
-  ]
+    "name": "commandName",
+    "sender": 12345,
+    "group": 54321,
+    "args": ["arg1", "arg2"]
 }
 ```
 
@@ -1491,6 +1393,7 @@ Content-Type：multipart/form-data
 > 当指令通过群组消息发送时，sender为发送人QQ号，group为群号
 >
 > 当指令通过其他方式发送时，如控制台、HTTP接口等，sender和group均为0
+
 
 ### 获取Managers
 
@@ -1501,10 +1404,7 @@ Content-Type：multipart/form-data
 #### 响应
 
 ```json5
-[
-  123456789,
-  987654321
-]
+[123456789, 987654321]
 ```
 
 > 响应Manager的qq号数组，当QQ号不存在时返回状态码(StateCode 2)
