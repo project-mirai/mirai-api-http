@@ -1149,6 +1149,72 @@ Content-Type：multipart/form-data
     "msg": "success"
 }
 ```
+----
+##群文件管理
+####获取群文件列表
+
+```text
+[GET]/groupFileList?sessionKey=YourSessionKey&target=123456789&dir=dir
+```
+####请求
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
+| target            | false | Long    | 123456789        | 指定群的群号         |
+| dir               | true  | String  | dir              | 指定查询目录，不填为根目录          |
+
+
+####响应
+
+```json5
+[
+  {
+    "name" : "File Name",
+    "id" : "/xxx-xxx-xxx-xxx",
+    "path" : "/path/File Name",
+    "isFile" : true //是否为文件
+  },
+  {
+    "name" : "File Name",
+    "id" : "/xxx-xxx-xxx-xxx",
+    "path" : "/path/File Name",
+    "isFile" : true
+  }//...
+]
+```
+
+####获取群文件详细信息
+
+```text
+[GET]/groupFileInfo?sessionKey=YourSessionKey&target=123456789&id=/xxx-xxx-xxx-xxx
+```
+
+####请求
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | false | String  | "YourSessionKey" | 你的session key      |
+| target            | false | Long    | 123456789        | 指定群的群号         |
+| id                | false | String  | /xxx-xxx-xxx-xxx | 文件唯一ID          |
+
+####响应
+
+```json5
+{
+  "name" : "File Name", //文件名字
+  "path" : "/path/File Name", //文件绝对位置
+  "id" : "/xxx-xxx-xxx-xxx", //文件唯一ID
+  "length" : 0, //文件长度
+  "downloadTimes" : 0, //下载次数
+  "uploaderId" : 987654321, //上传者QQ
+  "uploadTime" : 0, //上传时间
+  "lastModifyTime" : 0, //最后修改时间
+  "downloadUrl" : "https://www.com", //文件下载链接
+  "sha1" : "85ad7a14d51a", //文件sha1值
+  "md5" : "d4wa84d6aw1d4ad57" //文件md5值
+}
+```
 
 ####重命名群文件/目录
 ```text
