@@ -124,7 +124,6 @@ heartbeat:
     * [发送群消息](docs/API.md#发送群消息)
     * [撤回消息](docs/API.md#撤回消息)
     * [发送图片消息（通过URL）](docs/API.md#发送图片消息通过url)
-    * [发送戳一戳](docs/API.md#戳一戳)
   * [多媒体内容上传](docs/API.md#多媒体内容上传)
     * [图片文件上传](docs/API.md#图片文件上传)
     * [语音文件上传](docs/API.md#语音文件上传)
