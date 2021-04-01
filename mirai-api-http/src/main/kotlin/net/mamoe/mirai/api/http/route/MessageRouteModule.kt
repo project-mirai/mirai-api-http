@@ -24,6 +24,7 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
+import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -321,6 +322,34 @@ fun Application.messageModule() {
             it.session.cacheQueue[it.target].recall()
             call.respondStateCode(StateCode.Success)
         }
+
+        /**
+         * 合并转发消息
+         */
+        miraiVerify<ForwardMessagesDTO>("/forwardMessages") { dto ->
+            val bot = dto.session.bot
+            when (dto.type) {
+                "Group" -> {
+                    val group = bot.getGroupOrFail(dto.target)
+                    val nodeList = dto.messageIds.map {
+                        dto.session.cacheQueue[it].originalMessage.toForwardMessage(sender = (dto.session.cacheQueue[it].sender as User)).nodeList.first()
+                    }
+                    val forwardMessage = ForwardMessageBuilder(group)
+                    forwardMessage.addAll(nodeList)
+                    forwardMessage.build().sendTo(group)
+
+
+                }
+                "Friend" -> {
+                    val friend = bot.getFriendOrFail(dto.target)
+                }
+                "Stranger" -> {
+                    val stranger = bot.getStrangerOrFail(dto.target)
+                }
+                else -> error("不支持 ${dto.type} 消息转发")
+            }
+
+        }
     }
 }
 
@@ -371,4 +400,12 @@ private class UploadVoiceRetDTO(
 private data class RecallDTO(
     override val sessionKey: String,
     val target: Int
+) : VerifyDTO()
+
+@Serializable
+data class ForwardMessagesDTO(
+    override val sessionKey: String,
+    val type: String,
+    val target: Long,
+    val messageIds: List<Int>
 ) : VerifyDTO()
