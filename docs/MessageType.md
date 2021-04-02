@@ -229,4 +229,13 @@
   ]
 }
 ```
-
+#### File
+```json5
+{
+  "type": "File",
+  "id": "/c05892e6-fb91-4a5c-b1df-054d559d06cf",//文件唯一id
+  "internalId": 102, //服务器需要的ID
+  "name": "file", //文件名字
+  "size": 392056 //文件大小
+}
+```
