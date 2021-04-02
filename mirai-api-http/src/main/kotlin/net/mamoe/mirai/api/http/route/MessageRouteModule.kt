@@ -24,7 +24,9 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
+import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -328,26 +330,28 @@ fun Application.messageModule() {
          */
         miraiVerify<ForwardMessagesDTO>("/forwardMessages") { dto ->
             val bot = dto.session.bot
-            when (dto.type) {
-                "Group" -> {
-                    val group = bot.getGroupOrFail(dto.target)
-                    val nodeList = dto.messageIds.map {
-                        dto.session.cacheQueue[it].originalMessage.toForwardMessage(sender = (dto.session.cacheQueue[it].sender as User)).nodeList.first()
-                    }
-                    val forwardMessage = ForwardMessageBuilder(group)
-                    forwardMessage.addAll(nodeList)
-                    forwardMessage.build().sendTo(group)
-
-
-                }
-                "Friend" -> {
-                    val friend = bot.getFriendOrFail(dto.target)
-                }
-                "Stranger" -> {
-                    val stranger = bot.getStrangerOrFail(dto.target)
-                }
+          val contact =  when (dto.type) {
+                "Group" -> bot.getGroupOrFail(dto.target)
+                "Friend" -> bot.getFriendOrFail(dto.target)
+                "Stranger" -> bot.getStrangerOrFail(dto.target)
                 else -> error("不支持 ${dto.type} 消息转发")
             }
+            val nodeList = dto.messageIds.map {
+                val cacheQueue = dto.session.cacheQueue[it]
+                val user = cacheQueue.sender as User
+                val messageChain :MessageChain = cacheQueue.originalMessage.map { singleMessage ->
+                    when (singleMessage) {
+                        is At -> PlainText("@${(cacheQueue.target as Group).getOrFail(singleMessage.target).nameCardOrNick}")
+                        else -> singleMessage
+                    }
+                }.toMessageChain()
+                ForwardMessage.Node(user.id, cacheQueue.time, user.nameCardOrNick, messageChain)
+
+            }
+            val forwardMessage = ForwardMessageBuilder(contact)
+            forwardMessage.addAll(nodeList)
+            forwardMessage.build().sendTo(contact)
+            call.respondStateCode(StateCode.Success)
 
         }
     }
