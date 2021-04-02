@@ -1075,6 +1075,7 @@ Content-Type：multipart/form-data
 ```json5
 {
     "name": "群名片",
+    "nick": "群员昵称",
     "specialTitle": "群头衔"
 }
 ```
