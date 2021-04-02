@@ -119,4 +119,13 @@ object HttpApiPluginBase : KotlinPlugin(
             voice(name).apply { writeBytes(data) }
         }
 
+    private val fileFold: File = File(dataFolder, "file").apply { mkdirs() }
+
+    internal fun file(fileName: String) = File(fileFold, fileName)
+
+    fun saveFileAsync(name: String, data: ByteArray) =
+        async {
+            file(name).apply { writeBytes(data) }
+        }
+
 }

@@ -59,6 +59,7 @@ fun Application.mirai() {
     configRouteModule()
     websocketRouteModule()
     nudgeModule()
+    fileRouteModule()
 }
 
 /**
@@ -262,7 +263,6 @@ internal inline fun <reified R> PipelineContext<Unit, ApplicationCall>.paramOrNu
         }
 
         String::class -> call.parameters[name]
-
         UByte::class -> call.parameters[name]?.toUByte()
         UInt::class -> call.parameters[name]?.toUInt()
         UShort::class -> call.parameters[name]?.toUShort()

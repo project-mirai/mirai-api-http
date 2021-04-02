@@ -126,6 +126,15 @@ data class PokeMessageDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("File")
+data class FileMessageDTO(
+    val id: String,
+    val internalId: Int,
+    val name: String,
+    val size: Long
+) : MessageDTO()
+
+@Serializable
 @SerialName("Forward")
 data class ForwardMessageDTO(
     val preview: List<String>,
@@ -196,7 +205,6 @@ suspend fun MessageEvent.toDTO() = when (this) {
         // else: `this` is bot event
     }
 }
-
 suspend inline fun MessageChain.toMessageChainDTO(): MessageChainDTO = toMessageChainDTO { it != UnknownMessageDTO }
 suspend inline fun MessageChain.toMessageChainDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     mutableListOf<MessageDTO>().apply {
@@ -221,6 +229,7 @@ suspend fun Message.toDTO() = when (this) {
     is Voice -> VoiceDTO(fileName, url)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
+    is FileMessage -> FileMessageDTO(id, internalId, name, size)
     is ForwardMessage -> ForwardMessageDTO(this)
     is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,
         groupId = when {
@@ -296,8 +305,8 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
+    is FileMessageDTO,
     is UnknownMessageDTO
     -> null
 }
-
 
