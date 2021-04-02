@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
+        // maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
         maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
         jcenter()
         mavenCentral()
@@ -19,9 +19,9 @@ allprojects {
 
     repositories {
         mavenLocal()
-        if (System.getenv("IS_GITHUB_ACTION") == null) {
-            maven { url "https://mirrors.huaweicloud.com/repository/maven" }
-        }
+        //if (System.getenv("IS_GITHUB_ACTION") == null) {
+        //    maven { url "https://mirrors.huaweicloud.com/repository/maven" }
+        // }
         maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
         jcenter()
         mavenCentral()
