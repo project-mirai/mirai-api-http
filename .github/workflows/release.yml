@@ -10,6 +10,8 @@ jobs:
     name: Release to Github Release Page
     runs-on: ubuntu-latest
 
+    env:
+      IS_GITHUB_ACTION: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
