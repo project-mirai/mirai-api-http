@@ -1155,7 +1155,7 @@ Content-Type：multipart/form-data
 ####获取群文件列表
 
 ```text
-[GET]/groupFileList?sessionKey=YourSessionKey&target=123456789&dir=dir
+[GET] /groupFileList?sessionKey=YourSessionKey&target=123456789&dir=dir
 ```
 ####请求
 
@@ -1188,7 +1188,7 @@ Content-Type：multipart/form-data
 ####获取群文件详细信息
 
 ```text
-[GET]/groupFileInfo?sessionKey=YourSessionKey&target=123456789&id=/xxx-xxx-xxx-xxx
+[GET] /groupFileInfo?sessionKey=YourSessionKey&target=123456789&id=/xxx-xxx-xxx-xxx
 ```
 
 ####请求
