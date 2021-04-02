@@ -148,6 +148,7 @@ heartbeat:
     * [修改群设置](docs/API.md#修改群设置)
     * [获取群员资料](docs/API.md#获取群员资料)
     * [修改群员资料](docs/API.md#修改群员资料)
+    * [设置群精华消息](docs/API.md#设置群精华消息)
   * [群文件管理](docs/API.md#群文件管理)
     * [获取群文件列表](docs/API.md#获取群文件列表)
     * [获取群文件信息](docs/API.md#获取群文件信息)
