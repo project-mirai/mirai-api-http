@@ -1,6 +1,6 @@
-## 消息类型
+# 消息类型
 
-#### Source
+## Source
 
 ```json5
 {
@@ -15,7 +15,7 @@
 | id   | Int  | 消息的识别号，用于引用回复（Source类型永远为chain的第一个元素） |
 | time | Int  | 时间戳                                                       |
 
-#### Quote
+## Quote
 
 ```json5
 {
@@ -39,7 +39,7 @@
 | origin   | Object | 被引用回复的原消息的消息链对象                    |
 
 
-#### At
+## At
 
 ```json5
 {
@@ -54,7 +54,7 @@
 | target  | Long   | 群员QQ号                                       |
 | dispaly | String | At时显示的文字，发送消息时无效，自动使用群名片 |
 
-#### AtAll
+## AtAll
 
 ```json5
 {
@@ -66,7 +66,7 @@
 | ------- | ------ | ------------------------- |
 | -       | -      | -                         |
 
-#### Face
+## Face
 
 ```json5
 {
@@ -81,7 +81,7 @@
 | faceId | Int     | QQ表情编号，可选，优先高于name |
 | name   | String  | QQ表情拼音，可选               |
 
-#### Plain
+## Plain
 
 ```json5
 {
@@ -94,7 +94,7 @@
 | ---- | ------ | -------- |
 | text | String | 文字消息 |
 
-#### Image
+## Image
 
 ```json5
 {
@@ -112,7 +112,7 @@
 | url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
 | path    | String | 图片的路径，发送本地图片，相对路径于`data/net.mamoe.mirai-api-http/images` |
 
-#### FlashImage
+## FlashImage
 
 ```json5
 {
@@ -128,7 +128,7 @@
 
 > 三个参数任选其一，出现多个参数时，按照imageId > url > path的优先级
 
-#### Voice
+## Voice
 
 ```json5
 {
@@ -147,7 +147,7 @@
 
 > 三个参数任选其一，出现多个参数时，按照voiceId > url > path的优先级
 
-#### Xml
+## Xml
 
 ```json5
 {
@@ -160,7 +160,7 @@
 | ---- | ------ | ------- |
 | xml  | String | XML文本 |
 
-#### Json
+## Json
 
 ```json5
 {
@@ -173,7 +173,7 @@
 | ---- | ------ | -------- |
 | json | String | Json文本 |
 
-#### App
+## App
 
 ```json5
 {
@@ -186,7 +186,7 @@
 | -------- | ------ | ------- |
 | content  | String | 内容    |
 
-#### Poke
+## Poke
 
 ```json5
 {
