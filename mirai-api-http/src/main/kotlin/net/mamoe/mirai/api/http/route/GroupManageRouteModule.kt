@@ -180,7 +180,8 @@ private data class MemberInfoDTO(
 @Serializable
 private data class MemberDetailDTO(
     val name: String? = null,
+    val nick: String? = null,
     val specialTitle: String? = null
 ) : DTO {
-    constructor(member: Member) : this(member.nameCard, member.specialTitle)
+    constructor(member: Member) : this(member.nameCard, member.nick, member.specialTitle)
 }

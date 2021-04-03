@@ -12,7 +12,9 @@ package net.mamoe.mirai.api.http.route
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
+import io.ktor.util.pipeline.*
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.AuthedSession
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.data.IllegalAccessException
 import net.mamoe.mirai.api.http.data.IllegalParamException
@@ -21,6 +23,8 @@ import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.api.http.util.toJson
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Contact.Companion.uploadImage
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -67,14 +71,22 @@ fun Application.messageModule() {
             call.respondDTO(EventListRestfulResult(data = list))
         }
 
-        /**
-         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
-         */
-        miraiGet("/peakMessage") {
+        suspend fun PipelineContext<Unit, ApplicationCall>.傻逼黄色(it: AuthedSession) {
             val count: Int = paramOrNull("count")
             val list = it.messageQueue.peek(count)
 
             call.respondDTO(EventListRestfulResult(data = list))
+        }
+
+        /**
+         * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
+         */
+        miraiGet("/peekMessage") {
+            傻逼黄色(it)
+        }
+
+        miraiGet("/peakMessage") {
+            傻逼黄色(it)
         }
 
         /**
@@ -145,8 +157,8 @@ fun Application.messageModule() {
             val bot = it.session.bot
 
             fun findQQ(qq: Long): Contact = bot.getFriend(qq)
-                    ?: bot.getStranger(qq)
-                    ?: throw NoSuchElementException("friend $qq not found")
+                ?: bot.getStranger(qq)
+                ?: throw NoSuchElementException("friend $qq not found")
 
             val qq = when {
                 it.target != null -> findQQ(it.target)
@@ -208,21 +220,22 @@ fun Application.messageModule() {
         /**
          * 发送图片消息
          */
-        miraiVerify<SendImageDTO>("sendImageMessage") {
-            val bot = it.session.bot
+        miraiVerify<SendImageDTO>("sendImageMessage") { dto ->
+            val bot = dto.session.bot
             val contact = when {
-                it.target != null -> bot.getFriend(it.target) ?: bot.getGroupOrFail(it.target)
-                it.qq != null && it.group != null -> bot.getGroupOrFail(it.group).getOrFail(it.qq)
-                it.qq != null -> bot.getFriendOrFail(it.qq)
-                it.group != null -> bot.getGroupOrFail(it.group)
+                dto.target != null -> bot.getFriend(dto.target) ?: bot.getGroupOrFail(dto.target)
+                dto.qq != null && dto.group != null -> bot.getGroupOrFail(dto.group).getOrFail(dto.qq)
+                dto.qq != null -> bot.getFriendOrFail(dto.qq)
+                dto.group != null -> bot.getGroupOrFail(dto.group)
                 else -> throw IllegalParamException("target、qq、group不可全为null")
             }
-            val ls = it.urls.map { url -> URL(url).openStream().uploadAsImage(contact) }
+            val ls = dto.urls.map { url -> URL(url).openStream().use { it.uploadAsImage(contact) } }
             val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
 
-            it.session.cacheQueue.add(receipt.source)
+            dto.session.cacheQueue.add(receipt.source)
             call.respondJson(ls.map { image -> image.imageId }.toJson())
         }
+
 
         // TODO: 重构
         miraiMultiPart("uploadImage") { session, parts ->
@@ -239,10 +252,10 @@ fun Application.messageModule() {
                     )
 
                     when (type) {
-                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await().toExternalResource())
+                        "group" -> session.bot.groups.firstOrNull()?.uploadImage(newFile.await())
                         "friend",
                         "temp"
-                        -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await().toExternalResource())
+                        -> session.bot.friends.firstOrNull()?.uploadImage(newFile.await())
                         else -> null
                     }.apply {
                         // 使用apply不影响when返回
@@ -270,14 +283,18 @@ fun Application.messageModule() {
             val type = parts.value("type")
             parts.file("voice")?.apply {
 
-                val voice = streamProvider().use {
+                val voice = streamProvider().use { inputStream ->
                     // originalFileName assert not null
                     val newFile = HttpApiPluginBase.saveVoiceAsync(
-                        originalFileName ?: generateSessionKey(), it.readBytes()
+                        originalFileName ?: generateSessionKey(), inputStream.readBytes()
                     )
 
                     when (type) {
-                        "group" -> session.bot.groups.firstOrNull()?.uploadVoice(newFile.await().toExternalResource())
+                        "group" -> {
+                            newFile.await().toExternalResource().use {
+                                session.bot.groups.firstOrNull()?.uploadVoice(it)
+                            }
+                        }
                         else -> null
                     }.apply {
                         // 使用apply不影响when返回
@@ -305,6 +322,19 @@ fun Application.messageModule() {
         miraiVerify<RecallDTO>("recall") {
             it.session.cacheQueue[it.target].recall()
             call.respondStateCode(StateCode.Success)
+        }
+
+        /**
+         * 设置群精华消息
+         */
+        miraiVerify<EssenceDTO>("/setEssence") { dto ->
+            val source = dto.session.cacheQueue[dto.target]
+            val group: Group = dto.session.bot.getGroupOrFail(source.target.id)
+            val success = group.setEssenceMessage(source)
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
         }
     }
 }
@@ -351,6 +381,12 @@ private class UploadVoiceRetDTO(
     val url: String?,
     val path: String?
 ) : DTO
+
+@Serializable
+private data class EssenceDTO(
+    override val sessionKey: String,
+    val target: Int
+) : VerifyDTO()
 
 @Serializable
 private data class RecallDTO(

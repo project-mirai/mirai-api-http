@@ -19,7 +19,7 @@ import java.io.File
 internal typealias CommandSubscriber = suspend (String, Long, Long, List<String>) -> Unit
 
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "1.9.7") {
+    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "1.10.0") {
         author("ryoii")
         info("Mirai HTTP API Server Plugin")
     }
@@ -117,6 +117,15 @@ object HttpApiPluginBase : KotlinPlugin(
     fun saveVoiceAsync(name: String, data: ByteArray) =
         async {
             voice(name).apply { writeBytes(data) }
+        }
+
+    private val fileFold: File = File(dataFolder, "file").apply { mkdirs() }
+
+    internal fun file(fileName: String) = File(fileFold, fileName)
+
+    fun saveFileAsync(name: String, data: ByteArray) =
+        async {
+            file(name).apply { writeBytes(data) }
         }
 
 }

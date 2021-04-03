@@ -148,7 +148,7 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
         }
 
         releaseJob = launch {
-            while (true) {
+            while (isActive) {
                 delay(CHECK_TIME * 1000)
                 if (!config.enableWebsocket && currentTimeSeconds() - latestUsed >= CHECK_TIME) {
                     SessionManager.closeSession(this@AuthedSession)
@@ -181,6 +181,8 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
 
         messageQueue.clear()
         cacheQueue.clear()
+
+        releaseJob.cancel()
 
         super.close()
     }

@@ -11,9 +11,8 @@ package net.mamoe.mirai.api.http.route
 
 import io.ktor.application.*
 import io.ktor.routing.*
-import net.mamoe.mirai.api.http.data.common.GroupDTO
-import net.mamoe.mirai.api.http.data.common.MemberDTO
-import net.mamoe.mirai.api.http.data.common.QQDTO
+import kotlinx.coroutines.flow.toList
+import net.mamoe.mirai.api.http.data.common.*
 import net.mamoe.mirai.api.http.util.toJson
 
 /**
@@ -44,6 +43,40 @@ fun Application.infoModule() {
         miraiGet("/memberList") {
             val ls = it.bot.getGroupOrFail(paramOrNull("target")).members.toList().map { member -> MemberDTO(member) }
             call.respondJson(ls.toJson())
+        }
+
+        /**
+         * 查询群文件列表
+         */
+        miraiGet("/groupFileList") { it ->
+            val dir: String = call.parameters["dir"].orEmpty()
+            val ls = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.let { file ->
+                if (dir.isEmpty()) {
+                    file.listFiles().toList().map { remoteFile ->
+                        RemoteFileDTO(remoteFile, remoteFile.isFile())
+                    }
+                } else file.resolve("/$dir").listFiles().toList().map { remoteFile ->
+                    RemoteFileDTO(remoteFile, true)
+                }
+            }
+
+            call.respondJson(ls.toJson())
+        }
+
+        /**
+         * 获取群文件详细信息
+         */
+        miraiGet("/groupFileInfo") {
+            val id: String = paramOrNull("id")
+            val fileInfo = it.bot.getGroupOrFail(paramOrNull("target")).filesRoot.resolveById(id)
+                ?: error("文件ID $id 不存在")
+
+            call.respondJson(
+                FileInfoDTO(
+                    fileInfo.getInfo() ?: error("文件ID $id 是一个目录"),
+                    fileInfo.getDownloadInfo() ?: error("文件ID $id 是一个目录")
+                ).toJson()
+            )
         }
 
 //        /**

@@ -23,9 +23,8 @@ data class QQDTO(
     val nickname: String,
     val remark: String
 ) : ContactDTO() {
-    // TODO: queryProfile.nickname & queryRemark.value not support now
-    constructor(qq: Friend) : this(qq.id, qq.nick, "")
-    constructor(qq: Stranger) : this(qq.id, qq.nick, "")
+    constructor(qq: Friend) : this(qq.id, qq.nick, qq.remark)
+    constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
 }
 
 
@@ -49,4 +48,21 @@ data class GroupDTO(
     val permission: MemberPermission
 ) : ContactDTO() {
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
+}
+
+@Serializable
+data class ComplexSubjectDTO(
+    override val id: Long,
+    val kind: String
+) : ContactDTO() {
+    constructor(contact: Contact) : this(
+        contact.id, when (contact) {
+            is Stranger, // Stranger 在 mah 中当做 Friend 处理
+            is Friend -> "Friend"
+            is Group -> "Group"
+            is OtherClient -> "OtherClient"
+            else -> error("Contact type ${contact::class.simpleName} not supported")
+        }
+    )
+
 }

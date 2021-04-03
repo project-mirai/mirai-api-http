@@ -1,6 +1,6 @@
-## 消息类型
+# 消息类型
 
-#### Source
+## Source
 
 ```json5
 {
@@ -15,7 +15,7 @@
 | id   | Int  | 消息的识别号，用于引用回复（Source类型永远为chain的第一个元素） |
 | time | Int  | 时间戳                                                       |
 
-#### Quote
+## Quote
 
 ```json5
 {
@@ -39,7 +39,7 @@
 | origin   | Object | 被引用回复的原消息的消息链对象                    |
 
 
-#### At
+## At
 
 ```json5
 {
@@ -54,7 +54,7 @@
 | target  | Long   | 群员QQ号                                       |
 | dispaly | String | At时显示的文字，发送消息时无效，自动使用群名片 |
 
-#### AtAll
+## AtAll
 
 ```json5
 {
@@ -66,7 +66,7 @@
 | ------- | ------ | ------------------------- |
 | -       | -      | -                         |
 
-#### Face
+## Face
 
 ```json5
 {
@@ -81,7 +81,7 @@
 | faceId | Int     | QQ表情编号，可选，优先高于name |
 | name   | String  | QQ表情拼音，可选               |
 
-#### Plain
+## Plain
 
 ```json5
 {
@@ -94,7 +94,7 @@
 | ---- | ------ | -------- |
 | text | String | 文字消息 |
 
-#### Image
+## Image
 
 ```json5
 {
@@ -110,9 +110,9 @@
 | ------- | ------ | ------------------------------------------------------------ |
 | imageId | String | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性 |
 | url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
-| path    | String | 图片的路径，发送本地图片，相对路径于`plugins/MiraiAPIHTTP/images` |
+| path    | String | 图片的路径，发送本地图片，相对路径于`data/net.mamoe.mirai-api-http/images` |
 
-#### FlashImage
+## FlashImage
 
 ```json5
 {
@@ -128,7 +128,7 @@
 
 > 三个参数任选其一，出现多个参数时，按照imageId > url > path的优先级
 
-#### Voice
+## Voice
 
 ```json5
 {
@@ -143,11 +143,11 @@
 | ------- | ------ | ------------------------------------------------------------ |
 | voiceId | String | 语音的voiceId，不为空时将忽略url属性 |
 | url     | String | 语音的URL，发送时可作网络语音的链接；接收时为腾讯语音服务器的链接，可用于语音下载 |
-| path    | String | 语音的路径，发送本地语音，相对路径于`plugins/MiraiAPIHTTP/voices` |
+| path    | String | 语音的路径，发送本地语音，相对路径于`data/net.mamoe.mirai-api-http/voices` |
 
 > 三个参数任选其一，出现多个参数时，按照voiceId > url > path的优先级
 
-#### Xml
+## Xml
 
 ```json5
 {
@@ -160,7 +160,7 @@
 | ---- | ------ | ------- |
 | xml  | String | XML文本 |
 
-#### Json
+## Json
 
 ```json5
 {
@@ -173,7 +173,7 @@
 | ---- | ------ | -------- |
 | json | String | Json文本 |
 
-#### App
+## App
 
 ```json5
 {
@@ -186,7 +186,7 @@
 | -------- | ------ | ------- |
 | content  | String | 内容    |
 
-#### Poke
+## Poke
 
 ```json5
 {
@@ -205,3 +205,37 @@
 4. "Heartbroken": 心碎
 5. "SixSixSix": 666
 6. "FangDaZhao": 放大招
+
+#### Forward
+```json5
+{
+  "type": "Forward",
+  "title": "群聊的聊天记录",
+  "brief": "[聊天记录]",
+  "source": "聊天记录",
+  "summary": "查看 3 条转发消息",
+  "nodeList": [
+    {
+      "senderId": 123456789, // 发送者 id
+      "time": 987654321, // 时间戳, 单位 秒
+      "senderName": "张三",
+      "messageChain": [ // Type: MessageChain
+        // ...
+      ]
+    },
+    {
+      // ...
+    }
+  ]
+}
+```
+#### File
+```json5
+{
+  "type": "File",
+  "id": "/c05892e6-fb91-4a5c-b1df-054d559d06cf",//文件唯一id
+  "internalId": 102, //服务器需要的ID
+  "name": "file", //文件名字
+  "size": 392056 //文件大小
+}
+```

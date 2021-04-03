@@ -20,6 +20,13 @@ sealed class BotEventDTO : EventDTO()
 suspend fun BotEvent.toDTO() = when (this) {
     is MessageEvent -> toDTO()
     else -> when (this) {
+        is NudgeEvent -> NudgeEventDTO(
+            from.id,
+            target.id,
+            ComplexSubjectDTO(subject),
+            action,
+            suffix
+        )
         is BotOnlineEvent -> BotOnlineEventDTO(bot.id)
         is BotOfflineEvent.Active -> BotOfflineEventActiveDTO(bot.id)
         is BotOfflineEvent.Force -> BotOfflineEventForceDTO(bot.id, title, message)
@@ -132,6 +139,12 @@ suspend fun BotEvent.toDTO() = when (this) {
             fromId,
             fromGroupId,
             fromNick
+        )
+        is FriendAddEvent -> FriendAddEventDTO(
+            QQDTO(friend)
+        )
+        is FriendDeleteEvent -> FriendDeleteEventDTO(
+            QQDTO(friend)
         )
         is MemberJoinRequestEvent -> MemberJoinRequestEventDTO(
             eventId,
@@ -362,6 +375,18 @@ data class NewFriendRequestEventDTO(
 ) : BotEventDTO()
 
 @Serializable
+@SerialName("FriendAddEvent")
+data class FriendAddEventDTO(
+    val friend: QQDTO
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendDeleteEvent")
+data class FriendDeleteEventDTO(
+    val friend: QQDTO
+) : BotEventDTO()
+
+@Serializable
 @SerialName("MemberJoinRequestEvent")
 data class MemberJoinRequestEventDTO(
     val eventId: Long,
@@ -381,4 +406,14 @@ data class BotInvitedJoinGroupRequestEventDTO(
     val groupId: Long,
     val groupName: String,
     val nick: String
+) : BotEventDTO()
+
+@Serializable
+@SerialName("NudgeEvent")
+data class NudgeEventDTO(
+    val fromId: Long,
+    val target: Long,
+    val subject: ComplexSubjectDTO,
+    val action: String,
+    val suffix: String,
 ) : BotEventDTO()
