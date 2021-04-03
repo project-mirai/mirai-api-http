@@ -41,3 +41,4 @@ jobs:
           user_name: 'mamoebot'
           user_email: 'mamoebot@users.noreply.github.com'
           keep_files: true
+          full_commit_message: ${{ github.event.head_commit.message }} (${{ github.event.head_commit.id }})
