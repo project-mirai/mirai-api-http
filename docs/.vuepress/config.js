@@ -1,6 +1,7 @@
 module.exports = {
   title: "mirai-api-http",
   description: "Mirai HTTP API (console) plugin",
+  base: "mirai-api-http",
   markdown: {
     lineNumbers: true,
   },
