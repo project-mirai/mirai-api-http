@@ -553,3 +553,4 @@ Recompile with `mirai 2.3.2`
 
 * 支持引用消息（Quote）的消息类型
 * 支持通过messageId获取一条被缓存的消息
+
