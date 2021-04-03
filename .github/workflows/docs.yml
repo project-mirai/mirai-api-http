@@ -3,8 +3,8 @@ name: Publish Mah Docs
 on:
   push:
     branches: [master]
-    paths:
-      - "**.md"
+    #paths:
+    #  - "**.md"
 
 jobs:
 
