@@ -1,3 +1,7 @@
+# VuePress
+/node_modules/
+
+# IDEA
 /.idea/
 
 # Gradle
