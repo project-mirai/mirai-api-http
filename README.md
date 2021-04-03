@@ -21,6 +21,8 @@ Mirai HTTP API (console) plugin
 
 <b>Mirai-API-http插件 提供HTTP API供所有语言使用mirai</b>
 
+> [VuePress 文档](https://project-mirai.github.io/mirai-api-http/)
+
 ## 安装`mirai-api-http`
 
 ### 使用 [Mirai Console Loader](https://github.com/iTXTech/mirai-console-loader) 安装`mirai-api-http`
