@@ -7,18 +7,18 @@ on:
       - "**.md"
 
 jobs:
-  
+
   build:
-    
+
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      
+
       - name: Cache Packages
         id: yarn-cache
         uses: actions/cache@v2
