@@ -33,9 +33,11 @@ jobs:
           yarn install
           yarn docs:build
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+      - name: GitHub Pages Deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs/.vuepress/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vuepress/dist
+          user_name: 'mamoebot'
+          user_email: 'mamoebot@users.noreply.github.com'
+          keep_files: true
