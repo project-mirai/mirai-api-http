@@ -1,0 +1,44 @@
+name: Publish Mah Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "**.md"
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache Packages
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install and build
+        run: |
+          yarn install
+          yarn docs:build
+
+      - name: GitHub Pages Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vuepress/dist
+          user_name: 'mamoebot'
+          user_email: 'mamoebot@users.noreply.github.com'
+          keep_files: true
+          full_commit_message: ${{ github.event.head_commit.message }} (${{ github.event.head_commit.id }})
