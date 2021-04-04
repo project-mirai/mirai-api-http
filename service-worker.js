@@ -27,11 +27,11 @@ self.addEventListener('message', (event) => {
 self.__precacheManifest = [
   {
     "url": "404.html",
-    "revision": "0e7d9648c091ba86414a0cf55df909ac"
+    "revision": "306afb1836e30ea9a5b7c1bcc2042603"
   },
   {
     "url": "API.html",
-    "revision": "1b7ddf8f26fb90256c9f4c705ac8ce3f"
+    "revision": "0de9b00489a5f753686a2b508d02596d"
   },
   {
     "url": "assets/css/0.styles.d298e7d4.css",
@@ -86,32 +86,32 @@ self.__precacheManifest = [
     "revision": "810d737eb5b49e55ef8c20117c81965e"
   },
   {
-    "url": "assets/js/9.60a9ff71.js",
-    "revision": "f67ccd542cde791be68449e5343a887d"
+    "url": "assets/js/9.a50c648b.js",
+    "revision": "39c464610dfeea2a7fb8ccf9255a5cba"
   },
   {
-    "url": "assets/js/app.f623ea0c.js",
-    "revision": "bfbb060c8877be35a24186c0a3857076"
+    "url": "assets/js/app.875ee9d6.js",
+    "revision": "484c73f663038ac416289404132999e3"
   },
   {
     "url": "EventType.html",
-    "revision": "e4ea164cf3c102bbd5570591ac2310db"
+    "revision": "cc15dbb04c43a5536c8c9d097a6e76a8"
   },
   {
     "url": "Heartbeat.html",
-    "revision": "fbd68471182d64956339dfa03c66b1e1"
+    "revision": "e3890a957b55533f836d148d3f671055"
   },
   {
     "url": "index.html",
-    "revision": "776c702fd19c5e871e19ddbf5d8f31f7"
+    "revision": "e664df8f6eab8c249d0efe985bb267f3"
   },
   {
     "url": "MessageType.html",
-    "revision": "467934f02d573ef0513d92f5317a7166"
+    "revision": "3f8cfbf949ad02703d57bd9832a42aff"
   },
   {
     "url": "Report.html",
-    "revision": "4dccd968cc5e579877af88bc0c086204"
+    "revision": "50ee62de8b97996424423e83d43a1684"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
