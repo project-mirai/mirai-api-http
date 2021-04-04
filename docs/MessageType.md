@@ -206,7 +206,7 @@
 5. "SixSixSix": 666
 6. "FangDaZhao": 放大招
 
-#### Forward
+## Forward
 ```json5
 {
   "type": "Forward",
@@ -229,7 +229,7 @@
   ]
 }
 ```
-#### File
+## File
 ```json5
 {
   "type": "File",
