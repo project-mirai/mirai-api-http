@@ -4,8 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - "**.md"
-      - 'docs/.vuepress/**'
+      - 'docs/**'
 
 jobs:
 

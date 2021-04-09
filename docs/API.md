@@ -1151,13 +1151,13 @@ Content-Type：multipart/form-data
 }
 ```
 ----
-##群文件管理
-####获取群文件列表
+## 群文件管理
+### 获取群文件列表
 
 ```text
 [GET] /groupFileList?sessionKey=YourSessionKey&target=123456789&dir=dir
 ```
-####请求
+#### 请求
 
 | 名字              | 可选  | 类型    | 举例             | 说明                 |
 | ----------------- | ----- | ------- | ---------------- | -------------------- |
@@ -1166,7 +1166,7 @@ Content-Type：multipart/form-data
 | dir               | true  | String  | dir              | 指定查询目录，不填为根目录          |
 
 
-####响应
+#### 响应
 
 ```json5
 [
@@ -1185,13 +1185,13 @@ Content-Type：multipart/form-data
 ]
 ```
 
-####获取群文件详细信息
+### 获取群文件详细信息
 
 ```text
 [GET] /groupFileInfo?sessionKey=YourSessionKey&target=123456789&id=/xxx-xxx-xxx-xxx
 ```
 
-####请求
+#### 请求
 
 | 名字              | 可选  | 类型    | 举例             | 说明                 |
 | ----------------- | ----- | ------- | ---------------- | -------------------- |
@@ -1199,7 +1199,7 @@ Content-Type：multipart/form-data
 | target            | false | Long    | 123456789        | 指定群的群号         |
 | id                | false | String  | /xxx-xxx-xxx-xxx | 文件唯一ID          |
 
-####响应
+#### 响应
 
 ```json5
 {
@@ -1217,11 +1217,11 @@ Content-Type：multipart/form-data
 }
 ```
 
-####重命名群文件/目录
+### 重命名群文件/目录
 ```text
 [POST] /groupFileRename
 ```
-####请求
+#### 请求
 ```json5
 {
    "sessionKey": "YourSessionKey",
@@ -1241,11 +1241,11 @@ Content-Type：multipart/form-data
 ```
 
 
-####移动群文件
+### 移动群文件
 ```text
 [POST] /groupFileMove
 ```
-####请求
+#### 请求
 ```json5
 {
    "sessionKey": "YourSessionKey",
@@ -1264,11 +1264,11 @@ Content-Type：multipart/form-data
 }
 ```
 
-####删除群文件/目录
+### 删除群文件/目录
 ```text
 [POST] /groupFileDelete
 ```
-####请求
+#### 请求
 ```json5
 {
    "sessionKey": "YourSessionKey",
@@ -1286,13 +1286,13 @@ Content-Type：multipart/form-data
 }
 ```
 
-##设置群精华消息
+## 设置群精华消息
 
 ```text
 [POST] /setEssence
 ```
 
-####请求
+#### 请求
 
 ```json5
 {
