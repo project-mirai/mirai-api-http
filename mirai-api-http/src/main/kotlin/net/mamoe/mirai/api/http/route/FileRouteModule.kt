@@ -19,6 +19,7 @@ import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
+import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 
 /**
  * 群文件管理路由
@@ -111,12 +112,17 @@ fun Application.fileRouteModule() {
             when (type) {
                 "Group" -> session.bot.getGroupOrFail(target).let { group ->
                     group.filesRoot.resolve(path).let { remoteFile ->
-                        if (remoteFile.parent != null && !remoteFile.exists()) {
-                            if (!remoteFile.mkdir())
-                                call.respondStateCode(StateCode.PermissionDenied)
-                            return@miraiMultiPart
-                        } else messageChain =
+                        messageChain = if (remoteFile.parent == null) {
                             newFile.await().sendTo(group, "/$path").source.originalMessage
+                        } else {
+                            group.filesRoot.resolve(remoteFile.parent!!.path).let {
+                                if (!it.exists() || it.isFile()) if (!it.mkdir()) {
+                                    call.respondStateCode(StateCode.PermissionDenied)
+                                    return@miraiMultiPart
+                                }
+                                newFile.await().sendTo(group, "/$path").source.originalMessage
+                            }
+                        }
                     }
                 }
                 else -> error("不支持类型 $type")
