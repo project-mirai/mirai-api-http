@@ -17,7 +17,9 @@ import net.mamoe.mirai.api.http.data.StateCode
 import net.mamoe.mirai.api.http.data.common.DTO
 import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
-import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.FileMessage
+import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.firstIsInstance
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
 
 /**
@@ -49,13 +51,9 @@ fun Application.fileRouteModule() {
             val group = dto.session.bot.getGroupOrFail(dto.target)
             val file =
                 group.filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
-            val dir = group.filesRoot.resolve(dto.movePath)
-            if (!dir.exists() || dir.isFile())
-                if (!dir.mkdir()) {
-                    call.respondStateCode(StateCode.PermissionDenied)
-                    return@miraiVerify
-                }
-            val success = file.moveTo("$dir/${file.name}")
+            val dir = group.filesRoot.resolve("${dto.movePath}/${file.name}")
+            if (dir.parent != null && (!dir.parent!!.exists() || dir.parent!!.isFile())) throw error("文件夹 ${dto.movePath} 不存在")
+            val success = file.moveTo(dir)
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
@@ -71,6 +69,20 @@ fun Application.fileRouteModule() {
                 dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id)
                     ?: error("文件/目录ID ${dto.id} 不存在")
             val success = file.delete()
+            call.respondStateCode(
+                if (success) StateCode.Success
+                else StateCode.PermissionDenied
+            )
+        }
+
+        /**
+         * 新建群目录
+         */
+
+        miraiVerify<MkDirDTO>("/groupMkDir") { dto ->
+            val dir = dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolve("/${dto.dir}")
+            if (dir.isDirectory()) throw error("目录 ${dto.dir} 已经存在")
+            val success = dir.mkdir()
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
@@ -112,17 +124,13 @@ fun Application.fileRouteModule() {
             when (type) {
                 "Group" -> session.bot.getGroupOrFail(target).let { group ->
                     group.filesRoot.resolve(path).let { remoteFile ->
-                        messageChain = if (remoteFile.parent == null) {
-                            newFile.await().sendTo(group, "/$path").source.originalMessage
-                        } else {
-                            group.filesRoot.resolve(remoteFile.parent!!.path).let {
-                                if (!it.exists() || it.isFile()) if (!it.mkdir()) {
-                                    call.respondStateCode(StateCode.PermissionDenied)
-                                    return@miraiMultiPart
-                                }
-                                newFile.await().sendTo(group, "/$path").source.originalMessage
-                            }
-                        }
+                        val dir = group.filesRoot.resolve(remoteFile.parent!!.path)
+                        messageChain =
+                            if (remoteFile.parent != null && (!dir.exists() || dir.isFile())
+                            ) throw error("文件夹 ${dir.name} 不存在")
+                            else newFile.await().sendTo(group, "/$path").source.originalMessage
+
+
                     }
                 }
                 else -> error("不支持类型 $type")
@@ -155,6 +163,13 @@ data class FilePathMoveDTO(
 data class FileDeleteDTO(
     override val sessionKey: String,
     val id: String,
+    val target: Long
+) : VerifyDTO()
+
+@Serializable
+data class MkDirDTO(
+    override val sessionKey: String,
+    val dir: String,
     val target: Long
 ) : VerifyDTO()
 
