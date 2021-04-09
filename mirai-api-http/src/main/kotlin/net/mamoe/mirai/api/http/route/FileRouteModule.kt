@@ -20,6 +20,7 @@ import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.message.data.FileMessage
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.firstIsInstance
+import net.mamoe.mirai.message.data.sendTo
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
 
 /**
@@ -128,7 +129,8 @@ fun Application.fileRouteModule() {
                         messageChain =
                             if (remoteFile.parent != null && (!dir.exists() || dir.isFile())
                             ) throw error("文件夹 ${dir.name} 不存在")
-                            else newFile.await().sendTo(group, "/$path").source.originalMessage
+                            else remoteFile.upload(newFile.await()).sendTo(group).source.originalMessage
+                                newFile.await().sendTo(group, "/$path").source.originalMessage
 
 
                     }
