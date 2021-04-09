@@ -19,7 +19,6 @@ import net.mamoe.mirai.api.http.data.common.VerifyDTO
 import net.mamoe.mirai.api.http.generateSessionKey
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
-import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 
 /**
  * 群文件管理路由
@@ -55,7 +54,8 @@ fun Application.fileRouteModule() {
                     call.respondStateCode(StateCode.PermissionDenied)
                     return@miraiVerify
                 }
-            val success = file.moveTo(dto.movePath)
+            println(123)
+            val success = file.moveTo("/${dto.movePath}")
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
