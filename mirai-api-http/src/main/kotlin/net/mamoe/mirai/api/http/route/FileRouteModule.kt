@@ -55,7 +55,7 @@ fun Application.fileRouteModule() {
                     call.respondStateCode(StateCode.PermissionDenied)
                     return@miraiVerify
                 }
-            val success = file.moveTo(group.filesRoot.resolve("/${dto.movePath}"))
+            val success = file.moveTo("$dir/${file.name}")
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
