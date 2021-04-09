@@ -46,16 +46,16 @@ fun Application.fileRouteModule() {
          */
 
         miraiVerify<FilePathMoveDTO>("/groupFileMove") { dto ->
+            val group = dto.session.bot.getGroupOrFail(dto.target)
             val file =
-                dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
-            val dir = dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolve(dto.movePath)
+                group.filesRoot.resolveById(dto.id) ?: error("文件ID ${dto.id} 不存在")
+            val dir = group.filesRoot.resolve(dto.movePath)
             if (!dir.exists() || dir.isFile())
                 if (!dir.mkdir()) {
                     call.respondStateCode(StateCode.PermissionDenied)
                     return@miraiVerify
                 }
-            println(123)
-            val success = file.moveTo("/${dto.movePath}")
+            val success = file.moveTo(group.filesRoot.resolve("/${dto.movePath}"))
             call.respondStateCode(
                 if (success) StateCode.Success
                 else StateCode.PermissionDenied
