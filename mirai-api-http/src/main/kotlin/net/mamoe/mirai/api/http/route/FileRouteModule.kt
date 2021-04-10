@@ -80,7 +80,7 @@ fun Application.fileRouteModule() {
          */
 
         miraiVerify<MkDirDTO>("/groupMkDir") { dto ->
-            val dir = dto.session.bot.getGroupOrFail(dto.target).filesRoot.resolve("/${dto.dir}")
+            val dir = dto.session.bot.getGroupOrFail(dto.group).filesRoot.resolve(dto.dir)
             if (dir.isDirectory()) throw error("目录 ${dto.dir} 已经存在")
             val success = dir.mkdir()
             call.respondStateCode(
@@ -124,8 +124,9 @@ fun Application.fileRouteModule() {
             when (type) {
                 "Group" -> session.bot.getGroupOrFail(target).let { group ->
                     try {
-                        messageChain = group.filesRoot.resolve(path).upload(newFile.await()).sendTo(group).source.originalMessage
-                    } catch (e: IllegalStateException){
+                        messageChain =
+                            group.filesRoot.resolve(path).upload(newFile.await()).sendTo(group).source.originalMessage
+                    } catch (e: IllegalStateException) {
                         throw error("权限不足/目录不存在")
                     }
                 }
@@ -166,7 +167,7 @@ data class FileDeleteDTO(
 data class MkDirDTO(
     override val sessionKey: String,
     val dir: String,
-    val target: Long
+    val group: Long
 ) : VerifyDTO()
 
 @Serializable
