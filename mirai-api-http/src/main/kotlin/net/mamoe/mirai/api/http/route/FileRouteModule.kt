@@ -21,7 +21,6 @@ import net.mamoe.mirai.message.data.FileMessage
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.firstIsInstance
 import net.mamoe.mirai.message.data.sendTo
-import net.mamoe.mirai.utils.ExternalResource.Companion.sendTo
 
 /**
  * 群文件管理路由
@@ -124,15 +123,10 @@ fun Application.fileRouteModule() {
             )
             when (type) {
                 "Group" -> session.bot.getGroupOrFail(target).let { group ->
-                    group.filesRoot.resolve(path).let { remoteFile ->
-                        val dir = group.filesRoot.resolve(remoteFile.parent!!.path)
-                        messageChain =
-                            if (remoteFile.parent != null && (!dir.exists() || dir.isFile())
-                            ) throw error("文件夹 ${dir.name} 不存在")
-                            else remoteFile.upload(newFile.await()).sendTo(group).source.originalMessage
-                                newFile.await().sendTo(group, "/$path").source.originalMessage
-
-
+                    try {
+                        messageChain = group.filesRoot.resolve(path).upload(newFile.await()).sendTo(group).source.originalMessage
+                    } catch (e: IllegalStateException){
+                        throw error("权限不足/目录不存在")
                     }
                 }
                 else -> error("不支持类型 $type")
