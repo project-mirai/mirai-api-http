@@ -166,7 +166,7 @@ data class FileDeleteDTO(
 data class MkDirDTO(
     override val sessionKey: String,
     val dir: String,
-    val target: Long
+    val group: Long
 ) : VerifyDTO()
 
 @Serializable
