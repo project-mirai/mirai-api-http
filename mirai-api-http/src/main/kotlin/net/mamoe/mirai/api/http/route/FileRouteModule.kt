@@ -79,7 +79,7 @@ fun Application.fileRouteModule() {
          * 新建群目录
          */
 
-        miraiVerify<MkDirDTO>("/groupMkDir") { dto ->
+        miraiVerify<MkDirDTO>("/groupMkdir") { dto ->
             val dir = dto.session.bot.getGroupOrFail(dto.group).filesRoot.resolve(dto.dir)
             if (dir.isDirectory()) throw error("目录 ${dto.dir} 已经存在")
             val success = dir.mkdir()
