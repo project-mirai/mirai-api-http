@@ -1241,6 +1241,27 @@ Content-Type：multipart/form-data
 }
 ```
 
+### 创建群文件目录
+```text
+[POST] /groupMkdir
+```
+#### 请求
+```json5
+{
+   "sessionKey": "YourSessionKey",
+   "group": 123456,
+   "dir": "Dir Name"
+}
+```
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
 
 ### 移动群文件
 ```text
