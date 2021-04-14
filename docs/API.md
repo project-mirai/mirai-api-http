@@ -428,6 +428,7 @@ Content-Type：multipart/form-data
 | ------------ | ------ | ----- | ----------- | ----------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session   |
 | type         | String | false | "Group"     | 当前仅支持 "Group" |
+| target       | Long   | false | 987654321   | 群号              |
 | path         | String | false | 文件夹/文件名 | 文件上传目录与名字   |
 | file         | File   | false | -           | 文件内容          |
 
@@ -1240,6 +1241,27 @@ Content-Type：multipart/form-data
 }
 ```
 
+### 重命名群文件/目录
+```text
+[POST] /groupMkdir
+```
+#### 请求
+```json5
+{
+   "sessionKey": "YourSessionKey",
+   "group": 123456,
+   "dir": "Dir Name"
+}
+```
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+    "code": 0,
+    "msg": "success"
+}
+```
 
 ### 移动群文件
 ```text
