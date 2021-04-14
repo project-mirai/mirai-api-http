@@ -428,7 +428,7 @@ Content-Type：multipart/form-data
 | ------------ | ------ | ----- | ----------- | ----------------- |
 | sessionKey   | String | false | YourSession | 已经激活的Session   |
 | type         | String | false | "Group"     | 当前仅支持 "Group" |
-| target       | Long   | false | 987654321   | 群号              |
+| target       | Long   | false | 123456      | 指定群的群号 |
 | path         | String | false | 文件夹/文件名 | 文件上传目录与名字   |
 | file         | File   | false | -           | 文件内容          |
 
