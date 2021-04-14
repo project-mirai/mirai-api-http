@@ -1241,7 +1241,7 @@ Content-Type：multipart/form-data
 }
 ```
 
-### 重命名群文件/目录
+### 创建群文件目录
 ```text
 [POST] /groupMkdir
 ```
