@@ -207,6 +207,7 @@
 6. "FangDaZhao": 放大招
 
 ## Forward
+
 ```json5
 {
   "type": "Forward",
@@ -229,7 +230,9 @@
   ]
 }
 ```
+
 ## File
+
 ```json5
 {
   "type": "File",
@@ -237,5 +240,29 @@
   "internalId": 102, //服务器需要的ID
   "name": "file", //文件名字
   "size": 392056 //文件大小
+}
+```
+
+## MusicShare
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| kind | String | 音乐应用类型，必须为`NeteaseCloudMusic,QQMusic,MiguMusic` |
+| title | String | 消息卡片标题 |
+| summary | String | 消息卡片内容 |
+| jumpUrl | String | 点击卡片跳转网页 URL |
+| pictureUrl | String | 消息卡片图片 URL |
+| musicUrl | String | 音乐文件 URL |
+| brief | String | 在消息列表显示，可选，默认为`[分享]$title` |
+
+```json5
+{
+  "kind": "NeteaseCloudMusic",
+  "title": "相见恨晚,",
+  "summary": "彭佳慧",
+  "jumpUrl": "https://y.music.163.com/m/song/280761/",
+  "pictureUrl": "http://p4.music.126.net/GpsgjHB_9XgtrBVXt8XX4w==/93458488373078.jpg",
+  "musicUrl": "http://music.163.com/song/media/outer/url?id=280761&userid=52707509",
+  "brief": "[分享]相见恨晚"
 }
 ```

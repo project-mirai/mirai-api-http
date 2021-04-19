@@ -110,6 +110,18 @@ data class JsonDTO(val json: String) : MessageDTO()
 data class AppDTO(val content: String) : MessageDTO()
 
 @Serializable
+@SerialName("MusicShare")
+data class MusicShareDTO(
+    val kind: String,
+    val title: String,
+    val summary: String,
+    val jumpUrl: String,
+    val pictureUrl: String,
+    val musicUrl: String,
+    val brief: String
+) : MessageDTO()
+
+@Serializable
 @SerialName("Quote")
 data class QuoteDTO(
     val id: Int,
@@ -229,6 +241,7 @@ suspend fun Message.toDTO() = when (this) {
     is Voice -> VoiceDTO(fileName, url)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
+    is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is FileMessage -> FileMessageDTO(id, internalId, name, size)
     is ForwardMessage -> ForwardMessageDTO(this)
     is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,
@@ -301,6 +314,13 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     is XmlDTO -> SimpleServiceMessage(60, xml)
     is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
+    is MusicShareDTO -> {
+        try {
+            MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
     is PokeMessageDTO -> PokeMap[name]
     // ignore
     is QuoteDTO,
