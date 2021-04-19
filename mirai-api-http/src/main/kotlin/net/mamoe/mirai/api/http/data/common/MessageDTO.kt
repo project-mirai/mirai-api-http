@@ -118,7 +118,7 @@ data class MusicShareDTO(
     val jumpUrl: String,
     val pictureUrl: String,
     val musicUrl: String,
-    val brief: String
+    val brief: String? = null
 ) : MessageDTO()
 
 @Serializable
@@ -314,13 +314,11 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     is XmlDTO -> SimpleServiceMessage(60, xml)
     is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
-    is MusicShareDTO -> {
-        try {
+    is MusicShareDTO ->
+        if(brief.isNullOrBlank())
+            MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl)
+        else
             MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
-    }
     is PokeMessageDTO -> PokeMap[name]
     // ignore
     is QuoteDTO,
