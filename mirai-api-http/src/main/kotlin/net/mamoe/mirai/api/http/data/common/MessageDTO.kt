@@ -314,11 +314,13 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     is XmlDTO -> SimpleServiceMessage(60, xml)
     is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
-    is MusicShareDTO ->
-        if(brief.isNullOrBlank())
+    is MusicShareDTO -> {
+        if (brief.isNullOrBlank()) {
             MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl)
-        else
+        } else {
             MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+        }
+    }
     is PokeMessageDTO -> PokeMap[name]
     // ignore
     is QuoteDTO,
@@ -327,4 +329,3 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     is UnknownMessageDTO
     -> null
 }
-
