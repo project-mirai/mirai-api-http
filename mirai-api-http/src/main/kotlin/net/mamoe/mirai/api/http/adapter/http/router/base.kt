@@ -9,77 +9,55 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.features.DefaultHeaders
-import io.ktor.features.maxAgeDuration
-import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.PartData
-import io.ktor.request.contentCharset
-import io.ktor.request.receiveChannel
-import io.ktor.response.defaultTextContentType
-import io.ktor.response.respond
-import io.ktor.response.respondText
-import io.ktor.routing.Route
-import io.ktor.routing.route
-import io.ktor.util.pipeline.ContextDsl
-import io.ktor.util.pipeline.PipelineContext
-import io.ktor.utils.io.readRemaining
-import io.ktor.utils.io.streams.inputStream
-import io.ktor.websocket.WebSockets
-//import net.mamoe.mirai.api.http.context.session.manager.AuthedSession
-import net.mamoe.mirai.api.http.HttpApiPluginBase
-//import net.mamoe.mirai.api.http.context.session.manager.TempSession
-import net.mamoe.mirai.api.http.config.Setting
-import net.mamoe.mirai.api.http.data.*
-import net.mamoe.mirai.api.http.data.common.DTO
-import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import net.mamoe.mirai.api.http.route.*
-import net.mamoe.mirai.api.http.util.jsonParseOrNull
-import net.mamoe.mirai.api.http.util.toJson
-import net.mamoe.mirai.contact.BotIsBeingMutedException
-import net.mamoe.mirai.contact.MessageTooLargeException
-import net.mamoe.mirai.contact.PermissionDeniedException
-import org.slf4j.helpers.NOPLoggerFactory
-import kotlin.time.DurationUnit
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.content.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.util.pipeline.*
+import io.ktor.utils.io.*
+import io.ktor.utils.io.streams.*
+import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
+import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
+import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
-fun Application.httpRoute() {
+fun Application.httpModule() {
     install(DefaultHeaders)
-    install(CORS) {
-        method(HttpMethod.Options)
-        allowNonSimpleContentTypes = true
-        maxAgeDuration = 1.toDuration(DurationUnit.DAYS)
-
-        Setting.cors.forEach {
-            host(it, schemes = listOf("http", "https"))
-        }
-    }
-    authModule()
-    commandModule()
-    messageModule()
-    eventRouteModule()
-    infoModule()
-    groupManageModule()
-    configRouteModule()
+//    install(CORS) {
+//        method(HttpMethod.Options)
+//        allowNonSimpleContentTypes = true
+//        maxAgeDuration = 1.toDuration(DurationUnit.DAYS)
+//
+////        MainSetting.cors.forEach {
+////            host(it, schemes = listOf("http", "https"))
+////        }
+//    }
+    authRouter()
+    messageRouter()
+    eventRouter()
+    infoRouter()
+    groupManageRouter()
+    aboutRouter()
 }
-
 
 
 /*
     extend function
  */
-internal suspend inline fun <reified T : StateCode> ApplicationCall.respondStateCode(code: T, status: HttpStatusCode = HttpStatusCode.OK) = respondJson(code.toJson(StateCode.serializer()), status)
+internal suspend inline fun <reified T : StateCode> ApplicationCall.respondStateCode(
+    code: T,
+    status: HttpStatusCode = HttpStatusCode.OK
+) = respondJson(code.toJson(), status)
 
-internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(dto: T, status: HttpStatusCode = HttpStatusCode.OK) = respondJson(dto.toJson(), status)
+internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(
+    dto: T,
+    status: HttpStatusCode = HttpStatusCode.OK
+) = respondJson(dto.toJson(), status)
 
 internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
     respondText(json, defaultTextContentType(ContentType("application", "json")), status)
@@ -96,7 +74,9 @@ fun PipelineContext<Unit, ApplicationCall>.illegalParam(
     expectingType: String?,
     paramName: String,
     actualValue: String? = call.parameters[paramName]
-): Nothing = throw IllegalParamException("Illegal param. A $expectingType is required for `$paramName` while `$actualValue` is given")
+): Nothing = throw IllegalParamException(
+    "Illegal param. A $expectingType is required for `$paramName` while `$actualValue` is given"
+)
 
 
 @OptIn(ExperimentalUnsignedTypes::class)

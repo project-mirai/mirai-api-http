@@ -4,36 +4,43 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.request.*
-import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
-import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.adapter.common.*
+import net.mamoe.mirai.api.http.adapter.common.handleException
+import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
+import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.api.http.context.session.TempSession
-import net.mamoe.mirai.api.http.data.*
-import net.mamoe.mirai.api.http.data.common.DTO
-import net.mamoe.mirai.api.http.data.common.VerifyDTO
-import net.mamoe.mirai.contact.BotIsBeingMutedException
-import net.mamoe.mirai.contact.MessageTooLargeException
-import net.mamoe.mirai.contact.PermissionDeniedException
+import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
+
+private typealias PC = PipelineContext<Unit, ApplicationCall>
+
+@ContextDsl
+internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: suspend PC.() -> Unit) =
+    route(path, method) { handleException { blk() } }
 
 /**
  * Auth，处理http server的验证
  * 为闭包传入一个AuthDTO对象
  */
 @ContextDsl
-internal inline fun <reified T : DTO> Route.httpAuth(
-    path: String,
-    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit
-): Route {
-    return route(path, HttpMethod.Post) {
-        handleException {
-            val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
-            this.body(dto)
-        }
+internal inline fun Route.httpVerify(path: String, crossinline body: suspend PC.(VerifyDTO) -> Unit) =
+    routeWithHandle(path, HttpMethod.Post) {
+        val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException("参数格式错误")
+        this.body(dto)
     }
-}
+
+
+@ContextDsl
+internal inline fun Route.httpBind(path: String, crossinline body: suspend PC.(BindDTO) -> Unit) =
+    routeWithHandle(path, HttpMethod.Post) {
+        val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException("参数格式错误")
+        body(dto)
+    }
+
 
 /**
  * Verify，用于处理bot的行为请求
@@ -45,26 +52,14 @@ internal inline fun <reified T : DTO> Route.httpAuth(
  * it 为json解析出的DTO对象
  */
 @ContextDsl
-internal inline fun <reified T : VerifyDTO> Route.httpVerify(
+internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
-    verifiedSessionKey: Boolean = true,
-    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit
-): Route {
-    return route(path, HttpMethod.Post) {
-        handleException {
-            val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
-            val session = MahContextHolder.mahContext.sessionManager[dto.sessionKey]
-                ?: throw IllegalSessionException
+    crossinline body: suspend PC.(T) -> Unit
+) = routeWithHandle(path, HttpMethod.Post) {
+    val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
 
-            with(session) {
-                when {
-                    this is TempSession && verifiedSessionKey -> throw NotVerifiedSessionException
-                    this is AuthedSession -> dto.session = this
-                }
-            }
-            this.body(dto)
-        }
-    }
+    getAuthedSession(dto.sessionKey).also { dto.session = it }
+    this.body(dto)
 }
 
 /**
@@ -72,42 +67,39 @@ internal inline fun <reified T : VerifyDTO> Route.httpVerify(
  * 验证请求参数中sessionKey参数的有效性
  */
 @ContextDsl
-internal fun Route.httpGet(
-    path: String,
-    body: suspend PipelineContext<Unit, ApplicationCall>.(AuthedSession) -> Unit
-): Route {
-    return route(path, HttpMethod.Get) {
-        handleException {
-            val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
-            val session = MahContextHolder.mahContext.sessionManager[sessionKey]
-                ?: throw IllegalSessionException
+internal fun Route.httpAuthedGet(path: String, body: suspend PC.(HttpAuthedSession) -> Unit) =
+    routeWithHandle(path, HttpMethod.Get) {
+        val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
 
-            when (session) {
-                is TempSession -> throw NotVerifiedSessionException
-                is AuthedSession -> this.body(session)
-            }
-        }
+        this.body(getAuthedSession(sessionKey))
     }
-}
 
 @ContextDsl
-internal inline fun Route.httpMultiPart(
+internal inline fun Route.httpAuthedMultiPart(
     path: String,
-    crossinline body: suspend PipelineContext<Unit, ApplicationCall>.(AuthedSession, List<PartData>) -> Unit
-) : Route {
-    return route(path, HttpMethod.Post) {
-        handleException {
-            val parts = call.receiveMultipart().readAllParts()
-            val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
-            val session = MahContextHolder.mahContext.sessionManager[sessionKey]
-                ?: throw IllegalSessionException
+    crossinline body: suspend PC.(HttpAuthedSession, List<PartData>) -> Unit
+) = routeWithHandle(path, HttpMethod.Post) {
+    val parts = call.receiveMultipart().readAllParts()
+    val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
 
-            when (session) {
-                is TempSession -> throw NotVerifiedSessionException
-                is AuthedSession -> this.body(session, parts)
-            }
-        }
-    }
+    this.body(getAuthedSession(sessionKey), parts)
 }
 
+/**
+ * 获取 session 并进行类型校验
+ */
+private fun getAuthedSession(sessionKey: String): HttpAuthedSession =
+    when (val session = MahContextHolder[sessionKey]) {
+        is HttpAuthedSession -> session
+        is IAuthedSession -> proxyAuthedSession(session)
+        is TempSession -> throw NotVerifiedSessionException
+        else -> throw IllegalSessionException
+    }
 
+/**
+ * 置换全局 session 为代理对象
+ */
+private fun proxyAuthedSession(authedSession: IAuthedSession): HttpAuthedSession =
+    HttpAuthedSession(authedSession).also {
+        MahContextHolder.sessionManager[authedSession.key] = it
+    }

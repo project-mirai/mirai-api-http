@@ -1,25 +1,18 @@
 plugins {
-    id("kotlinx-serialization")
     kotlin("jvm")
-    id("net.mamoe.mirai-console") version "2.0-RC-dev-1"
+    kotlin("plugin.serialization")
+    id("net.mamoe.mirai-console") version "2.6-RC"
 }
 
-val httpVersion: String by rootProject.ext
-
-val ktorVersion: String by rootProject.ext
-val serializationVersion: String by rootProject.ext
-
-fun kotlinx(id: String, version: String) =
-    "org.jetbrains.kotlinx:kotlinx-$id:$version"
-
-
+val ktorVersion: String by rootProject.extra
+fun kotlinx(id: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
 fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
-
 
 kotlin {
     sourceSets["test"].apply {
         dependencies {
             api("org.slf4j:slf4j-simple:1.7.26")
+            api(kotlin("test-junit"))
         }
     }
 
@@ -28,25 +21,24 @@ kotlin {
         languageSettings.useExperimentalAnnotation("kotlin.Experimental")
 
         dependencies {
-            api(kotlinx("serialization-json", serializationVersion))
-            implementation("net.mamoe:mirai-core-utils:${mirai.coreVersion}")
 
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
             api("org.yaml:snakeyaml:1.25")
 
-            implementation(ktor("server-core"))
-            implementation(ktor("http"))
+            api(ktor("server-core"))
+            api(ktor("http"))
         }
     }
 }
 
+val httpVersion: String by rootProject.extra
 project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
 
-internal val EXCLUDED_FILES = listOf(
+internal val excluded = listOf(
     "kotlin-stdlib-.*",
     "kotlin-reflect-.*",
     "kotlinx-serialization-json.*",
@@ -58,7 +50,7 @@ internal val EXCLUDED_FILES = listOf(
 mirai {
     this.configureShadow {
         exclude { elm ->
-            EXCLUDED_FILES.any { it.matches(elm.path) }
+            excluded.any { it.matches(elm.path) }
         }
     }
     publishing {
@@ -80,3 +72,19 @@ tasks.create("buildCiJar", Jar::class) {
     }
 }
 
+dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+}

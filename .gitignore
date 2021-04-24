@@ -9,4 +9,5 @@ build/
 
 # config
 device.json
+launcher.properties
 /config/

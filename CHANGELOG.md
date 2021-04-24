@@ -127,7 +127,7 @@
 
 * 修复配置文件读取错误的问题 @HoshinoTented
 
-> 由于某些原因，如果配置文件无法加载，请将配置文件名称修改为 net.mamoe.mirai.api.http.config.Setting.yaml
+> 由于某些原因，如果配置文件无法加载，请将配置文件名称修改为 net.mamoe.mirai.api.http.setting.Setting.yaml
 
 
 
