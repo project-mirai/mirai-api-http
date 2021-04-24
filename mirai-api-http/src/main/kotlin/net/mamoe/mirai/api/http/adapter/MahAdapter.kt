@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter
 
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 
 /**
@@ -32,5 +33,5 @@ abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
      */
     abstract fun disable()
 
-    abstract suspend fun onReceiveBotEvent(event: BotEvent)
+    abstract suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession)
 }

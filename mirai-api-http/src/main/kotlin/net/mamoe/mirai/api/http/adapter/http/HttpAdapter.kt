@@ -5,6 +5,10 @@ import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule
+import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
+import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.context.MahContextHolder
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 
 class HttpAdapter : MahKtorAdapter("http") {
@@ -15,7 +19,9 @@ class HttpAdapter : MahKtorAdapter("http") {
         module(Application::httpModule)
     }
 
-    override suspend fun onReceiveBotEvent(event: BotEvent) {
-        TODO("Not yet implemented")
+    override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
+        if (session is HttpAuthedSession) {
+            session.unreadQueue.offer(event.toDTO())
+        }
     }
 }

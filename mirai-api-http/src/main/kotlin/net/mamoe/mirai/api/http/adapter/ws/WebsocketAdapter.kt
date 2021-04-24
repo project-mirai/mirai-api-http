@@ -4,6 +4,7 @@ import io.ktor.application.*
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 
 class WebsocketAdapter : MahKtorAdapter("ws") {
@@ -14,7 +15,7 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
         module(Application::websocketRouteModule)
     }
 
-    override suspend fun onReceiveBotEvent(event: BotEvent) {
+    override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
 
     }
 }

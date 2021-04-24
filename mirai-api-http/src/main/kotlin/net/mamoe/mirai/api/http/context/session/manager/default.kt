@@ -11,7 +11,10 @@ package net.mamoe.mirai.api.http.context.session.manager
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.adapter.internal.dto.BotEventDTO
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.*
+import net.mamoe.mirai.event.events.BotEvent
 import kotlin.coroutines.EmptyCoroutineContext
 
 class DefaultSessionManager(override val verifyKey: String) : SessionManager {
@@ -42,6 +45,9 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
     override fun authSession(tempSessionKey: String, authedSession: IAuthedSession): IAuthedSession {
         closeSession(tempSessionKey)
         set(tempSessionKey, authedSession)
+
+        MahContextHolder.listen(authedSession.bot, authedSession.key)
+
         return authedSession
     }
 

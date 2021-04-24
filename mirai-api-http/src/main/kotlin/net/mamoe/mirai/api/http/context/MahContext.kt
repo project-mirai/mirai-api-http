@@ -9,14 +9,18 @@
 
 package net.mamoe.mirai.api.http.context
 
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.api.http.context.session.ISession
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
+import net.mamoe.mirai.event.Listener
+import net.mamoe.mirai.event.events.BotEvent
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
@@ -77,11 +81,13 @@ object MahContextHolder {
     lateinit var mahContext: MahContext
 
     operator fun get(sessionKey: String): ISession? {
+        // TODO: 线程安全处理
         if (mahContext.singleMode) {
             val session = sessionManager[MahContext.SINGLE_SESSION_KEY]
             if (session == null) {
                 val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
                 val singleAuthedSession = AuthedSession(bot, MahContext.SINGLE_SESSION_KEY, EmptyCoroutineContext)
+                listen(bot, MahContext.SINGLE_SESSION_KEY)
                 sessionManager[MahContext.SINGLE_SESSION_KEY] = singleAuthedSession
                 return singleAuthedSession
             }
@@ -98,6 +104,27 @@ object MahContextHolder {
             mahContext.cacheMap[qq] = cache
         }
         return cache
+    }
+
+    fun listen(bot: Bot, sessionKey: String) {
+        var listener: Listener<BotEvent>? = null
+        listener = bot.eventChannel.subscribeAlways {
+            println("before")
+            // 传入 sessionKey 而非 session 保证 session 不被闭包保存而无法更新
+            val session = get(sessionKey)
+            if (session == null || session !is IAuthedSession) {
+                listener?.complete()
+                return@subscribeAlways
+            }
+            broadcast(it, session)
+            println("after")
+        }
+    }
+
+    private suspend fun broadcast(event: BotEvent, session: IAuthedSession) {
+        mahContext.adapters.forEach {
+            session?.launch { it.onReceiveBotEvent(event, session) }
+        }
     }
 
     val sessionManager get() = mahContext.sessionManager
