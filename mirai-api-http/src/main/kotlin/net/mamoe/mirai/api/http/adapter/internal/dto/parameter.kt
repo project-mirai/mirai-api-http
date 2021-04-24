@@ -109,3 +109,31 @@ internal data class MemberDetailDTO(
 ) : DTO {
     constructor(member: Member) : this(member.nameCard, member.specialTitle)
 }
+
+@Serializable
+internal data class EventRespDTO(
+    val eventId: Long,
+    val fromId: Long,
+    val groupId: Long,
+    val operate: Int,
+    val message: String
+) : AuthedDTO()
+
+
+// Some list
+
+@Serializable
+internal class FriendList(
+    val data: List<QQDTO>
+) : RestfulResult()
+
+@Serializable
+internal class GroupList(
+    val data: List<GroupDTO>
+) : RestfulResult()
+
+@Serializable
+internal class MemberList(
+    val data: List<MemberDTO>
+) : RestfulResult()
+

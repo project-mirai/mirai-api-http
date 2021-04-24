@@ -9,25 +9,45 @@ import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.api.http.adapter.common.handleException
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
-import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.TempSession
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
-private typealias PC = PipelineContext<Unit, ApplicationCall>
+/**
+ * 处理策略
+ */
+private typealias Strategy<T> = suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit
+private typealias Strategy2<A, B> = suspend PipelineContext<Unit, ApplicationCall>.(A, B) -> Unit
+
+private fun <T> buildStrategy(block: Strategy<T>) = block
+
+/***********************
+ *   Build-in 处理策略
+ ***********************/
+
+/**
+ * 返回状态码
+ */
+internal inline fun <reified T> respondStateCodeStrategy(crossinline action: suspend (T) -> StateCode) = buildStrategy<T> {
+    call.respondStateCode(action(it))
+}
+
+// 返回DTO
+internal inline fun <reified T, reified R: DTO> respondDTOStrategy(crossinline action: suspend (T) -> R) = buildStrategy<T> {
+    call.respondDTO(action(it))
+}
 
 @ContextDsl
-internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: suspend PC.() -> Unit) =
-    route(path, method) { handleException { blk() } }
+internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
+    route(path, method) { handleException { blk(Unit) } }
 
 /**
  * Auth，处理http server的验证
  * 为闭包传入一个AuthDTO对象
  */
 @ContextDsl
-internal inline fun Route.httpVerify(path: String, crossinline body: suspend PC.(VerifyDTO) -> Unit) =
+internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
         val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException("参数格式错误")
         this.body(dto)
@@ -35,7 +55,7 @@ internal inline fun Route.httpVerify(path: String, crossinline body: suspend PC.
 
 
 @ContextDsl
-internal inline fun Route.httpBind(path: String, crossinline body: suspend PC.(BindDTO) -> Unit) =
+internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
         val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException("参数格式错误")
         body(dto)
@@ -54,7 +74,7 @@ internal inline fun Route.httpBind(path: String, crossinline body: suspend PC.(B
 @ContextDsl
 internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
-    crossinline body: suspend PC.(T) -> Unit
+    crossinline body: Strategy<T>
 ) = routeWithHandle(path, HttpMethod.Post) {
     val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
 
@@ -67,7 +87,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
  * 验证请求参数中sessionKey参数的有效性
  */
 @ContextDsl
-internal fun Route.httpAuthedGet(path: String, body: suspend PC.(HttpAuthedSession) -> Unit) =
+internal fun Route.httpAuthedGet(path: String, body: Strategy<HttpAuthedSession>) =
     routeWithHandle(path, HttpMethod.Get) {
         val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
 
@@ -76,8 +96,7 @@ internal fun Route.httpAuthedGet(path: String, body: suspend PC.(HttpAuthedSessi
 
 @ContextDsl
 internal inline fun Route.httpAuthedMultiPart(
-    path: String,
-    crossinline body: suspend PC.(HttpAuthedSession, List<PartData>) -> Unit
+    path: String, crossinline body: Strategy2<HttpAuthedSession, List<PartData>>
 ) = routeWithHandle(path, HttpMethod.Post) {
     val parts = call.receiveMultipart().readAllParts()
     val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")

@@ -7,6 +7,8 @@ import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.http.router.respondStateCode
+import net.mamoe.mirai.api.http.context.MahContext
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
@@ -36,7 +38,9 @@ internal inline fun Route.handleException(crossinline blk: suspend PipelineConte
     } catch (e: IllegalAccessException) { // 错误访问
         call.respondStateCode(StateCode.IllegalAccess(e.message), HttpStatusCode.BadRequest)
     } catch (e: Throwable) {
-        HttpApiPluginBase.logger.error(e)
+        if (!MahContextHolder.mahContext.localMode) {
+            HttpApiPluginBase.logger.error(e)
+        }
         call.respond(HttpStatusCode.InternalServerError, e.message!!)
     }
 }

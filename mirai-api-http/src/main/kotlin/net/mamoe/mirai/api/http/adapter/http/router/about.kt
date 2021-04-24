@@ -12,12 +12,8 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
-
-private val mahVersion by lazy {
-    val desc = HttpApiPluginBase.description
-    desc.javaClass.fields.first { it.name == "version" }.get(desc).toString()
-}
 
 /**
  * 配置路由
@@ -28,7 +24,7 @@ internal fun Application.aboutRouter() = routing {
      * 获取API-HTTP插件信息
      */
     get("/about") {
-        val data = mapOf("version" to mahVersion)
+        val data = onAbout()
         call.respondDTO(StringMapRestfulResult(data = data))
     }
 }

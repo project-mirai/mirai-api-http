@@ -12,9 +12,13 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.internal.action.*
+import net.mamoe.mirai.api.http.adapter.internal.action.onMute
+import net.mamoe.mirai.api.http.adapter.internal.action.onMuteAll
+import net.mamoe.mirai.api.http.adapter.internal.action.onUnmute
+import net.mamoe.mirai.api.http.adapter.internal.action.onUnmuteAll
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.KickDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.MuteDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.QuitDTO
 
 /**
@@ -25,93 +29,55 @@ internal fun Application.groupManageRouter() = routing {
     /**
      * 禁言所有人（需要相关权限）
      */
-    httpAuthedPost<MuteDTO>("/muteAll") {
-        it.session.bot.getGroupOrFail(it.target).settings.isMuteAll = true
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/muteAll", respondStateCodeStrategy(::onMuteAll))
 
     /**
      * 取消禁言所有人（需要相关权限）
      */
-    httpAuthedPost<MuteDTO>("/unmuteAll") {
-        it.session.bot.getGroupOrFail(it.target).settings.isMuteAll = false
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/unmuteAll", respondStateCodeStrategy(::onUnmuteAll))
 
     /**
      * 禁言指定群成员（需要相关权限）
      */
-    httpAuthedPost<MuteDTO>("/mute") {
-        it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).mute(it.time)
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/mute", respondStateCodeStrategy(::onMute))
 
     /**
      * 取消禁言指定群成员（需要相关权限）
      */
-    httpAuthedPost<MuteDTO>("/unmute") {
-        it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).unmute()
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/unmute", respondStateCodeStrategy(::onUnmute))
 
     /**
      * 移出群聊（需要相关权限）
      */
-    httpAuthedPost<KickDTO>("/kick") {
-        it.session.bot.getGroupOrFail(it.target).getOrFail(it.memberId).kick(it.msg)
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/kick", respondStateCodeStrategy(::onKick))
 
     /**
      * Bot退出群聊（Bot不能为群主）
      */
-    httpAuthedPost<QuitDTO>("/quit") {
-        val succeed = it.session.bot.getGroupOrFail(it.target).quit()
-        call.respondStateCode(
-            if (succeed) StateCode.Success
-            else StateCode.PermissionDenied
-        )
-    }
+    httpAuthedPost("/quit", respondStateCodeStrategy(::onQuit))
 
     /**
      * 获取群设置（需要相关权限）
      */
     httpAuthedGet("/groupConfig") {
-        val group = it.bot.getGroupOrFail(paramOrNull("target"))
-        call.respondDTO(GroupDetailDTO(group))
+        call.respondDTO(onGetGroupConfig(it, paramOrNull("target")))
     }
 
     /**
      * 修改群设置（需要相关权限）
      */
-    httpAuthedPost<GroupConfigDTO>("/groupConfig") { dto ->
-        val group = dto.session.bot.getGroupOrFail(dto.target)
-        with(dto.config) {
-            name?.let { group.name = it }
-            announcement?.let { group.settings.entranceAnnouncement = it }
-            allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
-            // TODO: 待core接口实现设置可改
-            //    confessTalk?.let { group.settings.isConfessTalkEnabled = it }
-            //    autoApprove?.let { group.autoApprove = it }
-            //    anonymousChat?.let { group.anonymousChat = it }
-        }
-        call.respondStateCode(StateCode.Success)
+    httpAuthedPost("/groupConfig", respondStateCodeStrategy(::onUpdateGroupConfig))
+
+    /**
+     * 获取群员信息
+     */
+    httpAuthedGet("/memberInfo") {
+        val result = onGetMemberInfo(it.bot, paramOrNull("target"), paramOrNull("memberId"))
+        call.respondDTO(result)
     }
 
     /**
-     * 群员信息管理（需要相关权限）
+     * 更新群员信息（需要相关权限）
      */
-    httpAuthedGet("/memberInfo") {
-        val member = it.bot.getGroupOrFail(paramOrNull("target")).getOrFail(paramOrNull("memberId"))
-        call.respondDTO(MemberDetailDTO(member))
-    }
-
-    httpAuthedPost<MemberInfoDTO>("/memberInfo") { dto ->
-        val member = dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId)
-        with(dto.info) {
-            name?.let { member.nameCard = it }
-            specialTitle?.let { member.specialTitle = it }
-        }
-        call.respondStateCode(StateCode.Success)
-    }
+    httpAuthedPost("/memberInfo", respondStateCodeStrategy(::onUpdateMemberInfo))
 }

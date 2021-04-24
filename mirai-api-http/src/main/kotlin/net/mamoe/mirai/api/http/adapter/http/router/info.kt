@@ -12,11 +12,9 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.internal.dto.ListRestfulResult
-import net.mamoe.mirai.api.http.adapter.internal.dto.GroupDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.QQDTO
-import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetFriendList
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetGroupList
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetMemberList
 
 /**
  * 基本信息路由
@@ -26,29 +24,22 @@ internal fun Application.infoRouter() = routing {
     /**
      * 查询好友列表
      */
-    httpAuthedGet("/friendList") {
-        val data = it.bot.friends.toList().map { qq -> QQDTO(qq) }
-        call.respondDTO(ListRestfulResult(data = data))
-    }
+    httpAuthedGet("/friendList", respondDTOStrategy(::onGetFriendList))
 
     /**
      * 查询QQ群列表
      */
-    httpAuthedGet("/groupList") {
-        val data = it.bot.groups.toList().map { group -> GroupDTO(group) }
-        call.respondDTO(ListRestfulResult(data = data))
-    }
+    httpAuthedGet("/groupList", respondDTOStrategy(::onGetGroupList))
 
     /**
      * 查询QQ群成员列表
      */
     httpAuthedGet("/memberList") {
-        val data = it.bot.getGroupOrFail(paramOrNull("target")).members.toList().map { member -> MemberDTO(member) }
-        call.respondDTO(ListRestfulResult(data = data))
+        call.respondDTO(onGetMemberList(it, paramOrNull("target")))
     }
 
     /**
-     * 查询机器人个人信息
+     * 查询 Bot 个人信息
      */
     httpAuthedGet("/botProfile") {
         // TODO: 等待queryProfile()支持

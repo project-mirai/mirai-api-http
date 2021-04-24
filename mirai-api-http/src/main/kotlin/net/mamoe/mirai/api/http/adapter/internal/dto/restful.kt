@@ -3,36 +3,32 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ListRestfulResult(
+open class RestfulResult(
     val code: Int = 0,
     val msg: String = "",
-    val data: List<DTO>
 ) : DTO
 
 @Serializable
 data class IntRestfulResult(
-    val code: Int = 0,
-    val msg: String = "",
     val data: Int
-) : DTO
+) : RestfulResult()
 
 @Serializable
 data class EventListRestfulResult(
-    val code: Int = 0,
-    val msg: String = "",
     val data: List<EventDTO>
-) : DTO
+) : RestfulResult()
 
 @Serializable
 data class EventRestfulResult(
-    val code: Int = 0,
-    val msg: String = "",
     val data: EventDTO?
-) : DTO
+) : RestfulResult()
+
+@Serializable
+data class StringListRestfulResult(
+    val data: List<String>
+) : RestfulResult()
 
 @Serializable
 data class StringMapRestfulResult(
-    val code: Int = 0,
-    val msg: String = "",
     val data: Map<String, String>
-) : DTO
+) : RestfulResult()

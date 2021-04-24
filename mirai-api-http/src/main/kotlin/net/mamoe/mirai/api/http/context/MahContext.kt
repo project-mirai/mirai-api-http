@@ -41,7 +41,7 @@ open class MahContext internal constructor() {
     /**
      * 全局消息缓存
      */
-    lateinit var cacheMap: MutableMap<Long, MessageSourceCache>
+    val  cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
 
     /**
      * 本地模式, 调试使用. 不引用 Console, 从内部启动 adapter 进行调试
@@ -78,11 +78,12 @@ object MahContextHolder {
 
     operator fun get(sessionKey: String): ISession? {
         if (mahContext.singleMode) {
-            val session = MahContextHolder[MahContext.SINGLE_SESSION_KEY]
+            val session = sessionManager[MahContext.SINGLE_SESSION_KEY]
             if (session == null) {
                 val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
                 val singleAuthedSession = AuthedSession(bot, MahContext.SINGLE_SESSION_KEY, EmptyCoroutineContext)
                 sessionManager[MahContext.SINGLE_SESSION_KEY] = singleAuthedSession
+                return singleAuthedSession
             }
             return session
         }
