@@ -10,6 +10,7 @@ import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.api.http.adapter.common.handleException
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.TempSession
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
@@ -89,7 +90,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
 @ContextDsl
 internal fun Route.httpAuthedGet(path: String, body: Strategy<HttpAuthedSession>) =
     routeWithHandle(path, HttpMethod.Get) {
-        val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
+        val sessionKey = call.parameters["sessionKey"] ?: MahContext.SINGLE_SESSION_KEY
 
         this.body(getAuthedSession(sessionKey))
     }
