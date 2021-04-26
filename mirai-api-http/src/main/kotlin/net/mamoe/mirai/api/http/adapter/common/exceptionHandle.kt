@@ -7,7 +7,6 @@ import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.http.router.respondStateCode
-import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException

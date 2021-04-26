@@ -12,9 +12,7 @@ package net.mamoe.mirai.api.http
 import io.ktor.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.MahAdapter
-import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextBuilder
 import net.mamoe.mirai.api.http.context.MahContextHolder

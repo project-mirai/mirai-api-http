@@ -9,12 +9,14 @@
 
 package net.mamoe.mirai.api.http.context.session.manager
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.adapter.internal.dto.BotEventDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.*
-import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.ISession
+import net.mamoe.mirai.api.http.context.session.TempSession
 import kotlin.coroutines.EmptyCoroutineContext
 
 class DefaultSessionManager(override val verifyKey: String) : SessionManager {
@@ -46,6 +48,11 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
         closeSession(tempSessionKey)
         set(tempSessionKey, authedSession)
 
+        /**
+         * TODO: 从设计上解决循环依赖问题，目前 [MahContextHolder] 组合 [SessionManager]
+         * TODO: 但 [SessionManager] 依赖了 [MahContextHolder]
+         * TODO: bad design
+         */
         MahContextHolder.listen(authedSession.bot, authedSession.key)
 
         return authedSession

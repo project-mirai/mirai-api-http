@@ -1,10 +1,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
-import io.ktor.application.*
-import io.ktor.http.content.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.http.router.respondDTO
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain

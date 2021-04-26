@@ -25,7 +25,6 @@ internal class JsonSerializer : InternalSerializer {
             serializersModule = SerializersModule {
                 polymorphicSealedClass(EventDTO::class, MessagePacketDTO::class)
                 polymorphicSealedClass(EventDTO::class, BotEventDTO::class)
-//                polymorphicSealedClass(StateCode::class, StateCode::class)
             }
         }
     }

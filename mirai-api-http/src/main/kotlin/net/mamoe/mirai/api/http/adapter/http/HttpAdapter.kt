@@ -1,13 +1,11 @@
 package net.mamoe.mirai.api.http.adapter.http
 
 import io.ktor.application.*
-import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
-import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 

@@ -10,9 +10,6 @@
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import net.mamoe.mirai.api.http.context.MahContext
-import net.mamoe.mirai.api.http.context.session.AuthedSession
 
 interface DTO
 

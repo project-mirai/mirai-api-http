@@ -11,15 +11,7 @@ package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.application.*
 import io.ktor.routing.*
-import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
-import net.mamoe.mirai.api.http.adapter.internal.action.onMute
-import net.mamoe.mirai.api.http.adapter.internal.action.onMuteAll
-import net.mamoe.mirai.api.http.adapter.internal.action.onUnmute
-import net.mamoe.mirai.api.http.adapter.internal.action.onUnmuteAll
-import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.dto.KickDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.QuitDTO
 
 /**
  * 群管理路由

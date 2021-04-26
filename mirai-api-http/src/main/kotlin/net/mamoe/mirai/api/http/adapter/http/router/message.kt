@@ -3,28 +3,10 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
-import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
-import net.mamoe.mirai.api.http.adapter.internal.action.onGetMessageFromId
-import net.mamoe.mirai.api.http.adapter.internal.action.onSendFriendMessage
-import net.mamoe.mirai.api.http.adapter.internal.action.onSendGroupMessage
-import net.mamoe.mirai.api.http.adapter.internal.action.onSendTempMessage
-import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
-import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
-import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
-import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Contact.Companion.uploadImage
-import net.mamoe.mirai.message.MessageReceipt
-import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.MessageSource.Key.quote
-import net.mamoe.mirai.message.data.MessageSource.Key.recall
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import net.mamoe.mirai.api.http.adapter.internal.dto.EventListRestfulResult
+import net.mamoe.mirai.api.http.adapter.internal.dto.IntRestfulResult
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import java.net.URL
 
 /**
  * 消息路由

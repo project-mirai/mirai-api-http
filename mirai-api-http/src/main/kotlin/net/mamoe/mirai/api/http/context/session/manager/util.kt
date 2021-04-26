@@ -9,6 +9,7 @@ tailrec fun SessionManager.generateSessionKey(): String {
     return generateSessionKey()
 }
 
+// From @jiahua.liu in 2020/1/17 23:25
 fun generateRandomSessionKey(): String {
     val all = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm"
     return buildString(capacity = 8) {

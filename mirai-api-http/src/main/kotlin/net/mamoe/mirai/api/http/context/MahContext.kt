@@ -81,15 +81,20 @@ object MahContextHolder {
     lateinit var mahContext: MahContext
 
     operator fun get(sessionKey: String): ISession? {
-        // TODO: 线程安全处理
         if (mahContext.singleMode) {
-            val session = sessionManager[MahContext.SINGLE_SESSION_KEY]
+            var session = sessionManager[MahContext.SINGLE_SESSION_KEY]
+
+            // double check lock
             if (session == null) {
-                val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
-                val singleAuthedSession = AuthedSession(bot, MahContext.SINGLE_SESSION_KEY, EmptyCoroutineContext)
-                listen(bot, MahContext.SINGLE_SESSION_KEY)
-                sessionManager[MahContext.SINGLE_SESSION_KEY] = singleAuthedSession
-                return singleAuthedSession
+                synchronized(MahContextHolder) {
+                    if (session == null) {
+                        val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
+                        val singleAuthedSession = AuthedSession(bot, MahContext.SINGLE_SESSION_KEY, EmptyCoroutineContext)
+                        listen(bot, MahContext.SINGLE_SESSION_KEY)
+                        sessionManager[MahContext.SINGLE_SESSION_KEY] = singleAuthedSession
+                        session =  singleAuthedSession
+                    }
+                }
             }
             return session
         }
@@ -109,7 +114,6 @@ object MahContextHolder {
     fun listen(bot: Bot, sessionKey: String) {
         var listener: Listener<BotEvent>? = null
         listener = bot.eventChannel.subscribeAlways {
-            println("before")
             // 传入 sessionKey 而非 session 保证 session 不被闭包保存而无法更新
             val session = get(sessionKey)
             if (session == null || session !is IAuthedSession) {
@@ -117,13 +121,12 @@ object MahContextHolder {
                 return@subscribeAlways
             }
             broadcast(it, session)
-            println("after")
         }
     }
 
     private suspend fun broadcast(event: BotEvent, session: IAuthedSession) {
         mahContext.adapters.forEach {
-            session?.launch { it.onReceiveBotEvent(event, session) }
+            session.launch { it.onReceiveBotEvent(event, session) }
         }
     }
 

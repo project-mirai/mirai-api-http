@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.application.*
 import io.ktor.routing.*
-import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 
