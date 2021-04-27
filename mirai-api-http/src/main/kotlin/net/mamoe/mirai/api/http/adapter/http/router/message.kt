@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.*
+import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.EventListRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.IntRestfulResult
 import net.mamoe.mirai.utils.MiraiExperimentalApi
@@ -65,7 +66,7 @@ internal fun Application.messageRouter() = routing {
     /**
      * 获取指定ID消息（从CacheQueue获取）
      */
-    httpAuthedGet("/messageFromId") {
+    httpAuthedGet(Paths.messageFromId) {
         val id: Int = paramOrNull("id")
         call.respondDTO(onGetMessageFromId(it, id))
     }
@@ -73,33 +74,33 @@ internal fun Application.messageRouter() = routing {
     /**
      * 发送消息给好友
      */
-    httpAuthedPost("/sendFriendMessage", respondDTOStrategy(::onSendFriendMessage))
+    httpAuthedPost(Paths.sendFriendMessage, respondDTOStrategy(::onSendFriendMessage))
 
     /**
      * 发送消息到QQ群
      */
-    httpAuthedPost("/sendGroupMessage", respondDTOStrategy(::onSendGroupMessage))
+    httpAuthedPost(Paths.sendGroupMessage, respondDTOStrategy(::onSendGroupMessage))
 
     /**
      * 发送消息给临时会话
      */
-    httpAuthedPost("/sendTempMessage", respondDTOStrategy(::onSendTempMessage))
+    httpAuthedPost(Paths.sendTempMessage, respondDTOStrategy(::onSendTempMessage))
 
     /**
      * 发送图片消息
      */
-    httpAuthedPost("sendImageMessage", respondDTOStrategy(::onSendImageMessage))
+    httpAuthedPost(Paths.sendImageMessage, respondDTOStrategy(::onSendImageMessage))
 
     /**
      * 上传图片
      */
-    httpAuthedMultiPart("uploadImage") { session, parts ->
+    httpAuthedMultiPart(Paths.uploadImage) { session, parts ->
         val type = parts.value("type")
         parts.file("img")?.apply { onUploadImage(session, streamProvider(), type) }
             ?: throw IllegalAccessException("未知错误")
     }
 
-    httpAuthedMultiPart("uploadVoice") { session, parts ->
+    httpAuthedMultiPart(Paths.uploadVoice) { session, parts ->
         val type = parts.value("type")
         parts.file("voice")?.apply { onUploadVoice(session, streamProvider(), type) }
             ?: throw IllegalAccessException("未知错误")
@@ -108,5 +109,5 @@ internal fun Application.messageRouter() = routing {
     /**
      * 撤回消息
      */
-    httpAuthedPost("recall", respondStateCodeStrategy(::onRecall))
+    httpAuthedPost(Paths.recall, respondStateCodeStrategy(::onRecall))
 }

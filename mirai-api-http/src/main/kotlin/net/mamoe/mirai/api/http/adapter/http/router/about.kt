@@ -10,9 +10,12 @@
 package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
+import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
+import kotlin.io.path.Path
 
 /**
  * 配置路由
@@ -22,7 +25,7 @@ internal fun Application.aboutRouter() = routing {
     /**
      * 获取API-HTTP插件信息
      */
-    get("/about") {
+    routeWithHandle(Paths.about, HttpMethod.Get) {
         val data = onAbout()
         call.respondDTO(StringMapRestfulResult(data = data))
     }

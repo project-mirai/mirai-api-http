@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.*
+import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 
 /**
  * 群管理路由
@@ -21,49 +22,49 @@ internal fun Application.groupManageRouter() = routing {
     /**
      * 禁言所有人（需要相关权限）
      */
-    httpAuthedPost("/muteAll", respondStateCodeStrategy(::onMuteAll))
+    httpAuthedPost(Paths.muteAll, respondStateCodeStrategy(::onMuteAll))
 
     /**
      * 取消禁言所有人（需要相关权限）
      */
-    httpAuthedPost("/unmuteAll", respondStateCodeStrategy(::onUnmuteAll))
+    httpAuthedPost(Paths.unmuteAll, respondStateCodeStrategy(::onUnmuteAll))
 
     /**
      * 禁言指定群成员（需要相关权限）
      */
-    httpAuthedPost("/mute", respondStateCodeStrategy(::onMute))
+    httpAuthedPost(Paths.mute, respondStateCodeStrategy(::onMute))
 
     /**
      * 取消禁言指定群成员（需要相关权限）
      */
-    httpAuthedPost("/unmute", respondStateCodeStrategy(::onUnmute))
+    httpAuthedPost(Paths.unmute, respondStateCodeStrategy(::onUnmute))
 
     /**
      * 移出群聊（需要相关权限）
      */
-    httpAuthedPost("/kick", respondStateCodeStrategy(::onKick))
+    httpAuthedPost(Paths.kick, respondStateCodeStrategy(::onKick))
 
     /**
      * Bot退出群聊（Bot不能为群主）
      */
-    httpAuthedPost("/quit", respondStateCodeStrategy(::onQuit))
+    httpAuthedPost(Paths.quit, respondStateCodeStrategy(::onQuit))
 
     /**
      * 获取群设置（需要相关权限）
      */
-    httpAuthedGet("/groupConfig") {
+    httpAuthedGet(Paths.groupConfig) {
         call.respondDTO(onGetGroupConfig(it, paramOrNull("target")))
     }
 
     /**
      * 修改群设置（需要相关权限）
      */
-    httpAuthedPost("/groupConfig", respondStateCodeStrategy(::onUpdateGroupConfig))
+    httpAuthedPost(Paths.groupConfig, respondStateCodeStrategy(::onUpdateGroupConfig))
 
     /**
      * 获取群员信息
      */
-    httpAuthedGet("/memberInfo") {
+    httpAuthedGet(Paths.memberInfo) {
         val result = onGetMemberInfo(it.bot, paramOrNull("target"), paramOrNull("memberId"))
         call.respondDTO(result)
     }
@@ -71,5 +72,5 @@ internal fun Application.groupManageRouter() = routing {
     /**
      * 更新群员信息（需要相关权限）
      */
-    httpAuthedPost("/memberInfo", respondStateCodeStrategy(::onUpdateMemberInfo))
+    httpAuthedPost(Paths.memberInfo, respondStateCodeStrategy(::onUpdateMemberInfo))
 }

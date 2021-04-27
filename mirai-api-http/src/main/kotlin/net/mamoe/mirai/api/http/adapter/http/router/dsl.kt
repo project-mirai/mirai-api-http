@@ -9,6 +9,7 @@ import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.api.http.adapter.common.handleException
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
+import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
@@ -41,7 +42,7 @@ internal inline fun <reified T, reified R: DTO> respondDTOStrategy(crossinline a
 
 @ContextDsl
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
-    route(path, method) { handleException { blk(Unit) } }
+    route(Paths.httpPath(path), method) { handleException { blk(Unit) } }
 
 /**
  * Auth，处理http server的验证
