@@ -9,5 +9,6 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 internal data class WsCommand(
     val command: String,
-    val content: JsonElement,
+    val subCommand: String? = null,
+    val content: JsonElement? = null,
 )

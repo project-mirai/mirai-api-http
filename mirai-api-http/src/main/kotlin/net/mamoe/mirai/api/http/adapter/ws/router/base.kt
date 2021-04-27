@@ -55,6 +55,7 @@ private suspend fun DefaultWebSocketServerSession.handleChannel(
 
     runCatching {
         for (frame in incoming) {
+            frame.
             runCatching {
                 outgoing.handleWsAction(session, String(frame.data))
             }.onFailure {

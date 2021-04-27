@@ -3,7 +3,7 @@ package net.mamoe.mirai.api.http.adapter.serialization
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.contact.MemberPermission
 
-fun groupMessageDTO(id: Long = 0, name: String = ""): GroupMessagePacketDTO {
+internal fun groupMessageDTO(id: Long = 0, name: String = ""): GroupMessagePacketDTO {
     return GroupMessagePacketDTO(
         sender = MemberDTO(
             id, name, MemberPermission.OWNER,
@@ -12,13 +12,13 @@ fun groupMessageDTO(id: Long = 0, name: String = ""): GroupMessagePacketDTO {
     ).apply { messageChain = messageChainDTO() }
 }
 
-fun friendMessageDTO(id: Long = 0, name: String = ""): FriendMessagePacketDTO {
+internal fun friendMessageDTO(id: Long = 0, name: String = ""): FriendMessagePacketDTO {
     return FriendMessagePacketDTO(sender = QQDTO(id, name, name))
         .apply { messageChain = messageChainDTO() }
 }
 
-fun messageChainDTO() = listOf(atMessageDTO(), textMessageDTO())
+internal fun messageChainDTO() = listOf(atMessageDTO(), textMessageDTO())
 
-fun atMessageDTO(target: Long = 0, display: String = "at name"): AtDTO = AtDTO(target, display)
-fun textMessageDTO(): PlainDTO = PlainDTO("test plain text content")
+internal fun atMessageDTO(target: Long = 0, display: String = "at name"): AtDTO = AtDTO(target, display)
+internal fun textMessageDTO(): PlainDTO = PlainDTO("test plain text content")
 

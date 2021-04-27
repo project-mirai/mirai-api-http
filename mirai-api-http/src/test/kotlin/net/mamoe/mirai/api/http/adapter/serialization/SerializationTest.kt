@@ -4,6 +4,8 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsCommand
+import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -52,5 +54,11 @@ class SerializationTest {
         val expected = """{"code":400,"msg":"test access error"}"""
         val json = StateCode.IllegalAccess("test access error").toJson()
         assertEquals(expected, json, "State code: IllegalAccess 序列化异常")
+    }
+
+    @Test
+    fun testWsCommand() {
+        val input = """{ "command": "friendList", "subCommand": "get", content: {"a": 2}}"""
+        InternalSerializerHolder.serializer.decode(input, WsCommand::class)
     }
 }
