@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedDeque
 /**
  * 未读消息队列
  */
-class UnreadQueue : ConcurrentLinkedDeque<EventDTO>() {
+internal class UnreadQueue : ConcurrentLinkedDeque<EventDTO>() {
 
     fun fetch(size: Int): List<EventDTO> {
         var cnt = size

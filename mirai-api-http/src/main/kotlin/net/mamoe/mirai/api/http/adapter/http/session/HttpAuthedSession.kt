@@ -9,6 +9,6 @@ import net.mamoe.mirai.api.http.context.session.IAuthedSession
  *
  * @author ryoii
  */
-class HttpAuthedSession(authedSession: IAuthedSession) : IAuthedSession by authedSession {
+internal class HttpAuthedSession(authedSession: IAuthedSession) : IAuthedSession by authedSession {
     val unreadQueue: UnreadQueue = UnreadQueue()
 }

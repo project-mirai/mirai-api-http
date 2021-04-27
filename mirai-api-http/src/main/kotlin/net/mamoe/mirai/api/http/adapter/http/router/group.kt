@@ -65,7 +65,7 @@ internal fun Application.groupManageRouter() = routing {
      * 获取群员信息
      */
     httpAuthedGet(Paths.memberInfo) {
-        val result = onGetMemberInfo(it.bot, paramOrNull("target"), paramOrNull("memberId"))
+        val result = onGetMemberInfo(it, paramOrNull("target"), paramOrNull("memberId"))
         call.respondDTO(result)
     }
 

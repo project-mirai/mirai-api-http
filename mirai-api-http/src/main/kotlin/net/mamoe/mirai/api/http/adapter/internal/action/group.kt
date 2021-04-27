@@ -4,6 +4,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
 /**
  * 禁言所有人（需要相关权限）
@@ -57,7 +58,7 @@ internal suspend fun onQuit(dto: QuitDTO): StateCode {
 /**
  * 获取群设置（需要相关权限）
  */
-internal fun onGetGroupConfig(session: HttpAuthedSession, target: Long): GroupDetailDTO {
+internal fun onGetGroupConfig(session: IAuthedSession, target: Long): GroupDetailDTO {
     val group = session.bot.getGroupOrFail(target)
     return GroupDetailDTO(group)
 }
@@ -82,8 +83,8 @@ internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
 /**
  * 获取群员信息
  */
-internal fun onGetMemberInfo(bot: Bot, target: Long, memberId: Long): MemberDetailDTO {
-    val member = bot.getGroupOrFail(target).getOrFail(memberId)
+internal fun onGetMemberInfo(session: IAuthedSession, target: Long, memberId: Long): MemberDetailDTO {
+    val member = session.bot.getGroupOrFail(target).getOrFail(memberId)
     return MemberDetailDTO(member)
 }
 

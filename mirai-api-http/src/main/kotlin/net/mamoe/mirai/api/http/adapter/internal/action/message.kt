@@ -6,6 +6,7 @@ import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.message.MessageReceipt
@@ -22,7 +23,7 @@ import java.net.URL
 /**
  * 从缓存中通过 id 获取缓存消息
  */
-internal suspend fun onGetMessageFromId(session: HttpAuthedSession, id: Int): EventRestfulResult {
+internal suspend fun onGetMessageFromId(session: IAuthedSession, id: Int): EventRestfulResult {
     val source = session.sourceCache[id]
 
     val dto = when (source) {
