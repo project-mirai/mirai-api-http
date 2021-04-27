@@ -1,5 +1,6 @@
 package net.mamoe.mirai.api.http.adapter.internal.serializer
 
+import kotlinx.serialization.json.JsonElement
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import kotlin.reflect.KClass
@@ -28,6 +29,11 @@ interface InternalSerializer {
      * 反序列化方法
      */
     fun <T : Any> decode(content: String, clazz: KClass<T>): T
+
+    /**
+     * 反序列化
+     */
+    fun <T : Any> decode(element: JsonElement, clazz: KClass<T>): T
 }
 
 /**
@@ -38,3 +44,5 @@ inline fun <reified T : Any> InternalSerializer.encode(dto: T) = encode(dto, T::
 inline fun <reified T : Any> InternalSerializer.encode(collection: List<T>) = encode(collection, T::class)
 
 inline fun <reified T : Any> InternalSerializer.decode(content: String) = decode(content, T::class)
+
+inline fun <reified T : Any> InternalSerializer.decode(element: JsonElement) = decode(element, T::class)

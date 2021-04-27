@@ -1,5 +1,6 @@
 package net.mamoe.mirai.api.http.adapter.internal.serializer
 
+import kotlinx.serialization.json.JsonElement
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 
 /**
@@ -22,5 +23,13 @@ internal inline fun <reified T : Any> List<T>.toJson(): String =
  * 异常时返回 null
  */
 internal inline fun <reified T : Any> String.jsonParseOrNull(): T? = runCatching<T> {
+    InternalSerializerHolder.serializer.decode(this)
+}.getOrNull()
+
+
+/**
+ * 解析 json 对象
+ */
+internal inline fun <reified T : Any> JsonElement.jsonElementParseOrNull(): T? = runCatching<T> {
     InternalSerializerHolder.serializer.decode(this)
 }.getOrNull()

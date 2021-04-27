@@ -3,6 +3,7 @@ package net.mamoe.mirai.api.http.adapter.internal.serializer
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -55,6 +56,10 @@ internal class JsonSerializer : InternalSerializer {
 
     override fun <T : Any> decode(content: String, clazz: KClass<T>): T {
         return json.decodeFromString(clazz.serializer(), content)
+    }
+
+    override fun <T : Any> decode(element: JsonElement, clazz: KClass<T>): T {
+        return json.decodeFromJsonElement(clazz.serializer(), element)
     }
 
 }
