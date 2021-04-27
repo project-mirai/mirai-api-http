@@ -16,6 +16,18 @@ internal inline fun <reified T : Any> T.toJson(): String =
 internal inline fun <reified T : Any> List<T>.toJson(): String =
     InternalSerializerHolder.serializer.encode(this)
 
+/**
+ * 列化 object
+ */
+internal inline fun <reified T: Any> T.toJsonElement(): JsonElement =
+    InternalSerializerHolder.serializer.encodeElement(this)
+
+/**
+ * 序列化列表
+ */
+internal inline fun <reified T : Any> List<T>.toJsonElement(): JsonElement =
+    InternalSerializerHolder.serializer.encodeElement(this)
+
 
 /**
  * 解析 object，可指定序列化器

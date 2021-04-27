@@ -58,7 +58,7 @@ class SerializationTest {
 
     @Test
     fun testWsCommand() {
-        val input = """{ "command": "friendList", "subCommand": "get", content: {"a": 2}}"""
+        val input = """{"syncId": "999", "command": "sendGroupMessage", content: {"target": 123123, messageChain: [{type: "Plain", text: "hello world"}]}}"""
         InternalSerializerHolder.serializer.decode(input, WsCommand::class)
     }
 }

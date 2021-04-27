@@ -20,7 +20,9 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsCommand
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsResp
 import net.mamoe.mirai.api.http.context.session.AuthedSession
 import kotlin.io.path.Path
 
@@ -33,9 +35,9 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
 
 
     val element = commandWrapper.content
-    val json: String = when (commandWrapper.command) {
+    val jsonElement: JsonElement = when (commandWrapper.command) {
         // about
-        Paths.about -> StringMapRestfulResult(onAbout()).toJson()
+        Paths.about -> StringMapRestfulResult(onAbout()).toJsonElement()
 
 
         // event
@@ -56,11 +58,11 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
                 "get" -> {
                     val target = element?.jsonObject?.get("target")?.jsonPrimitive?.content?.toLong()
                     target?.let {
-                        onGetGroupConfig(session, target).toJson()
-                    } ?: StateCode.IllegalAccess("参数错误").toJson()
+                        onGetGroupConfig(session, target).toJsonElement()
+                    } ?: StateCode.IllegalAccess("参数错误").toJsonElement()
                 }
                 "post" -> execute(session, element, ::onUpdateGroupConfig)
-                else -> StateCode.NoOperateSupport.toJson()
+                else -> StateCode.NoOperateSupport.toJsonElement()
             }
         }
         Paths.memberInfo -> {
@@ -69,59 +71,62 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
                     val target = element?.jsonObject?.get("target")?.jsonPrimitive?.content?.toLong()
                     val memberId = element?.jsonObject?.get("memberId")?.jsonPrimitive?.content?.toLong()
                     if (target != null && memberId != null) {
-                        onGetMemberInfo(session, target, memberId).toJson()
+                        onGetMemberInfo(session, target, memberId).toJsonElement()
                     } else {
-                        StateCode.IllegalAccess("参数错误").toJson()
+                        StateCode.IllegalAccess("参数错误").toJsonElement()
                     }
                 }
                 "post" -> execute(session, element, ::onUpdateMemberInfo)
-                else -> StateCode.NoOperateSupport.toJson()
+                else -> StateCode.NoOperateSupport.toJsonElement()
             }
         }
 
 
         // info
-        Paths.friendList -> onGetFriendList(session).toJson()
-        Paths.groupList -> onGetGroupList(session).toJson()
+        Paths.friendList -> onGetFriendList(session).toJsonElement()
+        Paths.groupList -> onGetGroupList(session).toJsonElement()
         Paths.memberList -> {
             val target = element?.jsonObject?.get("target")?.jsonPrimitive?.content?.toLong()
             target?.let {
-                onGetMemberList(session, target).toJson()
-            } ?: StateCode.IllegalAccess("参数错误").toJson()
+                onGetMemberList(session, target).toJsonElement()
+            } ?: StateCode.IllegalAccess("参数错误").toJsonElement()
         }
-        Paths.botProfile -> StateCode.NoOperateSupport.toJson()
-        Paths.friendProfile -> StateCode.NoOperateSupport.toJson()
-        Paths.memberProfile -> StateCode.NoOperateSupport.toJson()
+        Paths.botProfile -> StateCode.NoOperateSupport.toJsonElement()
+        Paths.friendProfile -> StateCode.NoOperateSupport.toJsonElement()
+        Paths.memberProfile -> StateCode.NoOperateSupport.toJsonElement()
 
 
         // message
         Paths.messageFromId -> {
             val id = element?.jsonObject?.get("id")?.jsonPrimitive?.content?.toInt()
             id?.let {
-                onGetMessageFromId(session, id).toJson()
-            } ?: StateCode.IllegalAccess("参数错误").toJson()
+                onGetMessageFromId(session, id).toJsonElement()
+            } ?: StateCode.IllegalAccess("参数错误").toJsonElement()
         }
         Paths.sendFriendMessage -> execute(session, element, ::onSendFriendMessage)
         Paths.sendGroupMessage -> execute(session, element, ::onSendGroupMessage)
         Paths.sendTempMessage -> execute(session, element, ::onSendTempMessage)
         Paths.sendImageMessage -> execute(session, element, ::onSendImageMessage)
-        Paths.uploadImage -> StateCode.NoOperateSupport.toJson()
-        Paths.uploadVoice -> StateCode.NoOperateSupport.toJson()
+        Paths.uploadImage -> StateCode.NoOperateSupport.toJsonElement()
+        Paths.uploadVoice -> StateCode.NoOperateSupport.toJsonElement()
         Paths.recall -> execute(session, element, ::onRecall)
-        else -> StateCode.NoOperateSupport.toJson()
+        else -> StateCode.NoOperateSupport.toJsonElement()
     }
 
-    send(Frame.Text(json))
+    send(Frame.Text(WsResp(
+        syncId = commandWrapper.syncId,
+        data = jsonElement
+    ).toJson()))
 }
 
 private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
     session: AuthedSession,
     content: JsonElement?,
     crossinline action: suspend (T) -> R
-): String {
+): JsonElement {
     val parameter = parseContent<T>(content)
     parameter.session = session
-    return action(parameter).toJson()
+    return action(parameter).toJsonElement()
 }
 
 private inline fun <reified T : AuthedDTO> parseContent(content: JsonElement?): T =

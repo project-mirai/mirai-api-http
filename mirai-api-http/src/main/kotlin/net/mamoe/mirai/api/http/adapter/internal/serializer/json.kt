@@ -54,6 +54,14 @@ internal class JsonSerializer : InternalSerializer {
         return json.encodeToString(ListSerializer(clazz.serializer()), list)
     }
 
+    override fun <T : Any> encodeElement(dto: T, clazz: KClass<T>): JsonElement {
+        return json.encodeToJsonElement(clazz.serializer(), dto)
+    }
+
+    override fun <T : Any> encodeElement(list: List<T>, clazz: KClass<T>): JsonElement {
+        return json.encodeToJsonElement(ListSerializer(clazz.serializer()), list)
+    }
+
     override fun <T : Any> decode(content: String, clazz: KClass<T>): T {
         return json.decodeFromString(clazz.serializer(), content)
     }

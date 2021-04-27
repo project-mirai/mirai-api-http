@@ -26,6 +26,16 @@ internal interface InternalSerializer {
     fun <T : Any> encode(list: List<T>, clazz: KClass<T>): String
 
     /**
+     * 序列化方法
+     */
+    fun <T : Any> encodeElement(dto: T, clazz: KClass<T>): JsonElement
+
+    /**
+     * 序列化列表
+     */
+    fun <T : Any> encodeElement(list: List<T>, clazz: KClass<T>): JsonElement
+
+    /**
      * 反序列化方法
      */
     fun <T : Any> decode(content: String, clazz: KClass<T>): T
@@ -42,6 +52,10 @@ internal interface InternalSerializer {
 internal inline fun <reified T : Any> InternalSerializer.encode(dto: T) = encode(dto, T::class)
 
 internal inline fun <reified T : Any> InternalSerializer.encode(collection: List<T>) = encode(collection, T::class)
+
+internal inline fun <reified T : Any> InternalSerializer.encodeElement(dto: T) = encodeElement(dto, T::class)
+
+internal inline fun <reified T : Any> InternalSerializer.encodeElement(list: List<T>) = encodeElement(list, T::class)
 
 internal inline fun <reified T : Any> InternalSerializer.decode(content: String) = decode(content, T::class)
 
