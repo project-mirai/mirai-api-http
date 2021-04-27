@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.*
 
 @Serializable
-abstract class ContactDTO : DTO {
+internal abstract class ContactDTO : DTO {
     abstract val id: Long
 }
 
 @Serializable
-data class QQDTO(
+internal data class QQDTO(
     override val id: Long,
     val nickname: String,
     val remark: String
@@ -20,7 +20,7 @@ data class QQDTO(
 
 
 @Serializable
-data class MemberDTO(
+internal data class MemberDTO(
     override val id: Long,
     val memberName: String,
     val permission: MemberPermission,
@@ -33,7 +33,7 @@ data class MemberDTO(
 }
 
 @Serializable
-data class GroupDTO(
+internal data class GroupDTO(
     override val id: Long,
     val name: String,
     val permission: MemberPermission

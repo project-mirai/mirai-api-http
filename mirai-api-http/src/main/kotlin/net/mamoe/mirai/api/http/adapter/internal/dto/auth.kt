@@ -7,13 +7,13 @@ import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
 @Serializable
-data class VerifyDTO(val verifyKey: String) : DTO
+internal data class VerifyDTO(val verifyKey: String) : DTO
 
 @Serializable
-data class VerifyRetDTO(val code: Int, val session: String) : DTO
+internal data class VerifyRetDTO(val code: Int, val session: String) : DTO
 
 @Serializable
-abstract class AuthedDTO : DTO {
+internal abstract class AuthedDTO : DTO {
     val sessionKey: String = MahContext.SINGLE_SESSION_KEY
 
     @Transient
@@ -21,4 +21,4 @@ abstract class AuthedDTO : DTO {
 }
 
 @Serializable
-data class BindDTO(val qq: Long) : AuthedDTO()
+internal data class BindDTO(val qq: Long) : AuthedDTO()

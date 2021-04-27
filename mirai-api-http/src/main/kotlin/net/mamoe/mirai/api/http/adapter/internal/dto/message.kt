@@ -4,49 +4,49 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class MessagePacketDTO : EventDTO() {
+internal sealed class MessagePacketDTO : EventDTO() {
     lateinit var messageChain: MessageChainDTO
 }
 
-typealias MessageChainDTO = List<MessageDTO>
+internal typealias MessageChainDTO = List<MessageDTO>
 
 @Serializable
 @SerialName("FriendMessage")
-data class FriendMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
+internal data class FriendMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("GroupMessage")
-data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
+internal data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("TempMessage")
-data class TempMessagePacketDto(val sender: MemberDTO) : MessagePacketDTO()
+internal data class TempMessagePacketDto(val sender: MemberDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("StrangerMessage")
-data class StrangerMessagePacketDto(val sender: QQDTO) : MessagePacketDTO()
+internal data class StrangerMessagePacketDto(val sender: QQDTO) : MessagePacketDTO()
 
 
 // Message
 @Serializable
 @SerialName("Source")
-data class MessageSourceDTO(val id: Int, val time: Int) : MessageDTO()
+internal data class MessageSourceDTO(val id: Int, val time: Int) : MessageDTO()
 
 @Serializable
 @SerialName("At")
-data class AtDTO(val target: Long, val display: String = "") : MessageDTO()
+internal data class AtDTO(val target: Long, val display: String = "") : MessageDTO()
 
 @Serializable
 @SerialName("AtAll")
-data class AtAllDTO(val target: Long = 0) : MessageDTO() // target为保留字段
+internal data class AtAllDTO(val target: Long = 0) : MessageDTO() // target为保留字段
 
 @Serializable
 @SerialName("Face")
-data class FaceDTO(val faceId: Int = -1, val name: String = "") : MessageDTO()
+internal data class FaceDTO(val faceId: Int = -1, val name: String = "") : MessageDTO()
 
 @Serializable
 @SerialName("Plain")
-data class PlainDTO(val text: String) : MessageDTO()
+internal data class PlainDTO(val text: String) : MessageDTO()
 
 internal interface ImageLikeDTO {
     val imageId: String?

@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  *
  * {@see [JsonSerializer]}
  */
-interface InternalSerializer {
+internal interface InternalSerializer {
 
     /**
      * 序列化方法
@@ -39,10 +39,10 @@ interface InternalSerializer {
 /**
  * 以下为解决多态情况下无法处理泛型的问题，利用扩展函数带入泛型上下文
  */
-inline fun <reified T : Any> InternalSerializer.encode(dto: T) = encode(dto, T::class)
+internal inline fun <reified T : Any> InternalSerializer.encode(dto: T) = encode(dto, T::class)
 
-inline fun <reified T : Any> InternalSerializer.encode(collection: List<T>) = encode(collection, T::class)
+internal inline fun <reified T : Any> InternalSerializer.encode(collection: List<T>) = encode(collection, T::class)
 
-inline fun <reified T : Any> InternalSerializer.decode(content: String) = decode(content, T::class)
+internal inline fun <reified T : Any> InternalSerializer.decode(content: String) = decode(content, T::class)
 
-inline fun <reified T : Any> InternalSerializer.decode(element: JsonElement) = decode(element, T::class)
+internal inline fun <reified T : Any> InternalSerializer.decode(element: JsonElement) = decode(element, T::class)
