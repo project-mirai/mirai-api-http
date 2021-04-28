@@ -8,7 +8,7 @@ data class HttpAdapterSetting(
     /**
      * 监听 url
      */
-    val host: String = "",
+    val host: String = "localhost",
 
     /**
      * 监听端口
