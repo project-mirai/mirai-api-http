@@ -33,6 +33,10 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
         }
     }
 
+    override fun onEnable() {
+        log.info(">>> [ws adapter] is listening at http://${setting.host}:${setting.port}")
+    }
+
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
         when(event) {
             is MessageEvent -> offerChannel(event, messageChannel)

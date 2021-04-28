@@ -14,6 +14,7 @@ import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.utils.MiraiLogger
 import net.mamoe.yamlkt.Yaml
 
 /**
@@ -21,6 +22,8 @@ import net.mamoe.yamlkt.Yaml
  * 不同接口格式请实现该接口
  */
 abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
+
+    protected val log = MiraiLogger.create("$name adapter")
 
     /**
      * 初始化

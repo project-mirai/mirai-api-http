@@ -22,6 +22,9 @@ class WebhookAdapter : MahAdapter("webhook") {
     }
 
     override fun enable() {
+
+        log.info(">>> [webhook adapter] is running")
+
         botEventListener = GlobalEventChannel.subscribeAlways {
             setting.destinations.forEach {
                 hook(it, this)

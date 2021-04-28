@@ -6,6 +6,7 @@ import io.ktor.server.engine.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import net.mamoe.mirai.utils.MiraiLogger
 import org.slf4j.LoggerFactory
+import org.slf4j.helpers.NOPLogger
 
 /**
  * 使用 ktor 提供服务的 adapter，会提供 ktor 的 server 进行复用
@@ -38,7 +39,7 @@ abstract class MahKtorAdapter(name: String) : MahAdapter(name) {
                     coroutineLogger.error(throwable)
                 }
 
-                log = LoggerFactory.getLogger(serverName)
+                log = NOPLogger.NOP_LOGGER
 
                 modules.addAll(conf.modules)
 
@@ -52,6 +53,7 @@ abstract class MahKtorAdapter(name: String) : MahAdapter(name) {
 
 
     abstract fun MahKtorAdapterInitBuilder.initKtorAdapter()
+    abstract fun onEnable()
 
     /**
      * 将 Adapter 绑定的 ktor server 配置进行缓存
@@ -70,7 +72,10 @@ abstract class MahKtorAdapter(name: String) : MahAdapter(name) {
      */
     final override fun enable() {
         SERVER_CACHE.forEach { entry ->
-            buildKtorServer(entry.key)?.start(wait = false)
+            buildKtorServer(entry.key)?.apply {
+                start(wait = false)
+                entry.value.bindingAdapters.forEach { it.onEnable() }
+            }
         }
     }
 

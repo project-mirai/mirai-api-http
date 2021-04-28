@@ -39,6 +39,8 @@ object MahPluginImpl : CoroutineScope {
             }
         }
 
+        logger.info("********************************************************")
+
         MahContextHolder.mahContext.adapters.forEach {
             it.initAdapter()
         }
@@ -47,7 +49,6 @@ object MahPluginImpl : CoroutineScope {
         }
 
         with(MahContextHolder.mahContext) {
-            logger.info("********************************************************")
             if (enableVerify) {
                 logger.info("Http api server is running with verifyKey: ${sessionManager.verifyKey}")
             } else {
@@ -55,9 +56,9 @@ object MahPluginImpl : CoroutineScope {
             }
             val list = adapters.joinToString(prefix = "[", separator = ",", postfix = "]") { it.name }
             logger.info("adaptors: $list")
-            logger.info("********************************************************")
         }
 
+        logger.info("********************************************************")
     }
 
     fun stop() = MahContextHolder.mahContext.adapters.forEach(MahAdapter::disable)

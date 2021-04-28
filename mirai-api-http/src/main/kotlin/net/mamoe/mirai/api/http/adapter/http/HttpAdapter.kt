@@ -23,6 +23,10 @@ class HttpAdapter : MahKtorAdapter("http") {
         module { httpModule(this@HttpAdapter) }
     }
 
+    override fun onEnable() {
+        log.info(">>> [http adapter] is listening at http://${setting.host}:${setting.port}")
+    }
+
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
         if (session is HttpAuthedSession) {
             session.unreadQueue.offer(event.toDTO())
