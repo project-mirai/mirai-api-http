@@ -20,23 +20,26 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.streams.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
-fun Application.httpModule() {
+fun Application.httpModule(adapter: HttpAdapter) {
     install(DefaultHeaders)
-//    install(CORS) {
-//        method(HttpMethod.Options)
-//        allowNonSimpleContentTypes = true
-//        maxAgeDuration = 1.toDuration(DurationUnit.DAYS)
-//
-////        MainSetting.cors.forEach {
-////            host(it, schemes = listOf("http", "https"))
-////        }
-//    }
+    install(CORS) {
+        method(HttpMethod.Options)
+        allowNonSimpleContentTypes = true
+        maxAgeInSeconds = 86_400 // aka 24 * 3600
+
+        adapter.setting.cors.forEach {
+            host(it, schemes = listOf("http", "https"))
+        }
+    }
     authRouter()
     messageRouter()
     eventRouter()

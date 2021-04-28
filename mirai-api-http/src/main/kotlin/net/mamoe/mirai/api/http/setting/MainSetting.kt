@@ -14,6 +14,7 @@ import net.mamoe.mirai.api.http.context.session.manager.generateRandomSessionKey
 import net.mamoe.mirai.console.data.PluginConfig
 import net.mamoe.mirai.console.data.ReadOnlyPluginData
 import net.mamoe.mirai.console.data.value
+import net.mamoe.yamlkt.YamlElement
 
 typealias Destination = String
 typealias Destinations = List<Destination>
@@ -74,7 +75,7 @@ object MainSetting : ReadOnlyPluginData("setting"), PluginConfig {
 
 //    val cors: List<String> by value(listOf("*"))
 
-    val modules: List<String> by value(listOf("http"))
+    val adapters: List<String> by value(listOf("http"))
 
     /**
      * mirai api http 所使用的地址，默认为 0.0.0.0
@@ -105,6 +106,11 @@ object MainSetting : ReadOnlyPluginData("setting"), PluginConfig {
      * 消息记录缓存区大小，默认为 4096
      */
     val cacheSize: Int by value(4096)
+
+    /**
+     * Adapter 配置
+     */
+    val adapterSettings: Map<String, YamlElement> by value()
 //
 //    /**
 //     * 是否启用 websocket 服务

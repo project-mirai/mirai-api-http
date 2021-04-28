@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("net.mamoe.mirai-console") version "2.6-RC"
+    id("net.mamoe.mirai-console") version "2.6.2"
 }
 
 val ktorVersion: String by rootProject.extra
@@ -22,10 +22,12 @@ kotlin {
 
         dependencies {
 
+            // 支持到 localMode 调试使用, 打包时排除
+            api("net.mamoe.yamlkt:yamlkt:0.9.0")
+
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
-            api("org.yaml:snakeyaml:1.25")
 
             api(ktor("server-core"))
             api(ktor("http"))

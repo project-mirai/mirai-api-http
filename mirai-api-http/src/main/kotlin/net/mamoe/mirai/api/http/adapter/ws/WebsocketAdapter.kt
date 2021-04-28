@@ -16,13 +16,18 @@ import java.util.concurrent.ConcurrentHashMap
 
 class WebsocketAdapter : MahKtorAdapter("ws") {
 
+    internal val setting: WebsocketAdapterSetting by lazy {
+        getSetting() ?: WebsocketAdapterSetting()
+    }
+
     internal val messageChannel = ConcurrentHashMap<String, SendChannel<Frame>>()
     internal val eventChannel = ConcurrentHashMap<String, SendChannel<Frame>>()
     internal val allChannel = ConcurrentHashMap<String, SendChannel<Frame>>()
 
     override fun MahKtorAdapterInitBuilder.initKtorAdapter() {
-        host = "localhost"
-        port = 8080
+        host = setting.host
+        port = setting.port
+
         module {
             websocketRouteModule(this@WebsocketAdapter)
         }

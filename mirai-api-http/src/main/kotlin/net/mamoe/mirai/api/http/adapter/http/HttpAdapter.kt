@@ -11,10 +11,16 @@ import net.mamoe.mirai.event.events.BotEvent
 
 class HttpAdapter : MahKtorAdapter("http") {
 
+    internal val setting: HttpAdapterSetting by lazy {
+        getSetting() ?: HttpAdapterSetting()
+    }
+
     override fun MahKtorAdapterInitBuilder.initKtorAdapter() {
-        host = "localhost"
-        port = 8080
-        module(Application::httpModule)
+
+        host = setting.host
+        port = setting.port
+
+        module { httpModule(this@HttpAdapter) }
     }
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {

@@ -43,7 +43,7 @@ object HttpApiPluginBase : KotlinPlugin(
                 singleMode = this@with.singleMode
                 localMode = false
 
-                parseAdapter(modules).forEach(::plus)
+                parseAdapter(this@with.adapters).forEach(::plus)
             }
         }
     }

@@ -2,9 +2,11 @@ package mirai
 
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.HttpApiPluginBase
+import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.enable
 import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.load
+import net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 
 object RunMirai {
@@ -14,8 +16,7 @@ object RunMirai {
     @ConsoleExperimentalApi
     @JvmStatic
     fun main(args: Array<String>) {
-        // TODO: fix me
-//        MiraiConsoleTerminalLoader.startAsDaemon()
+        MiraiConsoleTerminalLoader.startAsDaemon()
 
         HttpApiPluginBase.load()
         HttpApiPluginBase.enable()
