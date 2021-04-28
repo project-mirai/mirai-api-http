@@ -28,6 +28,7 @@ kotlin {
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
+            api(ktor("client-websockets"))
 
             api(ktor("server-core"))
             api(ktor("http"))

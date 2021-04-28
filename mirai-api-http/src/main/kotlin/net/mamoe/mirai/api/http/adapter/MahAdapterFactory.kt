@@ -1,6 +1,7 @@
 package net.mamoe.mirai.api.http.adapter
 
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
+import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdaptor
 import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 
@@ -14,8 +15,12 @@ object MahAdapterFactory {
     private val registered: MutableMap<String, Class<out MahAdapter>> = mutableMapOf()
 
     init {
+        /**
+         * builtin adapters
+         */
         register("http", HttpAdapter::class.java)
         register("ws", WebsocketAdapter::class.java)
+        register("reverse-ws", ReverseWebsocketAdaptor::class.java)
         register("webhook", WebhookAdapter::class.java)
     }
 
