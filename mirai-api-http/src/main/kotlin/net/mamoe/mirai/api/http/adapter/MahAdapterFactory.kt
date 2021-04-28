@@ -1,6 +1,7 @@
 package net.mamoe.mirai.api.http.adapter
 
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
+import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 
 /**
@@ -15,6 +16,7 @@ object MahAdapterFactory {
     init {
         register("http", HttpAdapter::class.java)
         register("ws", WebsocketAdapter::class.java)
+        register("webhook", WebhookAdapter::class.java)
     }
 
     fun register(name: String, adapter: Class<out MahAdapter>) = registered.put(name, adapter)
