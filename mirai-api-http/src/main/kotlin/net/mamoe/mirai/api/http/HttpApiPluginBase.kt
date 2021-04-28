@@ -11,10 +11,13 @@ package net.mamoe.mirai.api.http
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
+import net.mamoe.mirai.api.http.loader.AdapterLoader
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import java.io.File
 
 /**
  * Mirai Console 插件定义
@@ -28,8 +31,14 @@ object HttpApiPluginBase : KotlinPlugin(
     }
 ) {
     override fun onEnable() {
+        // 加载配置文件
         MainSetting.reload()
 
+        // 注册外部 adapter
+        val extensionAdapterFile = File(HttpApiPluginBase.configFolder, "adapters")
+        AdapterLoader(extensionAdapterFile).loadAdapterFromJar()
+
+        // 执行 mah 插件逻辑
         with(MainSetting) {
 
             if (verifyKey.startsWith("INITKEY")) {
