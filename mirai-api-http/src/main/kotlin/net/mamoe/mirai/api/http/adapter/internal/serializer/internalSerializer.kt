@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  * <P>
  * 提供外部接口为了在使用这些内部实现的 Adapter 时，可以复用 Adapter 的交互逻辑，但序列化进行解耦
  *
- * {@see [JsonSerializer]}
+ * {@see [BuiltinJsonSerializer], [CustomJsonSerializer]}
  */
 internal interface InternalSerializer {
 

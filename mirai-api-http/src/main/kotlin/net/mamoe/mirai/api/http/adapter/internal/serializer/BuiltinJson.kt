@@ -11,7 +11,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import kotlin.reflect.KClass
 
 @OptIn(InternalSerializationApi::class)
-internal class JsonSerializer : InternalSerializer {
+internal class BuiltinJsonSerializer : InternalSerializer {
 
     /**
      * Json解析规则，需要注册支持的多态的类
