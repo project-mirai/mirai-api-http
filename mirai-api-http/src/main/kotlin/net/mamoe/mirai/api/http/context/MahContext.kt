@@ -21,6 +21,7 @@ import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.event.events.MessageEvent
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
@@ -126,7 +127,12 @@ object MahContextHolder {
 
     private suspend fun broadcast(event: BotEvent, session: IAuthedSession) {
         mahContext.adapters.forEach {
-            session.launch { it.onReceiveBotEvent(event, session) }
+            session.launch {
+                if (event is MessageEvent) {
+                    session.sourceCache.offer(event.source)
+                }
+                it.onReceiveBotEvent(event, session)
+            }
         }
     }
 
