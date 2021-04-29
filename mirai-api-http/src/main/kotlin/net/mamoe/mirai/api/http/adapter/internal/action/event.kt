@@ -4,7 +4,7 @@ package net.mamoe.mirai.api.http.adapter.internal.action
 import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.Mirai
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.internal.dto.EventRespDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.EventRespDTO
 
 @OptIn(LowLevelApi::class, net.mamoe.mirai.utils.MiraiExperimentalApi::class)
 internal suspend fun onNewFriendRequestEvent(eventRespDTO: EventRespDTO): StateCode = eventRespDTO.let {

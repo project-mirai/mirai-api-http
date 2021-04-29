@@ -1,7 +1,14 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupConfigDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupDetailDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.KickDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberDetailDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberInfoDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MuteDTO
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
 /**
@@ -47,7 +54,7 @@ internal suspend fun onKick(dto: KickDTO): StateCode {
 /**
  * Bot退出群聊（Bot不能为群主）
  */
-internal suspend fun onQuit(dto: QuitDTO): StateCode {
+internal suspend fun onQuit(dto: LongTargetDTO): StateCode {
     val succeed = dto.session.bot.getGroupOrFail(dto.target).quit()
     return if (succeed) StateCode.Success
     else StateCode.PermissionDenied

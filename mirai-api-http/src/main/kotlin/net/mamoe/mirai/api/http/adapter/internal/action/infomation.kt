@@ -1,6 +1,9 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.FriendList
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
 /**

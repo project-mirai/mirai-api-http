@@ -6,6 +6,7 @@ import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
@@ -176,7 +177,7 @@ internal suspend fun onUploadVoice(session: HttpAuthedSession, stream: InputStre
 /**
  * 消息撤回
  */
-internal suspend fun onRecall(recallDTO: RecallDTO): StateCode {
+internal suspend fun onRecall(recallDTO: IntTargetDTO): StateCode {
     recallDTO.session.sourceCache[recallDTO.target].recall()
     return StateCode.Success
 }
