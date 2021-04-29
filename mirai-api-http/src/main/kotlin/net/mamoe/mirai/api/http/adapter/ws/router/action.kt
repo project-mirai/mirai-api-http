@@ -55,6 +55,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.unmute -> execute(session, element, ::onUnmute)
         Paths.kick -> execute(session, element, ::onKick)
         Paths.quit -> execute(session, element, ::onQuit)
+        Paths.essence -> execute(session, element, ::onSetEssence)
         Paths.groupConfig -> {
             when (commandWrapper.subCommand) {
                 "get" -> {

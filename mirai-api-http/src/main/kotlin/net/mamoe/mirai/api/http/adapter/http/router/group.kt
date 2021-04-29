@@ -50,6 +50,11 @@ internal fun Application.groupManageRouter() = routing {
     httpAuthedPost(Paths.quit, respondStateCodeStrategy(::onQuit))
 
     /**
+     * 设置群精华消息
+     */
+    httpAuthedPost(Paths.essence, respondStateCodeStrategy(::onSetEssence))
+
+    /**
      * 获取群设置（需要相关权限）
      */
     httpAuthedGet(Paths.groupConfig) {

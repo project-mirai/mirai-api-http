@@ -21,6 +21,12 @@ internal data class KickDTO(
 ) : AuthedDTO()
 
 @Serializable
+internal data class EssenceDTO(
+    val target: Long,
+    val messageId: Int,
+) : AuthedDTO()
+
+@Serializable
 internal data class GroupConfigDTO(
     val target: Long,
     val config: GroupDetailDTO
