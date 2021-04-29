@@ -46,6 +46,11 @@ internal class UploadVoiceRetDTO(
 ) : DTO
 
 @Serializable
+internal data class DeleteFriendDTO(
+    val target: Long
+) : AuthedDTO()
+
+@Serializable
 internal data class RecallDTO(
     val target: Int
 ) : AuthedDTO()

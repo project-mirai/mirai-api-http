@@ -13,6 +13,9 @@ object Paths {
     const val memberJoin = "resp_memberJoinRequestEvent"
     const val botInvited = "resp_botInvitedJoinGroupRequestEvent"
 
+    // friend
+    const val deleteFriend = "deleteFriend"
+
     // group
     const val muteAll = "muteAll"
     const val unmuteAll = "unmuteAll"

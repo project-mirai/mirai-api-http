@@ -44,6 +44,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
     messageRouter()
     eventRouter()
     infoRouter()
+    friendManageRouter()
     groupManageRouter()
     aboutRouter()
 }

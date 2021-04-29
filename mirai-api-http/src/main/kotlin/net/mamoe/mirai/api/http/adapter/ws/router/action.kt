@@ -44,6 +44,10 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.botInvited -> execute(session, element, ::onBotInvitedJoinGroupRequestEvent)
 
 
+        // friend
+        Paths.deleteFriend -> execute(session, element, ::onDeleteFriend)
+
+
         // group
         Paths.muteAll -> execute(session, element, ::onMuteAll)
         Paths.unmuteAll -> execute(session, element, ::onUnmuteAll)

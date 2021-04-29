@@ -1,8 +1,6 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
