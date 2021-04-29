@@ -180,3 +180,23 @@ internal suspend fun onRecall(recallDTO: RecallDTO): StateCode {
     recallDTO.session.sourceCache[recallDTO.target].recall()
     return StateCode.Success
 }
+
+internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
+    when (nudgeDTO.kind) {
+        "Friend" -> nudgeDTO.session.bot.let {
+            val target = it.getFriend(nudgeDTO.target) ?: return StateCode.NoElement
+            val receiver = it.getFriend(nudgeDTO.subject) ?: return StateCode.NoElement
+            target.nudge().sendTo(receiver)
+        }
+        "Stranger" -> nudgeDTO.session.bot.let {
+            val target = it.getStranger(nudgeDTO.target) ?: return StateCode.NoElement
+            val receiver = it.getStranger(nudgeDTO.subject) ?: return StateCode.NoElement
+            target.nudge().sendTo(receiver)
+        }
+        "Group" -> nudgeDTO.session.bot.let {
+            val target = it.getGroup(nudgeDTO.subject)?.get(nudgeDTO.target) ?: return StateCode.NoElement
+            target.nudge().sendTo(target.group)
+        }
+    }
+    return StateCode.Success
+}

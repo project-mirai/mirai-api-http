@@ -40,3 +40,19 @@ internal data class GroupDTO(
 ) : ContactDTO() {
     constructor(group: Group) : this(group.id, group.name, group.botPermission)
 }
+
+@Serializable
+internal data class ComplexSubjectDTO(
+    override val id: Long,
+    val kind: String
+) : ContactDTO() {
+    constructor(contact: Contact) : this(
+        contact.id, when (contact) {
+            is Stranger -> "Stranger"
+            is Friend -> "Friend"
+            is Group -> "Group"
+            is OtherClient -> "OtherClient"
+            else -> error("Contact type ${contact::class.simpleName} not supported")
+        }
+    )
+}

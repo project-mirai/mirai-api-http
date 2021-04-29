@@ -237,3 +237,28 @@ internal data class BotInvitedJoinGroupRequestEventDTO(
     val groupName: String,
     val nick: String
 ) : BotEventDTO()
+
+@Serializable
+@SerialName("NudgeEvent")
+internal data class NudgeEventDTO(
+    val fromId: Long,
+    val target: Long,
+    val subject: ComplexSubjectDTO,
+    val action: String,
+    val suffix: String,
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendInputStatusChangedEvent")
+internal data class FriendInputStatusChangedEventDTO(
+    val friend: QQDTO,
+    val inputting: Boolean,
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendNickChangedEvent")
+internal data class FriendNickChangedEventDTO(
+    val friend: QQDTO,
+    val from: String,
+    val to: String,
+) : BotEventDTO()

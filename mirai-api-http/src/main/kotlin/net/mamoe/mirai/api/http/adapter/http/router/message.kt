@@ -110,4 +110,9 @@ internal fun Application.messageRouter() = routing {
      * 撤回消息
      */
     httpAuthedPost(Paths.recall, respondStateCodeStrategy(::onRecall))
+
+    /**
+     * 发送 戳一戳
+     */
+    httpAuthedPost(Paths.sendNudge, respondStateCodeStrategy(::onNudge))
 }

@@ -37,6 +37,7 @@ object Paths {
     const val sendGroupMessage = "sendGroupMessage"
     const val sendTempMessage = "sendTempMessage"
     const val sendImageMessage = "sendImageMessage"
+    const val sendNudge = "sendNudge"
     const val uploadImage = "uploadImage"
     const val uploadVoice = "uploadVoice"
     const val recall = "recall"

@@ -77,6 +77,13 @@ internal data class GroupConfigDTO(
 ) : AuthedDTO()
 
 @Serializable
+internal data class NudgeDTO(
+    val target: Long,
+    val subject: Long,
+    val kind: String,
+) : AuthedDTO()
+
+@Serializable
 internal data class GroupDetailDTO(
     val name: String? = null,
     val announcement: String? = null,

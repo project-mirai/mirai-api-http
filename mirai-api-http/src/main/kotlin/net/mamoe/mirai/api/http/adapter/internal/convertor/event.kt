@@ -32,6 +32,7 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     )
     is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
     is BotUnmuteEvent -> BotUnmuteEventDTO(MemberDTO(operator))
+    // TODO: BotJoinGroupEvent 细分
     is BotJoinGroupEvent -> BotJoinGroupEventDTO(GroupDTO(group))
     is BotLeaveEvent.Active -> BotLeaveEventActiveDTO(GroupDTO(group))
     is BotLeaveEvent.Kick -> BotLeaveEventKickDTO(GroupDTO(group))
@@ -77,6 +78,7 @@ internal fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
+    // TODO: MemberJoinEvent 细分
     is MemberJoinEvent -> MemberJoinEventDTO(MemberDTO(member))
     is MemberLeaveEvent.Kick -> MemberLeaveEventKickDTO(
         MemberDTO(member),
@@ -135,5 +137,8 @@ internal fun BotEvent.convertBotEvent() = when (this) {
         groupName,
         invitorNick
     )
+    is NudgeEvent -> NudgeEventDTO(from.id, target.id, ComplexSubjectDTO(subject), action, suffix)
+    is FriendInputStatusChangedEvent -> FriendInputStatusChangedEventDTO(QQDTO(friend), inputting)
+    is FriendNickChangedEvent -> FriendNickChangedEventDTO(QQDTO(friend), from, to)
     else -> IgnoreEventDTO
 }

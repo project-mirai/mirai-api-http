@@ -108,6 +108,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.uploadImage -> StateCode.NoOperateSupport.toJsonElement()
         Paths.uploadVoice -> StateCode.NoOperateSupport.toJsonElement()
         Paths.recall -> execute(session, element, ::onRecall)
+        Paths.sendNudge -> execute(session, element, ::onNudge)
         else -> StateCode.NoOperateSupport.toJsonElement()
     }
 
