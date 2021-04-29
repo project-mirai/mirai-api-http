@@ -7,6 +7,8 @@ import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
@@ -38,7 +40,7 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
     }
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
-        when(event) {
+        when (event) {
             is MessageEvent -> offerChannel(event, messageChannel)
             else -> offerChannel(event, eventChannel)
         }
@@ -48,7 +50,13 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
     private suspend fun offerChannel(event: BotEvent, channel: Map<String, SendChannel<Frame>>) {
         for (sendChannel in channel.values) {
             try {
-                sendChannel.send(Frame.Text(event.toDTO().toJson()))
+                sendChannel.send(
+                    Frame.Text(
+                        WsOutgoing(syncId = setting.reservedSyncId,
+                            data = event.toDTO().toJsonElement(),
+                        ).toJson()
+                    )
+                )
             } catch (e: Exception) {
                 //TODO: log exception
             }

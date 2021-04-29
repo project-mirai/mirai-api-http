@@ -8,7 +8,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
  * web socket 命令对象
  */
 @Serializable
-internal data class WsCommand(
+internal data class WsIncoming(
     val syncId: String?,
     val command: String,
     val subCommand: String? = null,
@@ -16,7 +16,7 @@ internal data class WsCommand(
 ) : DTO
 
 @Serializable
-internal data class WsResp(
+internal data class WsOutgoing(
     val syncId: String?,
     val data: JsonElement
 )

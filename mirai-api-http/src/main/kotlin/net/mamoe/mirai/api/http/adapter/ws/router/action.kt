@@ -15,19 +15,17 @@ import net.mamoe.mirai.api.http.adapter.internal.action.onNewFriendRequestEvent
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.GroupDetailDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
-import net.mamoe.mirai.api.http.adapter.ws.dto.WsCommand
-import net.mamoe.mirai.api.http.adapter.ws.dto.WsResp
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.context.session.AuthedSession
-import kotlin.io.path.Path
 
 internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, content: String) {
-    val commandWrapper = content.jsonParseOrNull<WsCommand>()
+    val commandWrapper = content.jsonParseOrNull<WsIncoming>()
         ?: run {
             send(Frame.Text(StateCode.IllegalAccess("参数无效").toJson()))
             return
@@ -113,7 +111,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         else -> StateCode.NoOperateSupport.toJsonElement()
     }
 
-    send(Frame.Text(WsResp(
+    send(Frame.Text(WsOutgoing(
         syncId = commandWrapper.syncId,
         data = jsonElement
     ).toJson()))

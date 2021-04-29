@@ -15,4 +15,8 @@ data class WebsocketAdapterSetting(
      */
     val port: Int = 8080,
 
+    /**
+     * 主动消息 syncId 保留字
+     */
+    val reservedSyncId: String = "-1",
 )

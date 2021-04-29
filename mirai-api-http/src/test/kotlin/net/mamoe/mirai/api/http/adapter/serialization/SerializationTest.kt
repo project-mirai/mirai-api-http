@@ -4,7 +4,7 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
-import net.mamoe.mirai.api.http.adapter.ws.dto.WsCommand
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -59,6 +59,6 @@ class SerializationTest {
     @Test
     fun testWsCommand() {
         val input = """{"syncId": "999", "command": "sendGroupMessage", content: {"target": 123123, messageChain: [{type: "Plain", text: "hello world"}]}}"""
-        InternalSerializerHolder.serializer.decode(input, WsCommand::class)
+        InternalSerializerHolder.serializer.decode(input, WsIncoming::class)
     }
 }
