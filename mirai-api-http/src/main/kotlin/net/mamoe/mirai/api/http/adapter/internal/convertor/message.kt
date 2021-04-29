@@ -55,5 +55,6 @@ internal suspend fun Message.toDTO() = when (this) {
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
+    is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     else -> UnknownMessageDTO
 }

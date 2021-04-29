@@ -119,6 +119,18 @@ data class DiceDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("MusicShare")
+data class MusicShareDTO(
+    val kind: String,
+    val title: String,
+    val summary: String,
+    val jumpUrl: String,
+    val pictureUrl: String,
+    val musicUrl: String,
+    val brief: String,
+) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
