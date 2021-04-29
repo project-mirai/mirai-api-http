@@ -24,8 +24,9 @@ internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
     else -> convertBotEvent()
 }
 
-internal suspend fun MessageChainDTO.toMessageChain(contact: Contact) =
-    buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact)?.let(::add) } }
+internal suspend fun MessageChainDTO.toMessageChain(contact: Contact): MessageChain {
+    return buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact)?.let(::add) } }
+}
 
 
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
@@ -47,6 +48,11 @@ internal suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is PokeMessageDTO -> PokeMap[name]
     is DiceDTO -> Dice(value)
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+    is ForwardMessageDTO -> buildForwardMessage(contact) {
+        nodes.forEach {
+            add(it.sender, it.name, it.messageChain.toMessageChain(contact), it.time)
+        }
+    }
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,

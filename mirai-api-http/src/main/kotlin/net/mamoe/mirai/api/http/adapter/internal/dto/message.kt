@@ -62,7 +62,7 @@ internal interface VoiceLikeDTO {
 
 @Serializable
 @SerialName("Image")
-data class ImageDTO(
+internal data class ImageDTO(
     override val imageId: String? = null,
     override val url: String? = null,
     override val path: String? = null
@@ -70,7 +70,7 @@ data class ImageDTO(
 
 @Serializable
 @SerialName("FlashImage")
-data class FlashImageDTO(
+internal data class FlashImageDTO(
     override val imageId: String? = null,
     override val url: String? = null,
     override val path: String? = null
@@ -78,7 +78,7 @@ data class FlashImageDTO(
 
 @Serializable
 @SerialName("Voice")
-data class VoiceDTO(
+internal data class VoiceDTO(
     override val voiceId: String? = null,
     override val url: String? = null,
     override val path: String? = null
@@ -86,19 +86,19 @@ data class VoiceDTO(
 
 @Serializable
 @SerialName("Xml")
-data class XmlDTO(val xml: String) : MessageDTO()
+internal data class XmlDTO(val xml: String) : MessageDTO()
 
 @Serializable
 @SerialName("Json")
-data class JsonDTO(val json: String) : MessageDTO()
+internal data class JsonDTO(val json: String) : MessageDTO()
 
 @Serializable
 @SerialName("App")
-data class AppDTO(val content: String) : MessageDTO()
+internal data class AppDTO(val content: String) : MessageDTO()
 
 @Serializable
 @SerialName("Quote")
-data class QuoteDTO(
+internal data class QuoteDTO(
     val id: Int,
     val senderId: Long,
     val targetId: Long,
@@ -108,19 +108,19 @@ data class QuoteDTO(
 
 @Serializable
 @SerialName("Poke")
-data class PokeMessageDTO(
+internal data class PokeMessageDTO(
     val name: String
 ) : MessageDTO()
 
 @Serializable
 @SerialName("Dice")
-data class DiceDTO(
+internal data class DiceDTO(
     val value: Int
 ) : MessageDTO()
 
 @Serializable
 @SerialName("MusicShare")
-data class MusicShareDTO(
+internal data class MusicShareDTO(
     val kind: String,
     val title: String,
     val summary: String,
@@ -129,6 +129,20 @@ data class MusicShareDTO(
     val musicUrl: String,
     val brief: String,
 ) : MessageDTO()
+
+@Serializable
+@SerialName("ForwardMessageDTO")
+internal data class ForwardMessageDTO(
+    val nodes : List<ForwardMessageNode>
+) : MessageDTO()
+
+@Serializable
+internal data class ForwardMessageNode(
+    val sender: Long,
+    val time: Int,
+    val name: String,
+    val messageChain: MessageChainDTO
+)
 
 @Serializable
 @SerialName("Unknown")

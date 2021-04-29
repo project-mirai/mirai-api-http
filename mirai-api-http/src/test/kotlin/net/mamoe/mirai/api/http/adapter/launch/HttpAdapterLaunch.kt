@@ -25,7 +25,7 @@ class HttpAdapterLaunch : LaunchTester() {
                     singleMode = true
                     localMode = true
 
-                    MahAdapterFactory.build("http")?.let(::plus)
+//                    MahAdapterFactory.build("http")?.let(::plus)
                     MahAdapterFactory.build("ws")?.let(::plus)
                 }
             }

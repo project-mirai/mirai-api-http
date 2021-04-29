@@ -7,6 +7,9 @@ internal fun groupMessageDTO(id: Long = 0, name: String = ""): GroupMessagePacke
     return GroupMessagePacketDTO(
         sender = MemberDTO(
             id, name, MemberPermission.OWNER,
+            joinTimestamp = 0,
+            lastSpeakTimestamp = 0,
+            muteTimeRemaining = 0,
             group = GroupDTO(id, name, MemberPermission.OWNER)
         )
     ).apply { messageChain = messageChainDTO() }

@@ -25,9 +25,6 @@ internal suspend fun MessageEvent.toDTO() = when (this) {
 
 internal suspend fun MessageChain.toDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     mutableListOf<MessageDTO>().apply {
-        this@toDTO[MessageSource]?.let { add(it.toDTO()) }
-        this@toDTO[QuoteReply]?.let { add(it.toDTO()) }
-
         this@toDTO.forEach { content ->
             content.toDTO().takeIf(filter)?.let { add(it) }
         }
@@ -56,5 +53,8 @@ internal suspend fun Message.toDTO() = when (this) {
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
     is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+    is ForwardMessage -> ForwardMessageDTO(nodeList.map {
+        ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
+    })
     else -> UnknownMessageDTO
 }
