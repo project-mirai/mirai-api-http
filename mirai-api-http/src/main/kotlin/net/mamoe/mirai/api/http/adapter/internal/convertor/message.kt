@@ -54,5 +54,6 @@ internal suspend fun Message.toDTO() = when (this) {
         // 避免套娃
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
+    is Dice -> DiceDTO(value)
     else -> UnknownMessageDTO
 }

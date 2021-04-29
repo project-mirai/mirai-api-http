@@ -113,6 +113,12 @@ data class PokeMessageDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("Dice")
+data class DiceDTO(
+    val value: Int
+) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 

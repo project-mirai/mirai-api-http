@@ -45,6 +45,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
     is PokeMessageDTO -> PokeMap[name]
+    is DiceDTO -> Dice(value)
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
