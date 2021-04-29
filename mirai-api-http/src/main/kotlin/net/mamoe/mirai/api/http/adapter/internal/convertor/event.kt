@@ -92,8 +92,6 @@ internal fun BotEvent.convertBotEvent() = when (this) {
         new,
         new,
         MemberDTO(member),
-        null // TODO: core改动，暂时使用null
-        //  operator?.let(::MemberDTO)
     )
     is MemberSpecialTitleChangeEvent -> MemberSpecialTitleChangeEventDTO(
         origin,

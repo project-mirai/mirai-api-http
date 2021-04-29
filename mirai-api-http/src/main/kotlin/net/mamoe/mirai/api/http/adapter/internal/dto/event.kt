@@ -170,7 +170,6 @@ internal data class MemberCardChangeEventDTO(
     val new: String,
     val current: String,
     val member: MemberDTO,
-    val operator: MemberDTO?
 ) : BotEventDTO()
 
 @Serializable
