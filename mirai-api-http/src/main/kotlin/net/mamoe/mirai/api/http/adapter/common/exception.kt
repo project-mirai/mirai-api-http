@@ -39,4 +39,4 @@ object NoSuchBotException: IllegalAccessException("指定Bot不存在")
 /**
  * 错误参数
  */
-class IllegalParamException(message: String) : IllegalAccessException(message)
+class IllegalParamException(message: String = "无效参数") : IllegalAccessException(message)

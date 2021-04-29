@@ -117,12 +117,12 @@ internal fun List<PartData>.value(name: String) =
     try {
         (filter { it.name == name }[0] as PartData.FormItem).value
     } catch (e: Exception) {
-        throw IllegalParamException("参数格式错误")
+        throw IllegalParamException()
     }
 
 internal fun List<PartData>.file(name: String) =
     try {
         filter { it.name == name }[0] as? PartData.FileItem
     } catch (e: Exception) {
-        throw IllegalParamException("参数格式错误")
+        throw IllegalParamException()
     }

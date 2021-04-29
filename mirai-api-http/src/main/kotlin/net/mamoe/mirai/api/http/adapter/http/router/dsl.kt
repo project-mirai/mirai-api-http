@@ -51,7 +51,7 @@ internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, cros
 @ContextDsl
 internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException("参数格式错误")
+        val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException()
         this.body(dto)
     }
 
@@ -59,7 +59,7 @@ internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<Ve
 @ContextDsl
 internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException("参数格式错误")
+        val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException()
         body(dto)
     }
 
@@ -78,7 +78,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
     crossinline body: Strategy<T>
 ) = routeWithHandle(path, HttpMethod.Post) {
-    val dto = context.receiveDTO<T>() ?: throw IllegalParamException("参数格式错误")
+    val dto = context.receiveDTO<T>() ?: throw IllegalParamException()
 
     getAuthedSession(dto.sessionKey).also { dto.session = it }
     this.body(dto)
@@ -101,7 +101,7 @@ internal inline fun Route.httpAuthedMultiPart(
     path: String, crossinline body: Strategy2<HttpAuthedSession, List<PartData>>
 ) = routeWithHandle(path, HttpMethod.Post) {
     val parts = call.receiveMultipart().readAllParts()
-    val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException("参数格式错误")
+    val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException()
 
     this.body(getAuthedSession(sessionKey), parts)
 }

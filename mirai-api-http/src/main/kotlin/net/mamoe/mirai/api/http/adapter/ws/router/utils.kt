@@ -37,7 +37,7 @@ internal inline fun Route.miraiWebsocket(
 
         // 非 single 模式校验 session key
         if (sessionKey == null) {
-            closeWithCode(StateCode.IllegalAccess("参数格式错误"))
+            closeWithCode(StateCode.InvalidParameter)
             return@webSocket
         }
 

@@ -25,6 +25,7 @@ open class StateCode(val code: Int, var msg: String) : DTO {
     object PermissionDenied : StateCode(10, "无操作权限")
     object BotMuted : StateCode(20, "Bot被禁言")
     object MessageTooLarge : StateCode(30, "消息过长")
+    object InvalidParameter : StateCode(400, "无效参数")
 
     class NoFile() : StateCode(6, "") {
         constructor(file: File) : this() {
