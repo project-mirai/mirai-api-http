@@ -90,12 +90,25 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.memberList -> {
             val target = element?.jsonObject?.get("target")?.jsonPrimitive?.content?.toLong()
             target?.let {
-                onGetMemberList(session, target).toJsonElement()
+                onGetMemberList(session, it).toJsonElement()
             } ?: StateCode.IllegalAccess("参数错误").toJsonElement()
         }
-        Paths.botProfile -> StateCode.NoOperateSupport.toJsonElement()
-        Paths.friendProfile -> StateCode.NoOperateSupport.toJsonElement()
-        Paths.memberProfile -> StateCode.NoOperateSupport.toJsonElement()
+        Paths.botProfile -> onGetBotProfile(session).toJsonElement()
+        Paths.friendProfile -> {
+            val target = element?.jsonObject?.get("target")?.jsonPrimitive?.content?.toLong()
+            target?.let {
+                onGetFriendProfile(session, it).toJsonElement()
+            } ?: StateCode.IllegalAccess("参数错误").toJsonElement()
+        }
+        Paths.memberProfile -> {
+            val group = element?.jsonObject?.get("group")?.jsonPrimitive?.content?.toLong()
+            val member = element?.jsonObject?.get("member")?.jsonPrimitive?.content?.toLong()
+            if (group != null && member != null) {
+                onGetMemberProfile(session, group, member).toJsonElement()
+            } else {
+                StateCode.IllegalAccess("参数错误").toJsonElement()
+            }
+        }
 
 
         // message

@@ -2,6 +2,7 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.data.UserProfile
 
 @Serializable
 internal abstract class ContactDTO : DTO {
@@ -58,5 +59,20 @@ internal data class ComplexSubjectDTO(
             is OtherClient -> "OtherClient"
             else -> error("Contact type ${contact::class.simpleName} not supported")
         }
+    )
+}
+
+@Serializable
+internal data class ProfileDTO(
+    val nickname: String,
+    val email: String,
+    val age: Int,
+    val level: Int,
+    val sign: String,
+    val sex: String,
+) : DTO {
+    constructor(profile: UserProfile) : this(
+        profile.nickname, profile.email, profile.age, profile.qLevel,
+        profile.sign, profile.sex.name,
     )
 }

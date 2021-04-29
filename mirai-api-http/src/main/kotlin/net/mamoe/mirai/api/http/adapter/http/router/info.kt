@@ -12,7 +12,10 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.internal.action.*
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetBotProfile
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetFriendList
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetFriendProfile
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetGroupList
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetMemberList
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
@@ -42,24 +45,19 @@ internal fun Application.infoRouter() = routing {
     /**
      * 查询 Bot 个人信息
      */
-    httpAuthedGet(Paths.botProfile) {
-        // TODO: 等待queryProfile()支持
-        call.respondStateCode(StateCode.NoOperateSupport)
-    }
+    httpAuthedGet(Paths.botProfile, respondDTOStrategy(::onGetBotProfile))
 
     /**
      * 查询好友个人信息
      */
     httpAuthedGet(Paths.friendProfile) {
-        // TODO: 等待queryProfile()支持
-        call.respondStateCode(StateCode.NoOperateSupport)
+        call.respondDTO(onGetFriendProfile(it, paramOrNull("target")))
     }
 
     /**
      * 查询QQ群成员个人信息
      */
     httpAuthedGet(Paths.memberProfile) {
-        // TODO: 等待queryProfile()支持
-        call.respondStateCode(StateCode.NoOperateSupport)
+        call.respondDTO(onGetMemberProfile(it, paramOrNull("group"), paramOrNull("member")))
     }
 }

@@ -5,6 +5,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.FriendList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.contact.getMemberOrFail
 
 /**
  * 查询好友列表
@@ -33,20 +34,17 @@ internal fun onGetMemberList(session: IAuthedSession, target: Long): MemberList 
 /**
  * 查询 Bot 个人信息
  */
-internal fun onGetBotProfile(session: IAuthedSession): Unit {
-
-}
+internal suspend fun onGetBotProfile(session: IAuthedSession): ProfileDTO =
+    ProfileDTO(session.bot.asFriend.queryProfile())
 
 /**
  * 查询好友个人信息
  */
-internal fun onGetFriendProfile(session: IAuthedSession): Unit {
-
-}
+internal suspend fun onGetFriendProfile(session: IAuthedSession, target: Long): ProfileDTO =
+    ProfileDTO(session.bot.getFriendOrFail(target).queryProfile())
 
 /**
  * 查询QQ群成员个人信息
  */
-internal fun onGetMemberProfile(session: IAuthedSession): Unit {
-
-}
+internal suspend fun onGetMemberProfile(session: IAuthedSession, group: Long, member: Long): ProfileDTO =
+    ProfileDTO(session.bot.getGroupOrFail(group).getOrFail(member).queryProfile())
