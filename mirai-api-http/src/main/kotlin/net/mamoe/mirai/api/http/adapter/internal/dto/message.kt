@@ -131,17 +131,18 @@ internal data class MusicShareDTO(
 ) : MessageDTO()
 
 @Serializable
-@SerialName("ForwardMessageDTO")
+@SerialName("ForwardMessage")
 internal data class ForwardMessageDTO(
-    val nodes : List<ForwardMessageNode>
+    val nodes: List<ForwardMessageNode>
 ) : MessageDTO()
 
 @Serializable
 internal data class ForwardMessageNode(
-    val sender: Long,
-    val time: Int,
-    val name: String,
-    val messageChain: MessageChainDTO
+    val sender: Long? = null,
+    val time: Int? = null,
+    val name: String? = null,
+    val messageChain: MessageChainDTO? = null,
+    val sourceId: Int? = null,
 )
 
 @Serializable

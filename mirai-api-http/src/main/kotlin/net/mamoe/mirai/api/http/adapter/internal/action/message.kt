@@ -78,7 +78,8 @@ internal suspend fun onSendFriendMessage(sendDTO: SendDTO): SendRetDTO {
         else -> throw NoSuchElementException()
     }
 
-    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(qq), qq)
+    val cache = sendDTO.session.sourceCache
+    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(qq, cache), qq)
     sendDTO.session.sourceCache.offer(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
@@ -97,7 +98,8 @@ internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
         else -> throw NoSuchElementException()
     }
 
-    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(group), group)
+    val cache = sendDTO.session.sourceCache
+    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(group, cache), group)
     sendDTO.session.sourceCache.offer(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
@@ -115,7 +117,8 @@ internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
         else -> throw NoSuchElementException()
     }
 
-    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member), member)
+    val cache = sendDTO.session.sourceCache
+    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member, cache), member)
     sendDTO.session.sourceCache.offer(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)

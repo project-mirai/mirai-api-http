@@ -3,11 +3,13 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexArray
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.UserOrBot
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.*
@@ -24,13 +26,13 @@ internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
     else -> convertBotEvent()
 }
 
-internal suspend fun MessageChainDTO.toMessageChain(contact: Contact): MessageChain {
-    return buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact)?.let(::add) } }
+internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: MessageSourceCache): MessageChain {
+    return buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact, cache)?.let(::add) } }
 }
 
 
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
-internal suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
+internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSourceCache) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
@@ -50,7 +52,13 @@ internal suspend fun MessageDTO.toMessage(contact: Contact) = when (this) {
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessageDTO -> buildForwardMessage(contact) {
         nodes.forEach {
-            add(it.sender, it.name, it.messageChain.toMessageChain(contact), it.time)
+            if (it.sourceId != null) {
+                cache.getOrDefault(it.sourceId, null)?.apply {
+                    add(sender as UserOrBot, originalMessage, time)
+                }
+            } else if (it.sender != null && it.name != null && it.messageChain != null) {
+                add(it.sender, it.name, it.messageChain.toMessageChain(contact, cache), it.time ?: -1)
+            }
         }
     }
     // ignore
@@ -75,7 +83,9 @@ private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
 private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is Group -> null
     !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 0, "")
-    !url.isNullOrBlank() -> withContext(Dispatchers.IO) { url!!.openStream().toExternalResource().uploadAsVoice(contact) }
+    !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
+        url!!.openStream().toExternalResource().uploadAsVoice(contact)
+    }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
             inputStream().toExternalResource().use { it.uploadAsVoice(contact) }
