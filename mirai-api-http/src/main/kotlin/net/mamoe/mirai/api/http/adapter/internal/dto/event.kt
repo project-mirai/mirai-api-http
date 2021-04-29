@@ -262,3 +262,11 @@ internal data class FriendNickChangedEventDTO(
     val from: String,
     val to: String,
 ) : BotEventDTO()
+
+@Serializable
+@SerialName("MemberHonorChangeEvent")
+internal data class MemberHonorChangeEventDTO(
+    val member: MemberDTO,
+    val type: String,
+    val honor: String,
+) : BotEventDTO()

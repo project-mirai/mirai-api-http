@@ -1,9 +1,11 @@
 package net.mamoe.mirai.api.http.adapter.internal.convertor
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
+// TODO: 切换为 跳表 或利用函数重载去掉冗长的 when 语句
 @OptIn(MiraiExperimentalApi::class)
 internal fun BotEvent.convertBotEvent() = when (this) {
     is BotOnlineEvent -> BotOnlineEventDTO(bot.id)
@@ -140,5 +142,7 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     is NudgeEvent -> NudgeEventDTO(from.id, target.id, ComplexSubjectDTO(subject), action, suffix)
     is FriendInputStatusChangedEvent -> FriendInputStatusChangedEventDTO(QQDTO(friend), inputting)
     is FriendNickChangedEvent -> FriendNickChangedEventDTO(QQDTO(friend), from, to)
+    is MemberHonorChangeEvent.Achieve -> MemberHonorChangeEventDTO(MemberDTO(member), "achieve", GroupHonor[honorType])
+    is MemberHonorChangeEvent.Lose -> MemberHonorChangeEventDTO(MemberDTO(member), "lose", GroupHonor[honorType])
     else -> IgnoreEventDTO
 }
