@@ -1,14 +1,8 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupConfigDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupDetailDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.KickDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberDetailDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberInfoDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MuteDTO
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
 /**
@@ -88,9 +82,9 @@ internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
 /**
  * 获取群员信息
  */
-internal fun onGetMemberInfo(session: IAuthedSession, target: Long, memberId: Long): MemberDetailDTO {
+internal fun onGetMemberInfo(session: IAuthedSession, target: Long, memberId: Long): MemberDTO {
     val member = session.bot.getGroupOrFail(target).getOrFail(memberId)
-    return MemberDetailDTO(member)
+    return MemberDTO(member)
 }
 
 /**

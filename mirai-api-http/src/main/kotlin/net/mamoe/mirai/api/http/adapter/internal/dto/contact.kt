@@ -24,11 +24,15 @@ internal data class MemberDTO(
     override val id: Long,
     val memberName: String,
     val permission: MemberPermission,
+    val joinTimestamp: Int,
+    val lastSpeakTimestamp: Int,
     val group: GroupDTO
 ) : ContactDTO() {
     constructor(member: Member) : this(
         member.id, member.nameCardOrNick, member.permission,
-        GroupDTO(member.group)
+        joinTimestamp = if (member is NormalMember) member.joinTimestamp else 0,
+        lastSpeakTimestamp = if (member is NormalMember) member.lastSpeakTimestamp else 0,
+        group = GroupDTO(member.group)
     )
 }
 

@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 @Serializable
@@ -58,6 +57,5 @@ internal data class MemberInfoDTO(
 internal data class MemberDetailDTO(
     val name: String? = null,
     val specialTitle: String? = null
-) : DTO {
-    constructor(member: Member) : this(member.nameCard, member.specialTitle)
-}
+) : DTO
+
