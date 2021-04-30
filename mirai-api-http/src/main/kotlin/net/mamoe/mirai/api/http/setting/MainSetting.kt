@@ -11,15 +11,14 @@ package net.mamoe.mirai.api.http.setting
 
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.context.session.manager.generateRandomSessionKey
-import net.mamoe.mirai.console.data.PluginConfig
-import net.mamoe.mirai.console.data.ReadOnlyPluginData
+import net.mamoe.mirai.console.data.ReadOnlyPluginConfig
 import net.mamoe.mirai.console.data.value
 import net.mamoe.yamlkt.YamlElement
 
 /**
  * Mirai Api Http 的配置文件类，它应该是单例，并且在 [HttpApiPluginBase.onEnable] 时被初始化
  */
-object MainSetting : ReadOnlyPluginData("setting"), PluginConfig {
+object MainSetting : ReadOnlyPluginConfig("setting") {
 
     val adapters: List<String> by value(listOf("http"))
 
