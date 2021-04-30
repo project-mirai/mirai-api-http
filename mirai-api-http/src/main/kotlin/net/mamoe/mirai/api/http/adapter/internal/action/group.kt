@@ -55,10 +55,14 @@ internal suspend fun onQuit(dto: LongTargetDTO): StateCode {
     else StateCode.PermissionDenied
 }
 
-internal suspend fun onSetEssence(essenceDTO: EssenceDTO): StateCode {
-    return essenceDTO.session.bot.getGroup(essenceDTO.target)?.run {
-        setEssenceMessage(essenceDTO.session.sourceCache[essenceDTO.messageId])
-        return StateCode.Success
+internal suspend fun onSetEssence(essenceDTO: IntTargetDTO): StateCode {
+    val source = essenceDTO.session.sourceCache[essenceDTO.target]
+    return essenceDTO.session.bot.getGroup(source.target.id)?.run {
+        if (setEssenceMessage(source)) {
+            StateCode.Success
+        } else {
+            StateCode.PermissionDenied
+        }
     } ?: return StateCode.NoElement
 }
 

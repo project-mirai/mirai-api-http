@@ -23,7 +23,7 @@ object Paths {
     const val unmute = "unmute"
     const val kick = "kick"
     const val quit = "quit"
-    const val essence = "essence"
+    const val essence = "setEssence"
     const val groupConfig = "groupConfig"
     const val memberInfo = "memberInfo"
 
