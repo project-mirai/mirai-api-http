@@ -147,7 +147,7 @@ internal data class ForwardMessageNode(
     val time: Int? = null,
     val name: String? = null,
     val messageChain: MessageChainDTO? = null,
-    val sourceId: Int? = null,
+    val messageId: Int? = null,
 )
 
 @Serializable

@@ -54,8 +54,8 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessageDTO -> buildForwardMessage(contact) {
         nodes.forEach {
-            if (it.sourceId != null) {
-                cache.getOrDefault(it.sourceId, null)?.apply {
+            if (it.messageId != null) {
+                cache.getOrDefault(it.messageId, null)?.apply {
                     add(sender as UserOrBot, originalMessage, time)
                 }
             } else if (it.sender != null && it.name != null && it.messageChain != null) {
