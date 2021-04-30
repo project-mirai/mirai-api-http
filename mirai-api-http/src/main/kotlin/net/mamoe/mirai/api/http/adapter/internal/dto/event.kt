@@ -56,7 +56,6 @@ internal data class FriendRecallEventDTO(
 @SerialName("BotGroupPermissionChangeEvent")
 internal data class BotGroupPermissionChangeEventDTO(
     val origin: MemberPermission,
-    val new: MemberPermission,
     val current: MemberPermission,
     val group: GroupDTO
 ) : BotEventDTO()
@@ -92,7 +91,6 @@ internal data class BotLeaveEventKickDTO(
 @SerialName("GroupNameChangeEvent")
 internal data class GroupNameChangeEventDTO(
     val origin: String,
-    val new: String,
     val current: String,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -102,7 +100,6 @@ internal data class GroupNameChangeEventDTO(
 @SerialName("GroupEntranceAnnouncementChangeEvent")
 internal data class GroupEntranceAnnouncementChangeEventDTO(
     val origin: String,
-    val new: String,
     val current: String,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -112,7 +109,6 @@ internal data class GroupEntranceAnnouncementChangeEventDTO(
 @SerialName("GroupMuteAllEvent")
 internal data class GroupMuteAllEventDTO(
     val origin: Boolean,
-    val new: Boolean,
     val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -122,7 +118,6 @@ internal data class GroupMuteAllEventDTO(
 @SerialName("GroupAllowAnonymousChatEvent")
 internal data class GroupAllowAnonymousChatEventDTO(
     val origin: Boolean,
-    val new: Boolean,
     val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -132,7 +127,6 @@ internal data class GroupAllowAnonymousChatEventDTO(
 @SerialName("GroupAllowConfessTalkEvent")
 internal data class GroupAllowConfessTalkEventDTO(
     val origin: Boolean,
-    val new: Boolean,
     val current: Boolean,
     val group: GroupDTO,
     val isByBot: Boolean
@@ -142,7 +136,6 @@ internal data class GroupAllowConfessTalkEventDTO(
 @SerialName("GroupAllowMemberInviteEvent")
 internal data class GroupAllowMemberInviteEventDTO(
     val origin: Boolean,
-    val new: Boolean,
     val current: Boolean,
     val group: GroupDTO,
     val operator: MemberDTO?
@@ -167,7 +160,6 @@ internal data class MemberLeaveEventQuitDTO(val member: MemberDTO) : BotEventDTO
 @SerialName("MemberCardChangeEvent")
 internal data class MemberCardChangeEventDTO(
     val origin: String,
-    val new: String,
     val current: String,
     val member: MemberDTO,
 ) : BotEventDTO()
@@ -176,7 +168,6 @@ internal data class MemberCardChangeEventDTO(
 @SerialName("MemberSpecialTitleChangeEvent")
 internal data class MemberSpecialTitleChangeEventDTO(
     val origin: String,
-    val new: String,
     val current: String,
     val member: MemberDTO
 ) : BotEventDTO()
@@ -185,7 +176,6 @@ internal data class MemberSpecialTitleChangeEventDTO(
 @SerialName("MemberPermissionChangeEvent")
 internal data class MemberPermissionChangeEventDTO(
     val origin: MemberPermission,
-    val new: MemberPermission,
     val current: MemberPermission,
     val member: MemberDTO
 ) : BotEventDTO()

@@ -26,12 +26,7 @@ internal fun BotEvent.convertBotEvent() = when (this) {
         messageTime.toLong() and 0xFFFF,
         operatorId
     )
-    is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(
-        origin,
-        new,
-        new,
-        GroupDTO(group)
-    )
+    is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(origin, new, GroupDTO(group))
     is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
     is BotUnmuteEvent -> BotUnmuteEventDTO(MemberDTO(operator))
     // TODO: BotJoinGroupEvent 细分
@@ -41,27 +36,18 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     is GroupNameChangeEvent -> GroupNameChangeEventDTO(
         origin,
         new,
-        new,
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
     is GroupEntranceAnnouncementChangeEvent -> GroupEntranceAnnouncementChangeEventDTO(
         origin,
         new,
-        new,
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
-    is GroupMuteAllEvent -> GroupMuteAllEventDTO(
-        origin,
-        new,
-        new,
-        GroupDTO(group),
-        operator?.let(::MemberDTO)
-    )
+    is GroupMuteAllEvent -> GroupMuteAllEventDTO(origin, new, GroupDTO(group), operator?.let(::MemberDTO))
     is GroupAllowAnonymousChatEvent -> GroupAllowAnonymousChatEventDTO(
         origin,
-        new,
         new,
         GroupDTO(group),
         operator?.let(::MemberDTO)
@@ -69,51 +55,24 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     is GroupAllowConfessTalkEvent -> GroupAllowConfessTalkEventDTO(
         origin,
         new,
-        new,
         GroupDTO(group),
         isByBot
     )
     is GroupAllowMemberInviteEvent -> GroupAllowMemberInviteEventDTO(
         origin,
         new,
-        new,
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
     // TODO: MemberJoinEvent 细分
     is MemberJoinEvent -> MemberJoinEventDTO(MemberDTO(member))
-    is MemberLeaveEvent.Kick -> MemberLeaveEventKickDTO(
-        MemberDTO(member),
-        operator?.let(::MemberDTO)
-    )
+    is MemberLeaveEvent.Kick -> MemberLeaveEventKickDTO(MemberDTO(member), operator?.let(::MemberDTO))
     is MemberLeaveEvent.Quit -> MemberLeaveEventQuitDTO(MemberDTO(member))
-    is MemberCardChangeEvent -> MemberCardChangeEventDTO(
-        origin,
-        new,
-        new,
-        MemberDTO(member),
-    )
-    is MemberSpecialTitleChangeEvent -> MemberSpecialTitleChangeEventDTO(
-        origin,
-        new,
-        new,
-        MemberDTO(member)
-    )
-    is MemberPermissionChangeEvent -> MemberPermissionChangeEventDTO(
-        origin,
-        new,
-        new,
-        MemberDTO(member)
-    )
-    is MemberMuteEvent -> MemberMuteEventDTO(
-        durationSeconds,
-        MemberDTO(member),
-        operator?.let(::MemberDTO)
-    )
-    is MemberUnmuteEvent -> MemberUnmuteEventDTO(
-        MemberDTO(member),
-        operator?.let(::MemberDTO)
-    )
+    is MemberCardChangeEvent -> MemberCardChangeEventDTO(origin, new, MemberDTO(member))
+    is MemberSpecialTitleChangeEvent -> MemberSpecialTitleChangeEventDTO(origin, new, MemberDTO(member))
+    is MemberPermissionChangeEvent -> MemberPermissionChangeEventDTO(origin, new, MemberDTO(member))
+    is MemberMuteEvent -> MemberMuteEventDTO(durationSeconds, MemberDTO(member), operator?.let(::MemberDTO))
+    is MemberUnmuteEvent -> MemberUnmuteEventDTO(MemberDTO(member), operator?.let(::MemberDTO))
     is NewFriendRequestEvent -> NewFriendRequestEventDTO(
         eventId,
         message,
