@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
-import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
 import net.mamoe.mirai.api.http.loader.AdapterLoader
 import net.mamoe.mirai.api.http.setting.MainSetting
@@ -52,7 +51,7 @@ object HttpApiPluginBase : KotlinPlugin(
                 singleMode = this@with.singleMode
                 localMode = false
 
-                parseAdapter(this@with.adapters).forEach(::plus)
+                parseAdapter(this@with.adapters).forEach(this::plusAssign)
             }
         }
     }

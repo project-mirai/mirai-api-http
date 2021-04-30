@@ -70,7 +70,9 @@ open class MahContext internal constructor() {
     /**
      * 添加一个 adapter
      */
-    operator fun plus(adapter: MahAdapter) = adapters.add(adapter)
+    operator fun plusAssign(adapter: MahAdapter) {
+        adapters.add(adapter)
+    }
 }
 
 
