@@ -35,7 +35,6 @@ internal class SendRetDTO(
 internal class UploadImageRetDTO(
     val imageId: String,
     val url: String,
-    val path: String? = ""
 ) : DTO
 
 @Serializable
@@ -43,5 +42,4 @@ internal class UploadImageRetDTO(
 internal class UploadVoiceRetDTO(
     val voiceId: String,
     val url: String?,
-    val path: String? = ""
 ) : DTO

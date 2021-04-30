@@ -96,14 +96,19 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedMultiPart(Paths.uploadImage) { session, parts ->
         val type = parts.value("type")
-        parts.file("img")?.apply { onUploadImage(session, streamProvider(), type) }
+        val ret = parts.file("img")?.run { onUploadImage(session, streamProvider(), type) }
             ?: throw IllegalAccessException("未知错误")
+        call.respondDTO(ret)
     }
 
+    /**
+     * 上传语音
+     */
     httpAuthedMultiPart(Paths.uploadVoice) { session, parts ->
         val type = parts.value("type")
-        parts.file("voice")?.apply { onUploadVoice(session, streamProvider(), type) }
+        val ret = parts.file("voice")?.run { onUploadVoice(session, streamProvider(), type) }
             ?: throw IllegalAccessException("未知错误")
+        call.respondDTO(ret)
     }
 
     /**
