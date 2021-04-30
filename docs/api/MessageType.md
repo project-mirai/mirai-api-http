@@ -205,3 +205,66 @@
 4. "Heartbroken": 心碎
 5. "SixSixSix": 666
 6. "FangDaZhao": 放大招
+
+#### Dice
+
+```json5
+{
+  "type": "Dice",
+  "value": 1
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| value | Int | 点数 |
+
+#### MusicShare
+
+```json5
+{
+  "type": "MusicShare",
+  "kind": "String",
+  "title": "String",
+  "summary": "String",
+  "jumpUrl": "String",
+  "pictureUrl": "String",
+  "musicUrl": "String",
+  "brief": "String"
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| kind | String | 类型 |
+| title | String | 标题 |
+| summary | String | 概括 |
+| jumpUrl | String | 跳转路径 |
+| pictureUrl | String | 封面路径 |
+| musicUrl | String | 音源路径 |
+| brief | String | 简介 |
+
+#### ForwardMessage
+
+```json5
+{
+  "type": "ForwardMessage",
+  "nodes": [
+    {
+      "sender": 123,
+      "time": 0,
+      "name": "sender name",
+      "messageChain": [],
+      "sourceId": 123
+    }
+  ] 
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| nodes | object | 消息节点 |
+| sender | Long | 发送人QQ号 |
+| time | Int | 发送时间 |
+| messageChain | Array | 消息数组 |
+| messageId | Int | 可以只使用消息messageId，从缓存中读取一条消息作为节点 |

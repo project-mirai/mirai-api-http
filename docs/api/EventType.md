@@ -1,12 +1,21 @@
-## 事件类型
+## 事件类型一览
+
+### 目录
+
++ **[事件类型一览](EventType.md)**
+  + [Bot自身事件](#bot自身事件)
+  + [好友事件](#好友事件)
+  + [群事件](#群事件)
+  + [申请事件](#申请事件)
 
 ### Bot自身事件
+
 #### Bot登录成功
 
 ```json5
 {
-    "type": "BotOnlineEvent",
-    "qq": 123456
+  "type":"BotOnlineEvent",
+  "qq":123456
 }
 ```
 
@@ -20,8 +29,8 @@
 
 ```json5
 {
-    "type": "BotOfflineEventActive",
-    "qq": 123456
+  "type":"BotOfflineEventActive",
+  "qq":123456
 }
 ```
 
@@ -35,8 +44,8 @@
 
 ```json5
 {
-    "type": "BotOfflineEventForce",
-    "qq": 123456
+  "type":"BotOfflineEventForce",
+  "qq":123456
 }
 ```
 
@@ -50,8 +59,8 @@
 
 ```json5
 {
-    "type": "BotOfflineEventDropped",
-    "qq": 123456
+  "type":"BotOfflineEventDropped",
+  "qq":123456
 }
 ```
 
@@ -65,8 +74,8 @@
 
 ```json5
 {
-    "type": "BotReloginEvent",
-    "qq": 123456
+  "type":"BotReloginEvent",
+  "qq":123456
 }
 ```
 
@@ -75,26 +84,82 @@
 | qq   | Long | 主动重新登录的Bot的QQ号 |
 
 
+
+### 好友事件
+
+
+
+#### 好友输入状态改变
+
+```json5
+{
+  "type": "FriendInputStatusChangedEvent",
+  "friend": {
+    id: 123123,
+    nickname: "nick",
+    remark: "remark"
+  }, 
+  "inputting": true
+}
+```
+
+| 名字             | 类型   | 说明                                          |
+| ---------------- | ------ | --------------------------------------------- |
+| id               | Long   | 好友 QQ 号码     |
+| nickname         | String | 好友昵称     |
+| remark           | String | 好友备注                          |
+| inputting        | Boolean | 当前输出状态是否正在输入                    |
+
+
+
+#### 好友昵称改变
+
+```json5
+{
+  "type": "FriendNickChangedEvent",
+  "friend": {
+    id: 123123,
+    nickname: "nick",
+    remark: "remark"
+  }, 
+  "from": "origin nickname",
+  "to": "new nickname"
+}
+```
+
+| 名字             | 类型   | 说明                                          |
+| ---------------- | ------ | --------------------------------------------- |
+| id               | Long   | 好友 QQ 号码     |
+| nickname         | String | 好友昵称(值不确定)     |
+| remark           | String | 好友备注                          |
+| from             | String | 原昵称                    |
+| to               | String | 新昵称                    |
+
+
+
+
+### 群事件
+
+
+
 #### Bot在群里的权限被改变. 操作人一定是群主
 
 ```json5
 {
-    "type": "BotGroupPermissionChangeEvent",
-    "origin": "MEMBER",
-    "new": "ADMINISTRATOR",
-    "current": "ADMINISTRATOR",
-    "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "ADMINISTRATOR"
-    }
+  "type": "BotGroupPermissionChangeEvent",
+  "origin": "MEMBER",
+  "current": "ADMINISTRATOR",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "ADMINISTRATOR"
+  }
 }
 ```
 
 | 名字             | 类型   | 说明                                          |
 | ---------------- | ------ | --------------------------------------------- |
 | origin           | String | Bot的原权限，OWNER、ADMINISTRATOR或MEMBER     |
-| new(Deprecated)  | String | Bot的新权限，OWNER、ADMINISTRATOR或MEMBER     |
 | current          | String | Bot的新权限，OWNER、ADMINISTRATOR或MEMBER     |
 | group            | Object | 权限改变所在的群信息                          |
 | group.id         | Long   | 群号                                          |
@@ -107,18 +172,22 @@
 
 ```json5
 {
-    "type": "BotMuteEvent",
-    "durationSeconds": 600,
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "BotMuteEvent",
+  "durationSeconds": 600,
+  "operator": {
+    "id": 123456789,
+    "memberName": "我是管理员",
+    "permission": "ADMINISTRATOR",
+    "specialTitle":"群头衔",
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
@@ -140,17 +209,21 @@
 
 ```json5
 {
-    "type": "BotUnmuteEvent",
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "BotUnmuteEvent",
+  "operator": {
+    "id": 123456789,
+    "memberName": "我是管理员",
+    "permission": "ADMINISTRATOR",
+    "specialTitle":"群头衔",
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
@@ -171,12 +244,12 @@
 
 ```json5
 {
-    "type": "BotJoinGroupEvent",
-    "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    }
+  "type": "BotJoinGroupEvent",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  }
 }
 ```
 
@@ -193,12 +266,12 @@
 
 ```json5
 {
-    "type": "BotLeaveEventActive",
-    "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    }
+  "type": "BotLeaveEventActive",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  }
 }
 ```
 
@@ -215,12 +288,12 @@
 
 ```json5
 {
-    "type": "BotLeaveEventKick",
-    "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    }
+  "type": "BotLeaveEventKick",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  }
 }
 ```
 
@@ -232,31 +305,34 @@
 | group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
 
 
-### 消息撤回
 
 #### 群消息撤回
 
 ```json5
 {
-    "type": "GroupRecallEvent",
-    "authorId": 123456,
-    "messageId": 123456789,
-    "time": 1234679,
-    "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "ADMINISTRATOR"
-    },
-    "operator": {
+   "type": "GroupRecallEvent",
+   "authorId": 123456,
+   "messageId": 123456789,
+   "time": 1234679,
+   "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "ADMINISTRATOR"
+   },
+   "operator": {
+      "id": 123456789,
+      "memberName": "我是管理员",
+      "permission": "ADMINISTRATOR",
+      "specialTitle":"群头衔",
+      "joinTimestamp":12345678,
+      "lastSpeakTimestamp":8765432,
+      "muteTimeRemaining":0,
+      "group": {
         "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    }
+        "name": "Miral Technology",
+        "permission": "MEMBER"
+      }
+   }
 }
 ```
 
@@ -277,7 +353,7 @@
 
 
 
-#### 好友消息撤回
+##### 好友消息撤回
 
 ```json5
 {
@@ -297,38 +373,39 @@
 | operator  | Long | 好友QQ号或BotQQ号  |
 
 
-## 群变化事件
 
 #### 某个群名改变
 
 ```json5
 {
-    "type": "GroupNameChangeEvent",
-    "origin": "miral technology",
-    "new": "MIRAI TECHNOLOGY",
-    "current": "MIRAI TECHNOLOGY",
+  "type": "GroupNameChangeEvent",
+  "origin": "miral technology",
+  "current": "MIRAI TECHNOLOGY",
+  "group": {
+    "id": 123456789,
+    "name": "MIRAI TECHNOLOGY",
+    "permission": "MEMBER"
+  },
+  "operator": {
+    "id": 123456,
+    "memberName": "我是群主",
+    "permission": "ADMINISTRATOR",
+    "specialTitle":"群头衔",
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
     "group": {
-        "id": 123456789,
-        "name": "MIRAI TECHNOLOGY",
-        "permission": "MEMBER"
-    },
-    "operator": {
-        "id": 123456,
-        "memberName": "我是群主",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "OWNER"
-        }
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "OWNER"
     }
+  }
 }
 ```
 
 | 名字             | 类型    | 说明                                          |
 | ---------------- | ------- | --------------------------------------------- |
 | origin           | String  | 原群名                                        |
-| new(Deprecated)  | String  | 新群名                                        |
 | current          | String  | 新群名                                        |
 | group            | Object  | 群名改名的群信息                              |
 | group.id         | Long    | 群号                                          |
@@ -346,32 +423,34 @@
 
 ```json5
 {
-    "type": "GroupEntranceAnnouncementChangeEvent",
-    "origin": "abc",
-    "new": "cba",
-    "current": "cba",
+  "type": "GroupEntranceAnnouncementChangeEvent",
+  "origin": "abc",
+  "current": "cba",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  "operator": {
+    "id": 123456789,
+    "memberName": "我是管理员",
+    "permission": "ADMINISTRATOR",
+    "specialTitle":"群头衔",
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
     "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | String  | 原公告                                        |
-| new(Deprecated)     | String  | 新公告                                        |
 | current             | String  | 新公告                                        |
 | group               | Object  | 公告改变的群信息                              |
 | group.id            | Long    | 群号                                          |
@@ -389,32 +468,34 @@
 
 ```json5
 {
-    "type": "GroupMuteAllEvent",
-    "origin": false,
-    "new": true,
-    "current": true,
+  "type": "GroupMuteAllEvent",
+  "origin": false,
+  "current": true,
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
     "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    }
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
+    },  
+  }
 }
 ```
 
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本是否处于全员禁言                          |
-| new(Deprecated)     | Boolean | 现在是否处于全员禁言                          |
 | current             | Boolean | 现在是否处于全员禁言                          |
 | group               | Object  | 全员禁言的群信息                              |
 | group.id            | Long    | 群号                                          |
@@ -432,32 +513,34 @@
 
 ```json5
 {
-    "type": "GroupAllowAnonymousChatEvent",
-    "origin": false,
-    "new": true,
-    "current": true,
+  "type": "GroupAllowAnonymousChatEvent",
+  "origin": false,
+  "current": true,
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
     "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本匿名聊天是否开启                          |
-| new(Deprecated)     | Boolean | 现在匿名聊天是否开启                          |
 | current             | Boolean | 现在匿名聊天是否开启                          |
 | group               | Object  | 匿名聊天状态改变的群信息                      |
 | group.id            | Long    | 群号                                          |
@@ -475,23 +558,21 @@
 
 ```json5
 {
-    "type": "GroupAllowConfessTalkEvent",
-    "origin": false,
-    "new": true,
-    "current": true,
-    "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    },
-    "isByBot": false
+  "type": "GroupAllowConfessTalkEvent",
+  "origin": false,
+  "current": true,
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  "isByBot": false
 }
 ```
 
 | 名字             | 类型    | 说明                                          |
 | ---------------- | ------- | --------------------------------------------- |
 | origin           | Boolean | 原本坦白说是否开启                            |
-| new(Deprecated)  | Boolean | 现在坦白说是否开启                            |
 | current          | Boolean | 现在坦白说是否开启                            |
 | group            | Object  | 坦白说状态改变的群信息                        |
 | group.id         | Long    | 群号                                          |
@@ -505,32 +586,34 @@
 
 ```json5
 {
-    "type": "GroupAllowMemberInviteEvent",
-    "origin": false,
-    "new": true,
-    "current": true,
+  "type": "GroupAllowMemberInviteEvent",
+  "origin": false,
+  "current": true,
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
     "group": {
-        "id": 123456789,
-        "name": "Miral Technology",
-        "permission": "MEMBER"
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
 | 名字                | 类型    | 说明                                          |
 | ------------------- | ------- | --------------------------------------------- |
 | origin              | Boolean | 原本是否允许群员邀请好友加群                  |
-| new(Deprecated)     | Boolean | 现在是否允许群员邀请好友加群                  |
 | current             | Boolean | 现在是否允许群员邀请好友加群                  |
 | group               | Object  | 允许群员邀请好友加群状态改变的群信息          |
 | group.id            | Long    | 群号                                          |
@@ -548,17 +631,21 @@
 
 ```json5
 {
-    "type": "MemberJoinEvent",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是新人",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberJoinEvent",
+  "member": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
     }
+  }
 }
 ```
 
@@ -579,27 +666,35 @@
 
 ```json5
 {
-    "type": "MemberLeaveEventKick",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被踢的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberLeaveEventKick",
+  "member": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
     }
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  }
 }
 ```
 
@@ -625,17 +720,17 @@
 
 ```json5
 {
-    "type": "MemberLeaveEventQuit",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被踢的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberLeaveEventQuit",
+  "member": {
+    "id": 123456789,
+    "memberName": "我是被踢的",
+    "permission": "MEMBER",
+    "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
@@ -656,37 +751,29 @@
 
 ```json5
 {
-    "type": "MemberCardChangeEvent",
-    "origin": "origin name",
-    "new": "我是被改名的",
-    "current": "我是被改名的",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被改名的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员，也可能是我自己",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    }
+  "type": "MemberCardChangeEvent",
+  "origin": "origin name",
+  "current": "我是被改名的",
+  "member": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }  
+  }
 }
 ```
 
 | 名字                    | 类型    | 说明                                                     |
 | ----------------------- | ------- | -------------------------------------------------------- |
 | origin                  | String  | 原本名片                                                 |
-| new(Deprecated)         | String  | 现在名片                                                 |
 | current                 | String  | 现在名片                                                 |
 | member                  | Object  | 名片改动的群员的信息                                     |
 | member.id               | Long    | 名片改动的群员的QQ号                                     |
@@ -696,39 +783,31 @@
 | member.group.id         | Long    | 群号                                                     |
 | member.group.name       | String  | 群名                                                     |
 | member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER            |
-| operator                | Object? | 操作者的信息，可能为该群员自己，当null时为Bot操作        |
-| operator.id             | Long    | 操作者的QQ号                                             |
-| operator.memberName     | String  | 操作者的群名片                                           |
-| operator.permission     | String  | 操作者在群中的权限，OWNER、ADMINISTRATOR或MEMBER         |
-| operator.group          | Object  | 同member.group                                           |
-
 
 
 #### 群头衔改动（只有群主有操作限权）
 
 ```json5
 {
-    "type": "MemberSpecialTitleChangeEvent",
-    "origin": "origin title",
-    "new": "new title",
-    "current": "new title",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被改头衔的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberSpecialTitleChangeEvent",
+  "origin": "origin title",
+  "current": "new title",
+  "member": {
+    "id": 123456789,
+    "memberName": "我是被改头衔的",
+    "permission": "MEMBER",
+    "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
 | 名字                    | 类型   | 说明                                                     |
 | ----------------------- | ------ | -------------------------------------------------------- |
-| origin                  | String | 原头衔                                                   |
-| new（Deprecated)        | String | 现头衔                                                   |
+| origin                  | String | 原头衔                                                   |                                                 |
 | current                 | String | 现头衔                                                   |
 | member                  | Object | 头衔改动的群员的信息                                     |
 | member.id               | Long   | 头衔改动的群员的QQ号                                     |
@@ -745,27 +824,25 @@
 
 ```json5
 {
-    "type": "MemberPermissionChangeEvent",
-    "origin": "MEMBER",
-    "new": "ADMINISTRATOR",
-    "current": "ADMINISTRATOR",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被改权限的",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberPermissionChangeEvent",
+  "origin": "MEMBER",
+  "current": "ADMINISTRATOR",
+  "member": {
+    "id": 123456789,
+    "memberName": "我是被改权限的",
+    "permission": "ADMINISTRATOR",
+    "group": {
+      "id": 123456789,
+      "name": "Miral Technology",
+      "permission": "MEMBER"
     }
+  }
 }
 ```
 
 | 名字                    | 类型   | 说明                                              |
 | ----------------------- | ------ | ------------------------------------------------- |
-| origin                  | String | 原权限                                            |
-| new                     | String | 现权限(Deprecated)                                            |
+| origin                  | String | 原权限                                            |                                        |
 | current                 | String | 现权限                                            |
 | member                  | Object | 权限改动的群员的信息                              |
 | member.id               | Long   | 权限改动的群员的QQ号                              |
@@ -782,28 +859,9 @@
 
 ```json5
 {
-    "type": "MemberMuteEvent",
-    "durationSeconds": 600,
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被禁言的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    }
+  "type": "MemberMuteEvent",
+  "durationSeconds": 600,
+  
 }
 ```
 
@@ -830,27 +888,35 @@
 
 ```json5
 {
-    "type": "MemberUnmuteEvent",
-    "member": {
-        "id": 123456789,
-        "memberName": "我是被取消禁言的",
-        "permission": "MEMBER",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
-    },
-    "operator": {
-        "id": 123456789,
-        "memberName": "我是管理员",
-        "permission": "ADMINISTRATOR",
-        "group": {
-            "id": 123456789,
-            "name": "Miral Technology",
-            "permission": "MEMBER"
-        }
+  "type": "MemberUnmuteEvent",
+  "member": {
+    "id":1234567890,
+    "memberName":"我是被取消禁言的",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
     }
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  }
 }
 ```
 
@@ -870,18 +936,59 @@
 | operator.permission     | String  | 操作者在群中的权限，OWNER、ADMINISTRATOR            |
 | operator.group          | Object  | 同member.group                                      |
 
+
+
+#### 群员称号改变
+
+```json5
+{
+  "type": "MemberHonorChangeEvent",
+  "member": {
+    "id":1234567890,
+    "memberName":"我是被取消禁言的",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  },
+  "action": "achieve",
+  "honor": "龙王"
+}
+```
+
+| 名字                    | 类型    | 说明                                                |
+| ----------------------- | ------- | --------------------------------------------------- |
+| member                  | Object  | 被取消禁言的群员的信息                              |
+| member.id               | Long    | 被取消禁言的群员的QQ号                              |
+| member.memberName       | String  | 被取消禁言的群员的群名片                            |
+| member.permission       | String  | 被取消禁言的群员在群中的权限，ADMINISTRATOR或MEMBER |
+| member.group            | Object  | 被取消禁言的群员所在群的信息                        |
+| member.group.id         | Long    | 群号                                                |
+| member.group.name       | String  | 群名                                                |
+| member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER       |
+| action                  | String  | 称号变化行为：achieve获得成好，lose失去称号       |
+| honor                   | String  | 称号名称       |
+
+
+
 ### 申请事件
 
 #### 添加好友申请
 
 ```json
 {
-    "type": "NewFriendRequestEvent",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "nick": "Nick Name",
-    "message": ""
+  "type": "NewFriendRequestEvent",
+  "eventId": 12345678,
+  "fromId": 123456,
+  "groupId": 654321,
+  "nick": "Nick Name",
+  "message": ""
 }
 ```
 
@@ -893,51 +1000,18 @@
 | nick    | String | 申请人的昵称或群名片                                  |
 | message | String | 申请消息                                           |
 
-##### 响应
-
-```
-[POST] /resp/newFriendRequestEvent
-```
-
-```json
-{
-    "sessionKey": "YourSessionKey",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "operate": 0,
-    "message": ""
-}
-```
-
-| 名字       | 类型   | 说明                          |
-| ---------- | ------ | ----------------------------- |
-| sessionKey | String | session key                   |
-| eventId    | Long   | 响应申请事件的标识            |
-| fromId     | Long   | 事件对应申请人QQ号            |
-| groupId    | Long   | 事件对应申请人的群号，可能为0 |
-| operate    | Int    | 响应的操作类型                |
-| message    | String | 回复的信息                    |
-
-| operate | 说明                                               |
-| ------- | -------------------------------------------------- |
-| 0       | 同意添加好友                                       |
-| 1       | 拒绝添加好友                                       |
-| 2       | 拒绝添加好友并添加黑名单，不再接收该用户的好友申请 |
-
-
 
 #### 用户入群申请（Bot需要有管理员权限）
 
 ```json
 {
-    "type": "MemberJoinRequestEvent",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "groupName": "Group",
-    "nick": "Nick Name",
-    "message": ""
+  "type": "MemberJoinRequestEvent",
+  "eventId": 12345678,
+  "fromId": 123456,
+  "groupId": 654321,
+  "groupName": "Group",
+  "nick": "Nick Name",
+  "message": ""
 }
 ```
 
@@ -950,53 +1024,19 @@
 | nick      | String | 申请人的昵称或群名片         |
 | message   | String | 申请消息                  |
 
-##### 响应
-
-```
-[POST] /resp/memberJoinRequestEvent
-```
-
-```json
-{
-    "sessionKey": "YourSessionKey",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "operate": 0,
-    "message": ""
-}
-```
-
-| 名字       | 类型   | 说明                          |
-| ---------- | ------ | ----------------------------- |
-| sessionKey | String | session key                   |
-| eventId    | Long   | 响应申请事件的标识            |
-| fromId     | Long   | 事件对应申请人QQ号            |
-| groupId    | Long   | 事件对应申请人的群号           |
-| operate    | Int    | 响应的操作类型                |
-| message    | String | 回复的信息                    |
-
-| operate | 说明                                           |
-| ------- | ---------------------------------------------- |
-| 0       | 同意入群                                       |
-| 1       | 拒绝入群                                       |
-| 2       | 忽略请求                                       |
-| 3       | 拒绝入群并添加黑名单，不再接收该用户的入群申请 |
-| 4       | 忽略入群并添加黑名单，不再接收该用户的入群申请 |
-
 
 
 #### Bot被邀请入群申请
 
 ```json
 {
-    "type": "BotInvitedJoinGroupRequestEvent",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "groupName": "Group",
-    "nick": "Nick Name",
-    "message": ""
+  "type": "BotInvitedJoinGroupRequestEvent",
+  "eventId": 12345678,
+  "fromId": 123456,
+  "groupId": 654321,
+  "groupName": "Group",
+  "nick": "Nick Name",
+  "message": ""
 }
 ```
 
@@ -1009,33 +1049,4 @@
 | nick      | String | 邀请人（好友）的昵称         |
 | message   | String | 邀请消息                  |
 
-##### 响应
 
-```
-[POST] /resp/botInvitedJoinGroupRequestEvent
-```
-
-```json
-{
-    "sessionKey": "YourSessionKey",
-    "eventId": 12345678,
-    "fromId": 123456,
-    "groupId": 654321,
-    "operate": 0,
-    "message": ""
-}
-```
-
-| 名字       | 类型   | 说明                          |
-| ---------- | ------ | ----------------------------- |
-| sessionKey | String | session key                   |
-| eventId    | Long   | 事件标识            |
-| fromId     | Long   | 邀请人（好友）的QQ号            |
-| groupId    | Long   | 被邀请进入群的群号 |
-| operate    | Int    | 响应的操作类型                |
-| message    | String | 回复的信息                    |
-
-| operate | 说明                                           |
-| ------- | ---------------------------------------------- |
-| 0       | 同意邀请                                       |
-| 1       | 拒绝邀请                                       |

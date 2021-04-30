@@ -43,65 +43,42 @@ Mirai HTTP API (console) plugin
 #### setting.yml模板
 
 ```yaml
-## 该配置为全局配置，对所有Session有效
+## 配置文件中的值，全为默认值
 
-# 可选，默认值为0.0.0.0
-host: '0.0.0.0'
+## 启用的 adapter, 内置有 http, ws, reverse-ws, webhook
+adapters:
+  - http
+  - ws
 
-# 可选，默认值为8080
-port: 8080          
+## 是否开启认证流程, 若为 true 则建立连接时需要验证 verifyKey
+## 建议公网连接时开启
+enableVerify: true
+verifyKey: 1234567890
 
-# 可选，默认由插件第一次启动时随机生成，建议手动指定
-authKey: 1234567890  
+## 是否开启单 session 模式, 若为 true，则自动创建 session 绑定 console 中登录的 bot
+## 开启后，接口中任何 sessionKey 不需要传递参数
+## 若 console 中有多个 bot 登录，则行为未定义
+## 确保 console 中只有一个 bot 登陆时启用
+singleMode: false
 
-# 可选，缓存大小，默认4096.缓存过小会导致引用回复与撤回消息失败
+## 历史消息的缓存大小
+## 同时，也是 http adapter 的消息队列容量
 cacheSize: 4096
 
-# 可选，是否开启websocket，默认关闭，建议通过Session范围的配置设置
-enableWebsocket: false
-
-# 可选，配置CORS跨域，默认为*，即允许所有域名
-cors: 
-  - '*'
-
-## 消息上报
-report:
-# 功能总开关
-  enable: false
-  # 群消息上报
-  groupMessage:
-    report: false
-  # 好友消息上报
-  friendMessage:
-    report: false
-  # 临时消息上报
-  tempMessage:
-    report: false
-  # 事件上报
-  eventMessage:
-    report: false
-  # 上报URL
-  destinations: []
-  # 上报时的额外Header
-  extraHeaders: {}
-
-## 心跳
-heartbeat:
-  # 功能总开关
-  enable: false
-  # 启动延迟
-  delay: 1000
-  # 心跳间隔
-  period: 15000
-  # 心跳上报URL
-  destinations: []
-  # 上报时的额外信息
-  extraBody: {}
-  # 上报时的额外头
-  extraHeaders: {}
-
+## adapter 的单独配置，键名与 adapters 项配置相同
+adapterSettings:
+  ## 详情看 http adapter 使用说明 配置
+  http:
+    host: localhost
+    port: 8080
+    cors: [*]
+  
+  ## 详情看 websocket adapter 使用说明 配置
+  ws:
+    host: localhost
+    port: 8080
+    reservedSyncId: -1
 ```
-有关配置的详细信息请参考[文档-其他](#文档).
 
 ## 调试API
 调试API已完成,**[点我查看](API-Tester/install.md)**
@@ -111,57 +88,45 @@ heartbeat:
 
 ## 文档
 
-* **[API文档参考](docs/API.md)**
-  * [状态码](docs/API.md#状态码)
-  * [获取插件信息](docs/API.md#获取插件信息)
-  * [认证与会话](docs/API.md#认证与会话)
-    * [开始认证](docs/API.md#开始认证)
-    * [校验Session](docs/API.md#校验session)
-    * [释放Session](docs/API.md#释放session)
-  * [消息发送与撤回](docs/API.md#消息发送与撤回)
-    * [发送好友消息](docs/API.md#发送好友消息)
-    * [发送临时会话消息](docs/API.md#发送临时会话消息)
-    * [发送群消息](docs/API.md#发送群消息)
-    * [撤回消息](docs/API.md#撤回消息)
-    * [发送图片消息（通过URL）](docs/API.md#发送图片消息通过url)
-  * [多媒体内容上传](docs/API.md#多媒体内容上传)
-    * [图片文件上传](docs/API.md#图片文件上传)
-    * [语音文件上传](docs/API.md#语音文件上传)
-  * [接收消息与事件](docs/API.md#接收消息与事件)
-    * [获取Bot收到的消息和事件](docs/API.md#获取bot收到的消息和事件)
-    * [通过messageId获取一条被缓存的消息](docs/API.md#通过messageid获取一条被缓存的消息)
-    * [查看缓存的消息总数](docs/API.md#查看缓存的消息总数)
-    * [通过WebSocket](docs/API.md#通过websocket)
-  * [好友与群(成员)列表](docs/API.md#好友与群成员列表)
-    * [获取好友列表](docs/API.md#获取好友列表)
-    * [获取群列表](docs/API.md#获取群列表)
-    * [获取群成员列表](docs/API.md#获取群成员列表)
-  * [群管理](docs/API.md#群管理)
-    * [禁言群成员](docs/API.md#禁言群成员)
-    * [解除群成员禁言](docs/API.md#解除群成员禁言)
-    * [移除群成员](docs/API.md#移除群成员)
-    * [退出群聊](docs/API.md#退出群聊)
-    * [全体禁言](docs/API.md#全体禁言)
-    * [解除全体禁言](docs/API.md#解除全体禁言)
-    * [获取群设置](docs/API.md#获取群设置)
-    * [修改群设置](docs/API.md#修改群设置)
-    * [获取群员资料](docs/API.md#获取群员资料)
-    * [修改群员资料](docs/API.md#修改群员资料)
-  * [Session配置](docs/API.md#session配置)
-    * [获取指定Session的配置](docs/API.md#获取指定session的配置)
-    * [修改指定Session的配置](docs/API.md#修改指定session的配置)
-  * [插件与Console](docs/API.md#插件与console)
-    * [简介](docs/API.md#简介)
-    * [注册指令](docs/API.md#注册指令)
-    * [发送指令](docs/API.md#发送指令)
-    * [监听指令](docs/API.md#监听指令)
-    * [获取Mangers](docs/API.md#获取mangers)
-* **[事件类型参考](docs/EventType.md)**
-  * [Bot自身事件](docs/EventType.md#bot自身事件)
-  * [消息撤回](docs/EventType.md#消息撤回)
-  * [群变化事件](docs/EventType.md#群变化事件)
-  * [申请事件](docs/EventType.md#申请事件)
-* **[消息类型参考](docs/MessageType.md)**
-* **其他**
-  * [心跳](docs/Heartbeat.md)
-  * [事件上报](docs/Report.md)
++ **[API文档参考](docs/api/API.md)**
+  + [状态码](docs/api/API.md#状态码)
+  + [获取插件信息](docs/api/API.md#获取插件信息)
+  + [缓存操作](docs/api/API.md#缓存操作)
+    + [通过messageId获取消息](docs/api/API.md#通过messageId获取消息)
+  + [获取账号信息](docs/api/API.md#获取账号信息)
+    + [获取好友列表](docs/api/API.md#获取好友列表)
+    + [获取群列表](docs/api/API.md#获取群列表)
+    + [获取群成员列表](docs/api/API.md#获取群成员列表)
+    + [获取Bot资料](docs/api/API.md#获取Bot资料)
+    + [获取好友资料](docs/api/API.md#获取好友资料)
+    + [获取群成员资料](docs/api/API.md#获取群成员资料)
+  + [消息发送与撤回](docs/api/API.md#消息发送与撤回)
+    + [发送好友消息](docs/api/API.md#发送好友消息)
+    + [发送群消息](docs/api/API.md#发送群消息)
+    + [发送临时会话消息](docs/api/API.md#发送临时会话消息)
+    + [发送头像戳一戳消息](docs/api/API.md#发送头像戳一戳消息)
+    + [撤回消息](docs/api/API.md#撤回消息)
+  + [账号管理](docs/api/API.md#账号管理)
+    + [删除好友](docs/api/API.md#删除好友)
+  + [群管理](docs/api/API.md#群管理)
+    + [禁言群成员](docs/api/API.md#禁言群成员)
+    + [解除群成员禁言](docs/api/API.md#解除群成员禁言)
+    + [移除群成员](docs/api/API.md#移除群成员)
+    + [退出群聊](docs/api/API.md#退出群聊)
+    + [全体禁言](docs/api/API.md#全体禁言)
+    + [解除全体禁言](docs/api/API.md#解除全体禁言)
+    + [设置群精华消息](docs/api/API.md#设置群精华消息)
+    + [获取群设置](docs/api/API.md#获取群设置)
+    + [修改群设置](docs/api/API.md#修改群设置)
+    + [获取群员资料](docs/api/API.md#获取群员设置)
+    + [修改群员资料](docs/api/API.md#修改群员设置)
+  + [事件处理](docs/api/API.md#事件处理)
+    + [添加好友申请](docs/api/API.md#添加好友申请)
+    + [用户入群申请](docs/api/API.md#用户入群申请（Bot需要有管理员权限）)
+    + [Bot被邀请入群申请](docs/api/API.md#Bot被邀请入群申请)
++ **[事件类型参考](docs/api/EventType.md)**
+  + [Bot自身事件](docs/api/EventType.md#bot自身事件)
+  + [好友事件](docs/api/EventType.md#好友事件)
+  + [群事件](docs/api/EventType.md#群事件)
+  + [申请事件](docs/api/EventType.md#申请事件)
++ **[消息类型参考](docs/api/MessageType.md)**
