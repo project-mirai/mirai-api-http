@@ -21,6 +21,7 @@ import net.mamoe.mirai.utils.MiraiInternalApi
 import java.io.File
 import java.io.InputStream
 import java.net.URL
+import java.util.*
 
 internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
     is MessageEvent -> toDTO()
@@ -72,12 +73,15 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
 private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
     !imageId.isNullOrBlank() -> Image(imageId!!)
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openStream { uploadAsImage(contact) }
+        url!!.openStream { it.uploadAsImage(contact) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
-            inputStream().use { uploadAsImage(contact) }
+            inputStream().use { it.uploadAsImage(contact) }
         } else throw NoSuchFileException(this)
+    }
+    !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
+        inputStream().use { it.uploadAsImage(contact) }
     }
     else -> null
 }
@@ -87,14 +91,17 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is Group -> null
     !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 0, "")
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openStream { toExternalResource().uploadAsVoice(contact) }
+        url!!.openStream { it.toExternalResource().uploadAsVoice(contact) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
             inputStream().toExternalResource().use { it.uploadAsVoice(contact) }
         } else throw NoSuchFileException(this)
     }
+    !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
+        inputStream().use { it.toExternalResource().uploadAsVoice(contact) }
+    }
     else -> null
 }
 
-private inline fun <R> String.openStream(consumer: InputStream.() -> R) = URL(this).openStream().use { it.consumer() }
+private inline fun <R> String.openStream(consumer: (InputStream) -> R) = URL(this).openStream().use { consumer(it) }
