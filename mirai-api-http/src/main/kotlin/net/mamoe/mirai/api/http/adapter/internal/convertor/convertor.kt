@@ -19,6 +19,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsVoice
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiInternalApi
 import java.io.File
+import java.io.InputStream
 import java.net.URL
 
 internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
@@ -70,7 +71,9 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
 
 private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
     !imageId.isNullOrBlank() -> Image(imageId!!)
-    !url.isNullOrBlank() -> withContext(Dispatchers.IO) { url!!.openStream().uploadAsImage(contact) }
+    !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
+        url!!.openStream { uploadAsImage(contact) }
+    }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
             inputStream().use { uploadAsImage(contact) }
@@ -84,7 +87,7 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is Group -> null
     !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 0, "")
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openStream().toExternalResource().uploadAsVoice(contact)
+        url!!.openStream { toExternalResource().uploadAsVoice(contact) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
@@ -94,5 +97,4 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     else -> null
 }
 
-// TODO: fix memory leak
-private fun String.openStream() = URL(this).openStream()
+private inline fun <R> String.openStream(consumer: InputStream.() -> R) = URL(this).openStream().use { it.consumer() }
