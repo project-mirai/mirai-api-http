@@ -641,7 +641,7 @@ Content-Type：multipart/form-data
 
 #### 响应
 
-```josn5
+```json5
 {
     "type": "GroupMessage",        // 消息类型：GroupMessage或FriendMessage或TempMessage或各类Event
 	"messageChain": [              // 消息链，是一个消息对象构成的数组
