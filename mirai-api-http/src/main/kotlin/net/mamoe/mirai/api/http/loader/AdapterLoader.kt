@@ -10,13 +10,17 @@ import java.util.jar.JarFile
 
 class AdapterLoader(basePath: File) {
 
+    companion object {
+        const val JAR_EXTENSION = "jar"
+        const val CLASS_FILE_SUFFIX = ".class"
+    }
+
     private var classLoader: URLClassLoader
     private val jars: List<URL> = basePath.listFiles()
-        ?.filter { it.extension == "jar" }
+        ?.filter { it.extension == JAR_EXTENSION }
         ?.map { it.toURI().toURL() } ?: emptyList()
 
     init {
-        println(basePath.absolutePath)
         classLoader = URLClassLoader.newInstance(jars.toTypedArray(), this.javaClass.classLoader)
     }
 
@@ -30,8 +34,8 @@ class AdapterLoader(basePath: File) {
     private fun loadAdapterFromJar(path: String) {
 
         val classNames = JarFile(path).entries().asSequence()
-            .filter { it.name.endsWith(".class") }
-            .map { it.name.removeSuffix(".class").replace("/", ".") }
+            .filter { it.name.endsWith(CLASS_FILE_SUFFIX) }
+            .map { it.name.removeSuffix(CLASS_FILE_SUFFIX).replace("/", ".") }
             .toList()
 
         classNames.forEach { className ->
