@@ -34,7 +34,19 @@ open class StateCode(val code: Int, var msg: String) : DTO {
     }
 
     // KS bug: 主构造器中不能有非字段参数 https://github.com/Kotlin/kotlinx.serialization/issues/575
+    /**
+     * 异常访问
+     */
     class IllegalAccess() : StateCode(400, "") { // 非法访问
+        constructor(msg: String) : this() {
+            this.msg = msg
+        }
+    }
+
+    /**
+     * 内部错误
+     */
+    class InternalError() : StateCode(500, "") {
         constructor(msg: String) : this() {
             this.msg = msg
         }
