@@ -4,17 +4,22 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
+import io.ktor.utils.io.*
+import io.ktor.utils.io.streams.*
 import net.mamoe.mirai.api.http.adapter.common.*
-import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
+import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.TempSession
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.TempSession
 
 /**
  * 处理策略
@@ -29,16 +34,22 @@ private fun <T> buildStrategy(block: Strategy<T>) = block
  ***********************/
 
 /**
- * 返回状态码
+ * 处理策略: 返回状态码
  */
 internal inline fun <reified T> respondStateCodeStrategy(crossinline action: suspend (T) -> StateCode) = buildStrategy<T> {
     call.respondStateCode(action(it))
 }
 
-// 返回DTO
+/**
+ * 处理策略: 返回 DTO
+ */
 internal inline fun <reified T, reified R: DTO> respondDTOStrategy(crossinline action: suspend (T) -> R) = buildStrategy<T> {
     call.respondDTO(action(it))
 }
+
+/***********************
+ *    路由 DSL 定义
+ ***********************/
 
 @ContextDsl
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
@@ -111,6 +122,10 @@ internal inline fun Route.httpAuthedMultiPart(
     this.body(getAuthedSession(sessionKey), parts)
 }
 
+/***********************
+ *     扩展方法定义
+ ***********************/
+
 /**
  * 获取 session 并进行类型校验
  */
@@ -128,4 +143,79 @@ private fun getAuthedSession(sessionKey: String): HttpAuthedSession =
 private fun proxyAuthedSession(authedSession: IAuthedSession): HttpAuthedSession =
     HttpAuthedSession(authedSession).also {
         MahContextHolder.sessionManager[authedSession.key] = it
+    }
+
+/**
+ * 响应 [StateCode]
+ */
+internal suspend inline fun <reified T : StateCode> ApplicationCall.respondStateCode(
+    code: T,
+    status: HttpStatusCode = HttpStatusCode.OK
+) = respondJson(code.toJson(), status)
+
+/**
+ * 响应 [DTO]
+ */
+internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(
+    dto: T,
+    status: HttpStatusCode = HttpStatusCode.OK
+) = respondJson(dto.toJson(), status)
+
+/**
+ * 响应 Json 字符串
+ */
+internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
+    respondText(json, defaultTextContentType(ContentType("application", "json")), status)
+
+/**
+ * 接收 http body 指定类型 [T] 的 [DTO]
+ */
+internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
+    receiveChannel().readRemaining().use {
+        val charset = request.contentCharset() ?: Charsets.UTF_8
+        if (charset == Charsets.UTF_8) it.readText()
+        else it.inputStream().reader(charset).readText()
+    }.jsonParseOrNull()
+
+
+/**
+ * 接收 http parameter
+ */
+internal inline fun <reified R> PipelineContext<Unit, ApplicationCall>.paramOrNull(name: String): R =
+    when (R::class) {
+        String::class -> call.parameters[name]
+        Byte::class -> call.parameters[name]?.toByte()
+        Int::class -> call.parameters[name]?.toInt()
+        Short::class -> call.parameters[name]?.toShort()
+        Float::class -> call.parameters[name]?.toFloat()
+        Long::class -> call.parameters[name]?.toLong()
+        Double::class -> call.parameters[name]?.toDouble()
+        Boolean::class -> when (call.parameters[name]) {
+            "true" -> true
+            "false" -> false
+            "0" -> false
+            "1" -> true
+            else -> throw IllegalParamException()
+        }
+        else -> throw IllegalParamException("未定义参数类型${R::class.simpleName}")
+    } as R
+
+/**
+ * 接收 http multi part 值类型
+ */
+internal fun List<PartData>.value(name: String) =
+    try {
+        (filter { it.name == name }[0] as PartData.FormItem).value
+    } catch (e: Exception) {
+        throw IllegalParamException()
+    }
+
+/**
+ * 接收 http multi part 文件类型
+ */
+internal fun List<PartData>.file(name: String) =
+    try {
+        filter { it.name == name }[0] as? PartData.FileItem
+    } catch (e: Exception) {
+        throw IllegalParamException()
     }
