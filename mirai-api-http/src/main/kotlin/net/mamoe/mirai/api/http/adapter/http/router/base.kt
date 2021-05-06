@@ -21,6 +21,7 @@ import io.ktor.utils.io.streams.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
+import net.mamoe.mirai.api.http.adapter.http.auth.Authorization
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
@@ -40,6 +41,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
             host(it, schemes = listOf("http", "https"))
         }
     }
+    install(Authorization)
     authRouter()
     messageRouter()
     eventRouter()
