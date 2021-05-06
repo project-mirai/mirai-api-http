@@ -6,7 +6,7 @@ import net.mamoe.mirai.contact.MemberPermission
 internal fun groupMessageDTO(id: Long = 0, name: String = ""): GroupMessagePacketDTO {
     return GroupMessagePacketDTO(
         sender = MemberDTO(
-            id, name, MemberPermission.OWNER,
+            id, name, "", MemberPermission.OWNER,
             joinTimestamp = 0,
             lastSpeakTimestamp = 0,
             muteTimeRemaining = 0,
