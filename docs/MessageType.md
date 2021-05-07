@@ -257,6 +257,7 @@
 
 ```json5
 {
+  "type": "MusicShare",
   "kind": "NeteaseCloudMusic",
   "title": "相见恨晚,",
   "summary": "彭佳慧",
