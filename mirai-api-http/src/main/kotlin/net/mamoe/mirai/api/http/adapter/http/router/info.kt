@@ -38,9 +38,7 @@ internal fun Application.infoRouter() = routing {
     /**
      * 查询QQ群成员列表
      */
-    httpAuthedGet(Paths.memberList) {
-        call.respondDTO(onGetMemberList(it, paramOrNull("target")))
-    }
+    httpAuthedGet(Paths.memberList, respondDTOStrategy(::onGetMemberList))
 
     /**
      * 查询 Bot 个人信息
@@ -50,14 +48,10 @@ internal fun Application.infoRouter() = routing {
     /**
      * 查询好友个人信息
      */
-    httpAuthedGet(Paths.friendProfile) {
-        call.respondDTO(onGetFriendProfile(it, paramOrNull("target")))
-    }
+    httpAuthedGet(Paths.friendProfile, respondDTOStrategy(::onGetFriendProfile))
 
     /**
      * 查询QQ群成员个人信息
      */
-    httpAuthedGet(Paths.memberProfile) {
-        call.respondDTO(onGetMemberProfile(it, paramOrNull("group"), paramOrNull("member")))
-    }
+    httpAuthedGet(Paths.memberProfile, respondDTOStrategy(::onGetMemberProfile))
 }

@@ -24,10 +24,10 @@ import java.net.URL
 /**
  * 从缓存中通过 id 获取缓存消息
  */
-internal suspend fun onGetMessageFromId(session: IAuthedSession, id: Int): EventRestfulResult {
-    val source = session.sourceCache[id]
+internal suspend fun onGetMessageFromId(dto: IntIdDTO): EventRestfulResult {
+    val source = dto.session.sourceCache[dto.id]
 
-    val dto = when (source) {
+    val packet = when (source) {
         is OnlineMessageSource.Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(source.target.botAsMember))
         is OnlineMessageSource.Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(source.sender.asFriend))
         is OnlineMessageSource.Outgoing.ToTemp -> TempMessagePacketDto(MemberDTO(source.target))
@@ -39,10 +39,10 @@ internal suspend fun onGetMessageFromId(session: IAuthedSession, id: Int): Event
         is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDto(QQDTO(source.sender))
     }
 
-    dto.messageChain = messageChainOf(source, source.originalMessage)
+    packet.messageChain = messageChainOf(source, source.originalMessage)
         .toDTO { d -> d != UnknownMessageDTO }
 
-    return EventRestfulResult(data = dto)
+    return EventRestfulResult(data = packet)
 }
 
 /**

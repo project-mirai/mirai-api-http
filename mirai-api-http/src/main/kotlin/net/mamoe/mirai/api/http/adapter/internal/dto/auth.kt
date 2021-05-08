@@ -17,8 +17,11 @@ internal abstract class AuthedDTO : DTO {
     val sessionKey: String = MahContext.SINGLE_SESSION_KEY
 
     @Transient
-    lateinit var session: IAuthedSession // 反序列化验证成功后传入
+    open lateinit var session: IAuthedSession // 反序列化验证成功后传入
 }
+
+@Serializable
+internal class EmptyAuthedDTO : AuthedDTO()
 
 @Serializable
 internal data class BindDTO(val qq: Long) : AuthedDTO()

@@ -16,6 +16,11 @@ import net.mamoe.mirai.contact.Member
  */
 
 @Serializable
+internal data class IntIdDTO(
+    val id: Int
+) : AuthedDTO()
+
+@Serializable
 internal data class LongTargetDTO(
     val target: Long
 ) : AuthedDTO()

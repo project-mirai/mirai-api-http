@@ -9,9 +9,12 @@ import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.streams.*
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.api.http.adapter.http.auth.Authorization.headerSession
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
+import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
@@ -101,13 +104,17 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
  * Get，用于获取bot的属性
  * 验证请求参数中sessionKey参数的有效性
  */
+@OptIn(InternalSerializationApi::class)
 @ContextDsl
-internal fun Route.httpAuthedGet(path: String, body: Strategy<HttpAuthedSession>) =
-    routeWithHandle(path, HttpMethod.Get) {
-        val sessionKey = call.parameters["sessionKey"] ?: MahContext.SINGLE_SESSION_KEY
+internal inline fun <reified T : AuthedDTO> Route.httpAuthedGet(
+    path: String,
+    crossinline body: Strategy<T>
+) = routeWithHandle(path, HttpMethod.Get) {
+    val dto = KtorParameterFormat.DEFAULT.decode(context.parameters, T::class.serializer())
 
-        this.body(getAuthedSession(sessionKey))
-    }
+    getAuthedSession(dto.sessionKey).also { dto.session = it }
+    this.body(dto)
+}
 
 @ContextDsl
 internal inline fun Route.httpAuthedMultiPart(
@@ -172,7 +179,7 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
     receiveChannel().readRemaining().use {
         val charset = request.contentCharset() ?: Charsets.UTF_8
         if (charset == Charsets.UTF_8) it.readText()
-        else it.inputStream().reader(charset).use{ rd -> rd.readText()}
+        else it.inputStream().reader(charset).use { rd -> rd.readText() }
     }.jsonParseOrNull()
 
 

@@ -69,8 +69,8 @@ internal suspend fun onSetEssence(essenceDTO: IntTargetDTO): StateCode {
 /**
  * 获取群设置（需要相关权限）
  */
-internal fun onGetGroupConfig(session: IAuthedSession, target: Long): GroupDetailDTO {
-    val group = session.bot.getGroupOrFail(target)
+internal fun onGetGroupConfig(dto: LongTargetDTO): GroupDetailDTO {
+    val group = dto.session.bot.getGroupOrFail(dto.target)
     return GroupDetailDTO(group)
 }
 
@@ -94,8 +94,8 @@ internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
 /**
  * 获取群员信息
  */
-internal fun onGetMemberInfo(session: IAuthedSession, target: Long, memberId: Long): MemberDTO {
-    val member = session.bot.getGroupOrFail(target).getOrFail(memberId)
+internal fun onGetMemberInfo(dto: MemberTargetDTO): MemberDTO {
+    val member = dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId)
     return MemberDTO(member)
 }
 

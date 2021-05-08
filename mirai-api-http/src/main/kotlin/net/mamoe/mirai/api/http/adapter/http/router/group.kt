@@ -57,9 +57,7 @@ internal fun Application.groupManageRouter() = routing {
     /**
      * 获取群设置（需要相关权限）
      */
-    httpAuthedGet(Paths.groupConfig) {
-        call.respondDTO(onGetGroupConfig(it, paramOrNull("target")))
-    }
+    httpAuthedGet(Paths.groupConfig, respondDTOStrategy(::onGetGroupConfig))
 
     /**
      * 修改群设置（需要相关权限）
@@ -69,10 +67,7 @@ internal fun Application.groupManageRouter() = routing {
     /**
      * 获取群员信息
      */
-    httpAuthedGet(Paths.memberInfo) {
-        val result = onGetMemberInfo(it, paramOrNull("target"), paramOrNull("memberId"))
-        call.respondDTO(result)
-    }
+    httpAuthedGet(Paths.memberInfo, respondDTOStrategy(::onGetMemberInfo))
 
     /**
      * 更新群员信息（需要相关权限）
