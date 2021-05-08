@@ -10,6 +10,7 @@ import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.streams.*
 import net.mamoe.mirai.api.http.adapter.common.*
+import net.mamoe.mirai.api.http.adapter.http.auth.Authorization.headerSession
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
@@ -36,16 +37,14 @@ private fun <T> buildStrategy(block: Strategy<T>) = block
 /**
  * 处理策略: 返回状态码
  */
-internal inline fun <reified T> respondStateCodeStrategy(crossinline action: suspend (T) -> StateCode) = buildStrategy<T> {
-    call.respondStateCode(action(it))
-}
+internal inline fun <reified T> respondStateCodeStrategy(crossinline action: suspend (T) -> StateCode) =
+    buildStrategy<T> { call.respondStateCode(action(it)) }
 
 /**
  * 处理策略: 返回 DTO
  */
-internal inline fun <reified T, reified R: DTO> respondDTOStrategy(crossinline action: suspend (T) -> R) = buildStrategy<T> {
-    call.respondDTO(action(it))
-}
+internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline action: suspend (T) -> R) =
+    buildStrategy<T> { call.respondDTO(action(it)) }
 
 /***********************
  *    路由 DSL 定义
@@ -84,8 +83,6 @@ internal inline fun Route.httpBind(path: String, crossinline body: Strategy<Bind
  * Verify，用于处理bot的行为请求
  * 验证数据传输对象(DTO)中是否包含sessionKey字段
  * 且验证sessionKey的有效性
- *
- * @param verifiedSessionKey 是否验证sessionKey是否被激活
  *
  * it 为json解析出的DTO对象
  */
@@ -129,13 +126,14 @@ internal inline fun Route.httpAuthedMultiPart(
 /**
  * 获取 session 并进行类型校验
  */
-private fun getAuthedSession(sessionKey: String): HttpAuthedSession =
-    when (val session = MahContextHolder[sessionKey]) {
+private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): HttpAuthedSession {
+    return when (val session = headerSession ?: MahContextHolder[sessionKey]) {
         is HttpAuthedSession -> session
         is IAuthedSession -> proxyAuthedSession(session)
         is TempSession -> throw NotVerifiedSessionException
         else -> throw IllegalSessionException
     }
+}
 
 /**
  * 置换全局 session 为代理对象
@@ -174,7 +172,7 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
     receiveChannel().readRemaining().use {
         val charset = request.contentCharset() ?: Charsets.UTF_8
         if (charset == Charsets.UTF_8) it.readText()
-        else it.inputStream().reader(charset).readText()
+        else it.inputStream().reader(charset).use{ rd -> rd.readText()}
     }.jsonParseOrNull()
 
 

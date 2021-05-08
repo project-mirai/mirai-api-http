@@ -13,6 +13,7 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
+import net.mamoe.mirai.api.http.adapter.http.auth.Authorization
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -27,6 +28,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
             host(it, schemes = listOf("http", "https"))
         }
     }
+
     install(Authorization)
     authRouter()
     messageRouter()
