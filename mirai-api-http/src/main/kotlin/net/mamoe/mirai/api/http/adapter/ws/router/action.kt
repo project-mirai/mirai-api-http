@@ -58,14 +58,14 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.groupConfig -> {
             when (commandWrapper.subCommand) {
                 "get" -> execute(session, element, ::onGetGroupConfig)
-                "post" -> execute(session, element, ::onUpdateGroupConfig)
+                "update" -> execute(session, element, ::onUpdateGroupConfig)
                 else -> StateCode.NoOperateSupport.toJsonElement()
             }
         }
         Paths.memberInfo -> {
             when (commandWrapper.subCommand) {
                 "get" -> execute(session, element, ::onGetMemberInfo)
-                "post" -> execute(session, element, ::onUpdateMemberInfo)
+                "update" -> execute(session, element, ::onUpdateMemberInfo)
                 else -> StateCode.NoOperateSupport.toJsonElement()
             }
         }

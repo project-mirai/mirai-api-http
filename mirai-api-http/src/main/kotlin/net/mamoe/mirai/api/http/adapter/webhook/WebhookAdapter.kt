@@ -1,8 +1,12 @@
 package net.mamoe.mirai.api.http.adapter.webhook
 
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.MahAdapter
+import net.mamoe.mirai.api.http.adapter.internal.action.onSendFriendMessage
+import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
+import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
@@ -27,7 +31,7 @@ class WebhookAdapter : MahAdapter("webhook") {
 
         botEventListener = GlobalEventChannel.subscribeAlways {
             setting.destinations.forEach {
-                hook(it, this)
+                bot.launch { hook(it, this@subscribeAlways) }
             }
         }
     }
@@ -37,7 +41,12 @@ class WebhookAdapter : MahAdapter("webhook") {
     }
 
     private suspend fun hook(destination: String, botEvent: BotEvent) {
-        client.post(destination, botEvent.toJson(), botId = botEvent.bot.id)
+        kotlin.runCatching {
+            val resp = client.post(destination, botEvent.toJson(), botId = botEvent.bot.id)
+            resp.jsonParseOrNull<WebhookPacket>()?.let {
+                execute(botEvent.bot, it)
+            }
+        }
     }
 
     // webhook 负责监听所有 bot 不依赖 session 进行
