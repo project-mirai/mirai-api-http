@@ -293,8 +293,8 @@
 | 名字       | 可选  | 举例           | 说明            |
 | ---------- | ----- | -------------- | --------------- |
 | sessionKey | true  | YourSessionKey | 你的session key |
-| group      | false | 123456789      | 指定群的群号    |
-| member     | false | 987654321      | 群成员QQ号码    |
+| target     | false | 123456789      | 指定群的群号    |
+| memberId   | false | 987654321      | 群成员QQ号码    |
 
 #### 响应:
 

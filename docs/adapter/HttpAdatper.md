@@ -27,6 +27,7 @@ adapterSettings:
   + [认证](#认证)
   + [绑定](#绑定)
   + [释放](#释放)
+  + [传递(重要)](#传递(重要))
 + **[接收消息与事件](#接收消息与事件)**
   + [查看队列大小](#查看队列大小)
   + [获取队列头部](#获取队列头部)
@@ -184,6 +185,20 @@ adapterSettings:
 }
 ```
 > SessionKey与Bot 对应错误时将会返回状态码2：指定的Bot不存在
+
+### 传递(重要)
+
+`sessionKey` 作为会话的唯一标识, 它对应着服务器缓存及其上下文. 在 `adapter` 允许的情况下, 复用 `sessionKey` 创建多个连接会共享上下文
+
+> `HttpAdapter` 允许复用 `sessionKey` 创建多个连接
+
+在 `singleMode` 模式下: 所有需要 `sessionKey` 参数的接口可忽略 `sessionKey`
+
+在非 `singleMode` 模式下 `sessionKey` 可通过以下方式传递:
+1. 设置请求头 `sessionKey: YourSessionKey`, 大小写敏感
+2. 设置请求头 `Authorization: session YourSessionKey`, `Authorization` 大小写敏感, `session` 大小写不敏感
+3. 设置请求头 `Authorization: sessionKey YourSessionKey`, `Authorization` 大小写敏感, `sessionKey` 大小写不敏感
+4. 通过 url参数(对于GET请求)或 json 参数(对于POST请求)填入 `sessionKey` 字段, 大小写敏感
 
 ## 接收消息与事件
 

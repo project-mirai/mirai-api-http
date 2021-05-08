@@ -121,7 +121,7 @@ internal inline fun Route.httpAuthedMultiPart(
     path: String, crossinline body: Strategy2<HttpAuthedSession, List<PartData>>
 ) = routeWithHandle(path, HttpMethod.Post) {
     val parts = call.receiveMultipart().readAllParts()
-    val sessionKey = call.parameters["sessionKey"] ?: throw IllegalParamException()
+    val sessionKey = call.parameters["sessionKey"] ?: MahContext.SINGLE_SESSION_KEY
 
     this.body(getAuthedSession(sessionKey), parts)
 }
