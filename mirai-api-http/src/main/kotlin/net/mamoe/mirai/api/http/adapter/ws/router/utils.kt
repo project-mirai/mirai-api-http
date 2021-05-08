@@ -35,14 +35,8 @@ internal inline fun Route.miraiWebsocket(
             return@webSocket
         }
 
-        // 非 single 模式校验 session key
-        if (sessionKey == null) {
-            closeWithCode(StateCode.InvalidParameter)
-            return@webSocket
-        }
-
         // 注册新 session
-        if (qq != null) {
+        if (sessionKey == null && qq != null) {
             val bot = Bot.getInstanceOrNull(qq)
             if (bot == null) {
                 closeWithCode(StateCode.NoBot)
@@ -54,6 +48,12 @@ internal inline fun Route.miraiWebsocket(
             }
 
             body(session as AuthedSession)
+            return@webSocket
+        }
+
+        // 非 single 模式校验 session key
+        if (sessionKey == null) {
+            closeWithCode(StateCode.InvalidParameter)
             return@webSocket
         }
 

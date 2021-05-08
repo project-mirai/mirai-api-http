@@ -19,4 +19,4 @@ internal data class WsIncoming(
 internal data class WsOutgoing(
     val syncId: String?,
     val data: JsonElement
-)
+) : DTO

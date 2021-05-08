@@ -5,6 +5,8 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
+import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.api.http.context.session.AuthedSession
 
@@ -53,6 +55,9 @@ private suspend fun DefaultWebSocketServerSession.handleChannel(
     channel[session.key]?.close()
     channel[session.key] = outgoing
 
+    // touch respond
+    outgoing.send(Frame.Text(VerifyRetDTO(0, session.key).toJson()))
+
     runCatching {
         for (frame in incoming) {
             runCatching {
@@ -65,4 +70,6 @@ private suspend fun DefaultWebSocketServerSession.handleChannel(
     }
 
     channel.remove(session.key, outgoing)
+    // ensure close
+    outgoing.close()
 }
