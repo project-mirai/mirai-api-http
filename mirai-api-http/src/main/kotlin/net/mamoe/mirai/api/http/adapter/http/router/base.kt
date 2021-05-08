@@ -27,6 +27,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
             host(it, schemes = listOf("http", "https"))
         }
     }
+    install(Authorization)
     authRouter()
     messageRouter()
     eventRouter()
