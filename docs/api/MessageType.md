@@ -1,3 +1,79 @@
+## 消息链类型
+
+### 好友消息
+
+```json5
+{
+    "type": "FriendMessage",
+    "sender": {
+        "id": 123,
+        "nickname": "",
+        "remark": ""
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+### 群消息
+
+```json5
+{
+    "type": "GroupMessage",
+    "sender": {
+        "id": 123,
+        "memberName": "",
+        "specialTitle": "",
+        "permission": "OWNER",
+        "joinTimestamp": 0,
+        "lastSpeakTimestamp": 0,
+        "muteTimeRemaining": 0,
+        "group": {
+            "id": 321,
+            "name": "",
+            "permission": "MEMBER",
+        },
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+### 群临时消息
+
+```json5
+{
+    "type": "TempMessage",
+    "sender": {
+        "id": 123,
+        "memberName": "",
+        "specialTitle": "",
+        "permission": "OWNER",
+        "joinTimestamp": 0,
+        "lastSpeakTimestamp": 0,
+        "muteTimeRemaining": 0,
+        "group": {
+            "id": 321,
+            "name": "",
+            "permission": "MEMBER",
+        },
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+### 陌生人消息
+
+```json5
+{
+    "type": "StrangerMessage",
+    "sender": {
+        "id": 123,
+        "nickname": "",
+        "remark": ""
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
 ## 消息类型
 
 #### Source
