@@ -781,7 +781,7 @@ Content-Type：multipart/form-data
 
 ### 获取群成员列表
 
-使用此方法获取bot指定群种的成员列表
+使用此方法获取bot指定群中的成员列表
 
 ```
 [GET] /memberList?sessionKey=YourSessionKey&target=123456789
