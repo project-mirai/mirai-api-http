@@ -10,9 +10,11 @@ adapterSettings:
     ## http server 监听的本地地址
     ## 一般为 localhost 即可, 如果多网卡等情况，自定设置
     host: localhost
+
     ## http server 监听的端口
     ## 与 websocket server 可以重复, 由于协议与路径不同, 不会产生冲突
     port: 8080
+
     ## 配置跨域, 默认允许来自所有域名
     cors: [*]
 ```
