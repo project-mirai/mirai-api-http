@@ -1,24 +1,58 @@
 package net.mamoe.mirai.api.http.adapter.reverse
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
+import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
+import net.mamoe.mirai.api.http.adapter.reverse.client.WsClient
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 
-class ReverseWebsocketAdaptor: MahAdapter() {
+class ReverseWebsocketAdaptor : MahAdapter("reverse-ws") {
+
+    private val clients = mutableListOf<WsClient>()
+
+    internal val setting: ReverseWebsocketAdapterSetting by lazy {
+        getSetting() ?: ReverseWebsocketAdapterSetting()
+    }
 
     override fun initAdapter() {
-        TODO("Not yet implemented")
     }
 
     override fun enable() {
-        TODO("Not yet implemented")
+
+        log.info(">>> [reverse-ws adapter] is running")
+
+        // 启动 websocket client 监听 destinations
+        setting.destinations.forEach { dest ->
+            val client = WsClient()
+            clients += client
+
+            client.listen(dest, setting)
+        }
     }
 
     override fun disable() {
-        TODO("Not yet implemented")
+        clients.forEach {
+            kotlin.runCatching {
+                it.close()
+            }
+        }
     }
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
-        TODO("Not yet implemented")
+        clients.filter { it.bindingSessionKey == session.key }.forEach {
+            try {
+                it.send(
+                    WsOutgoing(
+                        syncId = setting.reservedSyncId,
+                        data = event.toDTO().toJsonElement(),
+                    ).toJson()
+                )
+            } catch (e: Exception) {
+                //TODO: log exception
+            }
+        }
     }
 }

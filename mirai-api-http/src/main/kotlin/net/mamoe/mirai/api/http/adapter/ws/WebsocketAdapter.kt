@@ -52,7 +52,8 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
             try {
                 sendChannel.send(
                     Frame.Text(
-                        WsOutgoing(syncId = setting.reservedSyncId,
+                        WsOutgoing(
+                            syncId = setting.reservedSyncId,
                             data = event.toDTO().toJsonElement(),
                         ).toJson()
                     )
