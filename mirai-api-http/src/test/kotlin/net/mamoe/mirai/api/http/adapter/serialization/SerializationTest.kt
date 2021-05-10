@@ -27,7 +27,7 @@ class SerializationTest {
     @Test
     fun testPolymorphic() {
         val expected = """
-            [{"type":"GroupMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"memberName":"","permission":"OWNER","group":{"id":0,"name":"","permission":"OWNER"}}},{"type":"FriendMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"nickname":"","remark":""}}]
+            [{"type":"GroupMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"memberName":"","specialTitle":"","permission":"OWNER","joinTimestamp":0,"lastSpeakTimestamp":0,"muteTimeRemaining":0,"group":{"id":0,"name":"","permission":"OWNER"}}},{"type":"FriendMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"nickname":"","remark":""}}]
         """.trimIndent()
         val ls: List<EventDTO> = listOf(groupMessageDTO(), friendMessageDTO())
         val json = ls.toJson()

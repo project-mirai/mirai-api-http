@@ -95,6 +95,13 @@ adapterSettings:
 
 [Adapter 一览](docs/adapter/Adapter.md)
 
+
+## 迁移至 2.x
+
+从 1.x 迁移至 2.x 有不少变动，提供[迁移文档](docs/misc/Migration2.md)参考
+
+可能无法覆盖所有变更
+
 ## 调试API
 (2.x 未更新)
 
