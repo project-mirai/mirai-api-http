@@ -80,8 +80,23 @@ adapterSettings:
     reservedSyncId: -1
 ```
 
+## Adapter
+
+`mirai-api-http` 提供了多种连接方式, 并进行模块化分离成 `adapter`
+
+对于较常使用的连接方式, 内置了4种 `adapter`
+
++ [http](docs/adapter/HttpAdatper.md): 基于轮询的 http 接口
++ [ws](docs/adapter/WebsocketAdapter.md): websocket server 形式的接口
++ [reverse-ws](docs/adapter/ReverseWebsocketAdapter.md): websocket client 形式的接口
++ [webhook](docs/adapter/WebhookAdapter.md): http 回调形式的接口
+
+`adapter` 可以多个同时开启, 请按需启用
+
+[Adapter 一览](docs/adapter/Adapter.md)
+
 ## 调试API
-调试API已完成,**[点我查看](API-Tester/install.md)**
+(2.x 未更新)
 
 ## 更新日志
 [点我查看](CHANGELOG.md)
