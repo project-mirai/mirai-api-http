@@ -7,6 +7,9 @@ import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.ISession
 
+/**
+ * 拦截 http 请求, 解析 header 并写入可能存在的 sessionKey
+ */
 object Authorization : ApplicationFeature<Application, Unit, Authorization> {
 
     /**

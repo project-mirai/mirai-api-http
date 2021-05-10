@@ -12,6 +12,13 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
+/***************************
+ * Core Message 对象转换函数
+ ***************************/
+
+/**
+ * 一个完整的消息包转换, 包含发送者和消息链
+ */
 internal suspend fun MessageEvent.toDTO() = when (this) {
     is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
@@ -23,6 +30,9 @@ internal suspend fun MessageEvent.toDTO() = when (this) {
     }
 }
 
+/**
+ * 消息连转换
+ */
 internal suspend fun MessageChain.toDTO(filter: (MessageDTO) -> Boolean): MessageChainDTO =
     mutableListOf<MessageDTO>().apply {
         this@toDTO.forEach { content ->
@@ -30,6 +40,9 @@ internal suspend fun MessageChain.toDTO(filter: (MessageDTO) -> Boolean): Messag
         }
     }
 
+/**
+ * 具体消息类型转换
+ */
 @OptIn(MiraiExperimentalApi::class)
 internal suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(ids.firstOrNull() ?: 0, time)

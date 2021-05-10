@@ -23,16 +23,37 @@ import java.io.InputStream
 import java.net.URL
 import java.util.*
 
+/***********************
+ *       转换函数
+ ***********************/
+
+
+/**
+ * Core 对象转换为 DTO 对象
+ *
+ * 对于事件类型, 见 event.kt
+ * 对于消息类型， 见 message.kt
+ */
 internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
     is MessageEvent -> toDTO()
     else -> convertBotEvent()
 }
 
+
+/************************************
+ *   以下为 DTO 对象转换为 Core 对象
+ ************************************/
+
+/**
+ * 转换一条消息链
+ */
 internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: MessageSourceCache): MessageChain {
     return buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact, cache)?.let(::add) } }
 }
 
-
+/**
+ * 转换一个具体的消息类型
+ */
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
 internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSourceCache) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
