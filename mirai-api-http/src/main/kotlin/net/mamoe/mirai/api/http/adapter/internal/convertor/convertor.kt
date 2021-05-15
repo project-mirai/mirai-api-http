@@ -74,13 +74,13 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     is DiceDTO -> Dice(value)
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessageDTO -> buildForwardMessage(contact) {
-        nodes.forEach {
+        nodeList.forEach {
             if (it.messageId != null) {
                 cache.getOrDefault(it.messageId, null)?.apply {
                     add(sender as UserOrBot, originalMessage, time)
                 }
-            } else if (it.sender != null && it.name != null && it.messageChain != null) {
-                add(it.sender, it.name, it.messageChain.toMessageChain(contact, cache), it.time ?: -1)
+            } else if (it.senderId != null && it.senderName != null && it.messageChain != null) {
+                add(it.senderId, it.senderName, it.messageChain.toMessageChain(contact, cache), it.time ?: -1)
             }
         }
     }

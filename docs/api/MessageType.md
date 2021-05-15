@@ -324,12 +324,12 @@
 
 ```json5
 {
-  "type": "ForwardMessage",
-  "nodes": [
+  "type": "Forward",
+  "nodeList": [
     {
-      "sender": 123,
+      "senderId": 123,
       "time": 0,
-      "name": "sender name",
+      "senderName": "sender name",
       "messageChain": [],
       "sourceId": 123
     }
@@ -339,8 +339,9 @@
 
 | 名字 | 类型   | 说明         |
 | ---- | ------ | ------------ |
-| nodes | object | 消息节点 |
-| sender | Long | 发送人QQ号 |
+| nodeList | object | 消息节点 |
+| senderId | Long | 发送人QQ号 |
 | time | Int | 发送时间 |
+| senderName | String | 显示名称 |
 | messageChain | Array | 消息数组 |
 | messageId | Int | 可以只使用消息messageId，从缓存中读取一条消息作为节点 |
