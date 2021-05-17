@@ -3,10 +3,10 @@ package net.mamoe.mirai.api.http.context.session.manager
 tailrec fun SessionManager.generateSessionKey(): String {
     val key = generateRandomSessionKey()
     this[key]?.apply {
-        return key
+        return generateSessionKey()
     }
 
-    return generateSessionKey()
+    return key
 }
 
 // From @jiahua.liu in 2020/1/17 23:25
