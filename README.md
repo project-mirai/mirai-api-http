@@ -165,7 +165,7 @@ heartbeat:
     * [注册指令](docs/API.md#注册指令)
     * [发送指令](docs/API.md#发送指令)
     * [监听指令](docs/API.md#监听指令)
-    * [获取Mangers](docs/API.md#获取mangers)
+    * [获取Managers](docs/API.md#获取managers)
 * **[事件类型参考](docs/EventType.md)**
   * [Bot自身事件](docs/EventType.md#bot自身事件)
   * [消息撤回](docs/EventType.md#消息撤回)
