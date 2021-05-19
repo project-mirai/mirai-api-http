@@ -1090,7 +1090,7 @@ Content-Type：multipart/form-data
 使用此方法获取群员资料
 
 ```
-[Get] /memberInfo?sessionKey=YourSessionKey&target=123456789
+[GET] /memberInfo?sessionKey=YourSessionKey&target=123456789&memberId=123456789
 ```
 
 #### 请求:
