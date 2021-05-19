@@ -69,5 +69,6 @@ internal suspend fun Message.toDTO() = when (this) {
     is ForwardMessage -> ForwardMessageDTO(nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
     })
+    is FileMessage -> FileDTO(id, name, size)
     else -> UnknownMessageDTO
 }

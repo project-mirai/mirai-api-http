@@ -87,6 +87,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,
+    is FileDTO,
     is UnknownMessageDTO
     -> null
 }

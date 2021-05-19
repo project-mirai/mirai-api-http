@@ -37,4 +37,5 @@ fun Application.httpModule(adapter: HttpAdapter) {
     friendManageRouter()
     groupManageRouter()
     aboutRouter()
+    fileRouter()
 }

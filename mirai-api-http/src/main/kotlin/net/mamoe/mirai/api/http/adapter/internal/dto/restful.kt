@@ -1,12 +1,18 @@
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 internal open class RestfulResult(
     val code: Int = 0,
     val msg: String = "",
 ) : DTO
+
+@Serializable
+internal data class  ElementResult(
+    val data: JsonElement
+) : RestfulResult()
 
 @Serializable
 internal data class IntRestfulResult(

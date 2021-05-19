@@ -1,12 +1,12 @@
 package net.mamoe.mirai.api.http.adapter.internal.dto.parameter
 
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.GroupDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.MessageChainDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.QQDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.RemoteFileDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.RestfulResult
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
@@ -53,4 +53,9 @@ internal class GroupList(
 @Serializable
 internal class MemberList(
     val data: List<MemberDTO>
+) : RestfulResult()
+
+@Serializable
+internal class RemoteFileList(
+    val data: List<RemoteFileDTO>
 ) : RestfulResult()

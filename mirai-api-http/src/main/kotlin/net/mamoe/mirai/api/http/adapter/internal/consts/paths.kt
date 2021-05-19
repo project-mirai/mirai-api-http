@@ -46,6 +46,15 @@ object Paths {
     const val uploadVoice = "uploadVoice"
     const val recall = "recall"
 
+    // file
+    const val fileList = "file_list"
+    const val fileInfo = "file_info"
+    const val fileMkdir = "file_mkdir"
+    const val uploadFile = "file_upload"
+    const val fileDelete = "file_delete"
+    const val fileMove = "file_move"
+    const val fileRename = "file_rename"
+
     fun httpPath(s: String): String {
         val t = s.replace("_", "/")
         if (t.startsWith('/')) {

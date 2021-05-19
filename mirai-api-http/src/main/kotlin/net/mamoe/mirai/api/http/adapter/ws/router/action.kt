@@ -86,10 +86,23 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.sendGroupMessage -> execute(session, element, ::onSendGroupMessage)
         Paths.sendTempMessage -> execute(session, element, ::onSendTempMessage)
         Paths.sendImageMessage -> execute(session, element, ::onSendImageMessage)
+        // TODO: implement upload image
         Paths.uploadImage -> StateCode.NoOperateSupport.toJsonElement()
+        // TODO: implement upload voice
         Paths.uploadVoice -> StateCode.NoOperateSupport.toJsonElement()
         Paths.recall -> execute(session, element, ::onRecall)
         Paths.sendNudge -> execute(session, element, ::onNudge)
+
+        // file
+        Paths.fileList -> execute(session, element, ::onListFile)
+        Paths.fileInfo -> execute(session, element, ::onGetFileInfo)
+        // TODO: implement upload file
+        Paths.uploadFile -> StateCode.NoOperateSupport.toJsonElement()
+        Paths.fileMkdir -> execute(session, element, ::onMkDir)
+        Paths.fileDelete -> execute(session, element, ::onDeleteFile)
+        Paths.fileMove -> execute(session, element, ::onMoveFile)
+        Paths.fileRename -> execute(session, element, ::onRenameFile)
+
         else -> StateCode.NoOperateSupport.toJsonElement()
     }
 

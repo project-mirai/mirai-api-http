@@ -151,6 +151,14 @@ internal data class ForwardMessageNode(
 )
 
 @Serializable
+@SerialName("File")
+internal data class FileDTO(
+    val id: String,
+    val name: String,
+    val size: Long,
+) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
