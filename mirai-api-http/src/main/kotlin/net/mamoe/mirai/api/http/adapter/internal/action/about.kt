@@ -4,7 +4,7 @@ import net.mamoe.mirai.api.http.HttpApiPluginBase
 
 private val mahVersion by lazy {
     val desc = HttpApiPluginBase.description
-    desc.javaClass.fields.first { it.name == "version" }.get(desc).toString()
+    desc.version.toString()
 }
 
 /**
