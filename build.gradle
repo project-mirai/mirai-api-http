@@ -1,16 +1,13 @@
 buildscript {
     repositories {
         mavenLocal()
-        // maven { url 'https://mirrors.huaweicloud.com/repository/maven' }
-        maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
-        jcenter()
+        maven { url 'https://maven.aliyun.com/repository/public' }
         mavenCentral()
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        // classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 }
 
@@ -19,11 +16,7 @@ allprojects {
 
     repositories {
         mavenLocal()
-        //if (System.getenv("IS_GITHUB_ACTION") == null) {
-        //    maven { url "https://mirrors.huaweicloud.com/repository/maven" }
-        // }
-        maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
-        jcenter()
+        maven { url 'https://maven.aliyun.com/repository/public' }
         mavenCentral()
     }
 }

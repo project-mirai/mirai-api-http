@@ -1,13 +1,11 @@
 plugins {
     id("kotlinx-serialization")
     kotlin("jvm")
-    id("net.mamoe.mirai-console") version "2.5.2"
+    id("net.mamoe.mirai-console") version "2.6.2"
 }
 
 val httpVersion: String by rootProject.ext
-
 val ktorVersion: String by rootProject.ext
-val serializationVersion: String by rootProject.ext
 
 fun kotlinx(id: String, version: String) =
     "org.jetbrains.kotlinx:kotlinx-$id:$version"
@@ -19,7 +17,6 @@ fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor
 kotlin {
     sourceSets["test"].apply {
         dependencies {
-            api("org.slf4j:slf4j-simple:1.7.26")
         }
     }
 
@@ -28,13 +25,9 @@ kotlin {
         languageSettings.useExperimentalAnnotation("kotlin.Experimental")
 
         dependencies {
-            api(kotlinx("serialization-json", serializationVersion))
-            implementation("net.mamoe:mirai-core-utils:${mirai.coreVersion}")
-
             api(ktor("server-cio"))
             api(ktor("http-jvm"))
             api(ktor("websockets"))
-            api("org.yaml:snakeyaml:1.25")
 
             implementation(ktor("server-core"))
             implementation(ktor("http"))

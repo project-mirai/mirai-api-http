@@ -71,22 +71,14 @@ fun Application.messageModule() {
             call.respondDTO(EventListRestfulResult(data = list))
         }
 
-        suspend fun PipelineContext<Unit, ApplicationCall>.傻逼黄色(it: AuthedSession) {
-            val count: Int = paramOrNull("count")
-            val list = it.messageQueue.peek(count)
-
-            call.respondDTO(EventListRestfulResult(data = list))
-        }
-
         /**
          * 获取指定条数最老的消息，和/fetchMessage不一样，这个方法不会删除消息
          */
         miraiGet("/peekMessage") {
-            傻逼黄色(it)
-        }
+            val count: Int = paramOrNull("count")
+            val list = it.messageQueue.peek(count)
 
-        miraiGet("/peakMessage") {
-            傻逼黄色(it)
+            call.respondDTO(EventListRestfulResult(data = list))
         }
 
         /**

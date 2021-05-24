@@ -10,10 +10,10 @@
 package net.mamoe.mirai.api.http.data.common
 
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.util.toUHexString
 import net.mamoe.mirai.utils.RemoteFile
 import net.mamoe.mirai.utils.RemoteFile.DownloadInfo
 import net.mamoe.mirai.utils.RemoteFile.FileInfo
-import net.mamoe.mirai.utils.toUHexString
 
 
 @Serializable
@@ -58,6 +58,5 @@ data class FileInfoDTO(
         file.url,
         fileInfo.sha1.toUHexString(""),
         fileInfo.md5.toUHexString(""),
-
-        )
+    )
 }

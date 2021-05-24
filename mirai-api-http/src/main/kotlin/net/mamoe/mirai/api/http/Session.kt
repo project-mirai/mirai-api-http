@@ -15,11 +15,10 @@ import net.mamoe.mirai.api.http.config.Setting
 import net.mamoe.mirai.api.http.data.Config
 import net.mamoe.mirai.api.http.queue.CacheQueue
 import net.mamoe.mirai.api.http.queue.MessageQueue
+import net.mamoe.mirai.api.http.util.currentSeconds
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.utils.currentTimeSeconds
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -66,7 +65,7 @@ internal object SessionManager {
     }
 
     operator fun get(sessionKey: String) = allSession[sessionKey]?.also {
-        if (it is AuthedSession) it.latestUsed = currentTimeSeconds()
+        if (it is AuthedSession) it.latestUsed = currentSeconds()
     }
 
 
@@ -129,7 +128,7 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
     private val _cache: Listener<MessageEvent>
     private val releaseJob: Job //手动释放将会在下一次检查时回收Session
 
-    internal var latestUsed = currentTimeSeconds()
+    internal var latestUsed = currentSeconds()
 
     init {
         _listener = bot.eventChannel.subscribeAlways{
@@ -150,7 +149,7 @@ class AuthedSession internal constructor(val bot: Bot, originKey: String, corout
         releaseJob = launch {
             while (isActive) {
                 delay(CHECK_TIME * 1000)
-                if (!config.enableWebsocket && currentTimeSeconds() - latestUsed >= CHECK_TIME) {
+                if (!config.enableWebsocket && currentSeconds() - latestUsed >= CHECK_TIME) {
                     SessionManager.closeSession(this@AuthedSession)
                     break
                 }
