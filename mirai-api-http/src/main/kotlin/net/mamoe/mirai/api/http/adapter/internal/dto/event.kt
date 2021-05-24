@@ -259,3 +259,15 @@ internal data class MemberHonorChangeEventDTO(
     val action: String,
     val honor: String,
 ) : BotEventDTO()
+
+@Serializable
+@SerialName("OtherClientOnlineEventDTO")
+internal data class OtherClientOnlineEventDTO(
+    val client: OtherClientDTO,
+) : BotEventDTO()
+
+@Serializable
+@SerialName("OtherClientOfflineEventDTO")
+internal data class OtherClientOfflineEventDTO(
+    val client: OtherClientDTO,
+) : BotEventDTO()

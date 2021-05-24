@@ -101,5 +101,7 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     is FriendNickChangedEvent -> FriendNickChangedEventDTO(QQDTO(friend), from, to)
     is MemberHonorChangeEvent.Achieve -> MemberHonorChangeEventDTO(MemberDTO(member), "achieve", GroupHonor[honorType])
     is MemberHonorChangeEvent.Lose -> MemberHonorChangeEventDTO(MemberDTO(member), "lose", GroupHonor[honorType])
+    is OtherClientOnlineEvent -> OtherClientOnlineEventDTO(OtherClientDTO(client))
+    is OtherClientOfflineEvent -> OtherClientOfflineEventDTO(OtherClientDTO(client))
     else -> IgnoreEventDTO
 }
