@@ -40,6 +40,7 @@ object Paths {
     const val sendFriendMessage = "sendFriendMessage"
     const val sendGroupMessage = "sendGroupMessage"
     const val sendTempMessage = "sendTempMessage"
+    const val sendOtherClientMessage = "sendOtherClientMessage"
     const val sendImageMessage = "sendImageMessage"
     const val sendNudge = "sendNudge"
     const val uploadImage = "uploadImage"

@@ -50,6 +50,14 @@ internal data class GroupDTO(
 }
 
 @Serializable
+internal data class OtherClientDTO(
+    override val id: Long,
+    val platform: String
+) : ContactDTO() {
+    constructor(otherClient: OtherClient): this(otherClient.id, otherClient.platform?.name ?: "unknown")
+}
+
+@Serializable
 internal data class ComplexSubjectDTO(
     override val id: Long,
     val kind: String

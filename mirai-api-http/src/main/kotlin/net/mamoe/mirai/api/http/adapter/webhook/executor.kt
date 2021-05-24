@@ -42,6 +42,7 @@ internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
         Paths.sendFriendMessage -> execute(bot, element, ::onSendFriendMessage)
         Paths.sendGroupMessage -> execute(bot, element, ::onSendGroupMessage)
         Paths.sendTempMessage -> execute(bot, element, ::onSendTempMessage)
+        Paths.sendOtherClientMessage -> execute(bot, element, ::onSendOtherClientMessage)
         Paths.sendImageMessage -> execute(bot, element, ::onSendImageMessage)
         Paths.recall -> execute(bot, element, ::onRecall)
         Paths.sendNudge -> execute(bot, element, ::onNudge)

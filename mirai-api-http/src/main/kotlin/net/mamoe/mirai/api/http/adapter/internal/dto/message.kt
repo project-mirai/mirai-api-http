@@ -2,6 +2,7 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.contact.OtherClient
 
 @Serializable
 internal sealed class MessagePacketDTO : EventDTO() {
@@ -20,12 +21,15 @@ internal data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacket
 
 @Serializable
 @SerialName("TempMessage")
-internal data class TempMessagePacketDto(val sender: MemberDTO) : MessagePacketDTO()
+internal data class TempMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("StrangerMessage")
-internal data class StrangerMessagePacketDto(val sender: QQDTO) : MessagePacketDTO()
+internal data class StrangerMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
 
+@Serializable
+@SerialName("OtherClientMessage")
+internal data class OtherClientMessagePacketDTO(val sender: OtherClientDTO) : MessagePacketDTO()
 
 // Message
 @Serializable

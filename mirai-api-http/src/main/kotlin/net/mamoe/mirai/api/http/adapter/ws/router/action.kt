@@ -85,6 +85,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.sendFriendMessage -> execute(session, element, ::onSendFriendMessage)
         Paths.sendGroupMessage -> execute(session, element, ::onSendGroupMessage)
         Paths.sendTempMessage -> execute(session, element, ::onSendTempMessage)
+        Paths.sendOtherClientMessage -> execute(session, element, ::onSendOtherClientMessage)
         Paths.sendImageMessage -> execute(session, element, ::onSendImageMessage)
         // TODO: implement upload image
         Paths.uploadImage -> StateCode.NoOperateSupport.toJsonElement()

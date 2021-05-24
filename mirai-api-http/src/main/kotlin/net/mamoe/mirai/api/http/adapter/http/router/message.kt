@@ -89,6 +89,11 @@ internal fun Application.messageRouter() = routing {
     httpAuthedPost(Paths.sendTempMessage, respondDTOStrategy(::onSendTempMessage))
 
     /**
+     * 发送消息给其他客户端
+     */
+    httpAuthedPost(Paths.sendOtherClientMessage, respondDTOStrategy(::onSendOtherClientMessage))
+
+    /**
      * 发送图片消息
      */
     httpAuthedPost(Paths.sendImageMessage, respondDTOStrategy(::onSendImageMessage))

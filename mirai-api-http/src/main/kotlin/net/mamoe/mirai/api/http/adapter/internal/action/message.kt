@@ -2,12 +2,10 @@ package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
-import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
@@ -31,13 +29,13 @@ internal suspend fun onGetMessageFromId(dto: IntIdDTO): EventRestfulResult {
     val packet = when (source) {
         is OnlineMessageSource.Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(source.target.botAsMember))
         is OnlineMessageSource.Outgoing.ToFriend -> FriendMessagePacketDTO(QQDTO(source.sender.asFriend))
-        is OnlineMessageSource.Outgoing.ToTemp -> TempMessagePacketDto(MemberDTO(source.target))
-        is OnlineMessageSource.Outgoing.ToStranger -> StrangerMessagePacketDto(QQDTO(source.target))
+        is OnlineMessageSource.Outgoing.ToTemp -> TempMessagePacketDTO(MemberDTO(source.target))
+        is OnlineMessageSource.Outgoing.ToStranger -> StrangerMessagePacketDTO(QQDTO(source.target))
 
         is OnlineMessageSource.Incoming.FromGroup -> GroupMessagePacketDTO(MemberDTO(source.sender))
         is OnlineMessageSource.Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(source.sender))
-        is OnlineMessageSource.Incoming.FromTemp -> TempMessagePacketDto(MemberDTO(source.sender))
-        is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDto(QQDTO(source.sender))
+        is OnlineMessageSource.Incoming.FromTemp -> TempMessagePacketDTO(MemberDTO(source.sender))
+        is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDTO(QQDTO(source.sender))
     }
 
     packet.messageChain = messageChainOf(source, source.originalMessage)
@@ -120,6 +118,22 @@ internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
 
     val cache = sendDTO.session.sourceCache
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member, cache), member)
+    sendDTO.session.sourceCache.offer(receipt.source)
+
+    return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
+}
+
+internal suspend fun onSendOtherClientMessage(sendDTO: SendDTO): SendRetDTO {
+    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache[q].quote() }
+    val bot = sendDTO.session.bot
+
+    val client = when {
+        sendDTO.target != null -> bot.otherClients.getOrFail(sendDTO.target)
+        else -> throw NoSuchElementException()
+    }
+
+    val cache = sendDTO.session.sourceCache
+    val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(client, cache), client)
     sendDTO.session.sourceCache.offer(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)

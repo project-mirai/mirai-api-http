@@ -4,10 +4,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.event.events.GroupTempMessageEvent
-import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.MiraiExperimentalApi
@@ -22,7 +19,9 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
 internal suspend fun MessageEvent.toDTO() = when (this) {
     is FriendMessageEvent -> FriendMessagePacketDTO(QQDTO(sender))
     is GroupMessageEvent -> GroupMessagePacketDTO(MemberDTO(sender))
-    is GroupTempMessageEvent -> TempMessagePacketDto(MemberDTO(sender))
+    is GroupTempMessageEvent -> TempMessagePacketDTO(MemberDTO(sender))
+    is StrangerMessageEvent -> StrangerMessagePacketDTO(QQDTO(sender))
+    is OtherClientMessageEvent -> OtherClientMessagePacketDTO(OtherClientDTO(subject))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
