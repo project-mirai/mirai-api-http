@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
+import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
@@ -32,7 +33,7 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
             handleVerify(command)
 
         }.onFailure {
-            outgoing.send(Frame.Text(it.localizedMessage))
+            outgoing.send(Frame.Text(it.localizedMessage ?: ""))
         }.getOrNull()
 
         if (session != null) {
@@ -53,12 +54,10 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
     checkNotNull(session)
 
     for (frame in incoming) {
-        runCatching {
-            // 借用 ws adapter 处理逻辑
+        handleException {
             outgoing.handleWsAction(session, String(frame.data))
-        }.onFailure {
-            outgoing.send(Frame.Text(it.localizedMessage))
-            // TODO: log
+        }?.also {
+            outgoing.send(Frame.Text(it.toJson()))
         }
     }
 

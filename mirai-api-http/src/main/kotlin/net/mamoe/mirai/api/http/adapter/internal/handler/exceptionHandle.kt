@@ -1,7 +1,5 @@
 package net.mamoe.mirai.api.http.adapter.internal.handler
 
-import io.ktor.application.*
-import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.common.IllegalAccessException
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
@@ -19,10 +17,9 @@ import net.mamoe.mirai.contact.PermissionDeniedException
  * 可作为 adapter 默认的异常处理
  */
 internal suspend inline fun handleException(
-    pipeline: PipelineContext<Unit, ApplicationCall>,
-    crossinline blk: suspend PipelineContext<Unit, ApplicationCall>.() -> Unit
+    crossinline blk: suspend () -> Unit
 ): StateCode? = try {
-    blk(pipeline)
+    blk()
     null
 } catch (e: NoSuchBotException) { // Bot不存在
     StateCode.NoBot
@@ -46,5 +43,5 @@ internal suspend inline fun handleException(
     if (!MahContextHolder.mahContext.localMode) {
         HttpApiPluginBase.logger.error(e)
     }
-    StateCode.InternalError(e.localizedMessage)
+    StateCode.InternalError(e.localizedMessage ?: "")
 }

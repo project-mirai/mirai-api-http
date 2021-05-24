@@ -57,8 +57,7 @@ internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline 
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
     route(Paths.httpPath(path), method) {
         handle {
-            handleException(this) { blk(Unit) }
-                ?.also { call.respondStateCode(it) }
+            handleException { blk(Unit) }?.also { call.respondStateCode(it) }
         }
     }
 

@@ -6,6 +6,7 @@ import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
+import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
@@ -58,21 +59,20 @@ private suspend fun DefaultWebSocketServerSession.handleChannel(
     channel[session.key] = outgoing
 
     // touch respond
-    outgoing.send(Frame.Text(
-        WsOutgoing(
-            syncId = "",
-            data = VerifyRetDTO(0, session.key).toJsonElement()
-        ).toJson()
-    ))
+    outgoing.send(
+        Frame.Text(
+            WsOutgoing(
+                syncId = "",
+                data = VerifyRetDTO(0, session.key).toJsonElement()
+            ).toJson()
+        )
+    )
 
-    runCatching {
-        for (frame in incoming) {
-            runCatching {
-                outgoing.handleWsAction(session, String(frame.data))
-            }.onFailure {
-                outgoing.send(Frame.Text(it.localizedMessage))
-                // TODO: log
-            }
+    for (frame in incoming) {
+        handleException {
+            outgoing.handleWsAction(session, String(frame.data))
+        }?.also {
+            outgoing.send(Frame.Text(it.toJson()))
         }
     }
 
