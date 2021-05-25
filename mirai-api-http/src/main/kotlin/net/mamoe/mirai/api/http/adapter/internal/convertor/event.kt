@@ -1,6 +1,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.convertor
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.command.CommandExecutedEvent
 import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi

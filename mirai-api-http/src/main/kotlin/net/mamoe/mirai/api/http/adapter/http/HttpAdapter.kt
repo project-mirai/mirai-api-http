@@ -1,6 +1,5 @@
 package net.mamoe.mirai.api.http.adapter.http
 
-import io.ktor.application.*
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule

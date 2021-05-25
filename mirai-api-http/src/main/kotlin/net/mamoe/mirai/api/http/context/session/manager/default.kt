@@ -72,4 +72,7 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
     }
 
     override fun close() = sessionMap.forEach { (_, session) -> session.close() }
+
+    override fun authedSessions(): List<IAuthedSession> =
+        sessionMap.filterValues { it is IAuthedSession }.map { it.value as IAuthedSession }
 }

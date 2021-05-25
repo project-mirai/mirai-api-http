@@ -48,4 +48,6 @@ interface SessionManager {
     fun closeSession(session: ISession)
 
     fun close()
+
+    fun authedSessions(): List<IAuthedSession>
 }
