@@ -25,20 +25,24 @@ internal suspend fun onGetFileInfo(dto: FileTargetDTO): ElementResult {
     )
 }
 
-internal suspend fun onMkDir(dto: MkDirDTO): RemoteFileDTO {
+internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     val root = dto.session.bot.getFileSupported(dto).filesRoot
     val remoteFile = root.resolve(dto.dictionaryName).also {
         it.mkdir()
     }
-    return RemoteFileDTO(remoteFile, false)
+    return ElementResult(
+        RemoteFileDTO(remoteFile, false).toJsonElement()
+    )
 }
 
-internal suspend fun onUploadFile(stream: InputStream, path: String, concat: FileSupported): RemoteFileDTO {
+internal suspend fun onUploadFile(stream: InputStream, path: String, concat: FileSupported): ElementResult {
     val remoteFile = stream.use {
         concat.filesRoot.resolve(path).upload(it.toExternalResource())
     }.toRemoteFile(concat)!!
 
-    return RemoteFileDTO(remoteFile, remoteFile.isFile())
+    return ElementResult(
+        RemoteFileDTO(remoteFile, remoteFile.isFile()).toJsonElement()
+    )
 }
 
 internal suspend fun onDeleteFile(dto: FileTargetDTO): StateCode {
@@ -87,5 +91,10 @@ internal fun Bot.getFileSupported(dto: FileTargetDTO): FileSupported = when {
 }
 
 private suspend fun FileTargetDTO.getResolveFile(): RemoteFile =
-    session.bot.getFileSupported(this).filesRoot.resolveById(id)
-        ?: throw NoSuchElementException()
+    session.bot.getFileSupported(this).filesRoot.let {
+        if (id.isEmpty()) {
+            it
+        } else {
+            it.resolveById(id)
+        }
+    } ?: throw NoSuchElementException()

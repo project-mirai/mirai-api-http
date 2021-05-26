@@ -10,7 +10,7 @@ internal data class RemoteFileDTO(
     val id: String? = null,
     val path: String,
     val parent: RemoteFileDTO? = null,
-    val contact: ContactDTO,
+    val contact: GroupDTO,
     val isFile: Boolean,
     val isDictionary: Boolean
 ) : DTO {
