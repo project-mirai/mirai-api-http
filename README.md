@@ -55,6 +55,9 @@ adapters:
 enableVerify: true
 verifyKey: 1234567890
 
+## 开启一些调式信息
+debug: false
+
 ## 是否开启单 session 模式, 若为 true，则自动创建 session 绑定 console 中登录的 bot
 ## 开启后，接口中任何 sessionKey 不需要传递参数
 ## 若 console 中有多个 bot 登录，则行为未定义

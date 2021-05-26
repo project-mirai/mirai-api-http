@@ -74,6 +74,19 @@
 }
 ```
 
+### 其他客户端消息
+
+```json5
+{
+    "type": "OtherClientMessage",
+    "sender": {
+        "id": 123,
+        "platform": "MOBILE"
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
 ## 消息类型
 
 #### Source
@@ -345,3 +358,20 @@
 | senderName | String | 显示名称 |
 | messageChain | Array | 消息数组 |
 | messageId | Int | 可以只使用消息messageId，从缓存中读取一条消息作为节点 |
+
+#### File
+
+```json5
+{
+  "type": "File",
+  "id": "",
+  "name": "",
+  "size": 0
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| id   | String | 文件识别id |
+| name | String | 文件名     |
+| size | Long   | 文件大小   |

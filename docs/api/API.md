@@ -27,6 +27,13 @@
   + [发送临时会话消息](#发送临时会话消息)
   + [发送头像戳一戳消息](#发送头像戳一戳消息)
   + [撤回消息](#撤回消息)
++ **[文件操作](#文件操作)**
+  + [查看文件列表](#查看文件列表)
+  + [获取文件信息](#获取文件信息)
+  + [创建文件夹](#创建文件夹)
+  + [删除文件](#删除文件)
+  + [移动文件](#移动文件)
+  + [重命名文件](#重命名文件)
 + **[账号管理](#账号管理)**
   + [删除好友](#删除好友)
 + **[群管理](#群管理)**
@@ -45,6 +52,10 @@
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请（Bot需要有管理员权限）)
   + [Bot被邀请入群申请](#Bot被邀请入群申请)
++ **[命令(Console Command)](#命令(Console Command))**
+  + [执行命令](#执行命令)
+  + [注册命令](#注册命令)
+  + [命令接收](#命令接收)
 
 扩展阅读:
 
@@ -456,6 +467,269 @@
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
 | target       | Int    | false | 987654321   | 需要撤回的消息的messageId        |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+## 文件操作
+
+目前仅支持群文件的操作, 所有好友文件的字段为保留字段
+
+### 查看文件列表
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 文件夹id, 空串为根目录            |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"",
+  "data":[
+    {
+      "name":"setu.png",
+      "id":"/12314d-1wf13-a98ffa",
+      "path":"/setu.png",
+      "parent":null,
+      "contact":{
+        "id":123123,
+        "name":"setu qun",
+        "permission":"OWNER"
+      },
+      "isFile":true,
+      "isDictionary":false
+    }
+  ]
+}
+```
+
+| 名字         | 类型   | 说明                             |
+| ------------ | ------ | -------------------------------- |
+| data         | Array  | 文件对象数组                     |
+| data.name    | String | 文件名                          |
+| data.id      | String | 文件ID                          |
+| data.parent  | Object | 文件对象, 递归类型. null 为存在根目录 |
+| data.contact | Object | 群信息或好友信息                  |
+| data.contact | Object | 群信息或好友信息                  |
+| data.isFile  | Boolean | 是否文件                         |
+| data.isDictionary | Boolean | 是否文件夹                  |
+
+### 获取文件信息
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 文件id                          |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"",
+  "data": {
+    "name":"setu.png",
+    "id":"/12314d-1wf13-a98ffa",
+    "path":"/setu.png",
+    "parent":null,
+    "contact":{
+      "id":123123,
+      "name":"setu qun",
+      "permission":"OWNER"
+    },
+    "isFile":true,
+    "isDictionary":false
+  }
+}
+```
+
+| 名字         | 类型   | 说明                             |
+| ------------ | ------ | -------------------------------- |
+| data         | Object | 文件信息                     |
+| data.name    | String | 文件名                          |
+| data.id      | String | 文件ID                          |
+| data.parent  | Object | 文件对象, 递归类型. null 为存在根目录 |
+| data.contact | Object | 群信息或好友信息                  |
+| data.contact | Object | 群信息或好友信息                  |
+| data.isFile  | Boolean | 是否文件                         |
+| data.isDictionary | Boolean | 是否文件夹                  |
+
+### 创建文件夹
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null,
+  "dictionaryName": "newDictionaryName"
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 父目录id                          |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+| dictionaryName | String | false  | ""       | 新建文件夹名                     |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"",
+  "data": {
+    "name":"setu",
+    "id":"/12314d-1wf13-a98ffa",
+    "path":"/setu",
+    "parent":null,
+    "contact":{
+      "id":123123,
+      "name":"setu qun",
+      "permission":"OWNER"
+    },
+    "isFile":false,
+    "isDictionary":true
+  }
+}
+```
+
+> 返回新建文件夹的信息
+
+### 上传文件
+
+### 删除文件
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 删除文件id                       |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+### 移动文件
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null,
+  "moveTo": "/23fff2-3fwe-ga12eds"
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 移动文件id                       |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+| moveTo       | String | true  | "/23fff2-3fwe-ga12eds" | 移动目标文件夹id                 |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+### 重命名文件
+
+#### 请求
+
+```json5
+{
+  "sessionKey":"YourSession",
+  "id": "",
+  "target":987654321,
+  "group":null,
+  "qq":null,
+  "renameTo": "setu"
+}
+```
+
+| 名字         | 类型   | 可选  | 举例        | 说明                             |
+| ------------ | ------ | ----- | ----------- | -------------------------------- |
+| sessionKey   | String | true  | YourSession | 已经激活的Session                |
+| id           | String | false | ""          | 重命名文件id                     |
+| target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
+| group        | Long   | true  | 987654321   | 群号                            |
+| qq           | Long   | true  | 987654321   | 好友QQ号                        |
+| renameTo     | Long   | true  | 987654321   | 新文件名                        |
 
 #### 响应:
 
@@ -891,3 +1165,71 @@
 | ------- | ---------------------------------------------- |
 | 0       | 同意邀请                                       |
 | 1       | 拒绝邀请                                       |
+
+
+## 命令(Console Command)
+
+### 执行命令
+
+#### 请求:
+
+```json5
+{
+  "sessionKey":"YourSessionKey",
+  "command":[]
+}
+```
+
+| 名字       | 可选  | 类型   | 举例             | 说明            |
+| ---------- | ----- | ------ | ---------------- | --------------- |
+| sessionKey | true  | String | "YourSessionKey" | 你的session key |
+| command    | false | Array  | []               | 命令与参数    |
+
+> console 支持以不同消息类型作为指令的参数, 执行命令需要以消息类型作为参数, 若执行纯文本的命令, 构建多个 `Plain` 格式的消息
+> console 会将第一个消息作为指令名, 后续消息作为参数
+> 具体参考 console 文档
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+### 注册命令
+
+#### 请求:
+
+```json5
+{
+  "name":"shutdown",
+  "alias":["close", "exit"],
+  "usage":"/shutdown <nil>",
+  "description":"Shutdown console."
+}
+```
+
+| 名字       | 可选  | 类型   | 举例             | 说明            |
+| ---------- | ----- | ------ | ---------------- | --------------- |
+| sessionKey | true  | String | "YourSessionKey" | 你的session key |
+| name      | false | String  | "shutdown"       | 指令名    |
+| alias     | true  | Array  | []                | 指令别名    |
+| usage     | false  | String  | ""              | 使用说明    |
+| description | false  | String  | ""            | 命令描述    |
+
+> 注册的指令会直接覆盖已有的指令(包括 console 内置的指令)
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+### 命令接收
+
+命令被调用时, 会触发 [CommandExecutedEvent](EventType.md#命令被执行)

@@ -7,6 +7,7 @@
   + [好友事件](#好友事件)
   + [群事件](#群事件)
   + [申请事件](#申请事件)
+  + [命令事件](#命令事件)
 
 ### Bot自身事件
 
@@ -1050,3 +1051,31 @@
 | message   | String | 邀请消息                  |
 
 
+### 命令事件
+
+#### 命令被执行
+
+```json
+{
+  "type": "CommandExecutedEvent",
+  "name": "shutdown",
+  "friend": null,
+  "member": null,
+  "args": [
+    {
+      "type": "Plain",
+      "text": "myself"
+    }
+  ]
+}
+```
+
+> 即执行了 `/shutdown myself`
+
+| 名字      | 类型   | 说明                         |
+| --------- | ------ | ---------------------------- |
+| eventId   | Long   | 事件标识，响应该事件时的标识 |
+| name      | String | 命令名称                 |
+| friend    | Object | 发送命令的好友, 从控制台发送为 null |
+| member    | Object | 发送命令的群成员, 从控制台发送为 null |
+| args      | Array  | 指令的参数, 以消息类型传递  |
