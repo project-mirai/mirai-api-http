@@ -1,6 +1,5 @@
 package net.mamoe.mirai.api.http.adapter.ws
 
-import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
@@ -10,10 +9,10 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
-import java.lang.Exception
 import java.util.concurrent.ConcurrentHashMap
 
 class WebsocketAdapter : MahKtorAdapter("ws") {
@@ -59,7 +58,9 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
                     )
                 )
             } catch (e: Exception) {
-                //TODO: log exception
+                if (MahContextHolder.mahContext.debug) {
+                    log.error(e)
+                }
             }
         }
     }

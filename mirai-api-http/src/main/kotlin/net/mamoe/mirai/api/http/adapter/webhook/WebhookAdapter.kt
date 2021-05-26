@@ -7,6 +7,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
@@ -48,6 +49,10 @@ class WebhookAdapter : MahAdapter("webhook") {
             val resp = client.post(destination, botEvent.toDTO().toJson(), botId = botEvent.bot.id)
             resp.jsonParseOrNull<WebhookPacket>()?.let {
                 execute(botEvent.bot, it)
+            }
+        }.onFailure {
+            if (MahContextHolder.mahContext.debug) {
+                log.error(it)
             }
         }
     }
