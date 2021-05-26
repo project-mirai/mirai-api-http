@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
-import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
 import net.mamoe.mirai.api.http.loader.AdapterLoader
 import net.mamoe.mirai.api.http.setting.MainSetting
@@ -34,6 +33,10 @@ object HttpApiPluginBase : KotlinPlugin(
         // 加载配置文件
         MainSetting.reload()
 
+        // 注册外部 adapter
+        val extensionAdapterFile = File(HttpApiPluginBase.configFolder, "adapters")
+        AdapterLoader(extensionAdapterFile).loadAdapterFromJar()
+
         // 执行 mah 插件逻辑
         with(MainSetting) {
 
@@ -46,16 +49,10 @@ object HttpApiPluginBase : KotlinPlugin(
                 sessionManager = DefaultSessionManager(verifyKey)
                 enableVerify = this@with.enableVerify
                 singleMode = this@with.singleMode
-                debug = this@with.debug
                 localMode = false
+
+                parseAdapter(this@with.adapters).forEach(this::plusAssign)
             }
-
-            // 注册外部 adapter
-            val extensionAdapterFile = File(HttpApiPluginBase.configFolder, "adapters")
-            AdapterLoader(extensionAdapterFile).loadAdapterFromJar()
-
-            // 初始化 adapter
-            parseAdapter(this@with.adapters).forEach(MahContextHolder.mahContext::plusAssign)
         }
     }
 
