@@ -3,12 +3,15 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.command.CommandExecutedEvent
 import net.mamoe.mirai.api.http.util.GroupHonor
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 // TODO: 切换为 跳表 或利用函数重载去掉冗长的 when 语句
 @OptIn(MiraiExperimentalApi::class)
-internal fun BotEvent.convertBotEvent() = when (this) {
+internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is BotOnlineEvent -> BotOnlineEventDTO(bot.id)
     is BotOfflineEvent.Active -> BotOfflineEventActiveDTO(bot.id)
     is BotOfflineEvent.Force -> BotOfflineEventForceDTO(bot.id, title, message)
@@ -104,5 +107,11 @@ internal fun BotEvent.convertBotEvent() = when (this) {
     is MemberHonorChangeEvent.Lose -> MemberHonorChangeEventDTO(MemberDTO(member), "lose", GroupHonor[honorType])
     is OtherClientOnlineEvent -> OtherClientOnlineEventDTO(OtherClientDTO(client))
     is OtherClientOfflineEvent -> OtherClientOfflineEventDTO(OtherClientDTO(client))
+    is CommandExecutedEvent -> CommandExecutedEventDTO(
+        command.primaryName,
+        friend = if (sender.user != null && sender.user is Friend) { QQDTO(sender.user as Friend) } else { null },
+        member = if (sender.user != null && sender.user is Member) { MemberDTO(sender.user as Member) } else { null },
+        args = args.toDTO { it != UnknownMessageDTO }
+    )
     else -> IgnoreEventDTO
 }

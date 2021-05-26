@@ -38,4 +38,5 @@ fun Application.httpModule(adapter: HttpAdapter) {
     groupManageRouter()
     aboutRouter()
     fileRouter()
+    commandRouter()
 }

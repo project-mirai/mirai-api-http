@@ -276,4 +276,7 @@ internal data class OtherClientOfflineEventDTO(
 @SerialName("CommandExecutedEvent")
 internal data class CommandExecutedEventDTO(
     val name: String,
+    val friend: QQDTO?,
+    val member: MemberDTO?,
+    val args: MessageChainDTO
 ) : BotEventDTO()

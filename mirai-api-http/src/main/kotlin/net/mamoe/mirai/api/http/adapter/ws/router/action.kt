@@ -94,6 +94,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.recall -> execute(session, element, ::onRecall)
         Paths.sendNudge -> execute(session, element, ::onNudge)
 
+
         // file
         Paths.fileList -> execute(session, element, ::onListFile)
         Paths.fileInfo -> execute(session, element, ::onGetFileInfo)
@@ -103,6 +104,11 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
         Paths.fileDelete -> execute(session, element, ::onDeleteFile)
         Paths.fileMove -> execute(session, element, ::onMoveFile)
         Paths.fileRename -> execute(session, element, ::onRenameFile)
+
+
+        // command
+        Paths.commandExecute -> execute(session, element, ::onExecuteCommand)
+        Paths.commandRegister -> execute(session, element, ::onRegisterCommand)
 
         else -> StateCode.NoOperateSupport.toJsonElement()
     }
