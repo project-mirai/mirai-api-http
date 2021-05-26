@@ -23,6 +23,11 @@ object MainSetting : ReadOnlyPluginConfig("setting") {
     val adapters: List<String> by value(listOf("http"))
 
     /**
+     * debug 模式
+     */
+    val debug: Boolean by value(false)
+
+    /**
      * 认证模式, 创建连接是否需要开启认证
      */
     val enableVerify: Boolean by value(true)

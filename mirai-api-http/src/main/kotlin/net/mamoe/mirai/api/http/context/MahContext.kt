@@ -49,6 +49,11 @@ open class MahContext internal constructor() {
     val  cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
 
     /**
+     * debug 模式，开启后会显示更多的 debug 日志
+     */
+    var debug = false
+
+    /**
      * 本地模式, 调试使用. 不引用 Console, 从内部启动 adapter 进行调试
      *
      * 因此, 需要保证 adapter 的实现不能与 console 耦合
