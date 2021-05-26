@@ -45,7 +45,7 @@ abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
     @OptIn(InternalSerializationApi::class)
     inline fun <reified T:Any> getSetting(): T? {
         return MainSetting.adapterSettings[name]?.let {
-            Yaml.decodeFromString(T::class.serializer(), it.toString())
+            Yaml.decodeFromString(T::class.serializer(), Yaml.encodeToString(it))
         }
     }
 }
