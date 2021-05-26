@@ -1,5 +1,34 @@
 # 更新日志
 
+## \[2.0-RC2\] - 2021-05-26
+
+### 变更
+
++ `Mirai core` 版本更新到 `2.6.4`
++ `ForwardMessage` 字段修改为与 1.x 相同: 
+    + 类型type: `Forward` -> `ForwardMessage`
+    + 节点: `nodes` -> `nodeList`
+    + 发送人: `sender` -> `senderId`, `name` -> `senderName`
+
+### 修复
+
++ `about` 接口修复, #351
++ session 生成异常, #345
++ websocket adapter 异常导致断连
++ 配置序列化导致 webhook 等初始化异常
+
+### 新增
+
++ 追加 debug 模式开启 debug 信息
++ 群文件支持
++ 其他客户端消息(`OtherClientMessage`)接收支持, #331 (受 core 限制, 暂不支持发送)
++ mirai console 命令 API
+
+> 该版本为预览版本, 功能未经过充分测试, 提前发布以适应接口变更
+> 请酌情使用
+
+
+
 ## \[2.0-RC1\] - 2021-05-10
 
 ### 新增
