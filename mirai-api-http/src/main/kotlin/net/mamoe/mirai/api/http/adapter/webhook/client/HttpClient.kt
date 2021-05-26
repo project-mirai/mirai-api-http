@@ -10,16 +10,10 @@
 package net.mamoe.mirai.api.http.adapter.webhook.client
 
 import io.ktor.client.*
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.headers
-import io.ktor.client.request.request
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
-import io.ktor.http.content.PartData
-import io.ktor.http.content.TextContent
-import io.ktor.util.InternalAPI
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.http.content.*
+import java.nio.charset.StandardCharsets
 
 class WebhookHttpClient(private val headers: Map<String, String>) {
 
@@ -39,7 +33,7 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
                 botId?.let { append("bot", it.toString()) }
             }
             method = HttpMethod.Post
-            body = TextContent(content, ContentType.Application.Json)
+            body = TextContent(content, ContentType.Application.Json.withCharset(StandardCharsets.UTF_8))
         }
     }
 }

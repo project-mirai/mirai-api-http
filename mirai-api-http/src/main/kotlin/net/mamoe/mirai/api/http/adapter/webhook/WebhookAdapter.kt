@@ -2,7 +2,7 @@ package net.mamoe.mirai.api.http.adapter.webhook
 
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.MahAdapter
-import net.mamoe.mirai.api.http.adapter.internal.action.onSendFriendMessage
+import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
@@ -29,6 +29,9 @@ class WebhookAdapter : MahAdapter("webhook") {
 
         log.info(">>> [webhook adapter] is running")
 
+        val arr = setting.destinations.joinToString(", ", prefix = "[", postfix = "]")
+        log.info(">>> [webhook adapter] is attaching destinations $arr")
+
         botEventListener = GlobalEventChannel.subscribeAlways {
             setting.destinations.forEach {
                 bot.launch { hook(it, this@subscribeAlways) }
@@ -42,7 +45,7 @@ class WebhookAdapter : MahAdapter("webhook") {
 
     private suspend fun hook(destination: String, botEvent: BotEvent) {
         kotlin.runCatching {
-            val resp = client.post(destination, botEvent.toJson(), botId = botEvent.bot.id)
+            val resp = client.post(destination, botEvent.toDTO().toJson(), botId = botEvent.bot.id)
             resp.jsonParseOrNull<WebhookPacket>()?.let {
                 execute(botEvent.bot, it)
             }
