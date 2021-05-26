@@ -56,6 +56,10 @@ object Paths {
     const val fileMove = "file_move"
     const val fileRename = "file_rename"
 
+    // command
+    const val commandExecute = "cmd_execute"
+    const val commandRegister = "cmd_register"
+
     fun httpPath(s: String): String {
         val t = s.replace("_", "/")
         if (t.startsWith('/')) {
