@@ -2,18 +2,13 @@ package net.mamoe.mirai.api.http.adapter.ws.router
 
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.serialization.json.*
-import net.mamoe.mirai.api.http.adapter.common.IllegalAccessException
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
-import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
-import net.mamoe.mirai.api.http.adapter.internal.action.onBotInvitedJoinGroupRequestEvent
-import net.mamoe.mirai.api.http.adapter.internal.action.onMemberJoinRequestEvent
-import net.mamoe.mirai.api.http.adapter.internal.action.onNewFriendRequestEvent
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.EmptyAuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
@@ -21,9 +16,9 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 
-internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, content: String) {
+internal suspend fun SendChannel<Frame>.handleWsAction(session: IAuthedSession, content: String) {
     val commandWrapper = content.jsonParseOrNull<WsIncoming>()
         ?: run {
             send(Frame.Text(StateCode.InvalidParameter.toJson()))
@@ -122,7 +117,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
 private val EMPTY_JSON_ELEMENT = buildJsonObject {}
 
 private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
-    session: AuthedSession,
+    session: IAuthedSession,
     content: JsonElement?,
     crossinline action: suspend (T) -> R
 ): JsonElement {

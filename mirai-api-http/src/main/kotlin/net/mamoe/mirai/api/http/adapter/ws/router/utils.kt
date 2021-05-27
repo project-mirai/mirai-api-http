@@ -9,14 +9,14 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.api.http.context.session.TempSession
 
 
 @ContextDsl
 internal inline fun Route.miraiWebsocket(
     path: String,
-    crossinline body: suspend DefaultWebSocketServerSession.(AuthedSession) -> Unit
+    crossinline body: suspend DefaultWebSocketServerSession.(IAuthedSession) -> Unit
 ) {
     webSocket(path) {
         val verifyKey = call.request.headers["verifyKey"] ?: call.parameters["verifyKey"]
@@ -31,7 +31,7 @@ internal inline fun Route.miraiWebsocket(
 
         // single 模式
         if (MahContextHolder.mahContext.singleMode) {
-            body(MahContextHolder[MahContext.SINGLE_SESSION_KEY] as AuthedSession)
+            body(MahContextHolder[MahContext.SINGLE_SESSION_KEY] as IAuthedSession)
             return@webSocket
         }
 
@@ -47,7 +47,7 @@ internal inline fun Route.miraiWebsocket(
                 authSession(bot, createTempSession())
             }
 
-            body(session as AuthedSession)
+            body(session)
             return@webSocket
         }
 
@@ -69,7 +69,7 @@ internal inline fun Route.miraiWebsocket(
             return@webSocket
         }
 
-        body(session as AuthedSession)
+        body(session as IAuthedSession)
     }
 }
 
