@@ -17,12 +17,12 @@ import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.handleWsAction
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.api.http.context.session.TempSession
 
 internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsClient) {
 
-    var session: AuthedSession? = null
+    var session: IAuthedSession? = null
 
     for (frame in incoming) {
         val command = String(frame.data).jsonParseOrNull<WsIncoming>()
@@ -64,7 +64,7 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
     outgoing.close()
 }
 
-private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): AuthedSession? {
+private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): IAuthedSession? {
     if (commandWrapper.command != "verify") {
         sendWithCode(StateCode.AuthKeyFail)
         return null
@@ -85,7 +85,7 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
 
     // single 模式
     if (MahContextHolder.mahContext.singleMode) {
-        return MahContextHolder[MahContext.SINGLE_SESSION_KEY] as AuthedSession
+        return MahContextHolder[MahContext.SINGLE_SESSION_KEY] as IAuthedSession
     }
 
     // 注册新 session
@@ -96,11 +96,9 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
             return null
         }
 
-        val session = with(MahContextHolder.sessionManager) {
+        return with(MahContextHolder.sessionManager) {
             authSession(bot, createTempSession())
         }
-
-        return session as AuthedSession
     }
 
     // 非 single 模式校验 session key
@@ -121,7 +119,7 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         return null
     }
 
-    return session as AuthedSession
+    return session as IAuthedSession
 }
 
 internal suspend fun DefaultClientWebSocketSession.sendWithCode(code: StateCode) {
