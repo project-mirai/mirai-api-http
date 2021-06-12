@@ -39,7 +39,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
         with:
           tag_name: ${{ github.ref }}
           release_name: mirai-api-http-${{ steps.tag.outputs.tag }}
@@ -50,14 +50,14 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./mirai-api-http/build/ci/mirai-api-http.jar
           asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai.jar
           asset_content_type: application/zip
-      - name: Gradle publishPlugin
-        run: >
-          ./gradlew publishPlugin --info
-          -Dbintray.user=${{ secrets.BINTRAY_USER }} -Pbintray.user=${{ secrets.BINTRAY_USER }}
-          -Dbintray.key=${{ secrets.BINTRAY_KEY }} -Pbintray.key=${{ secrets.BINTRAY_KEY }}
+#      - name: Gradle publishPlugin
+#        run: >
+#          ./gradlew publishPlugin --info
+#          -Dbintray.user=${{ secrets.BINTRAY_USER }} -Pbintray.user=${{ secrets.BINTRAY_USER }}
+#          -Dbintray.key=${{ secrets.BINTRAY_KEY }} -Pbintray.key=${{ secrets.BINTRAY_KEY }}
