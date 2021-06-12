@@ -8,6 +8,7 @@ import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class SerializationTest {
 
@@ -16,6 +17,8 @@ class SerializationTest {
      */
     @Test
     fun testMessageChain() {
+        println(System.getenv())
+
         val chain = groupMessageDTO()
         val json = chain.toJson()
         assertEquals(chain, json.jsonParseOrNull(), "messageChain 序列化异常")
@@ -59,6 +62,7 @@ class SerializationTest {
     @Test
     fun testWsCommand() {
         val input = """{"syncId": "999", "command": "sendGroupMessage", content: {"target": 123123, messageChain: [{type: "Plain", text: "hello world"}]}}"""
-        InternalSerializerHolder.serializer.decode(input, WsIncoming::class)
+        val incoming = InternalSerializerHolder.serializer.decode(input, WsIncoming::class)
+        assertNotNull(incoming, "WsIncoming 序列化异常")
     }
 }
