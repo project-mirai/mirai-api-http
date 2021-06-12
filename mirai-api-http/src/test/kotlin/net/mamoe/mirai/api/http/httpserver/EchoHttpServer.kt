@@ -8,12 +8,14 @@ import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.*
-import org.junit.Test
 import org.slf4j.helpers.NOPLogger
+import kotlin.test.Ignore
+import kotlin.test.Test
 
 class EchoHttpServer {
 
     @Test
+    @Ignore
     fun launchTestServer() {
         embeddedServer(CIO, applicationEngineEnvironment {
 
