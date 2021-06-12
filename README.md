@@ -89,7 +89,7 @@ adapterSettings:
 
 对于较常使用的连接方式, 内置了4种 `adapter`
 
-+ [http](docs/adapter/HttpAdatper.md): 基于轮询的 http 接口
++ [http](docs/adapter/HttpAdapter.md): 基于轮询的 http 接口
 + [ws](docs/adapter/WebsocketAdapter.md): websocket server 形式的接口
 + [reverse-ws](docs/adapter/ReverseWebsocketAdapter.md): websocket client 形式的接口
 + [webhook](docs/adapter/WebhookAdapter.md): http 回调形式的接口

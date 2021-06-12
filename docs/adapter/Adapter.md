@@ -10,7 +10,7 @@
 
 | 适配器名称     | 描述                           | 文档                                      |
 | ------------ | ------------------------------ | ---------------------------------------- |
-| http         | 提供基于轮询的 http 接口          | [http](HttpAdatper.md)                   |
+| http         | 提供基于轮询的 http 接口          | [http](docs/adapter/HttpAdapter.md)                   |
 | ws           | 提供 websocket server 形式的接口 | [ws](WebsocketAdapter.md)                |
 | reverse-ws   | 提供 websocket client 形式的接口 | [reverse-ws](ReverseWebsocketAdapter.md) |
 | webhook      | 通过 http 反向调用形式的接口      | [webhook](WebhookAdapter.md)              | 

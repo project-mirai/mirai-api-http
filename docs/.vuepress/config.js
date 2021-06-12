@@ -20,14 +20,16 @@ module.exports = {
         lastUpdated: "上次更新",
         nav: [
             {text: "首页", link: "/"},
-            {text: "API", link: "/API.html"},
-            {text: "事件类型", link: "/EventType.html"},
-            {text: "消息类型", link: "/MessageType.html"},
+            {text: "API", link: "/api/API.html"},
+            {text: "事件类型", link: "/api/EventType.html"},
+            {text: "消息类型", link: "/api/MessageType.html"},
             {
-                text: "其他",
+                text: "接口适配器",
                 items: [
-                    {text: "心跳服务", link: "/Heartbeat.html"},
-                    {text: "事件上报", link: "/Report.html"},
+                    {text: "http轮询", link: "/adaptor/HttpAdapter.html"},
+                    {text: "websocket", link: "/adaptor/WebsocketAdapter.html"},
+                    {text: "反向websocket", link: "/adaptor/ReverseWebsocketAdapter.html"},
+                    {text: "webhook上报", link: "/adaptor/Webhook.html"},
                 ],
             },
         ],

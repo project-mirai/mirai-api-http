@@ -54,60 +54,42 @@ footer: AGPL-3.0 License | Project Mirai
 ## setting.yml 模板
 
 ```yaml
-# 该配置为全局配置，对所有Session有效
+## 配置文件中的值，全为默认值
 
-# 可选，默认值为0.0.0.0
-host: "0.0.0.0"
+## 启用的 adapter, 内置有 http, ws, reverse-ws, webhook
+adapters:
+  - http
+  - ws
 
-# 可选，默认值为8080
-port: 8080
+## 是否开启认证流程, 若为 true 则建立连接时需要验证 verifyKey
+## 建议公网连接时开启
+enableVerify: true
+verifyKey: 1234567890
 
-# 可选，默认由插件第一次启动时随机生成，建议手动指定
-authKey: 1234567890
+## 开启一些调式信息
+debug: false
 
-# 可选，缓存大小，默认4096.缓存过小会导致引用回复与撤回消息失败
+## 是否开启单 session 模式, 若为 true，则自动创建 session 绑定 console 中登录的 bot
+## 开启后，接口中任何 sessionKey 不需要传递参数
+## 若 console 中有多个 bot 登录，则行为未定义
+## 确保 console 中只有一个 bot 登陆时启用
+singleMode: false
+
+## 历史消息的缓存大小
+## 同时，也是 http adapter 的消息队列容量
 cacheSize: 4096
 
-# 可选，是否开启websocket，默认关闭，建议通过Session范围的配置设置
-enableWebsocket: false
-
-# 可选，配置CORS跨域，默认为*，即允许所有域名
-cors:
-  - "*"
-
-# 消息上报
-report:
-  # 功能总开关
-  enable: false
-  # 群消息上报
-  groupMessage:
-    report: false
-  # 好友消息上报
-  friendMessage:
-    report: false
-  # 临时消息上报
-  tempMessage:
-    report: false
-  # 事件上报
-  eventMessage:
-    report: false
-  # 上报URL
-  destinations: []
-  # 上报时的额外Header
-  extraHeaders: {}
-
-# 心跳
-heartbeat:
-  # 功能总开关
-  enable: false
-  # 启动延迟
-  delay: 1000
-  # 心跳间隔
-  period: 15000
-  # 心跳上报URL
-  destinations: []
-  # 上报时的额外信息
-  extraBody: {}
-  # 上报时的额外头
-  extraHeaders: {}
+## adapter 的单独配置，键名与 adapters 项配置相同
+adapterSettings:
+  ## 详情看 http adapter 使用说明 配置
+  http:
+    host: localhost
+    port: 8080
+    cors: [*]
+  
+  ## 详情看 websocket adapter 使用说明 配置
+  ws:
+    host: localhost
+    port: 8080
+    reservedSyncId: -1
 ```
