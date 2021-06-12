@@ -91,7 +91,7 @@
 
 ## 消息类型
 
-#### Source
+### Source
 
 ```json5
 {
@@ -106,7 +106,7 @@
 | id   | Int  | 消息的识别号，用于引用回复（Source类型永远为chain的第一个元素） |
 | time | Int  | 时间戳                                                       |
 
-#### Quote
+### Quote
 
 ```json5
 {
@@ -130,7 +130,7 @@
 | origin   | Object | 被引用回复的原消息的消息链对象                    |
 
 
-#### At
+### At
 
 ```json5
 {
@@ -145,7 +145,7 @@
 | target  | Long   | 群员QQ号                                       |
 | dispaly | String | At时显示的文字，发送消息时无效，自动使用群名片 |
 
-#### AtAll
+### AtAll
 
 ```json5
 {
@@ -157,7 +157,7 @@
 | ------- | ------ | ------------------------- |
 | -       | -      | -                         |
 
-#### Face
+### Face
 
 ```json5
 {
@@ -172,7 +172,7 @@
 | faceId | Int     | QQ表情编号，可选，优先高于name |
 | name   | String  | QQ表情拼音，可选               |
 
-#### Plain
+### Plain
 
 ```json5
 {
@@ -185,15 +185,16 @@
 | ---- | ------ | -------- |
 | text | String | 文字消息 |
 
-#### Image
+### Image
 
 ```json5
 {
     "type": "Image",
     "imageId": "{01E9451B-70ED-EAE3-B37C-101F1EEBF5B5}.mirai",  //群图片格式
     //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
-    "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "path": null
+    "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "path": null,
+    "base64": null
 }
 ```
 
@@ -202,31 +203,34 @@
 | imageId | String | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性 |
 | url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
 | path    | String | 图片的路径，发送本地图片，相对路径于`plugins/MiraiAPIHTTP/images` |
+| base64  | String | 图片的 Base64 编码                                           |
 
-#### FlashImage
+### FlashImage
 
 ```json5
 {
     "type": "FlashImage",
     "imageId": "{01E9451B-70ED-EAE3-B37C-101F1EEBF5B5}.mirai",  //群图片格式
     //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
-    "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "path": null
+    "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "path": null,
+    "base64": null
 }
 ```
 
 同 `Image`
 
-> 三个参数任选其一，出现多个参数时，按照imageId > url > path的优先级
+> 三个参数任选其一，出现多个参数时，按照imageId > url > path > base64的优先级
 
-#### Voice
+### Voice
 
 ```json5
 {
     "type": "Voice",
     "voiceId": "23C477720A37FEB6A9EE4BCCF654014F.amr",
-    "url": "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "path": null
+    "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "path": null,
+    "base64": null
 }
 ```
 
@@ -235,10 +239,11 @@
 | voiceId | String | 语音的voiceId，不为空时将忽略url属性 |
 | url     | String | 语音的URL，发送时可作网络语音的链接；接收时为腾讯语音服务器的链接，可用于语音下载 |
 | path    | String | 语音的路径，发送本地语音，相对路径于`plugins/MiraiAPIHTTP/voices` |
+| base64  | String | 语音的 Base64 编码                                           |
 
-> 三个参数任选其一，出现多个参数时，按照voiceId > url > path的优先级
+> 三个参数任选其一，出现多个参数时，按照voiceId > url > path > base64的优先级
 
-#### Xml
+### Xml
 
 ```json5
 {
@@ -251,7 +256,7 @@
 | ---- | ------ | ------- |
 | xml  | String | XML文本 |
 
-#### Json
+### Json
 
 ```json5
 {
@@ -264,7 +269,7 @@
 | ---- | ------ | -------- |
 | json | String | Json文本 |
 
-#### App
+### App
 
 ```json5
 {
@@ -277,7 +282,7 @@
 | -------- | ------ | ------- |
 | content  | String | 内容    |
 
-#### Poke
+### Poke
 
 ```json5
 {
@@ -297,7 +302,7 @@
 5. "SixSixSix": 666
 6. "FangDaZhao": 放大招
 
-#### Dice
+### Dice
 
 ```json5
 {
@@ -310,7 +315,7 @@
 | ---- | ------ | ------------ |
 | value | Int | 点数 |
 
-#### MusicShare
+### MusicShare
 
 ```json5
 {
@@ -335,7 +340,7 @@
 | musicUrl | String | 音源路径 |
 | brief | String | 简介 |
 
-#### ForwardMessage
+### ForwardMessage
 
 ```json5
 {
@@ -361,7 +366,7 @@
 | messageChain | Array | 消息数组 |
 | messageId | Int | 可以只使用消息messageId，从缓存中读取一条消息作为节点 |
 
-#### File
+### File
 
 ```json5
 {
