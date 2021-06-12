@@ -9,7 +9,6 @@ import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 
 /**
  * ktor parameter 序列化器
@@ -47,7 +46,7 @@ internal class KtorParameterDecoder(parameters: Parameters) : AbstractDecoder() 
 
     override fun decodeValue(): String {
         return entryHolder?.value?.firstOrNull()
-            ?: throw IllegalStateException("decode error")
+            ?: throw IllegalStateException("empty value for key: ${entryHolder?.key}")
     }
 
     override fun decodeNotNullMark(): Boolean = true

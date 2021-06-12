@@ -82,7 +82,7 @@ internal suspend fun onRenameFile(dto: RenameFileDTO): StateCode {
     }
 }
 
-internal fun Bot.getFileSupported(dto: FileTargetDTO): FileSupported = when {
+internal fun Bot.getFileSupported(dto: AbstractFileTargetDTO): FileSupported = when {
     dto.target != null -> getGroupOrFail(dto.target!!)
     dto.qq != null && dto.group != null -> throw NoSuchElementException()
     dto.qq != null -> throw NoSuchElementException()
@@ -90,7 +90,7 @@ internal fun Bot.getFileSupported(dto: FileTargetDTO): FileSupported = when {
     else -> throw NoSuchElementException()
 }
 
-private suspend fun FileTargetDTO.getResolveFile(): RemoteFile =
+private suspend fun AbstractFileTargetDTO.getResolveFile(): RemoteFile =
     session.bot.getFileSupported(this).filesRoot.let {
         if (id.isEmpty()) {
             it
