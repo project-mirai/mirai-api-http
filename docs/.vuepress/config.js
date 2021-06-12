@@ -26,10 +26,10 @@ module.exports = {
             {
                 text: "接口适配器",
                 items: [
-                    {text: "http轮询", link: "/adaptor/HttpAdapter.html"},
-                    {text: "websocket", link: "/adaptor/WebsocketAdapter.html"},
-                    {text: "反向websocket", link: "/adaptor/ReverseWebsocketAdapter.html"},
-                    {text: "webhook上报", link: "/adaptor/Webhook.html"},
+                    {text: "http轮询", link: "/adapter/HttpAdapter.html"},
+                    {text: "websocket", link: "/adapter/WebsocketAdapter.html"},
+                    {text: "反向websocket", link: "/adapter/ReverseWebsocketAdapter.html"},
+                    {text: "webhook上报", link: "/adapter/Webhook.html"},
                 ],
             },
         ],
