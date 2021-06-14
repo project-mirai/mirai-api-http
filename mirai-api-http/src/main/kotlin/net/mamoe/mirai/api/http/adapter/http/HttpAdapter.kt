@@ -5,6 +5,7 @@ import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.event.events.BotEvent
 
@@ -28,7 +29,7 @@ class HttpAdapter : MahKtorAdapter("http") {
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
         if (session is HttpAuthedSession) {
-            session.unreadQueue.offer(event.toDTO())
+            event.toDTO().takeIf { it != IgnoreEventDTO }?.let (session.unreadQueue::offer)
         }
     }
 }
