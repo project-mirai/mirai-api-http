@@ -28,7 +28,8 @@ internal suspend fun onMemberJoinRequestEvent(eventRespDTO: EventRespDTO): State
         fromNick = "",
         groupId = it.groupId,
         accept = if (it.operate == 0) true else if (it.operate % 2 == 0) null else false,
-        blackList = it.operate == 3 || it.operate == 4
+        blackList = it.operate == 3 || it.operate == 4,
+        message = it.message,
     )
     StateCode.Success
 }
