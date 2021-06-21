@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("net.mamoe.mirai-console") version "2.6.4"
+    id("net.mamoe.mirai-console") version "2.7-M1"
 }
 
 val ktorVersion: String by rootProject.extra
@@ -90,4 +90,8 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile::class.java) {
+    kotlinOptions.freeCompilerArgs += "-XXLanguage:-JvmIrEnabledByDefault"
 }

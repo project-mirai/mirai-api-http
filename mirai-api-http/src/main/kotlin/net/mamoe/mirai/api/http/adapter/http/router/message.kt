@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
@@ -19,15 +20,6 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
  */
 @OptIn(MiraiExperimentalApi::class)
 internal fun Application.messageRouter() = routing {
-
-    /**
-     * 计数数据传输对象
-     */
-    @Serializable
-    class CountDTO(val count: Int = 10) : AuthedDTO() {
-        val unreadQueue get() = (session as HttpAuthedSession).unreadQueue
-    }
-
     /**
      * 获取未读消息剩余消息数量
      */
