@@ -32,6 +32,7 @@ import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
 import org.slf4j.helpers.NOPLoggerFactory
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -45,7 +46,7 @@ fun Application.mirai() {
     install(CORS) {
         method(HttpMethod.Options)
         allowNonSimpleContentTypes = true
-        maxAgeInSeconds = 1.toDuration(DurationUnit.DAYS).inSeconds.toLong()
+        maxAgeInSeconds = Duration.days(1).inWholeSeconds
         Setting.cors.forEach {
             host(it, schemes = listOf("http", "https"))
         }
