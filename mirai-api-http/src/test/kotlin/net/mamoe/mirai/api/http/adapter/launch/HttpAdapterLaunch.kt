@@ -7,7 +7,7 @@ import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.utils.BotConfiguration
-import org.junit.Test
+import kotlin.test.Test
 
 class HttpAdapterLaunch : LaunchTester() {
 
