@@ -1,14 +1,11 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.FriendList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberTargetDTO
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
-import net.mamoe.mirai.contact.getMemberOrFail
 
 /**
  * 查询好友列表

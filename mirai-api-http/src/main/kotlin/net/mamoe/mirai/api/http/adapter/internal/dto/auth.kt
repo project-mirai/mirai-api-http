@@ -2,9 +2,8 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.context.MahContext
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.AuthedSession
 
 @Serializable
 internal data class VerifyDTO(val verifyKey: String) : DTO
@@ -17,7 +16,7 @@ internal abstract class AuthedDTO : DTO {
     val sessionKey: String = MahContext.SINGLE_SESSION_KEY
 
     @Transient
-    open lateinit var session: IAuthedSession // 反序列化验证成功后传入
+    open lateinit var session: AuthedSession // 反序列化验证成功后传入
 }
 
 @Serializable

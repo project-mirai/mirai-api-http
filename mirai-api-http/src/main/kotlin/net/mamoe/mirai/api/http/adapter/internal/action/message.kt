@@ -6,7 +6,7 @@ import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.message.MessageReceipt
@@ -161,7 +161,7 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
 /**
  * 上传图片
  */
-internal suspend fun onUploadImage(session: IAuthedSession, stream: InputStream, type: String): UploadImageRetDTO {
+internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, type: String): UploadImageRetDTO {
     val image = stream.use {
         when (type) {
             "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
@@ -180,7 +180,7 @@ internal suspend fun onUploadImage(session: IAuthedSession, stream: InputStream,
  * 上传语音
  */
 @OptIn(MiraiExperimentalApi::class)
-internal suspend fun onUploadVoice(session: IAuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
+internal suspend fun onUploadVoice(session: AuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
     val voice = stream.use {
         when (type) {
             "group" -> session.bot.groups.firstOrNull()?.uploadVoice(it.toExternalResource())

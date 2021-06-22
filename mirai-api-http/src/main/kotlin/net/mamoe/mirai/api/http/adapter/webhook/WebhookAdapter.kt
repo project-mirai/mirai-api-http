@@ -8,7 +8,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
@@ -58,7 +58,7 @@ class WebhookAdapter : MahAdapter("webhook") {
     }
 
     // webhook 负责监听所有 bot 不依赖 session 进行
-    override suspend fun onReceiveBotEvent(event: BotEvent, session: IAuthedSession) {
+    override suspend fun onReceiveBotEvent(event: BotEvent, session: AuthedSession) {
         // Ignore
     }
 

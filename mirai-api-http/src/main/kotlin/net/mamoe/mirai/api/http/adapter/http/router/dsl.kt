@@ -22,7 +22,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.api.http.context.session.TempSession
 
 /**
@@ -135,7 +135,7 @@ internal inline fun Route.httpAuthedMultiPart(
 private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): HttpAuthedSession {
     return when (val session = headerSession ?: MahContextHolder[sessionKey]) {
         is HttpAuthedSession -> session
-        is IAuthedSession -> proxyAuthedSession(session)
+        is AuthedSession -> proxyAuthedSession(session)
         is TempSession -> throw NotVerifiedSessionException
         else -> throw IllegalSessionException
     }
@@ -144,7 +144,7 @@ private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: Str
 /**
  * 置换全局 session 为代理对象
  */
-private fun proxyAuthedSession(authedSession: IAuthedSession): HttpAuthedSession =
+private fun proxyAuthedSession(authedSession: AuthedSession): HttpAuthedSession =
     HttpAuthedSession(authedSession).also {
         MahContextHolder.sessionManager[authedSession.key] = it
     }

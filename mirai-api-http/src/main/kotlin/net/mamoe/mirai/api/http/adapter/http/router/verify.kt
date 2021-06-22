@@ -5,7 +5,7 @@ import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
+import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.api.http.util.getBotOrThrow
 
 /**
@@ -37,7 +37,7 @@ internal fun Application.authRouter() = routing {
             return@httpBind
         }
         val bot = getBotOrThrow(it.qq)
-        if (MahContextHolder[it.sessionKey] !is IAuthedSession) {
+        if (MahContextHolder[it.sessionKey] !is AuthedSession) {
             MahContextHolder.sessionManager.authSession(bot, it.sessionKey)
         }
         call.respondStateCode(StateCode.Success)
@@ -48,7 +48,7 @@ internal fun Application.authRouter() = routing {
      */
     httpBind("/release") {
         val bot = getBotOrThrow(it.qq)
-        val session = MahContextHolder[it.sessionKey] as IAuthedSession
+        val session = MahContextHolder[it.sessionKey] as AuthedSession
         if (bot.id == session.bot.id) {
             MahContextHolder.sessionManager.closeSession(it.sessionKey)
             call.respondStateCode(StateCode.Success)

@@ -8,7 +8,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
 import kotlin.coroutines.EmptyCoroutineContext
 
 internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
@@ -60,7 +60,7 @@ private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
     crossinline action: suspend (T) -> R
 ) {
     val parameter = parseContent<T>(content)
-    parameter.session = AuthedSession(bot, "", EmptyCoroutineContext)
+    parameter.session = SampleAuthedSession(bot, "", EmptyCoroutineContext)
     action(parameter)
 }
 

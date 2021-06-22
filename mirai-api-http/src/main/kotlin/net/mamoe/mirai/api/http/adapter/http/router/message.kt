@@ -3,16 +3,11 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
-import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.EmptyAuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.EventListRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.IntRestfulResult
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**

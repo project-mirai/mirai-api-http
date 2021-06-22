@@ -13,14 +13,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.context.MahContextHolder
+import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
 import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.IAuthedSession
-import net.mamoe.mirai.api.http.context.session.ISession
+import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.TempSession
 import kotlin.coroutines.EmptyCoroutineContext
 
 class DefaultSessionManager(override val verifyKey: String) : SessionManager {
-    private val sessionMap: MutableMap<String, ISession> = mutableMapOf()
+    private val sessionMap: MutableMap<String, Session> = mutableMapOf()
 
     override fun createTempSession(): TempSession =
         TempSession(generateSessionKey(), EmptyCoroutineContext).also { newTempSession ->
@@ -37,14 +37,14 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
         }
 
     override fun authSession(bot: Bot, tempSessionKey: String) =
-        authSession(tempSessionKey, AuthedSession(bot, tempSessionKey, EmptyCoroutineContext))
+        authSession(tempSessionKey, SampleAuthedSession(bot, tempSessionKey, EmptyCoroutineContext))
 
     override fun authSession(bot: Bot, tempSession: TempSession) = authSession(bot, tempSession.key)
 
-    override fun authSession(tempSession: TempSession, authedSession: IAuthedSession): IAuthedSession =
+    override fun authSession(tempSession: TempSession, authedSession: AuthedSession): AuthedSession =
         authSession(tempSession.key, authedSession)
 
-    override fun authSession(tempSessionKey: String, authedSession: IAuthedSession): IAuthedSession {
+    override fun authSession(tempSessionKey: String, authedSession: AuthedSession): AuthedSession {
         closeSession(tempSessionKey)
         set(tempSessionKey, authedSession)
 
@@ -60,19 +60,19 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
 
     override operator fun get(key: String) = sessionMap[key]
 
-    override operator fun set(key: String, session: ISession) = sessionMap.set(key, session)
+    override operator fun set(key: String, session: Session) = sessionMap.set(key, session)
 
     override fun closeSession(key: String) {
         sessionMap[key]?.close()
         sessionMap.remove(key)
     }
 
-    override fun closeSession(session: ISession) {
+    override fun closeSession(session: Session) {
         closeSession(session.key)
     }
 
     override fun close() = sessionMap.forEach { (_, session) -> session.close() }
 
-    override fun authedSessions(): List<IAuthedSession> =
-        sessionMap.filterValues { it is IAuthedSession }.map { it.value as IAuthedSession }
+    override fun authedSessions(): List<AuthedSession> =
+        sessionMap.filterValues { it is AuthedSession }.map { it.value as AuthedSession }
 }
