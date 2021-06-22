@@ -35,10 +35,10 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     )
 }
 
-internal suspend fun onUploadFile(stream: InputStream, path: String, concat: FileSupported): ElementResult {
+internal suspend fun onUploadFile(stream: InputStream, path: String, contact: FileSupported): ElementResult {
     val remoteFile = stream.use {
-        concat.filesRoot.resolve(path).upload(it.toExternalResource())
-    }.toRemoteFile(concat)!!
+        contact.filesRoot.resolve(path).upload(it.toExternalResource())
+    }.toRemoteFile(contact)!!
 
     return ElementResult(
         RemoteFileDTO(remoteFile, remoteFile.isFile()).toJsonElement()
@@ -56,12 +56,12 @@ internal suspend fun onDeleteFile(dto: FileTargetDTO): StateCode {
 }
 
 internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
-    val concat = dto.session.bot.getFileSupported(dto)
+    val contact = dto.session.bot.getFileSupported(dto)
 
-    val moveTo = concat.filesRoot.resolveById(dto.moveTo)
+    val moveTo = contact.filesRoot.resolveById(dto.moveTo)
         ?: throw NoSuchElementException()
 
-    val succeed = concat.filesRoot.resolveById(dto.id)
+    val succeed = contact.filesRoot.resolveById(dto.id)
         ?.moveTo(moveTo)
         ?: throw NoSuchElementException()
 
