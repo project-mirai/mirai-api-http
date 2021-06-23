@@ -36,8 +36,17 @@ internal fun Application.authRouter() = routing {
             call.respondStateCode(StateCode.NoOperateSupport)
             return@httpBind
         }
-        val bot = getBotOrThrow(it.qq)
-        if (MahContextHolder[it.sessionKey] !is AuthedSession) {
+        val session = MahContextHolder[it.sessionKey] ?: kotlin.run {
+            if (MahContextHolder.mahContext.enableVerify) {
+                call.respondStateCode(StateCode.IllegalSession)
+                return@httpBind
+            } else {
+                null
+            }
+        }
+
+        if (session !is AuthedSession) {
+            val bot = getBotOrThrow(it.qq)
             MahContextHolder.sessionManager.authSession(bot, it.sessionKey)
         }
         call.respondStateCode(StateCode.Success)
