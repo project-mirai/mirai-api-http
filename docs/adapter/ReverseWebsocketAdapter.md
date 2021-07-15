@@ -141,14 +141,27 @@ adapterSettings:
 
 ### 创建连接
 
-`ws adatper` 通过 websocket 主动推送消息与事件
+`reverse-ws adatper` 通过 websocket 链接远端 websocket server 后, 主动推送消息与事件
 
-`ws adatper` 拥有三个连接通道
-+ `/message`: 推送消息
-+ `/event`: 推送事件
-+ `/all`: 推送消息及事件
+1. 在配置文件中配置正确的 `远端 websocket server 地址`
+2. 远端 `websocket server` 建立通信后, 通过 `websocket server` 发起认证请求
 
-> 示例: ws://localhost:8080/message?verifyKey=1234567890&qq=12345678
+```json5
+{
+  "syncId": "123",                // 消息同步的字段
+  "command": "verify",            // 命令字
+  "subCommand": null,             // 子命令字, 可空
+  "content": {                    // 命令的数据对象, 与通用接口定义相同
+    "verifyKey": "YourVerifyKey",
+    "sessionKey": "YourSessionKey",
+    "qq": "BindQQ"
+  }                   
+}
+```
+
+> 遵循 `singleMode`, `enableVerify` 的配置
+> 支持使用已绑定其他 adapter 的 `session`
+> 认证失败不会断开链接
 
 ### 数据格式
 
