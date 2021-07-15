@@ -13,9 +13,12 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetSessionInfo
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
+import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
+import net.mamoe.mirai.api.http.adapter.internal.dto.EmptyAuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
-import kotlin.io.path.Path
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 
 /**
  * 配置路由
@@ -28,5 +31,10 @@ internal fun Application.aboutRouter() = routing {
     routeWithHandle(Paths.about, HttpMethod.Get) {
         val data = onAbout()
         call.respondDTO(StringMapRestfulResult(data = data))
+    }
+
+    httpAuthedGet<EmptyAuthedDTO>(Paths.sessionInfo) {
+        val data = onGetSessionInfo(it)
+        call.respondDTO(ElementResult(data = data.toJsonElement()))
     }
 }

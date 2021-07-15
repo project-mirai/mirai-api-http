@@ -16,6 +16,9 @@ internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
     val element = packet.content
     when (packet.command) {
 
+        // about
+        Paths.about -> execute(bot, element, ::onGetSessionInfo)
+
         // event
         Paths.newFriend -> execute(bot, element, ::onNewFriendRequestEvent)
         Paths.memberJoin -> execute(bot, element, ::onMemberJoinRequestEvent)
