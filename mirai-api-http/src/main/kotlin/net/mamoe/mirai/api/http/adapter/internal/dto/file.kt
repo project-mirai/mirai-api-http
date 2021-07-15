@@ -12,7 +12,8 @@ internal data class RemoteFileDTO(
     val parent: RemoteFileDTO? = null,
     val contact: GroupDTO,
     val isFile: Boolean,
-    val isDictionary: Boolean
+    val isDictionary: Boolean,
+    val isDirectory: Boolean,
 ) : DTO {
     constructor(remoteFile: RemoteFile, isFile: Boolean) : this(
         remoteFile.name,
@@ -24,6 +25,7 @@ internal data class RemoteFileDTO(
             else -> throw IllegalStateException("unsupported remote file type")
         },
         isFile,
+        !isFile,
         !isFile,
     )
 }

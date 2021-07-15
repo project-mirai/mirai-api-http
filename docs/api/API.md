@@ -521,7 +521,8 @@
         "permission":"OWNER"
       },
       "isFile":true,
-      "isDictionary":false
+      "isDictionary":false,
+      "isDirectory":false
     }
   ]
 }
@@ -536,7 +537,8 @@
 | data.contact | Object | 群信息或好友信息                  |
 | data.contact | Object | 群信息或好友信息                  |
 | data.isFile  | Boolean | 是否文件                         |
-| data.isDictionary | Boolean | 是否文件夹                  |
+| data.isDictionary | Boolean | ~~是否文件夹~~(弃用)                  |
+| data.isDirectory | Boolean | 是否文件夹                  |
 
 ### 获取文件信息
 
@@ -577,7 +579,8 @@
       "permission":"OWNER"
     },
     "isFile":true,
-    "isDictionary":false
+    "isDictionary":false,
+    "isDirectory":false
   }
 }
 ```
@@ -591,7 +594,8 @@
 | data.contact | Object | 群信息或好友信息                  |
 | data.contact | Object | 群信息或好友信息                  |
 | data.isFile  | Boolean | 是否文件                         |
-| data.isDictionary | Boolean | 是否文件夹                  |
+| data.isDictionary | Boolean | ~~是否文件夹~~(弃用)                  |
+| data.isDirectory | Boolean | 是否文件夹                  |
 
 ### 创建文件夹
 
@@ -604,7 +608,7 @@
   "target":987654321,
   "group":null,
   "qq":null,
-  "dictionaryName": "newDictionaryName"
+  "directoryName": "newDirectoryName"
 }
 ```
 
@@ -615,7 +619,7 @@
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
-| dictionaryName | String | false  | ""       | 新建文件夹名                     |
+| directoryName | String | false  | ""       | 新建文件夹名                     |
 
 #### 响应:
 
@@ -634,7 +638,8 @@
       "permission":"OWNER"
     },
     "isFile":false,
-    "isDictionary":true
+    "isDictionary":true,
+    "isDirectory":true
   }
 }
 ```

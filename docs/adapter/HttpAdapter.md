@@ -594,7 +594,8 @@ adapterSettings:
     "permission":"OWNER"
   },
   "isFile":true,
-  "isDictionary":false
+  "isDictionary":false,
+  "isDirectory":false
 }
 ```
 

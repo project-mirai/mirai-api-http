@@ -27,7 +27,7 @@ internal suspend fun onGetFileInfo(dto: FileTargetDTO): ElementResult {
 
 internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     val root = dto.session.bot.getFileSupported(dto).filesRoot
-    val remoteFile = root.resolve(dto.dictionaryName).also {
+    val remoteFile = root.resolve(dto.directoryName).also {
         it.mkdir()
     }
     return ElementResult(

@@ -25,7 +25,7 @@ internal data class MkDirDTO(
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
-    val dictionaryName: String,
+    val directoryName: String,
 ) : AbstractFileTargetDTO()
 
 @Serializable
