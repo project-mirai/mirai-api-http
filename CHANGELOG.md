@@ -4,7 +4,7 @@
 
 ### 修复
 
-+ 修复 `http adapter` 对于 `[GET]` 请求参数序列化错误
++ 修复 `http adapter` 对于 `[GET]` 请 求参数序列化错误
 
 ### 变更
 
