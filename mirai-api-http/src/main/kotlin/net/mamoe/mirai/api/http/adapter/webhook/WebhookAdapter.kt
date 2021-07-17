@@ -48,7 +48,7 @@ class WebhookAdapter : MahAdapter("webhook") {
         kotlin.runCatching {
             val resp = client.post(destination, botEvent.toDTO().toJson(), botId = botEvent.bot.id)
             resp.jsonParseOrNull<WebhookPacket>()?.let {
-                execute(botEvent.bot, it)
+                execute(botEvent, it)
             }
         }.onFailure {
             if (MahContextHolder.mahContext.debug) {
