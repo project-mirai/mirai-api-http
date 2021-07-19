@@ -569,6 +569,10 @@ adapterSettings:
 
 ### 群文件上传
 
+```
+[POST] /file/upload
+```
+
 **本接口为[POST]请求, 参数格式为`multipart/form-data`**
 
 #### 请求:
