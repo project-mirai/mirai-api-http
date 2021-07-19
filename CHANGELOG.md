@@ -1,5 +1,21 @@
 # 更新日志
 
+## \[2.1.0\] - 2021-07-19
+
+### 修复
+
++ 群文件相关接口字段错误 `isDictionary` -> `idDirectory`, `isDictionary` 保留一段时间兼容性, 涉及接口
+ + http 文件上传 `/file/upload` 返回值(已兼容)
+ + 创建群文件夹 `/file/mkdir` 请求参数(**不兼容**)
+ + 查看群文件列表 `/file/list` 返回值(已兼容)
+ + 获取文件信息 `/file/info` 返回值(已兼容)
++ websocket 部分异常没有返回正确的格式 #383
++ websocket 无法进行引用回复 #401
++ 若干文档说明，更正 反向ws adapter 的使用文档
+
+### 新增
++ 获取 session 信息 #386 `[GET] /sessionInfo`, websocket 命令字 `sessionInfo`
+
 ## \[2.0.2\] - 2021-06-14
 
 ### 修复
