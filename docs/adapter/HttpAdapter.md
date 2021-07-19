@@ -303,7 +303,7 @@ adapterSettings:
 [GET] /about
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取插件信息)
+通用接口定义: [获取插件信息](../api/API.md#获取插件信息)
 
 ## 缓存操作
 
@@ -331,7 +331,7 @@ adapterSettings:
 
 **本接口为[GET]请求, 参数格式为url参数**
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取好友列表)
+通用接口定义: [获取好友列表](../api/API.md#获取好友列表)
 
 ### 获取群列表
 
@@ -343,7 +343,7 @@ adapterSettings:
 
 **本接口为[GET]请求, 参数格式为url参数**
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群列表)
+通用接口定义: [获取群列表](../api/API.md#获取群列表)
 
 ### 获取群成员列表
 
@@ -355,7 +355,7 @@ adapterSettings:
 
 **本接口为[GET]请求, 参数格式为url参数**
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群成员列表)
+通用接口定义: [获取群成员列表](../api/API.md#获取群成员列表)
 
 ### 获取Bot资料
 
