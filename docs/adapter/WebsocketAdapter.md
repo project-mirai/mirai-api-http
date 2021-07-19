@@ -180,7 +180,7 @@ adapterSettings:
 命令字: friendList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取好友列表)
+通用接口定义: [获取好友列表](../api/API.md#获取好友列表)
 
 ### 获取群列表
 
@@ -190,7 +190,7 @@ adapterSettings:
 命令字: groupList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群列表)
+通用接口定义: [获取群列表](../api/API.md#获取群列表)
 
 ### 获取群成员列表
 
@@ -200,7 +200,7 @@ adapterSettings:
 命令字: memberList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群成员列表)
+通用接口定义: [获取群成员列表](../api/API.md#获取群成员列表)
 
 ### 获取Bot资料
 
