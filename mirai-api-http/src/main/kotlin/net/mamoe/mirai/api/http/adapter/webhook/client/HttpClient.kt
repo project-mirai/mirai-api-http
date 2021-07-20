@@ -13,6 +13,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import net.mamoe.mirai.api.http.util.smartTakeFrom
 import java.nio.charset.StandardCharsets
 
 class WebhookHttpClient(private val headers: Map<String, String>) {
@@ -29,7 +30,7 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
      */
     suspend fun post(path: String, content: String, botId: Long? = null): String {
         return client.request {
-            url(path)
+            url { smartTakeFrom(path) }
             botHeader(botId.toString())
             method = HttpMethod.Post
             body = TextContent(content, ContentType.Application.Json.withCharset(StandardCharsets.UTF_8))
