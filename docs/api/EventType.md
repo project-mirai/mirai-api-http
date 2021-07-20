@@ -374,6 +374,32 @@
 | operator  | Long | 好友QQ号或BotQQ号  |
 
 
+### 头像双击事件
+
+```json5
+{
+    "type": "NudgeEvent",
+    "fromId": 123456,
+    "subject": {
+        "id": 123456,
+        "kind": "Group"
+    },
+    action: "戳了戳",
+    suffix: "的脸",
+    target: 123456
+}
+```
+
+| 名字         | 类型    | 说明               |
+| ------=----- | ------ | ------------------ |
+| fromId       | Long   | 动作发出者的QQ号 |
+| subject      | Object | 来源       |
+| subject.id   | Long   | 来源的QQ号（好友）或群号|
+| subject.kind | String | 来源的类型，"Friend"或"Group"|
+| action       | String | 动作类型     |
+| suffix       | String | 自定义动作内容  |
+| target       | Long   | 动作目标的QQ号|
+
 
 ### 某个群名改变
 
