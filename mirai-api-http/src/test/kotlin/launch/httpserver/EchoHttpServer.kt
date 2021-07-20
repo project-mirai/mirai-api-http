@@ -1,4 +1,4 @@
-package net.mamoe.mirai.api.http.httpserver
+package launch.httpserver
 
 import io.ktor.application.*
 import io.ktor.http.*

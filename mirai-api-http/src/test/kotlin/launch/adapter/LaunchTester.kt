@@ -1,4 +1,4 @@
-package net.mamoe.mirai.api.http.adapter.launch
+package launch.adapter
 
 import java.io.File
 import java.util.*

@@ -1,4 +1,4 @@
-package net.mamoe.mirai.api.http.adapter.launch
+package launch.adapter
 
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.BotFactory
