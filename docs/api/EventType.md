@@ -391,14 +391,14 @@
 ```
 
 | 名字         | 类型    | 说明               |
-| ------=----- | ------ | ------------------ |
+| ------------ | ------ | ------------------- |
 | fromId       | Long   | 动作发出者的QQ号 |
 | subject      | Object | 来源       |
-| subject.id   | Long   | 来源的QQ号（好友）或群号|
-| subject.kind | String | 来源的类型，"Friend"或"Group"|
+| subject.id   | Long   | 来源的QQ号（好友）或群号 |
+| subject.kind | String | 来源的类型，"Friend"或"Group" |
 | action       | String | 动作类型     |
 | suffix       | String | 自定义动作内容  |
-| target       | Long   | 动作目标的QQ号|
+| target       | Long   | 动作目标的QQ号 |
 
 
 ### 某个群名改变
