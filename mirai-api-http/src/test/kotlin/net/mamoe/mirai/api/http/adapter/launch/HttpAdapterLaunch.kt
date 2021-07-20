@@ -7,12 +7,11 @@ import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.utils.BotConfiguration
-import kotlin.test.Test
 
-class HttpAdapterLaunch : LaunchTester() {
+object HttpAdapterLaunch : LaunchTester() {
 
-    @Test
-    fun launch() {
+    @JvmStatic
+    fun main(args: Array<String>) {
         if (!enable) return
 
         runBlocking {
@@ -31,7 +30,7 @@ class HttpAdapterLaunch : LaunchTester() {
             }
 
             val bot = BotFactory.newBot(qq, password) {
-                fileBasedDeviceInfo("../device.json")
+                fileBasedDeviceInfo("device.json")
 
                 protocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH
             }

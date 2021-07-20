@@ -9,14 +9,11 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.*
 import org.slf4j.helpers.NOPLogger
-import kotlin.test.Ignore
-import kotlin.test.Test
 
-class EchoHttpServer {
+object EchoHttpServer {
 
-    @Test
-    @Ignore
-    fun launchTestServer() {
+    @JvmStatic
+    fun main(args: Array<String>) {
         embeddedServer(CIO, applicationEngineEnvironment {
 
             log = NOPLogger.NOP_LOGGER

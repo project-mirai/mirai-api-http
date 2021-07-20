@@ -7,7 +7,7 @@ abstract class LaunchTester {
 
     private val properties: Properties by lazy {
         Properties().apply {
-            File("../launcher.properties").inputStream().use { load(it) }
+            File("launcher.properties").inputStream().use { load(it) }
         }
     }
 
