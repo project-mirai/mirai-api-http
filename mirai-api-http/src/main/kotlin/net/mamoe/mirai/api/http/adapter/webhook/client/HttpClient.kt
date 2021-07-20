@@ -20,7 +20,9 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
     /**
      * 使用 Ktor 的 [HttpClient]
      */
-    private val client = HttpClient()
+    private val client = HttpClient() {
+        install(WebhookHeader) { headers.forEach { (k, v) -> header(k, v) } }
+    }
 
     /**
      * POST请求 (String)
@@ -28,10 +30,7 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
     suspend fun post(path: String, content: String, botId: Long? = null): String {
         return client.request {
             url(path)
-            headers {
-                this@WebhookHttpClient.headers.forEach { (k, v) -> append(k, v) }
-                botId?.let { append("bot", it.toString()) }
-            }
+            botHeader(botId.toString())
             method = HttpMethod.Post
             body = TextContent(content, ContentType.Application.Json.withCharset(StandardCharsets.UTF_8))
         }
