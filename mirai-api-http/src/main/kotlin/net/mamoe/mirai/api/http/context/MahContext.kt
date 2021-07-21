@@ -14,14 +14,16 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
-import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
 import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.utils.MiraiLogger
+import net.mamoe.mirai.utils.withSwitch
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
@@ -144,4 +146,8 @@ object MahContextHolder {
     }
 
     val sessionManager get() = mahContext.sessionManager
+
+    val debugLogger: MiraiLogger by lazy {
+        MiraiLogger.create("MAH_DEBUG").withSwitch(mahContext.debug)
+    }
 }
