@@ -164,9 +164,9 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
 internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, type: String): UploadImageRetDTO {
     val image = stream.use {
         when (type) {
-            "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
-            "friend",
-            "temp"
+            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
+            "Friend", "friend",
+            "Temp", "temp"
             -> session.bot.friends.firstOrNull()?.uploadImage(it)
             else -> null
         }
@@ -183,7 +183,7 @@ internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, 
 internal suspend fun onUploadVoice(session: AuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
     val voice = stream.use {
         when (type) {
-            "group" -> session.bot.groups.firstOrNull()?.uploadVoice(it.toExternalResource())
+            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadVoice(it.toExternalResource())
             else -> null
         }
     }
@@ -202,17 +202,17 @@ internal suspend fun onRecall(recallDTO: IntTargetDTO): StateCode {
 
 internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
     when (nudgeDTO.kind) {
-        "Friend" -> nudgeDTO.session.bot.let {
+        "Friend", "friend" -> nudgeDTO.session.bot.let {
             val target = it.getFriend(nudgeDTO.target) ?: return StateCode.NoElement
             val receiver = it.getFriend(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
-        "Stranger" -> nudgeDTO.session.bot.let {
+        "Stranger", "stranger" -> nudgeDTO.session.bot.let {
             val target = it.getStranger(nudgeDTO.target) ?: return StateCode.NoElement
             val receiver = it.getStranger(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
-        "Group" -> nudgeDTO.session.bot.let {
+        "Group", "group" -> nudgeDTO.session.bot.let {
             val target = it.getGroup(nudgeDTO.subject)?.get(nudgeDTO.target) ?: return StateCode.NoElement
             target.nudge().sendTo(target.group)
         }
