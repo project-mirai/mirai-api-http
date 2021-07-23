@@ -862,7 +862,34 @@
 {
   "type": "MemberMuteEvent",
   "durationSeconds": 600,
-  
+  "member": {
+    "id":1234567890,
+    "memberName":"我是被取消禁言的",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  }
 }
 ```
 
