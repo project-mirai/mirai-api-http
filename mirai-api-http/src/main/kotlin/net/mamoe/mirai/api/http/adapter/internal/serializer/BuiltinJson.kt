@@ -54,8 +54,9 @@ internal class BuiltinJsonSerializer : InternalSerializer {
         return json.encodeToString(ListSerializer(clazz.serializer()), list)
     }
 
-    override fun <T : Any> encodeElement(dto: T, clazz: KClass<T>): JsonElement {
-        return json.encodeToJsonElement(clazz.serializer(), dto)
+    override fun <T : Any> encodeElement(dto: T, clazz: KClass<T>): JsonElement = when (dto) {
+        is StateCode -> json.encodeToJsonElement(StateCode.serializer(), dto)
+        else -> json.encodeToJsonElement(clazz.serializer(), dto)
     }
 
     override fun <T : Any> encodeElement(list: List<T>, clazz: KClass<T>): JsonElement {

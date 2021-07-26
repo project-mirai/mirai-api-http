@@ -4,11 +4,14 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
+import kotlin.reflect.full.isSubclassOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class SerializationTest {
 
@@ -49,6 +52,30 @@ class SerializationTest {
         assertEquals(expected, json, "State code 序列化异常")
     }
 
+    @Test
+    fun testBuildInStateCodeToJson() {
+        val subclasses = StateCode::class.nestedClasses
+        for (subclass in subclasses) {
+            if (!subclass.isSubclassOf(StateCode::class)) continue
+            val result = kotlin.runCatching {
+                subclass.objectInstance?.toJson()
+            }
+            assertTrue(result.isSuccess, "${subclass.simpleName} toJson 序列化异常")
+        }
+    }
+
+    @Test
+    fun testBuildInStateCodeToElement() {
+        val subclasses = StateCode::class.nestedClasses
+        for (subclass in subclasses) {
+            if (!subclass.isSubclassOf(StateCode::class)) continue
+            val result = kotlin.runCatching {
+                subclass.objectInstance?.toJsonElement()
+            }
+            assertTrue(result.isSuccess, "${subclass.simpleName} toElement 序列化异常")
+        }
+    }
+
     /**
      * 自定义状态码序列化测试
      */
@@ -56,7 +83,12 @@ class SerializationTest {
     fun testCustomStateCode() {
         val expected = """{"code":400,"msg":"test access error"}"""
         val json = StateCode.IllegalAccess("test access error").toJson()
-        assertEquals(expected, json, "State code: IllegalAccess 序列化异常")
+        assertEquals(expected, json, "State code: IllegalAccess toJson 序列化异常")
+
+        val result = kotlin.runCatching {
+            StateCode.IllegalAccess("test access error").toJsonElement()
+        }
+        assertTrue(result.isSuccess, "State code: IllegalAccess toJsonElement 序列化异常")
     }
 
     @Test
