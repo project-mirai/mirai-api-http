@@ -965,16 +965,16 @@
 
 | 名字                    | 类型    | 说明                                                |
 | ----------------------- | ------- | --------------------------------------------------- |
-| member                  | Object  | 被取消禁言的群员的信息                              |
-| member.id               | Long    | 被取消禁言的群员的QQ号                              |
-| member.memberName       | String  | 被取消禁言的群员的群名片                            |
-| member.permission       | String  | 被取消禁言的群员在群中的权限，ADMINISTRATOR或MEMBER |
-| member.group            | Object  | 被取消禁言的群员所在群的信息                        |
+| member                  | Object  | 被取消禁言的群员的信息                               |
+| member.id               | Long    | 被取消禁言的群员的QQ号                               |
+| member.memberName       | String  | 被取消禁言的群员的群名片                               |
+| member.permission       | String  | 被取消禁言的群员在群中的权限，ADMINISTRATOR或MEMBER    |
+| member.group            | Object  | 被取消禁言的群员所在群的信息                           |
 | member.group.id         | Long    | 群号                                                |
 | member.group.name       | String  | 群名                                                |
-| member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER       |
-| action                  | String  | 称号变化行为：achieve获得成好，lose失去称号       |
-| honor                   | String  | 称号名称       |
+| member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER         |
+| action                  | String  | 称号变化行为：achieve获得称号，lose失去称号            |
+| honor                   | String  | 称号名称                                             |
 
 
 
