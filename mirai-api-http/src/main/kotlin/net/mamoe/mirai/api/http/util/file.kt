@@ -9,12 +9,18 @@
 
 package net.mamoe.mirai.api.http.util
 
-import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
+import java.io.File
 
+fun File.visit(visitor: (File) -> Boolean) = visit(this, visitor)
 
-internal fun getBotOrThrow(qq: Long) = try {
-    Bot.getInstance(qq)
-} catch (e: NoSuchElementException) {
-    throw NoSuchBotException
+@JvmName("visitFile")
+fun visit(file: File, visitor: (File) -> Boolean) {
+    visit(arrayOf(file), visitor)
+}
+
+fun visit(file: Array<File>?, visitor: (File) -> Boolean) {
+    file?.map {
+        val b = visitor(it)
+        if (b || it.isFile) visit(it.listFiles(), visitor)
+    }
 }
