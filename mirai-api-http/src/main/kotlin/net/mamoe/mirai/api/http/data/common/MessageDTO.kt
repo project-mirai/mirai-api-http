@@ -19,8 +19,10 @@ import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexArray
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.*
+import net.mamoe.mirai.event.events.FriendMessageEvent
+import net.mamoe.mirai.event.events.GroupMessageEvent
+import net.mamoe.mirai.event.events.GroupTempMessageEvent
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
@@ -302,8 +304,10 @@ suspend fun MessageDTO.toMessage(contact: Contact): Message? = when (this) {
     )
     is VoiceDTO -> when {
         contact !is Group -> null
-        !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, 0, "")
-        !url.isNullOrBlank() -> withContext(Dispatchers.IO) { URL(url).openStream().toExternalResource().uploadAsVoice(contact) }
+        !voiceId.isNullOrBlank() -> Voice(voiceId, voiceId.substringBefore(".").toHexArray(), 0, 1, "")
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
+            URL(url).openStream().toExternalResource().uploadAsVoice(contact)
+        }
         !path.isNullOrBlank() -> with(HttpApiPluginBase.voice(path)) {
             if (exists()) {
                 inputStream().toExternalResource().uploadAsVoice(contact)
