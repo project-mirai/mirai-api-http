@@ -3,7 +3,6 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.command.CommandExecutedEvent
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
@@ -112,7 +111,7 @@ private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
 @MiraiInternalApi
 private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is Group -> null
-    !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 0, "")
+    !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 1, "")
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
         url!!.openStream { it.toExternalResource().uploadAsVoice(contact) }
     }
