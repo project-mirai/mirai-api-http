@@ -42,7 +42,7 @@ internal fun Application.messageRouter() = routing {
     /**
      * 获取指定条数最老的消息，和 `/fetchMessage` 不一样，这个方法不会删除消息
      */
-    httpAuthedGet<CountDTO>("/peakMessage") {
+    httpAuthedGet<CountDTO>("/peekMessage") {
         val data = it.unreadQueue.peek(it.count)
         call.respondDTO(EventListRestfulResult(data = data))
     }
