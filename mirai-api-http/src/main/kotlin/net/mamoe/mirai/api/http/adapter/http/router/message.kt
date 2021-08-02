@@ -47,6 +47,12 @@ internal fun Application.messageRouter() = routing {
         call.respondDTO(EventListRestfulResult(data = data))
     }
 
+    /*兼容旧接口*/
+    httpAuthedGet<CountDTO>("/peakMessage") {
+        val data = it.unreadQueue.peek(it.count)
+        call.respondDTO(EventListRestfulResult(data = data))
+    }
+    
     /**
      * 获取指定条数最新的消息，和 `/fetchLatestMessage` 不一样，这个方法不会删除消息
      */
