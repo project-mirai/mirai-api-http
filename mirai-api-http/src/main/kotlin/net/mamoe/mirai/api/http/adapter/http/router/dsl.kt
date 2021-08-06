@@ -190,29 +190,6 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
         else it.inputStream().reader(charset).use { rd -> rd.readText() }
     }.jsonParseOrNull()
 
-
-/**
- * 接收 http parameter
- */
-internal inline fun <reified R> PipelineContext<Unit, ApplicationCall>.paramOrNull(name: String): R =
-    when (R::class) {
-        String::class -> call.parameters[name]
-        Byte::class -> call.parameters[name]?.toByte()
-        Int::class -> call.parameters[name]?.toInt()
-        Short::class -> call.parameters[name]?.toShort()
-        Float::class -> call.parameters[name]?.toFloat()
-        Long::class -> call.parameters[name]?.toLong()
-        Double::class -> call.parameters[name]?.toDouble()
-        Boolean::class -> when (call.parameters[name]) {
-            "true" -> true
-            "false" -> false
-            "0" -> false
-            "1" -> true
-            else -> throw IllegalParamException()
-        }
-        else -> throw IllegalParamException("未定义参数类型${R::class.simpleName}")
-    } as R
-
 /**
  * 接收 http multi part 值类型
  */

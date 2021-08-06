@@ -16,6 +16,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 open class TempSession internal constructor(initKey: String, coroutineContext: CoroutineContext) :
     AbstractSession(coroutineContext, initKey)
@@ -23,6 +24,13 @@ open class TempSession internal constructor(initKey: String, coroutineContext: C
 class SampleAuthedSession internal constructor(override val bot: Bot, originKey: String, coroutineContext: CoroutineContext) :
     AbstractSession(coroutineContext, originKey), AuthedSession {
     override val sourceCache: MessageSourceCache = MahContextHolder.newCache(bot.id)
+}
+
+class OneTimeAuthedSession internal constructor(override val bot: Bot): AuthedSession {
+    override val key: String = ""
+    override val coroutineContext: CoroutineContext = EmptyCoroutineContext
+    override val sourceCache: MessageSourceCache = MahContextHolder.newCache(bot.id)
+    override fun close() {}
 }
 
 abstract class AbstractSession internal constructor(coroutineContext: CoroutineContext, override val key: String) : Session {
