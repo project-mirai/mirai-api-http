@@ -45,8 +45,8 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
 }
 
 internal suspend fun onUploadFile(stream: InputStream, path: String, contact: FileSupported): ElementResult {
-    val remoteFile = stream.use {
-        contact.filesRoot.resolve(path).upload(it.toExternalResource())
+    val remoteFile = stream.toExternalResource().use {
+        contact.filesRoot.resolve(path).upload(it)
     }.toRemoteFile(contact)!!
 
     return ElementResult(
