@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.util.toHexString
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.utils.RemoteFile
 
@@ -23,12 +24,15 @@ internal data class RemoteFileDTO(
     val isFile: Boolean,
     val isDictionary: Boolean,
     val isDirectory: Boolean,
+    val size: Long,
+    val downloadInfo: DownloadInfoDTO? = null,
 ) : DTO {
-    constructor(remoteFile: RemoteFile, isFile: Boolean) : this(
+    constructor(remoteFile: RemoteFile, isFile: Boolean, size: Long, downloadInfo: RemoteFile.DownloadInfo? = null) : this(
         remoteFile.name,
         remoteFile.id,
         remoteFile.path,
-        remoteFile.parent?.let { RemoteFileDTO(it, false) },
+        // 父级为目录，没有下载信息
+        remoteFile.parent?.let { RemoteFileDTO(it, false, 0, null) },
         when (remoteFile.contact) {
             is Group -> GroupDTO(remoteFile.contact as Group)
             else -> throw IllegalStateException("unsupported remote file type")
@@ -36,5 +40,20 @@ internal data class RemoteFileDTO(
         isFile,
         !isFile,
         !isFile,
+        size,
+        downloadInfo?.let { info ->
+            DownloadInfoDTO(
+                info.sha1.toHexString(),
+                info.md5.toHexString(),
+                info.url,
+            )
+        },
     )
 }
+
+@Serializable
+internal data class DownloadInfoDTO(
+    val sha1: String,
+    val md5: String,
+    val url: String,
+) : DTO

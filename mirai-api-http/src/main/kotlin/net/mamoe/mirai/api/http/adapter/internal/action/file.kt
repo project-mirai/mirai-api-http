@@ -19,18 +19,30 @@ import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.RemoteFile
 import java.io.InputStream
+import kotlin.streams.toList
 
-internal suspend fun onListFile(dto: FileTargetDTO): RemoteFileList {
-    val data = dto.getResolveFile().listFilesCollection().map {
-        RemoteFileDTO(it, it.isFile())
-    }
+internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
+    val data = dto.getResolveFile().listFilesCollection()
+        .stream().skip(dto.offset).limit(dto.size)
+        .toList()
+        .map {
+            val downloadInfo = if (dto.withDownloadInfo) {
+                it.getDownloadInfo()
+            } else { null }
+            RemoteFileDTO(it, it.isFile(), it.length(), downloadInfo)
+        }
+
     return RemoteFileList(data = data)
 }
 
-internal suspend fun onGetFileInfo(dto: FileTargetDTO): ElementResult {
+internal suspend fun onGetFileInfo(dto: FileInfoDTO): ElementResult {
     val remoteFile = dto.getResolveFile()
+    val downloadInfo = if (dto.withDownloadInfo) {
+        remoteFile.getDownloadInfo()
+    } else { null }
+
     return ElementResult(
-        RemoteFileDTO(remoteFile, remoteFile.isFile()).toJsonElement()
+        RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length(), downloadInfo).toJsonElement()
     )
 }
 
@@ -40,7 +52,7 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
         it.mkdir()
     }
     return ElementResult(
-        RemoteFileDTO(remoteFile, false).toJsonElement()
+        RemoteFileDTO(remoteFile, false, remoteFile.length()).toJsonElement()
     )
 }
 
@@ -50,7 +62,7 @@ internal suspend fun onUploadFile(stream: InputStream, path: String, contact: Fi
     }.toRemoteFile(contact)!!
 
     return ElementResult(
-        RemoteFileDTO(remoteFile, remoteFile.isFile()).toJsonElement()
+        RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length()).toJsonElement()
     )
 }
 

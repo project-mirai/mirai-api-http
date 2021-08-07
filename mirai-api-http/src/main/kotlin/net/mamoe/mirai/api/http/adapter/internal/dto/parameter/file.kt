@@ -29,6 +29,26 @@ internal data class FileTargetDTO(
 ): AbstractFileTargetDTO()
 
 @Serializable
+internal data class FileListDTO(
+    override val id: String = "",
+    override val target: Long? = null,
+    override val group: Long? = null,
+    override val qq: Long? = null,
+    val offset: Long = 0,
+    val size: Long = Long.MAX_VALUE,
+    val withDownloadInfo: Boolean = false,
+): AbstractFileTargetDTO()
+
+@Serializable
+internal data class FileInfoDTO(
+    override val id: String = "",
+    override val target: Long? = null,
+    override val group: Long? = null,
+    override val qq: Long? = null,
+    val withDownloadInfo: Boolean = false
+): AbstractFileTargetDTO()
+
+@Serializable
 internal data class MkDirDTO(
     override val id: String = "",
     override val target: Long? = null,

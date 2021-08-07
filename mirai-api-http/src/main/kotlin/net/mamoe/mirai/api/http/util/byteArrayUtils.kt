@@ -12,3 +12,21 @@ package net.mamoe.mirai.api.http.util
 internal fun String.toHexArray(): ByteArray = ByteArray(length / 2) {
     ((Character.digit(this[it * 2], 16) shl 4) + Character.digit(this[it * 2 + 1], 16)).toByte()
 }
+
+internal fun ByteArray.toHexString(sep: String = "", offset: Int = 0, limit: Int = size - offset): String {
+    require(offset >= 0)
+    require(limit >= 0)
+
+    if (limit == 0) {
+        return ""
+    }
+
+    val end = offset + limit
+    return buildString {
+        this@toHexString.forEachIndexed { idx, b ->
+            val t = b.toUByte().toString(16).uppercase()
+            append(if (t.length == 1) "0$t" else t)
+            if (idx < end - 1) append(sep)
+        }
+    }
+}
