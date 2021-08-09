@@ -382,3 +382,18 @@
 | id   | String | 文件识别id |
 | name | String | 文件名     |
 | size | Long   | 文件大小   |
+
+### MiraiCode
+
+```json5
+{
+  "type": "MiraiCode",
+  "code": "hello[mirai:at:1234567]"
+}
+```
+
+| 名字 | 类型   | 说明         |
+| ---- | ------ | ------------ |
+| code | String | MiraiCode |
+
+[MiraiCode的使用](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md#%E6%B6%88%E6%81%AF%E5%85%83%E7%B4%A0)
