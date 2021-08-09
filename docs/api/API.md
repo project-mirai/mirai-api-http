@@ -52,7 +52,7 @@
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请（Bot需要有管理员权限）)
   + [Bot被邀请入群申请](#Bot被邀请入群申请)
-+ **[命令(Console Command)](#命令(Console Command))**
++ **[命令(Console Command)](#命令console-command)**
   + [执行命令](#执行命令)
   + [注册命令](#注册命令)
   + [命令接收](#命令接收)
@@ -113,7 +113,7 @@
 | 名字         | 类型   |  可选  | 举例            | 说明                 |
 | ----------- | ------ | ----- | -------------- | -------------------- |
 | sessionKey  | String | true  | YourSessionKey | 你的session key      |
-| target      | Int    | false | 1234567890     | 获取消息的messageId  |
+| id      | Int    | false | 1234567890     | 获取消息的messageId  |
 
 #### 响应: 
 

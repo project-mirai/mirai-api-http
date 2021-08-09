@@ -66,7 +66,7 @@ adapterSettings:
 
 通用接口为所有 `built-in adapter` 公用的数据规范, 该文档定义了不同 `adapter` 的具体调用方式
 + **[获取插件信息](#获取插件信息)**
-+ **[缓存操作]()**
++ **[缓存操作](#缓存操作)**
   + [通过messageId获取消息](#通过messageId获取消息)
 + **[获取账号信息](#获取账号信息)**
   + [获取好友列表](#获取好友列表)
@@ -200,7 +200,7 @@ adapterSettings:
 命令字: about
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取插件信息)
+通用接口定义: [获取插件信息](../api/API.md#获取插件信息)
 
 ## 缓存操作
 
@@ -224,7 +224,7 @@ adapterSettings:
 命令字: friendList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取好友列表)
+通用接口定义: [获取好友列表](../api/API.md#获取好友列表)
 
 ### 获取群列表
 
@@ -234,7 +234,7 @@ adapterSettings:
 命令字: groupList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群列表)
+通用接口定义: [获取群列表](../api/API.md#获取群列表)
 
 ### 获取群成员列表
 
@@ -244,7 +244,7 @@ adapterSettings:
 命令字: memberList
 ```
 
-通用接口定义: [通过messageId获取消息](../api/API.md#获取群成员列表)
+通用接口定义: [获取群成员列表](../api/API.md#获取群成员列表)
 
 ### 获取Bot资料
 

@@ -2,7 +2,7 @@
 
 ## 目录
 
-+ **[事件类型一览](EventType.md)**
++  **[事件类型一览](EventType.md)**
   + [Bot自身事件](#bot自身事件)
   + [好友事件](#好友事件)
   + [群事件](#群事件)
@@ -373,6 +373,32 @@
 | time      | Int  | 原消息发送时间     |
 | operator  | Long | 好友QQ号或BotQQ号  |
 
+
+### 头像双击事件
+
+```json5
+{
+    "type": "NudgeEvent",
+    "fromId": 123456,
+    "subject": {
+        "id": 123456,
+        "kind": "Group"
+    },
+    action: "戳了戳",
+    suffix: "的脸",
+    target: 123456
+}
+```
+
+| 名字         | 类型    | 说明               |
+| ------------ | ------ | ------------------- |
+| fromId       | Long   | 动作发出者的QQ号 |
+| subject      | Object | 来源       |
+| subject.id   | Long   | 来源的QQ号（好友）或群号 |
+| subject.kind | String | 来源的类型，"Friend"或"Group" |
+| action       | String | 动作类型     |
+| suffix       | String | 自定义动作内容  |
+| target       | Long   | 动作目标的QQ号 |
 
 
 ### 某个群名改变
@@ -862,7 +888,34 @@
 {
   "type": "MemberMuteEvent",
   "durationSeconds": 600,
-  
+  "member": {
+    "id":1234567890,
+    "memberName":"我是被取消禁言的",
+    "specialTitle":"群头衔",
+    "permission":"MEMBER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  },
+  "operator": {
+    "id":1234567890,
+    "memberName":"",
+    "specialTitle":"群头衔",
+    "permission":"OWNER",  // 群成员在群中的权限
+    "joinTimestamp":12345678,
+    "lastSpeakTimestamp":8765432,
+    "muteTimeRemaining":0,
+    "group":{
+      "id":12345,
+      "name":"群名1",
+      "permission":"MEMBER" // bot 在群中的权限
+    }
+  }
 }
 ```
 
@@ -965,16 +1018,16 @@
 
 | 名字                    | 类型    | 说明                                                |
 | ----------------------- | ------- | --------------------------------------------------- |
-| member                  | Object  | 被取消禁言的群员的信息                              |
-| member.id               | Long    | 被取消禁言的群员的QQ号                              |
-| member.memberName       | String  | 被取消禁言的群员的群名片                            |
-| member.permission       | String  | 被取消禁言的群员在群中的权限，ADMINISTRATOR或MEMBER |
-| member.group            | Object  | 被取消禁言的群员所在群的信息                        |
+| member                  | Object  | 被取消禁言的群员的信息                               |
+| member.id               | Long    | 被取消禁言的群员的QQ号                               |
+| member.memberName       | String  | 被取消禁言的群员的群名片                               |
+| member.permission       | String  | 被取消禁言的群员在群中的权限，ADMINISTRATOR或MEMBER    |
+| member.group            | Object  | 被取消禁言的群员所在群的信息                           |
 | member.group.id         | Long    | 群号                                                |
 | member.group.name       | String  | 群名                                                |
-| member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER       |
-| action                  | String  | 称号变化行为：achieve获得成好，lose失去称号       |
-| honor                   | String  | 称号名称       |
+| member.group.permission | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER         |
+| action                  | String  | 称号变化行为：achieve获得称号，lose失去称号            |
+| honor                   | String  | 称号名称                                             |
 
 
 
