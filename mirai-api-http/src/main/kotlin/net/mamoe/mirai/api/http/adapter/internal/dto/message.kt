@@ -172,6 +172,12 @@ internal data class FileDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("MiraiCode")
+internal data class MiraiCodeDTO(
+    val code: String
+) : MessageDTO()
+
+@Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 

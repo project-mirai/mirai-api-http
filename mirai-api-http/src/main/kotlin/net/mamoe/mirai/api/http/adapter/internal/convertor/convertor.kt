@@ -22,6 +22,7 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.UserOrBot
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
@@ -94,6 +95,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
             }
         }
     }
+    is MiraiCodeDTO -> MiraiCode.deserializeMiraiCode(code)
     // ignore
     is QuoteDTO,
     is MessageSourceDTO,

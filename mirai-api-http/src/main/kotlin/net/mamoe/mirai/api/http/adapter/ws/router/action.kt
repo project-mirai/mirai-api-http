@@ -139,9 +139,10 @@ private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
     crossinline action: suspend (T) -> R
 ): JsonElement {
     val parameter = parseContent<T>(content)
+        ?: return StateCode.InvalidParameter.toJsonElement()
     parameter.session = session
     return action(parameter).toJsonElement()
 }
 
-private inline fun <reified T : AuthedDTO> parseContent(content: JsonElement?): T =
-    content?.jsonElementParseOrNull() ?: throw IllegalAccessException()
+private inline fun <reified T : AuthedDTO> parseContent(content: JsonElement?): T? =
+    content?.jsonElementParseOrNull()
