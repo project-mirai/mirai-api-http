@@ -1,5 +1,28 @@
 # 更新日志
 
+## \[2.2.0\] - 2021-08-09
+
+### 修复
+
++ 部分接口中的大小写匹配
++ 状态码序列化异常
++ 语音失真
++ 文件上传时可能出现的内存泄漏
+
+### 优化
+
++ `peekMessage` 接口拼写错误, 原 `peakMessage` 接口保留一段时间兼容
++ 提升 `webhook` 的一点点性能
++ 补充文档, `戳一戳事件`、明确环境中 `path` 参数的含义
+
+### 新增
+
++ MiraiCode 消息类型支持，可将 MiraiCode 作为一种消息类型 [消息格式](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md#miraicode) [MiraiCode的使用](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md#%E6%B6%88%E6%81%AF%E5%85%83%E7%B4%A0)
++ `Webhook Adapter` 对请求头 `qq`, `bot` 追加可反代的 `X-header` 格式
++ 配置文件中智能的 host 解析, 默认解析到 `http://` scheme
+
+
+
 ## \[2.1.0\] - 2021-07-19
 
 ### 修复
