@@ -491,7 +491,8 @@
   "id": "",
   "target":987654321,
   "group":null,
-  "qq":null
+  "qq":null,
+  "withDownloadInfo":true
 }
 ```
 
@@ -502,6 +503,7 @@
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
+| withDownloadInfo | Boolean | true  | true   | 是否携带下载信息，额外请求，无必要不要携带 |
 
 #### 响应:
 
@@ -509,7 +511,7 @@
 {
   "code":0,
   "msg":"",
-  "data":[
+  "data": [
     {
       "name":"setu.png",
       "id":"/12314d-1wf13-a98ffa",
@@ -522,7 +524,12 @@
       },
       "isFile":true,
       "isDictionary":false,
-      "isDirectory":false
+      "isDirectory":false,
+      "downloadInfo":{
+        "sha1":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "md5":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "url":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      }
     }
   ]
 }
@@ -539,6 +546,10 @@
 | data.isFile  | Boolean | 是否文件                         |
 | data.isDictionary | Boolean | ~~是否文件夹~~(弃用)                  |
 | data.isDirectory | Boolean | 是否文件夹                  |
+| downloadInfo | Object | 文件下载信息                  |
+| downloadInfo.sha1 | String | 文件sha1校验                  |
+| downloadInfo.md5 | String | 文件md5校验               |
+| downloadInfo.url | String | 文件下载url                  |
 
 ### 获取文件信息
 
@@ -550,7 +561,8 @@
   "id": "",
   "target":987654321,
   "group":null,
-  "qq":null
+  "qq":null,
+  "withDownloadInfo":true
 }
 ```
 
@@ -561,6 +573,7 @@
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
+| withDownloadInfo | Boolean | true  | true   | 是否携带下载信息，额外请求，无必要不要携带 |
 
 #### 响应:
 
@@ -580,7 +593,12 @@
     },
     "isFile":true,
     "isDictionary":false,
-    "isDirectory":false
+    "isDirectory":false,
+    "downloadInfo":{
+      "sha1":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "md5":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "url":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    }
   }
 }
 ```
@@ -596,6 +614,10 @@
 | data.isFile  | Boolean | 是否文件                         |
 | data.isDictionary | Boolean | ~~是否文件夹~~(弃用)                  |
 | data.isDirectory | Boolean | 是否文件夹                  |
+| downloadInfo | Object | 文件下载信息                  |
+| downloadInfo.sha1 | String | 文件sha1校验                  |
+| downloadInfo.md5 | String | 文件md5校验               |
+| downloadInfo.url | String | 文件下载url                  |
 
 ### 创建文件夹
 

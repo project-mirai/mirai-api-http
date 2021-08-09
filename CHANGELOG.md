@@ -20,7 +20,7 @@
 + MiraiCode 消息类型支持，可将 MiraiCode 作为一种消息类型 [消息格式](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md#miraicode) [MiraiCode的使用](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md#%E6%B6%88%E6%81%AF%E5%85%83%E7%B4%A0)
 + `Webhook Adapter` 对请求头 `qq`, `bot` 追加可反代的 `X-header` 格式
 + 配置文件中智能的 host 解析, 默认解析到 `http://` scheme
-
++ 群文件请求 `/file/list`, `/file/info` 可携带 `withDownloadInfo` 返回额外的下载信息 [查看文件列表](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/API.md#查看文件列表)
 
 
 ## \[2.1.0\] - 2021-07-19
