@@ -492,7 +492,9 @@
   "target":987654321,
   "group":null,
   "qq":null,
-  "withDownloadInfo":true
+  "withDownloadInfo":true,
+  "offset": 0,
+  "size": 1
 }
 ```
 
@@ -504,6 +506,8 @@
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
 | withDownloadInfo | Boolean | true  | true   | 是否携带下载信息，额外请求，无必要不要携带 |
+| offset | Long | true  | true   | 分页偏移 |
+| size | Long | true  | true   | 分页大小 |
 
 #### 响应:
 
