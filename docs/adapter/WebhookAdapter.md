@@ -16,8 +16,8 @@ adapterSettings:
     ## 额外自定义请求头
     extraHeaders:
       Authorization: 'bearer SV*(&*(SH@ID^G'
-      hedaer1: value1
-      hedaer2: value2
+      header1: value1
+      header2: value2
 ```
 
 ### 接口一览
