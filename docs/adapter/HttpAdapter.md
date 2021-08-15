@@ -581,7 +581,8 @@ adapterSettings:
 | ------------ | ------ | ----- | ----------- | ---------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                  |
 | type         | String | false | "group"     | 当前仅支持 "group"                   |
-| path         | String | false | ""          | 上传目录的id, 空串为上传到根目录        |
+| target       | String | false | "123456789" | 目标群号                            |
+| path         | String | false | "setu.jpg"  | 见下文                              |
 | file         | File   | false | -           | 上传的文件                           |
 
 #### 响应:
@@ -602,6 +603,19 @@ adapterSettings:
   "isDirectory":false
 }
 ```
+
+#### path的说明
+
+当上传到根目录时，直接使用文件名
+
+如："setu.jpg"
+
+当上传到子目录时，使用 id + 文件名
+
+**警告:** id并非子目录名称，而是服务器提供的id
+
+如: "/12314d-1wf13-a98ffa/setu.jpg"
+
 
 > 返回上传文件的信息
 
