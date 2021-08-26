@@ -97,9 +97,9 @@
 {
   "type": "FriendInputStatusChangedEvent",
   "friend": {
-    id: 123123,
-    nickname: "nick",
-    remark: "remark"
+    "id": 123123,
+    "nickname": "nick",
+    "remark": "remark"
   }, 
   "inputting": true
 }
@@ -120,9 +120,9 @@
 {
   "type": "FriendNickChangedEvent",
   "friend": {
-    id: 123123,
-    nickname: "nick",
-    remark: "remark"
+    "id": 123123,
+    "nickname": "nick",
+    "remark": "remark"
   }, 
   "from": "origin nickname",
   "to": "new nickname"
@@ -385,9 +385,9 @@
         "id": 123456,
         "kind": "Group"
     },
-    action: "戳了戳",
-    suffix: "的脸",
-    target: 123456
+    "action": "戳了戳",
+    "suffix": "的脸",
+    "target": 123456
 }
 ```
 
