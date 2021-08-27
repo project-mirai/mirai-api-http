@@ -22,8 +22,16 @@ jobs:
       - name: Grant Execute Permission for gradlew
         run: chmod +x gradlew
 
+      - run: ./gradlew checkMavenCentralPublication --info  --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+
       - name: Build with Gradle
         run: ./gradlew buildCiJar
+
+      - run: ./gradlew publish --info  --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 
       - name: Get Tag
         id: tag
