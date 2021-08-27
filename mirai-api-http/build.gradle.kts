@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("net.mamoe.mirai-console") version "2.7-M1"
+    id("net.mamoe.maven-central-publish") version "0.6.1"
 }
 
 val ktorVersion: String by rootProject.extra
@@ -94,4 +95,10 @@ tasks {
 
 tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile::class.java) {
     kotlinOptions.freeCompilerArgs += "-XXLanguage:-JvmIrEnabledByDefault"
+}
+
+mavenCentralPublish {
+    packageGroup = "net.mamoe"
+    singleDevGithubProject("Mamoe Technologies", "yamlkt")
+    licenseGplV3()
 }
