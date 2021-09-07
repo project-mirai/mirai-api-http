@@ -1103,6 +1103,46 @@
 | nick      | String | 邀请人（好友）的昵称         |
 | message   | String | 邀请消息                  |
 
+## 其他客户端事件
+
+### 其他客户端上线
+
+```json
+{
+  "type": "OtherClientOnlineEvent",
+  "client": {
+    "id": 1,
+    "platform": "WINDOWS"
+  },
+  "kind": 69899
+}
+```
+
+| 名字              | 类型   | 说明           |
+| ----------------- | ------ | -------------- |
+| client            | Object | 其他客户端     |
+| client.id         | Long   | 客户端标识号   |
+| client.platform   | String | 客户端类型     |
+| kind              | Long?  | 详细设备类型   |
+
+### 其他客户端下线
+
+```json
+{
+  "type": "OtherClientOfflineEvent",
+  "client": {
+    "id": 1,
+    "platform": "WINDOWS"
+  }
+}
+```
+
+| 名字              | 类型   | 说明           |
+| ----------------- | ------ | -------------- |
+| client            | Object | 其他客户端     |
+| client.id         | Long   | 客户端标识号   |
+| client.platform   | String | 客户端类型     |
+
 
 ## 命令事件
 
