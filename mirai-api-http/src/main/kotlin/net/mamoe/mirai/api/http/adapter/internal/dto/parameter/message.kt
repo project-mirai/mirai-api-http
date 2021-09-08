@@ -50,5 +50,4 @@ internal class UploadImageRetDTO(
 @Suppress("unused")
 internal class UploadVoiceRetDTO(
     val voiceId: String,
-    val url: String?,
 ) : DTO

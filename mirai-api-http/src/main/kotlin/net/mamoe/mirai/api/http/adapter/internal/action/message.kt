@@ -192,12 +192,15 @@ internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, 
 internal suspend fun onUploadVoice(session: AuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
     val voice = stream.use {
         when (type) {
-            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadVoice(it.toExternalResource())
+            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it.toExternalResource())
+            "Friend", "friend",
+            "Temp", "temp"
+            -> session.bot.friends.firstOrNull()?.uploadAudio(it.toExternalResource())
             else -> null
         }
     }
 
-    return voice?.run { UploadVoiceRetDTO(fileName, url) }
+    return voice?.run { UploadVoiceRetDTO(filename) }
         ?: throw IllegalAccessException("语音上传错误")
 }
 
