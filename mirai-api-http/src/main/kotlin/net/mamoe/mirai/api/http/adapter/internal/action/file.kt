@@ -56,9 +56,11 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     )
 }
 
-internal suspend fun onUploadFile(stream: InputStream, path: String, contact: FileSupported): ElementResult {
+internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
+    // 正常通过 multipart 传的正常文件，都是有文件名的
+    val uploadFileName = fileName ?: System.currentTimeMillis().toString()
     val remoteFile = stream.toExternalResource().use {
-        contact.filesRoot.resolve(path).upload(it)
+        contact.filesRoot.resolve(path).resolve(uploadFileName).upload(it)
     }.toRemoteFile(contact)!!
 
     return ElementResult(

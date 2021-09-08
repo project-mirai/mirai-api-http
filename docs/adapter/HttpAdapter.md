@@ -581,6 +581,7 @@ adapterSettings:
 | ------------ | ------ | ----- | ----------- | ---------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                  |
 | type         | String | false | "group"     | 当前仅支持 "group"                   |
+| target       | Long   | false | 1234567     | 上传目标群号                         |
 | path         | String | false | ""          | 上传目录的id, 空串为上传到根目录        |
 | file         | File   | false | -           | 上传的文件                           |
 
@@ -777,7 +778,7 @@ adapterSettings:
 
 **本接口为[POST]请求, 参数格式为`application/json`**
 
-通用接口定义: [用户入群申请](../api/API.md#用户入群申请)
+通用接口定义: [用户入群申请](../api/API.md#用户入群申请（Bot需要有管理员权限）)
 
 ### Bot被邀请入群申请
 

@@ -42,7 +42,7 @@ internal fun Application.fileRouter() = routing {
         }
 
         val ret = part.file("file")?.run {
-            onUploadFile(streamProvider(), path, contact!!)
+            onUploadFile(streamProvider(), path, originalFileName, contact!!)
         } ?: throw IllegalAccessException("未知错误")
 
         call.respondDTO(ret)
