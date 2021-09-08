@@ -16,6 +16,7 @@ import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexArray
+import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.UserOrBot
@@ -23,13 +24,12 @@ import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsVoice
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiInternalApi
 import java.io.File
-import java.io.InputStream
 import java.net.URL
 import java.util.*
 
@@ -106,7 +106,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
 private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
     !imageId.isNullOrBlank() -> Image(imageId!!)
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openStream { it.uploadAsImage(contact) }
+        url!!.openExternalResource { it.uploadAsImage(contact) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
@@ -119,22 +119,22 @@ private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
     else -> null
 }
 
-@MiraiInternalApi
 private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
-    contact !is Group -> null
-    !voiceId.isNullOrBlank() -> Voice(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, 1, "")
+    contact !is AudioSupported -> null
+    !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, AudioCodec.SILK, null)
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openStream { it.toExternalResource().uploadAsVoice(contact) }
+        url!!.openExternalResource { contact.uploadAudio(it) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
-            inputStream().toExternalResource().use { it.uploadAsVoice(contact) }
+            inputStream().toExternalResource().use { contact.uploadAudio(it) }
         } else throw NoSuchFileException(this)
     }
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
-        inputStream().use { it.toExternalResource().uploadAsVoice(contact) }
+        inputStream().toExternalResource().use { contact.uploadAudio(it) }
     }
     else -> null
 }
 
-private inline fun <R> String.openStream(consumer: (InputStream) -> R) = URL(this).openStream().use { consumer(it) }
+private inline fun <R> String.openExternalResource(consumer: (ExternalResource) -> R)
+    = URL(this).openStream().toExternalResource().use { consumer(it) }
