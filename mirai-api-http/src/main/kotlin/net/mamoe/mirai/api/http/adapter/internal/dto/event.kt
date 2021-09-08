@@ -82,7 +82,10 @@ internal data class BotUnmuteEventDTO(val operator: MemberDTO) : BotEventDTO()
 
 @Serializable
 @SerialName("BotJoinGroupEvent")
-internal data class BotJoinGroupEventDTO(val group: GroupDTO) : BotEventDTO()
+internal data class BotJoinGroupEventDTO(
+    val group: GroupDTO,
+    val invitor: MemberDTO? = null
+) : BotEventDTO()
 
 @Serializable
 @SerialName("BotLeaveEventActive")
@@ -152,7 +155,10 @@ internal data class GroupAllowMemberInviteEventDTO(
 
 @Serializable
 @SerialName("MemberJoinEvent")
-internal data class MemberJoinEventDTO(val member: MemberDTO) : BotEventDTO()
+internal data class MemberJoinEventDTO(
+    val member: MemberDTO,
+    val invitor: MemberDTO? = null
+) : BotEventDTO()
 
 @Serializable
 @SerialName("MemberLeaveEventKick")

@@ -42,8 +42,9 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(origin, new, GroupDTO(group))
     is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
     is BotUnmuteEvent -> BotUnmuteEventDTO(MemberDTO(operator))
-    // TODO: BotJoinGroupEvent 细分
-    is BotJoinGroupEvent -> BotJoinGroupEventDTO(GroupDTO(group))
+    is BotJoinGroupEvent.Active -> BotJoinGroupEventDTO(GroupDTO(group))
+    is BotJoinGroupEvent.Invite -> BotJoinGroupEventDTO(GroupDTO(group), MemberDTO(invitor))
+    is BotJoinGroupEvent.Retrieve -> BotJoinGroupEventDTO(GroupDTO(group))
     is BotLeaveEvent.Active -> BotLeaveEventActiveDTO(GroupDTO(group))
     is BotLeaveEvent.Kick -> BotLeaveEventKickDTO(GroupDTO(group))
     is GroupNameChangeEvent -> GroupNameChangeEventDTO(
@@ -77,8 +78,9 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
-    // TODO: MemberJoinEvent 细分
-    is MemberJoinEvent -> MemberJoinEventDTO(MemberDTO(member))
+    is MemberJoinEvent.Active -> MemberJoinEventDTO(MemberDTO(member))
+    is MemberJoinEvent.Invite -> MemberJoinEventDTO(MemberDTO(member), MemberDTO(invitor))
+    is MemberJoinEvent.Retrieve -> MemberJoinEventDTO(MemberDTO(member))
     is MemberLeaveEvent.Kick -> MemberLeaveEventKickDTO(MemberDTO(member), operator?.let(::MemberDTO))
     is MemberLeaveEvent.Quit -> MemberLeaveEventQuitDTO(MemberDTO(member))
     is MemberCardChangeEvent -> MemberCardChangeEventDTO(origin, new, MemberDTO(member))
