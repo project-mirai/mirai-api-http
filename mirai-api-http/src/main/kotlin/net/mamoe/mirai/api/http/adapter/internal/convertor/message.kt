@@ -60,7 +60,7 @@ internal suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl())
     is FlashImage -> FlashImageDTO(image.imageId, image.queryUrl())
-    is Voice -> VoiceDTO(fileName, url)
+    is OnlineAudio -> VoiceDTO(filename, urlForDownload, length = length)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,

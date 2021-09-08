@@ -25,6 +25,10 @@ private val mahVersion by lazy {
 internal fun onAbout(): Map<String, String> {
     return mapOf("version" to mahVersion)
 }
+
+/**
+ * 获取 session 信息
+ */
 internal fun onGetSessionInfo(dto: EmptyAuthedDTO): SessionDTO {
     return SessionDTO(dto.sessionKey, QQDTO(dto.session.bot.asFriend))
 }

@@ -73,6 +73,7 @@ internal interface VoiceLikeDTO {
     val url: String?
     val path: String?
     val base64: String?
+    val length: Long
 }
 
 @Serializable
@@ -99,7 +100,8 @@ internal data class VoiceDTO(
     override val voiceId: String? = null,
     override val url: String? = null,
     override val path: String? = null,
-    override val base64: String? = null
+    override val base64: String? = null,
+    override val length: Long = 0L,
 ) : MessageDTO(), VoiceLikeDTO
 
 @Serializable
