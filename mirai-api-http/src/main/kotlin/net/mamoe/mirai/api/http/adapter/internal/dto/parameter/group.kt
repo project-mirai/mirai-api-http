@@ -47,7 +47,6 @@ internal data class GroupConfigDTO(
 @Serializable
 internal data class GroupDetailDTO(
     val name: String? = null,
-    val announcement: String? = null,
     val confessTalk: Boolean? = null,
     val allowMemberInvite: Boolean? = null,
     val autoApprove: Boolean? = null,
@@ -56,9 +55,6 @@ internal data class GroupDetailDTO(
     @OptIn(MiraiExperimentalApi::class)
     constructor(group: Group) : this(
         group.name,
-        runBlocking {
-            group.announcements.asFlow().firstOrNull { it.parameters.sendToNewMember }?.content
-        },
         false,
         group.settings.isAllowMemberInvite,
         group.settings.isAutoApproveEnabled,

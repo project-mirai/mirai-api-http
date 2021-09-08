@@ -89,11 +89,10 @@ internal fun onGetGroupConfig(dto: LongTargetDTO): GroupDetailDTO {
 /**
  * 修改群设置（需要相关权限）
  */
-internal suspend fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
+internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
     val group = dto.session.bot.getGroupOrFail(dto.target)
     with(dto.config) {
         name?.let { group.name = it }
-        announcement?.let { group.publishAnnouncement(it) }
         allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
         // TODO: 待core接口实现设置可改
         //    confessTalk?.let { group.settings.isConfessTalkEnabled = it }
