@@ -73,4 +73,9 @@ internal fun Application.groupManageRouter() = routing {
      * 更新群员信息（需要相关权限）
      */
     httpAuthedPost(Paths.memberInfo, respondStateCodeStrategy(::onUpdateMemberInfo))
+
+    /**
+     * 修改群员管理员权限
+     */
+    httpAuthedPost(Paths.memberAdmin, respondStateCodeStrategy(::onModifyMemberAdmin))
 }

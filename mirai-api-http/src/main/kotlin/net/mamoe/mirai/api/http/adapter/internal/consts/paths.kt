@@ -36,6 +36,7 @@ object Paths {
     const val essence = "setEssence"
     const val groupConfig = "groupConfig"
     const val memberInfo = "memberInfo"
+    const val memberAdmin = "memberAdmin"
 
     // base info
     const val friendList = "friendList"

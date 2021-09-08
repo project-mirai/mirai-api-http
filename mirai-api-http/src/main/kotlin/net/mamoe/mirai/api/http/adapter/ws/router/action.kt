@@ -74,6 +74,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
                     else -> StateCode.NoOperateSupport.toJsonElement()
                 }
             }
+            Paths.memberAdmin -> execute(session, element, ::onModifyMemberAdmin)
 
 
             // info

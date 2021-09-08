@@ -9,6 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.dto.parameter
 
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
@@ -30,6 +32,13 @@ internal data class KickDTO(
 ) : AuthedDTO()
 
 @Serializable
+internal data class ModifyAdminDTO(
+    val target: Long,
+    val memberId: Long,
+    val assign: Boolean,
+) : AuthedDTO()
+
+@Serializable
 internal data class GroupConfigDTO(
     val target: Long,
     val config: GroupDetailDTO
@@ -47,7 +56,9 @@ internal data class GroupDetailDTO(
     @OptIn(MiraiExperimentalApi::class)
     constructor(group: Group) : this(
         group.name,
-        group.settings.entranceAnnouncement,
+        runBlocking {
+            group.announcements.asFlow().firstOrNull { it.parameters.sendToNewMember }?.content
+        },
         false,
         group.settings.isAllowMemberInvite,
         group.settings.isAutoApproveEnabled,

@@ -47,6 +47,7 @@ internal suspend fun execute(event: BotEvent, packet: WebhookPacket) {
         Paths.essence -> execute(event, element, ::onSetEssence)
         Paths.groupConfig -> execute(event, element, ::onUpdateGroupConfig)
         Paths.memberInfo -> execute(event, element, ::onUpdateMemberInfo)
+        Paths.memberAdmin -> execute(event, element, ::onModifyMemberAdmin)
 
 
         // message

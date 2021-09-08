@@ -12,6 +12,8 @@ package net.mamoe.mirai.api.http.adapter.internal.action
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
+import net.mamoe.mirai.contact.announcement.Announcement.Companion.publishAnnouncement
+import net.mamoe.mirai.contact.announcement.OfflineAnnouncement
 
 /**
  * 禁言所有人（需要相关权限）
@@ -62,6 +64,9 @@ internal suspend fun onQuit(dto: LongTargetDTO): StateCode {
     else StateCode.PermissionDenied
 }
 
+/**
+ * 精华消息
+ */
 internal suspend fun onSetEssence(essenceDTO: IntTargetDTO): StateCode {
     val source = essenceDTO.session.sourceCache[essenceDTO.target]
     return essenceDTO.session.bot.getGroup(source.target.id)?.run {
@@ -84,11 +89,11 @@ internal fun onGetGroupConfig(dto: LongTargetDTO): GroupDetailDTO {
 /**
  * 修改群设置（需要相关权限）
  */
-internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
+internal suspend fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
     val group = dto.session.bot.getGroupOrFail(dto.target)
     with(dto.config) {
         name?.let { group.name = it }
-        announcement?.let { group.settings.entranceAnnouncement = it }
+        announcement?.let { group.publishAnnouncement(it) }
         allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
         // TODO: 待core接口实现设置可改
         //    confessTalk?.let { group.settings.isConfessTalkEnabled = it }
@@ -115,5 +120,14 @@ internal fun onUpdateMemberInfo(dto: MemberInfoDTO): StateCode {
         name?.let { member.nameCard = it }
         specialTitle?.let { member.specialTitle = it }
     }
+    return StateCode.Success
+}
+
+/**
+ * 修改群员管理员权限
+ */
+internal suspend fun onModifyMemberAdmin(dto: ModifyAdminDTO): StateCode {
+    val member = dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId)
+    member.modifyAdmin(dto.assign)
     return StateCode.Success
 }
