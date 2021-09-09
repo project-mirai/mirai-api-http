@@ -15,6 +15,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.RemoteFileDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
+import net.mamoe.mirai.api.http.util.merge
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.RemoteFile
@@ -26,10 +27,13 @@ internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
         .stream().skip(dto.offset).limit(dto.size)
         .toList()
         .map {
-            val downloadInfo = if (dto.withDownloadInfo) {
-                it.getDownloadInfo()
-            } else { null }
-            RemoteFileDTO(it, it.isFile(), it.length(), downloadInfo)
+            if (dto.withDownloadInfo) {
+                merge(it::getDownloadInfo, it::getInfo) { downloadInfo, fileInfo ->
+                    RemoteFileDTO(it, it.isFile(), it.length(), downloadInfo, fileInfo)
+                }
+            } else {
+                RemoteFileDTO(it, it.isFile(), it.length())
+            }
         }
 
     return RemoteFileList(data = data)
@@ -37,13 +41,13 @@ internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
 
 internal suspend fun onGetFileInfo(dto: FileInfoDTO): ElementResult {
     val remoteFile = dto.getResolveFile()
-    val downloadInfo = if (dto.withDownloadInfo) {
-        remoteFile.getDownloadInfo()
-    } else { null }
+    val data = if (dto.withDownloadInfo) {
+        merge(remoteFile::getDownloadInfo, remoteFile::getInfo) { downloadInfo, fileInfo ->
+            RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length(), downloadInfo, fileInfo)
+        }
+    } else { RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length()) }
 
-    return ElementResult(
-        RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length(), downloadInfo).toJsonElement()
-    )
+    return ElementResult(data.toJsonElement())
 }
 
 internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {

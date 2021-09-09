@@ -29,12 +29,12 @@ internal data class RemoteFileDTO(
     val size: Long,
     val downloadInfo: DownloadInfoDTO? = null,
 ) : DTO {
-    constructor(remoteFile: RemoteFile, isFile: Boolean, size: Long, downloadInfo: RemoteFile.DownloadInfo? = null) : this(
+    constructor(remoteFile: RemoteFile, isFile: Boolean, size: Long, downloadInfo: RemoteFile.DownloadInfo? = null, fileInfo: RemoteFile.FileInfo? = null) : this(
         remoteFile.name,
         remoteFile.id,
         remoteFile.path,
         // 父级为目录，没有下载信息
-        remoteFile.parent?.let { RemoteFileDTO(it, false, 0, null) },
+        remoteFile.parent?.let { RemoteFileDTO(it, false, 0, null, null) },
         when (remoteFile.contact) {
             is Group -> GroupDTO(remoteFile.contact as Group)
             else -> throw IllegalStateException("unsupported remote file type")
@@ -43,11 +43,15 @@ internal data class RemoteFileDTO(
         !isFile,
         !isFile,
         size,
-        downloadInfo?.let { info ->
+        fileInfo?.let { info ->
             DownloadInfoDTO(
                 info.sha1.toHexString(),
                 info.md5.toHexString(),
-                info.url,
+                info.downloadTimes,
+                info.uploaderId,
+                info.uploadTime,
+                info.lastModifyTime,
+                downloadInfo?.url ?: ""
             )
         },
     )
@@ -74,5 +78,9 @@ internal data class RemoteFileDTO(
 internal data class DownloadInfoDTO(
     val sha1: String,
     val md5: String,
+    val downloadTimes: Int,
+    val uploaderId: Long,
+    val uploadTime: Long,
+    val lastModifyTime: Long,
     val url: String,
 ) : DTO
