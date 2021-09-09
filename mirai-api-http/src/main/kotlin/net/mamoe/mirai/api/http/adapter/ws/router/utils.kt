@@ -16,6 +16,8 @@ import io.ktor.websocket.*
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.AuthedSession
@@ -83,7 +85,9 @@ internal inline fun Route.miraiWebsocket(
 }
 
 internal suspend fun DefaultWebSocketServerSession.closeWithCode(code: StateCode) {
-    outgoing.send(Frame.Text(code.toJson()))
+    outgoing.send(Frame.Text(
+        WsOutgoing(syncId = "", code.toJsonElement()).toJson()
+    ))
     close(CloseReason(CloseReason.Codes.NORMAL, code.msg))
 }
 
