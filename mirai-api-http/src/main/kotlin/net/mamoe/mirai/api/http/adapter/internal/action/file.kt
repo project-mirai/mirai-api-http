@@ -82,7 +82,8 @@ internal suspend fun onDeleteFile(dto: FileTargetDTO): StateCode {
 internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
     val contact = dto.session.bot.getFileSupported(dto)
 
-    val moveTo = contact.filesRoot.resolveById(dto.moveTo)
+    val moveTo = dto.moveToPath?.let(contact.filesRoot::resolve)
+        ?: contact.filesRoot.resolveById(dto.moveTo)
         ?: throw NoSuchElementException()
 
     val succeed = contact.filesRoot.resolveById(dto.id)
@@ -116,7 +117,10 @@ internal fun Bot.getFileSupported(dto: AbstractFileTargetDTO): FileSupported = w
 
 private suspend fun AbstractFileTargetDTO.getResolveFile(): RemoteFile =
     session.bot.getFileSupported(this).filesRoot.let {
-        if (id.isEmpty()) {
+        if (path != null) {
+            // stupid cast
+            it.resolve(path!!)
+        } else if (id.isEmpty()) {
             it
         } else {
             it.resolveById(id)

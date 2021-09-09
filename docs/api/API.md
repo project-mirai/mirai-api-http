@@ -52,7 +52,7 @@
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请（Bot需要有管理员权限）)
   + [Bot被邀请入群申请](#Bot被邀请入群申请)
-+ **[命令(Console Command)](#命令console-command)**
++ **[命令(Console Command)](# 命令(Console Command))**
   + [执行命令](#执行命令)
   + [注册命令](#注册命令)
   + [命令接收](#命令接收)
@@ -489,6 +489,7 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null,
@@ -502,6 +503,7 @@
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
 | id           | String | false | ""          | 文件夹id, 空串为根目录            |
+| path         | String | true  | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
@@ -563,6 +565,7 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null,
@@ -573,7 +576,8 @@
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
-| id           | String | false | ""          | 文件id                          |
+| id           | String | false | ""          | 文件id,空串为根目录               |
+| path         | String | true  | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
@@ -631,6 +635,7 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null,
@@ -641,7 +646,8 @@
 | 名字         | 类型   | 可选  | 举例        | 说明                             |
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
-| id           | String | false | ""          | 父目录id                          |
+| id           | String | false | ""          | 父目录id,空串为根目录             |
+| path         | String | true  | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
@@ -682,6 +688,7 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null
@@ -692,6 +699,7 @@
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
 | id           | String | false | ""          | 删除文件id                       |
+| path         | String | true  | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
@@ -713,10 +721,12 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null,
-  "moveTo": "/23fff2-3fwe-ga12eds"
+  "moveTo": "/23fff2-3fwe-ga12eds",
+  "moveToPath": null
 }
 ```
 
@@ -724,10 +734,12 @@
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
 | id           | String | false | ""          | 移动文件id                       |
+| path         | String | false | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
-| moveTo       | String | true  | "/23fff2-3fwe-ga12eds" | 移动目标文件夹id                 |
+| moveTo       | String | true  | "/23fff2-3fwe-ga12eds" | 移动目标文件夹id |
+| moveToPath   | String | true  | null | 移动目标文件路径, 文件夹允许重名, 不保证准确, 准确定位使用 moveTo |
 
 #### 响应:
 
@@ -746,6 +758,7 @@
 {
   "sessionKey":"YourSession",
   "id": "",
+  "path": null,
   "target":987654321,
   "group":null,
   "qq":null,
@@ -757,6 +770,7 @@
 | ------------ | ------ | ----- | ----------- | -------------------------------- |
 | sessionKey   | String | true  | YourSession | 已经激活的Session                |
 | id           | String | false | ""          | 重命名文件id                     |
+| path         | String | false | null        | 文件夹路径, 文件夹允许重名, 不保证准确, 准确定位使用 id |
 | target       | Long   | true  | 987654321   | 群号或好友QQ号                   |
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |

@@ -15,6 +15,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 @Serializable
 internal abstract class AbstractFileTargetDTO: AuthedDTO() {
     abstract val id: String
+    abstract val path: String?
     abstract val target: Long?
     abstract val group: Long?
     abstract val qq: Long?
@@ -23,6 +24,7 @@ internal abstract class AbstractFileTargetDTO: AuthedDTO() {
 @Serializable
 internal data class FileTargetDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
@@ -31,6 +33,7 @@ internal data class FileTargetDTO(
 @Serializable
 internal data class FileListDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
@@ -42,6 +45,7 @@ internal data class FileListDTO(
 @Serializable
 internal data class FileInfoDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
@@ -51,6 +55,7 @@ internal data class FileInfoDTO(
 @Serializable
 internal data class MkDirDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
@@ -60,6 +65,7 @@ internal data class MkDirDTO(
 @Serializable
 internal data class RenameFileDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
@@ -69,8 +75,10 @@ internal data class RenameFileDTO(
 @Serializable
 internal data class MoveFileDTO(
     override val id: String = "",
+    override val path: String? = null,
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
     val moveTo: String,
+    val moveToPath: String? = null,
 ) : AbstractFileTargetDTO()
