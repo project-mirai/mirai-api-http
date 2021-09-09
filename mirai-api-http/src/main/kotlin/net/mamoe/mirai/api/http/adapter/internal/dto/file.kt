@@ -11,7 +11,9 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.util.toHexString
+import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.data.FileMessage
 import net.mamoe.mirai.utils.RemoteFile
 
 @Serializable
@@ -48,6 +50,23 @@ internal data class RemoteFileDTO(
                 info.url,
             )
         },
+    )
+
+    // 通过 FileMessage 构建，避免文件上传后不能及时获取文件信息
+    constructor(fileMessage: FileMessage, parent: RemoteFile, contact: FileSupported, isFile: Boolean, size: Long) : this(
+        fileMessage.name,
+        fileMessage.id,
+        parent.resolve(fileMessage.name).path,
+        RemoteFileDTO(parent, false, 0, null),
+        when (contact) {
+            is Group -> GroupDTO(contact)
+            else -> throw IllegalStateException("unsupported remote file type")
+        },
+        isFile,
+        !isFile,
+        !isFile,
+        size,
+        null,
     )
 }
 
