@@ -48,6 +48,7 @@
   + [修改群设置](#修改群设置)
   + [获取群员资料](#获取群员设置)
   + [修改群员资料](#修改群员设置)
+  + [修改群员管理员](#修改群员管理员)
 + **[事件处理](#事件处理)**
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请（Bot需要有管理员权限）)
@@ -1108,6 +1109,41 @@
 | info              | false | Object  | {}               | 群员资料             |
 | name              | true  | String  | "Name"           | 群名片，即群昵称     |
 | specialTitle      | true  | String  | "Title"          | 群头衔               |
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+### 修改群员管理员
+
+使用此方法修改群员的管理员权限（需要有群主限权）
+
+```
+[POST] /memberAdmin
+```
+
+#### 请求:
+
+```json5
+{
+    "sessionKey": "YourSessionKey",
+    "target": 123456789,
+    "memberId": 987654321,
+    "assign": true
+}
+```
+
+| 名字              | 可选  | 类型    | 举例             | 说明                 |
+| ----------------- | ----- | ------- | ---------------- | -------------------- |
+| sessionKey        | true  | String  | "YourSessionKey" | 你的session key      |
+| target            | false | Long    | 123456789        | 指定群的群号         |
+| memberId          | false | Long    | 987654321        | 群员QQ号             |
+| assign            | false | Boolean | true             | 是否设置为管理员       |
 
 #### 响应: 返回统一状态码
 

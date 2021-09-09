@@ -251,7 +251,8 @@
     "id": 123456789,
     "name": "Miral Technology",
     "permission": "MEMBER"
-  }
+  },
+  invitor: null
 }
 ```
 
@@ -261,6 +262,7 @@
 | group.id         | Long   | 群号                                                         |
 | group.name       | String | 群名                                                         |
 | group.permission | String | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER（新加入群通常是Member） |
+| invitor          | Object | 如果被要求入群的话，则为邀请人的 Member 对象 |
 
 
 
@@ -273,7 +275,8 @@
     "id": 123456789,
     "name": "Miral Technology",
     "permission": "MEMBER"
-  }
+  },
+  operator: null
 }
 ```
 
@@ -283,6 +286,7 @@
 | group.id         | Long   | 群号                                                         |
 | group.name       | String | 群名                                                         |
 | group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
+| operator         | Object | Bot被踢后获取操作人的 Member 对象 |
 
 
 
@@ -673,7 +677,8 @@
       "name":"群名1",
       "permission":"MEMBER" // bot 在群中的权限
     }
-  }
+  },
+  invitor: null
 }
 ```
 
@@ -687,6 +692,7 @@
 | member.group.id         | Long   | 群号                                                         |
 | member.group.name       | String | 群名                                                         |
 | member.group.permission | String | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER                |
+| invitor                 | Object | 如果被要求入群的话，则为邀请人的 Member 对象 |
 
 
 
