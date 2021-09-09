@@ -29,7 +29,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is MessageRecallEvent.GroupRecall -> GroupRecallEventDTO(
         authorId,
         messageIds.firstOrNull() ?: 0,
-        messageTime.toLong() and 0xFFFF,
+        messageTime.toLong() and 0xFFFFFFFF,
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
