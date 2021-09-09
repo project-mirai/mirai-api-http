@@ -535,6 +535,10 @@
       "downloadInfo":{
         "sha1":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "md5":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "downloadTimes":10,
+        "uploaderId":123456789,
+        "uploadTime":1631153749,
+        "lastModifyTime":1631153749,
         "url":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       }
     }
@@ -606,6 +610,10 @@
     "downloadInfo":{
       "sha1":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "md5":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "downloadTimes":10,
+      "uploaderId":123456789,
+      "uploadTime":1631153749,
+      "lastModifyTime":1631153749,
       "url":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     }
   }
