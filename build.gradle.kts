@@ -2,10 +2,9 @@ buildscript {
 
     repositories {
         mavenLocal()
-        maven(url = "https://maven.aliyun.com/repository/public")
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
         mavenCentral()
-        jcenter()
+        gradlePluginPortal()
+        google()
     }
 
     val kotlinVersion: String by project.extra
@@ -21,9 +20,8 @@ allprojects {
 
     repositories {
         mavenLocal()
-        maven(url = "https://maven.aliyun.com/repository/public")
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
         mavenCentral()
-        jcenter()
+        gradlePluginPortal()
+        google()
     }
 }

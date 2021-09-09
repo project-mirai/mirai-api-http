@@ -57,12 +57,8 @@ mirai {
             excluded.any { it.matches(elm.path) }
         }
     }
-    publishing {
-        repo = "mirai"
-        packageName = "mirai-api-http"
-        override = true
-    }
 }
+
 tasks.create("buildCiJar", Jar::class) {
     dependsOn("buildPlugin")
     doLast {
@@ -74,6 +70,11 @@ tasks.create("buildCiJar", Jar::class) {
             buildPluginFile.copyTo(it, true)
         }
     }
+}
+
+mavenCentralPublish {
+    githubProject("project-mirai", "mirai-api-http")
+    licenseFromGitHubProject("licenseAgplv3", "master")
 }
 
 dependencies {
