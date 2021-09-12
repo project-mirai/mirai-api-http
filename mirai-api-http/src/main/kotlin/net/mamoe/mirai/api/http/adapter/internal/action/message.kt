@@ -16,6 +16,8 @@ import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.util.useStream
+import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.message.MessageReceipt
@@ -160,7 +162,7 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
         sendDTO.group != null -> bot.getGroupOrFail(sendDTO.group)
         else -> throw IllegalParamException("target、qq、group不可全为null")
     }
-    val ls = sendDTO.urls.map { url -> URL(url).openStream().use { stream -> stream.uploadAsImage(contact) } }
+    val ls = sendDTO.urls.map { url -> url.useUrl { contact.uploadImage(it) } }
     val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
 
     sendDTO.session.sourceCache.offer(receipt.source)
@@ -171,7 +173,7 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
  * 上传图片
  */
 internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, type: String): UploadImageRetDTO {
-    val image = stream.use {
+    val image = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
             "Friend", "friend",
@@ -190,12 +192,12 @@ internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, 
  */
 @OptIn(MiraiExperimentalApi::class)
 internal suspend fun onUploadVoice(session: AuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
-    val voice = stream.use {
+    val voice = stream.useStream {
         when (type) {
-            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it.toExternalResource())
+            "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it)
             "Friend", "friend",
             "Temp", "temp"
-            -> session.bot.friends.firstOrNull()?.uploadAudio(it.toExternalResource())
+            -> session.bot.friends.firstOrNull()?.uploadAudio(it)
             else -> null
         }
     }

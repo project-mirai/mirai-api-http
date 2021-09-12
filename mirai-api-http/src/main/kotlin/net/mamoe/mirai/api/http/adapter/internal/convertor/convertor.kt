@@ -13,9 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
-import net.mamoe.mirai.api.http.util.FaceMap
-import net.mamoe.mirai.api.http.util.PokeMap
+import net.mamoe.mirai.api.http.util.*
 import net.mamoe.mirai.api.http.util.toHexArray
+import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -106,15 +106,15 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
 private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
     !imageId.isNullOrBlank() -> Image(imageId!!)
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openExternalResource { it.uploadAsImage(contact) }
+        url!!.useUrl { it.uploadAsImage(contact) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
-            inputStream().use { it.uploadAsImage(contact) }
+            inputStream().useStream { it.uploadAsImage(contact) }
         } else throw NoSuchFileException(this)
     }
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
-        inputStream().use { it.uploadAsImage(contact) }
+        inputStream().useStream { it.uploadAsImage(contact) }
     }
     else -> null
 }
@@ -123,18 +123,15 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is AudioSupported -> null
     !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, AudioCodec.SILK, null)
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
-        url!!.openExternalResource { contact.uploadAudio(it) }
+        url!!.useUrl { contact.uploadAudio(it) }
     }
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
-            inputStream().toExternalResource().use { contact.uploadAudio(it) }
+            inputStream().useStream { contact.uploadAudio(it) }
         } else throw NoSuchFileException(this)
     }
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
-        inputStream().toExternalResource().use { contact.uploadAudio(it) }
+        inputStream().useStream { contact.uploadAudio(it) }
     }
     else -> null
 }
-
-private inline fun <R> String.openExternalResource(consumer: (ExternalResource) -> R)
-    = URL(this).openStream().toExternalResource().use { consumer(it) }

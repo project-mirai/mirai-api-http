@@ -16,7 +16,9 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.RemoteFileDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.util.merge
+import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.contact.FileSupported
+import net.mamoe.mirai.message.data.sendTo
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.RemoteFile
 import java.io.InputStream
@@ -64,9 +66,9 @@ internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: S
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
     val parent = contact.filesRoot.resolve(path)
-    val fileMessage = stream.toExternalResource().use {
+    val fileMessage = stream.useStream {
        parent.resolve(uploadFileName).upload(it)
-    }
+    }.apply { sendTo(contact) }
 
     return ElementResult(
         RemoteFileDTO(fileMessage, parent, contact, true, fileMessage.size).toJsonElement()
