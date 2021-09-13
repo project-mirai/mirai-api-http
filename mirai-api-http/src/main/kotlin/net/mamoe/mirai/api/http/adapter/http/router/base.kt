@@ -13,7 +13,9 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
-import net.mamoe.mirai.api.http.adapter.http.auth.Authorization
+import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization
+import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -30,6 +32,8 @@ fun Application.httpModule(adapter: HttpAdapter) {
     }
 
     install(Authorization)
+    install(HttpRouterAccessHandler) { enableAccessLog = MahContextHolder.mahContext.debug }
+
     authRouter()
     messageRouter()
     eventRouter()

@@ -60,9 +60,7 @@ class WebhookAdapter : MahAdapter("webhook") {
                 execute(botEvent, it)
             }
         }.onFailure {
-            if (MahContextHolder.mahContext.debug) {
-                log.error(it)
-            }
+            MahContextHolder.mahContext.debugLog.error(it)
         }
     }
 

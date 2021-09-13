@@ -16,16 +16,21 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
-import io.ktor.utils.io.*
-import io.ktor.utils.io.streams.*
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
-import net.mamoe.mirai.api.http.adapter.common.*
-import net.mamoe.mirai.api.http.adapter.http.auth.Authorization.headerSession
+import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
+import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
+import net.mamoe.mirai.api.http.adapter.common.NotVerifiedSessionException
+import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization.headerSession
+import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler.Feature.bodyContent
 import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
-import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
@@ -64,11 +69,7 @@ internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline 
 
 @ContextDsl
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
-    route(Paths.httpPath(path), method) {
-        handle {
-            handleException { blk(Unit) }?.also { call.respondStateCode(it) }
-        }
-    }
+    route(Paths.httpPath(path), method) { handle { blk(Unit) } }
 
 /**
  * Auth，处理http server的验证
@@ -178,17 +179,13 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(
  * 响应 Json 字符串
  */
 internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
-    respondText(json, defaultTextContentType(ContentType("application", "json")), status)
+    respondText(json, defaultTextContentType(ContentType.Application.Json), status)
 
 /**
  * 接收 http body 指定类型 [T] 的 [DTO]
  */
-internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
-    receiveChannel().readRemaining().use {
-        val charset = request.contentCharset() ?: Charsets.UTF_8
-        if (charset == Charsets.UTF_8) it.readText()
-        else it.inputStream().reader(charset).use { rd -> rd.readText() }
-    }.jsonParseOrNull()
+internal inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
+    bodyContent().jsonParseOrNull()
 
 /**
  * 接收 http multi part 值类型

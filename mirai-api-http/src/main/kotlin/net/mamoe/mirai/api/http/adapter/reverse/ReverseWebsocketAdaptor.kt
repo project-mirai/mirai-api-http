@@ -61,9 +61,7 @@ class ReverseWebsocketAdaptor : MahAdapter("reverse-ws") {
                     ).toJson()
                 )
             } catch (e: Exception) {
-                if (MahContextHolder.mahContext.debug) {
-                    log.error(e)
-                }
+                MahContextHolder.mahContext.debugLog.error(e)
             }
         }
     }

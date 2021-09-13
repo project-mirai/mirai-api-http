@@ -28,7 +28,7 @@ internal fun Application.aboutRouter() = routing {
     /**
      * 获取API-HTTP插件信息
      */
-    routeWithHandle(Paths.about, HttpMethod.Get) {
+    get(Paths.about) {
         val data = onAbout()
         call.respondDTO(StringMapRestfulResult(data = data))
     }

@@ -23,7 +23,7 @@ import net.mamoe.yamlkt.Yaml
  */
 abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
 
-    protected val log = MiraiLogger.create("$name adapter")
+    protected val log = MiraiLogger.Factory.create(this::class, "$name adapter")
 
     /**
      * 初始化

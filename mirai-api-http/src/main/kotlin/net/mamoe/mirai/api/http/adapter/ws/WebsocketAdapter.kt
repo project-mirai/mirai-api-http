@@ -67,9 +67,7 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
                     )
                 )
             } catch (e: Exception) {
-                if (MahContextHolder.mahContext.debug) {
-                    log.error(e)
-                }
+                MahContextHolder.mahContext.debugLog.error(e)
             }
         }
     }

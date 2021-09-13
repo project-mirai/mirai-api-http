@@ -10,12 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.handler
 
 import net.mamoe.mirai.api.http.HttpApiPluginBase
-import net.mamoe.mirai.api.http.adapter.common.IllegalAccessException
-import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
-import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
-import net.mamoe.mirai.api.http.adapter.common.NotVerifiedSessionException
-import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.context.MahContextHolder
+import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
 import net.mamoe.mirai.contact.PermissionDeniedException
@@ -49,8 +44,5 @@ internal suspend inline fun handleException(
 } catch (e: IllegalAccessException) { // 错误访问
     StateCode.IllegalAccess(e.message)
 } catch (e: Throwable) {
-    if (!MahContextHolder.mahContext.localMode) {
-        HttpApiPluginBase.logger.error(e)
-    }
-    StateCode.InternalError(e.localizedMessage ?: "")
+    StateCode.InternalError(e.localizedMessage ?: "", e)
 }

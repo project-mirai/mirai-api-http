@@ -14,7 +14,6 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import net.mamoe.mirai.utils.MiraiLogger
-import org.slf4j.LoggerFactory
 import org.slf4j.helpers.NOPLogger
 
 /**
@@ -42,7 +41,7 @@ abstract class MahKtorAdapter(name: String) : MahAdapter(name) {
                 val serverName = conf.bindingAdapters
                     .joinToString(prefix = "MahKtorAdapter[", separator = ",", postfix = "]") { it.name }
 
-                val coroutineLogger = MiraiLogger.create(serverName)
+                val coroutineLogger = MiraiLogger.Factory.create(this::class, serverName)
 
                 parentCoroutineContext = CoroutineExceptionHandler { _, throwable ->
                     coroutineLogger.error(throwable)

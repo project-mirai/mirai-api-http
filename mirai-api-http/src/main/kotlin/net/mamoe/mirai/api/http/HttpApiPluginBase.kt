@@ -49,6 +49,7 @@ object HttpApiPluginBase : KotlinPlugin(
                 sessionManager = DefaultSessionManager(verifyKey)
                 enableVerify = this@with.enableVerify
                 singleMode = this@with.singleMode
+                debug = this@with.debug
                 localMode = false
 
                 parseAdapter(this@with.adapters).forEach(this::plusAssign)

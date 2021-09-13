@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.serializer
 
 import kotlinx.serialization.json.JsonElement
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 
 /**
@@ -45,6 +46,8 @@ internal inline fun <reified T : Any> List<T>.toJsonElement(): JsonElement =
  */
 internal inline fun <reified T : Any> String.jsonParseOrNull(): T? = runCatching<T> {
     InternalSerializerHolder.serializer.decode(this)
+}.onFailure {
+    MahContextHolder.mahContext.debugLog.error(it)
 }.getOrNull()
 
 
@@ -53,4 +56,6 @@ internal inline fun <reified T : Any> String.jsonParseOrNull(): T? = runCatching
  */
 internal inline fun <reified T : Any> JsonElement.jsonElementParseOrNull(): T? = runCatching<T> {
     InternalSerializerHolder.serializer.decode(this)
+}.onFailure {
+    MahContextHolder.mahContext.debugLog.error(it)
 }.getOrNull()

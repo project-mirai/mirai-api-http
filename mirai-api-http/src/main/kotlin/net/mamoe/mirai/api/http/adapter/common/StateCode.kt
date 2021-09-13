@@ -47,8 +47,11 @@ open class StateCode(val code: Int, var msg: String) : DTO {
      * 内部错误
      */
     class InternalError() : StateCode(500, "") {
-        constructor(msg: String) : this() {
+        var throwable: Throwable? = null
+
+        constructor(msg: String, throwable: Throwable) : this() {
             this.msg = msg
+            this.throwable = throwable
         }
     }
 }

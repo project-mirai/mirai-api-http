@@ -7,7 +7,7 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.http.auth
+package net.mamoe.mirai.api.http.adapter.http.feature.auth
 
 import io.ktor.application.*
 import io.ktor.request.*

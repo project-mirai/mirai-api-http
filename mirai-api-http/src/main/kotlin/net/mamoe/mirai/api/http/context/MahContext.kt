@@ -48,7 +48,7 @@ open class MahContext internal constructor() {
     /**
      * 全局消息缓存
      */
-    val  cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
+    val cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
 
     /**
      * debug 模式，开启后会显示更多的 debug 日志
@@ -80,6 +80,11 @@ open class MahContext internal constructor() {
     operator fun plusAssign(adapter: MahAdapter) {
         adapters.add(adapter)
     }
+
+    /**
+     * 调试日志
+     */
+    val debugLog by lazy { MiraiLogger.Factory.create(this::class, "Mah Debug").withSwitch(debug) }
 }
 
 
@@ -146,8 +151,4 @@ object MahContextHolder {
     }
 
     val sessionManager get() = mahContext.sessionManager
-
-    val debugLogger: MiraiLogger by lazy {
-        MiraiLogger.create("MAH_DEBUG").withSwitch(mahContext.debug)
-    }
 }

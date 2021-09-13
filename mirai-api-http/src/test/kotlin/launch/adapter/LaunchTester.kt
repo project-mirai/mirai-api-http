@@ -44,6 +44,7 @@ abstract class LaunchTester {
                 enableVerify = false
                 singleMode = true
                 localMode = true
+                debug = true
 
                 for (adapter in adapters) {
                     MahAdapterFactory.build(adapter)?.let(this::plusAssign)
