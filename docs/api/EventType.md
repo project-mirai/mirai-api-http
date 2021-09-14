@@ -275,8 +275,7 @@
     "id": 123456789,
     "name": "Miral Technology",
     "permission": "MEMBER"
-  },
-  operator: null
+  }
 }
 ```
 
@@ -286,7 +285,6 @@
 | group.id         | Long   | 群号                                                         |
 | group.name       | String | 群名                                                         |
 | group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
-| operator         | Object | Bot被踢后获取操作人的 Member 对象 |
 
 
 
@@ -299,7 +297,8 @@
     "id": 123456789,
     "name": "Miral Technology",
     "permission": "MEMBER"
-  }
+  },
+  operator: null
 }
 ```
 
@@ -309,6 +308,7 @@
 | group.id         | Long   | 群号                                                         |
 | group.name       | String | 群名                                                         |
 | group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
+| operator         | Object | Bot被踢后获取操作人的 Member 对象 |
 
 
 
