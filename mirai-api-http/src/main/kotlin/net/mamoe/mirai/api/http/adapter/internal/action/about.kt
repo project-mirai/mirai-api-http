@@ -30,5 +30,5 @@ internal fun onAbout(): Map<String, String> {
  * 获取 session 信息
  */
 internal fun onGetSessionInfo(dto: EmptyAuthedDTO): SessionDTO {
-    return SessionDTO(dto.sessionKey, QQDTO(dto.session.bot.asFriend))
+    return SessionDTO(dto.session.key, QQDTO(dto.session.bot.asFriend))
 }

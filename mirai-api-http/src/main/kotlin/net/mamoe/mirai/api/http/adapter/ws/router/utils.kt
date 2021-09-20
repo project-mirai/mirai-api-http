@@ -42,7 +42,7 @@ internal inline fun Route.miraiWebsocket(
 
         // single 模式
         if (MahContextHolder.mahContext.singleMode) {
-            body(MahContextHolder[MahContext.SINGLE_SESSION_KEY] as AuthedSession)
+            body(MahContextHolder.mahContext.createSingleSession(true) as AuthedSession)
             return@webSocket
         }
 
@@ -62,7 +62,7 @@ internal inline fun Route.miraiWebsocket(
             return@webSocket
         }
 
-        // 非 single 模式校验 session key
+        // 非 single 模式校验已有 session
         if (sessionKey == null) {
             closeWithCode(StateCode.InvalidParameter)
             return@webSocket

@@ -26,15 +26,20 @@ internal fun Application.authRouter() = routing {
      * 进行认证
      */
     httpVerify("/verify") {
-        if (!MahContextHolder.mahContext.enableVerify) {
-            call.respondStateCode(StateCode.NoOperateSupport)
+        if (!MahContextHolder.mahContext.enableVerify
+            || it.verifyKey == MahContextHolder.mahContext.sessionManager.verifyKey
+        ) {
+            val session = if (MahContextHolder.mahContext.singleMode) {
+                MahContextHolder.mahContext.createSingleSession(verified = true)
+            } else {
+                MahContextHolder.sessionManager.createTempSession()
+            }
+
+            call.respondDTO(VerifyRetDTO(0, session.key))
             return@httpVerify
         }
-        if (it.verifyKey != MahContextHolder.mahContext.sessionManager.verifyKey) {
-            call.respondStateCode(StateCode.AuthKeyFail)
-        } else {
-            call.respondDTO(VerifyRetDTO(0, MahContextHolder.sessionManager.createTempSession().key))
-        }
+
+        call.respondStateCode(StateCode.AuthKeyFail)
     }
 
     /**
@@ -46,12 +51,8 @@ internal fun Application.authRouter() = routing {
             return@httpBind
         }
         val session = MahContextHolder[it.sessionKey] ?: kotlin.run {
-            if (MahContextHolder.mahContext.enableVerify) {
-                call.respondStateCode(StateCode.IllegalSession)
-                return@httpBind
-            } else {
-                null
-            }
+            call.respondStateCode(StateCode.IllegalSession)
+            return@httpBind
         }
 
         if (session !is AuthedSession) {

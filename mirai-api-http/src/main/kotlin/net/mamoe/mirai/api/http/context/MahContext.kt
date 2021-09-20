@@ -15,8 +15,8 @@ import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
 import net.mamoe.mirai.api.http.context.session.Session
+import net.mamoe.mirai.api.http.context.session.TempSession
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.Listener
@@ -75,16 +75,49 @@ open class MahContext internal constructor() {
     var singleMode = false
 
     /**
+     * 调试日志
+     */
+    val debugLog by lazy { MiraiLogger.Factory.create(this::class, "Mah Debug").withSwitch(debug) }
+
+    /**
      * 添加一个 adapter
      */
     operator fun plusAssign(adapter: MahAdapter) {
         adapters.add(adapter)
     }
 
-    /**
-     * 调试日志
-     */
-    val debugLog by lazy { MiraiLogger.Factory.create(this::class, "Mah Debug").withSwitch(debug) }
+    // 生成 SingleMode Session
+    fun createSingleSession(verified: Boolean = false): Session {
+        var session = sessionManager[SINGLE_SESSION_KEY]
+
+        // double check lock
+        if (session == null) {
+            synchronized(this) {
+                if (session == null) {
+                    val singleTempSession = TempSession(SINGLE_SESSION_KEY, EmptyCoroutineContext)
+                    sessionManager[SINGLE_SESSION_KEY] = singleTempSession
+                    session = singleTempSession
+                }
+            }
+        }
+
+        val autoVerify = !enableVerify
+        if (verified || autoVerify){
+            session = authSingleSession()
+        }
+
+        return session!!
+    }
+
+    private fun authSingleSession(): AuthedSession {
+        val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
+        val session = sessionManager[SINGLE_SESSION_KEY]
+        if (session is TempSession) {
+            sessionManager.authSession(bot, session)
+            MahContextHolder.listen(bot, SINGLE_SESSION_KEY)
+        }
+        return sessionManager[SINGLE_SESSION_KEY] as AuthedSession
+    }
 }
 
 
@@ -97,21 +130,8 @@ object MahContextHolder {
 
     operator fun get(sessionKey: String): Session? {
         if (mahContext.singleMode) {
-            var session = sessionManager[MahContext.SINGLE_SESSION_KEY]
-
-            // double check lock
-            if (session == null) {
-                synchronized(MahContextHolder) {
-                    if (session == null) {
-                        val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
-                        val singleAuthedSession = SampleAuthedSession(bot, MahContext.SINGLE_SESSION_KEY, EmptyCoroutineContext)
-                        listen(bot, MahContext.SINGLE_SESSION_KEY)
-                        sessionManager[MahContext.SINGLE_SESSION_KEY] = singleAuthedSession
-                        session =  singleAuthedSession
-                    }
-                }
-            }
-            return session
+            return sessionManager[MahContext.SINGLE_SESSION_KEY]
+                ?: mahContext.createSingleSession()
         }
 
         return sessionManager[sessionKey]
