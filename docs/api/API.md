@@ -509,8 +509,8 @@
 | group        | Long   | true  | 987654321   | 群号                            |
 | qq           | Long   | true  | 987654321   | 好友QQ号                        |
 | withDownloadInfo | Boolean | true  | true   | 是否携带下载信息，额外请求，无必要不要携带 |
-| offset | Long | true  | true   | 分页偏移 |
-| size | Long | true  | true   | 分页大小 |
+| offset | Long | true  | 1   | 分页偏移 |
+| size | Long | true  | 10   | 分页大小 |
 
 #### 响应:
 
