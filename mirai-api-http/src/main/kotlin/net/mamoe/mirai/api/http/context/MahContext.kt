@@ -140,10 +140,15 @@ object MahContextHolder {
     fun newCache(qq: Long): MessageSourceCache {
         var cache = mahContext.cacheMap[qq]
         if (cache == null) {
-            cache = MessageSourceCache(MainSetting.cacheSize)
-            mahContext.cacheMap[qq] = cache
+            synchronized(this) {
+                if (cache == null) {
+                    cache = MessageSourceCache(MainSetting.cacheSize)
+                    mahContext.cacheMap[qq] = cache!!
+                }
+            }
         }
-        return cache
+
+        return cache!!
     }
 
     fun listen(bot: Bot, sessionKey: String) {
