@@ -11,12 +11,14 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.command.CommandExecutedEvent
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.utils.MiraiExperimentalApi
+import net.mamoe.mirai.utils.debug
 
 // TODO: 切换为 跳表 或利用函数重载去掉冗长的 when 语句
 @OptIn(MiraiExperimentalApi::class)
@@ -124,5 +126,10 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         member = if (sender.user != null && sender.user is Member) { MemberDTO(sender.user as Member) } else { null },
         args = args.toDTO { it != UnknownMessageDTO }
     )
-    else -> IgnoreEventDTO
+    else -> {
+        if(MahContextHolder.mahContext.debug) {
+            MahContextHolder.mahContext.debugLog.debug { "Unknown event: ${this.javaClass.simpleName}" }
+        }
+        IgnoreEventDTO
+    }
 }
