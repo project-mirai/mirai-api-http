@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.adapter.reverse
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.reverse.client.WsClient
@@ -52,14 +53,14 @@ class ReverseWebsocketAdaptor : MahAdapter("reverse-ws") {
     }
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: AuthedSession) {
+        val data = event.toDTO()
+            .takeUnless { it == IgnoreEventDTO }
+            ?.toJsonElement()
+            ?: return
+
         clients.filter { it.bindingSessionKey == session.key }.forEach {
             try {
-                it.send(
-                    WsOutgoing(
-                        syncId = setting.reservedSyncId,
-                        data = event.toDTO().toJsonElement(),
-                    ).toJson()
-                )
+                it.send(WsOutgoing(setting.reservedSyncId, data).toJson())
             } catch (e: Exception) {
                 MahContextHolder.mahContext.debugLog.error(e)
             }

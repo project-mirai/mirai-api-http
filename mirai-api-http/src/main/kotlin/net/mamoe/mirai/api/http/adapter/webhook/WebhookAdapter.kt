@@ -10,8 +10,10 @@
 package net.mamoe.mirai.api.http.adapter.webhook
 
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
@@ -21,6 +23,7 @@ import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.event.events.MessageEvent
 
 class WebhookAdapter : MahAdapter("webhook") {
 
@@ -43,8 +46,16 @@ class WebhookAdapter : MahAdapter("webhook") {
         log.info(">>> [webhook adapter] is attaching destinations $arr")
 
         botEventListener = GlobalEventChannel.subscribeAlways {
+            val data = toDTO().takeUnless { it == IgnoreEventDTO }
+                ?.toJson()
+                ?: return@subscribeAlways
+
             setting.destinations.forEach {
-                bot.launch { hook(it, this@subscribeAlways) }
+                if (this is MessageEvent) {
+                    MahContextHolder.newCache(bot.id).offer(source)
+                }
+
+                bot.launch { hook(it, data, bot) }
             }
         }
     }
@@ -53,11 +64,11 @@ class WebhookAdapter : MahAdapter("webhook") {
         botEventListener?.complete()
     }
 
-    private suspend fun hook(destination: String, botEvent: BotEvent) {
+    private suspend fun hook(destination: String, data: String, bot: Bot) {
         kotlin.runCatching {
-            val resp = client.post(destination, botEvent.toDTO().toJson(), botId = botEvent.bot.id)
+            val resp = client.post(destination, data, bot.id)
             resp.jsonParseOrNull<WebhookPacket>()?.let {
-                execute(botEvent, it)
+                execute(bot, it)
             }
         }.onFailure {
             MahContextHolder.mahContext.debugLog.error(it)

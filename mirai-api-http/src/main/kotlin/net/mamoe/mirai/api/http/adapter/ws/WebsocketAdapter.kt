@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
@@ -56,16 +57,14 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
     }
 
     private suspend fun offerChannel(event: BotEvent, channel: Map<String, SendChannel<Frame>>) {
+        val data = event.toDTO()
+            .takeUnless { it == IgnoreEventDTO }
+            ?.toJsonElement()
+            ?: return
+
         for (sendChannel in channel.values) {
             try {
-                sendChannel.send(
-                    Frame.Text(
-                        WsOutgoing(
-                            syncId = setting.reservedSyncId,
-                            data = event.toDTO().toJsonElement(),
-                        ).toJson()
-                    )
-                )
+                sendChannel.send(Frame.Text(WsOutgoing(setting.reservedSyncId, data).toJson()))
             } catch (e: Exception) {
                 MahContextHolder.mahContext.debugLog.error(e)
             }

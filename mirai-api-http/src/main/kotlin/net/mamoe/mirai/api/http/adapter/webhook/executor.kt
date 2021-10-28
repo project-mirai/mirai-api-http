@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.webhook
 
 import kotlinx.serialization.json.JsonElement
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
@@ -17,66 +18,61 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
 import net.mamoe.mirai.api.http.context.session.OneTimeAuthedSession
-import net.mamoe.mirai.event.events.BotEvent
-import net.mamoe.mirai.event.events.MessageEvent
 
-internal suspend fun execute(event: BotEvent, packet: WebhookPacket) {
+internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
     val element = packet.content
     when (packet.command) {
 
         // about
-        Paths.about -> execute(event, element, ::onGetSessionInfo)
+        Paths.about -> execute(bot, element, ::onGetSessionInfo)
 
         // event
-        Paths.newFriend -> execute(event, element, ::onNewFriendRequestEvent)
-        Paths.memberJoin -> execute(event, element, ::onMemberJoinRequestEvent)
-        Paths.botInvited -> execute(event, element, ::onBotInvitedJoinGroupRequestEvent)
+        Paths.newFriend -> execute(bot, element, ::onNewFriendRequestEvent)
+        Paths.memberJoin -> execute(bot, element, ::onMemberJoinRequestEvent)
+        Paths.botInvited -> execute(bot, element, ::onBotInvitedJoinGroupRequestEvent)
 
 
         // friend
-        Paths.deleteFriend -> execute(event, element, ::onDeleteFriend)
+        Paths.deleteFriend -> execute(bot, element, ::onDeleteFriend)
 
 
         // group
-        Paths.muteAll -> execute(event, element, ::onMuteAll)
-        Paths.unmuteAll -> execute(event, element, ::onUnmuteAll)
-        Paths.mute -> execute(event, element, ::onMute)
-        Paths.unmute -> execute(event, element, ::onUnmute)
-        Paths.kick -> execute(event, element, ::onKick)
-        Paths.quit -> execute(event, element, ::onQuit)
-        Paths.essence -> execute(event, element, ::onSetEssence)
-        Paths.groupConfig -> execute(event, element, ::onUpdateGroupConfig)
-        Paths.memberInfo -> execute(event, element, ::onUpdateMemberInfo)
-        Paths.memberAdmin -> execute(event, element, ::onModifyMemberAdmin)
+        Paths.muteAll -> execute(bot, element, ::onMuteAll)
+        Paths.unmuteAll -> execute(bot, element, ::onUnmuteAll)
+        Paths.mute -> execute(bot, element, ::onMute)
+        Paths.unmute -> execute(bot, element, ::onUnmute)
+        Paths.kick -> execute(bot, element, ::onKick)
+        Paths.quit -> execute(bot, element, ::onQuit)
+        Paths.essence -> execute(bot, element, ::onSetEssence)
+        Paths.groupConfig -> execute(bot, element, ::onUpdateGroupConfig)
+        Paths.memberInfo -> execute(bot, element, ::onUpdateMemberInfo)
+        Paths.memberAdmin -> execute(bot, element, ::onModifyMemberAdmin)
 
 
         // message
-        Paths.sendFriendMessage -> execute(event, element, ::onSendFriendMessage)
-        Paths.sendGroupMessage -> execute(event, element, ::onSendGroupMessage)
-        Paths.sendTempMessage -> execute(event, element, ::onSendTempMessage)
-        Paths.sendOtherClientMessage -> execute(event, element, ::onSendOtherClientMessage)
-        Paths.sendImageMessage -> execute(event, element, ::onSendImageMessage)
-        Paths.recall -> execute(event, element, ::onRecall)
-        Paths.sendNudge -> execute(event, element, ::onNudge)
+        Paths.sendFriendMessage -> execute(bot, element, ::onSendFriendMessage)
+        Paths.sendGroupMessage -> execute(bot, element, ::onSendGroupMessage)
+        Paths.sendTempMessage -> execute(bot, element, ::onSendTempMessage)
+        Paths.sendOtherClientMessage -> execute(bot, element, ::onSendOtherClientMessage)
+        Paths.sendImageMessage -> execute(bot, element, ::onSendImageMessage)
+        Paths.recall -> execute(bot, element, ::onRecall)
+        Paths.sendNudge -> execute(bot, element, ::onNudge)
 
 
         // command
-        Paths.commandExecute -> execute(event, element, ::onExecuteCommand)
-        Paths.commandRegister -> execute(event, element, ::onRegisterCommand)
+        Paths.commandExecute -> execute(bot, element, ::onExecuteCommand)
+        Paths.commandRegister -> execute(bot, element, ::onRegisterCommand)
     }
 }
 
 private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
-    event: BotEvent,
+    bot: Bot,
     content: JsonElement?,
     crossinline action: suspend (T) -> R
 ) {
     val parameter = parseContent<T>(content)
-    parameter.session = OneTimeAuthedSession(event.bot)
-    // Fix #401
-    if (event is MessageEvent) {
-        parameter.session.sourceCache.offer(event.source)
-    }
+    parameter.session = OneTimeAuthedSession(bot)
+
     action(parameter)
 }
 
