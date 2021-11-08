@@ -15,21 +15,17 @@ import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import java.io.InputStream
-import java.net.URL
 
 /**
  * 从缓存中通过 id 获取缓存消息
@@ -172,7 +168,7 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
 /**
  * 上传图片
  */
-internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, type: String): UploadImageRetDTO {
+internal suspend fun onUploadImage(session: Session, stream: InputStream, type: String): UploadImageRetDTO {
     val image = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
@@ -191,7 +187,7 @@ internal suspend fun onUploadImage(session: AuthedSession, stream: InputStream, 
  * 上传语音
  */
 @OptIn(MiraiExperimentalApi::class)
-internal suspend fun onUploadVoice(session: AuthedSession, stream: InputStream, type: String): UploadVoiceRetDTO {
+internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: String): UploadVoiceRetDTO {
     val voice = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it)

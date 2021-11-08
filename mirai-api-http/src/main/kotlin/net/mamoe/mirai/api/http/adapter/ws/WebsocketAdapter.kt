@@ -20,7 +20,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import java.util.concurrent.ConcurrentHashMap
@@ -48,7 +48,7 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
         log.info(">>> [ws adapter] is listening at ws://${setting.host}:${setting.port}")
     }
 
-    override suspend fun onReceiveBotEvent(event: BotEvent, session: AuthedSession) {
+    override suspend fun onReceiveBotEvent(event: BotEvent, session: Session) {
         when (event) {
             is MessageEvent -> offerChannel(event, messageChannel.filter { it.key == session.key })
             else -> offerChannel(event, eventChannel.filter { it.key == session.key })
@@ -66,7 +66,7 @@ class WebsocketAdapter : MahKtorAdapter("ws") {
             try {
                 sendChannel.send(Frame.Text(WsOutgoing(setting.reservedSyncId, data).toJson()))
             } catch (e: Exception) {
-                MahContextHolder.mahContext.debugLog.error(e)
+                MahContextHolder.debugLog.error(e)
             }
         }
     }

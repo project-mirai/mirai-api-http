@@ -19,7 +19,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 
 /**
  * ktor websocket 模块加载
@@ -61,7 +61,7 @@ private fun Application.wsRouter(wsAdapter: WebsocketAdapter) = routing {
 
 private suspend fun DefaultWebSocketServerSession.handleChannel(
     channel: MutableMap<String, SendChannel<Frame>>,
-    session: AuthedSession
+    session: Session
 ) {
     channel[session.key]?.close()
     channel[session.key] = outgoing

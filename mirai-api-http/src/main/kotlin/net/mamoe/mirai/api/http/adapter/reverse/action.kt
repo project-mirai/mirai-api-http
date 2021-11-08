@@ -23,14 +23,12 @@ import net.mamoe.mirai.api.http.adapter.reverse.client.WsClient
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.handleWsAction
-import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.TempSession
+import net.mamoe.mirai.api.http.context.session.Session
 
 internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsClient) {
 
-    var session: AuthedSession? = null
+    var session: Session? = null
 
     for (frame in incoming) {
         val command = String(frame.data).jsonParseOrNull<WsIncoming>()
@@ -68,7 +66,7 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
     outgoing.close()
 }
 
-private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): AuthedSession? {
+private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): Session? {
     if (commandWrapper.command != "verify") {
         sendWithCode(StateCode.AuthKeyFail)
         return null
@@ -82,14 +80,14 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
     }
 
     // 校验
-    if (MahContextHolder.mahContext.enableVerify && MahContextHolder.sessionManager.verifyKey != dto.verifyKey) {
+    if (MahContextHolder.enableVerify && MahContextHolder.sessionManager.verifyKey != dto.verifyKey) {
         sendWithCode(StateCode.AuthKeyFail)
         return null
     }
 
     // single 模式
-    if (MahContextHolder.mahContext.singleMode) {
-        return MahContextHolder[MahContext.SINGLE_SESSION_KEY] as AuthedSession
+    if (MahContextHolder.singleMode) {
+        return MahContextHolder.createSingleSession(verified = true)
     }
 
     // 注册新 session
@@ -101,7 +99,7 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         }
 
         return with(MahContextHolder.sessionManager) {
-            authSession(bot, createTempSession())
+            createTempSession().also { authSession(bot, it.key) }
         }
     }
 
@@ -118,12 +116,12 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         return null
     }
 
-    if (session is TempSession) {
+    if (!session.isAuthed) {
         sendWithCode(StateCode.NotVerifySession)
         return null
     }
 
-    return session as AuthedSession
+    return session
 }
 
 internal suspend fun DefaultClientWebSocketSession.sendWithCode(code: StateCode) {

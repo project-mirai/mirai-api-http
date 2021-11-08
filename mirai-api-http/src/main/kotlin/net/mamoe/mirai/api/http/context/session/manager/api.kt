@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.context.session.manager
 
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.*
 
 /**
@@ -23,30 +24,19 @@ interface SessionManager {
      */
     val verifyKey: String
 
+    fun createOneTimeSession(bot: Bot): Session
+
     /**
      * 创建临时 session
      */
-    fun createTempSession(): TempSession
+    fun createTempSession(): Session
+
+    fun createTempSession(key: String): Session
 
     /**
      * 将临时 session 转为已认证(绑定) session
      */
-    fun authSession(bot: Bot, tempSessionKey: String): AuthedSession
-
-    /**
-     * 将临时 session 转为已认证(绑定) session
-     */
-    fun authSession(bot: Bot, tempSession: TempSession): AuthedSession
-
-    /**
-     * 临时 Session 转为自定义 AuthedSession
-     */
-    fun authSession(tempSessionKey: String, authedSession: AuthedSession): AuthedSession
-
-    /**
-     * 临时 Session 转为自定义 AuthedSession
-     */
-    fun authSession(tempSession: TempSession, authedSession: AuthedSession): AuthedSession
+    fun authSession(bot: Bot, tempSessionKey: String): Session
 
     operator fun get(key: String): Session?
 
@@ -54,9 +44,9 @@ interface SessionManager {
 
     fun closeSession(key: String)
 
-    fun closeSession(session: Session)
-
     fun close()
 
-    fun authedSessions(): List<AuthedSession>
+    fun authedSessions(): List<Session>
+
+    fun getCache(id: Long): MessageSourceCache
 }

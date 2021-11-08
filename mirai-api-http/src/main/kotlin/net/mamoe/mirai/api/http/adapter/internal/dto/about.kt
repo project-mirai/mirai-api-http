@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class AboutDTO(
     val version: String,
-)
+) : DTO
 
 @Serializable
 internal data class SessionDTO(

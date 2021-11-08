@@ -127,8 +127,8 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         args = args.toDTO { it != UnknownMessageDTO }
     )
     else -> {
-        if(MahContextHolder.mahContext.debug) {
-            MahContextHolder.mahContext.debugLog.debug { "Unknown event: ${this.javaClass.simpleName}" }
+        if(MahContextHolder.debug) {
+            MahContextHolder.debugLog.debug { "Unknown event: ${this.javaClass.simpleName}" }
         }
         IgnoreEventDTO
     }

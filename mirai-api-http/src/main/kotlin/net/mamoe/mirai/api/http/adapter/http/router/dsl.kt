@@ -24,20 +24,19 @@ import net.mamoe.mirai.api.http.adapter.common.NotVerifiedSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization.headerSession
 import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler.Feature.bodyContent
-import net.mamoe.mirai.api.http.adapter.http.session.HttpAuthedSession
+import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
+import net.mamoe.mirai.api.http.adapter.http.session.isHttpSession
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
-import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.TempSession
+import net.mamoe.mirai.api.http.context.session.Session
 
 /**
  * 处理策略
@@ -127,7 +126,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedGet(
 
 @ContextDsl
 internal inline fun Route.httpAuthedMultiPart(
-    path: String, crossinline body: Strategy2<HttpAuthedSession, List<PartData>>
+    path: String, crossinline body: Strategy2<Session, List<PartData>>
 ) = routeWithHandle(path, HttpMethod.Post) {
     val parts = call.receiveMultipart().readAllParts()
     val sessionKey = parts.valueOrNull("sessionKey") ?: MahContext.SINGLE_SESSION_KEY
@@ -142,22 +141,15 @@ internal inline fun Route.httpAuthedMultiPart(
 /**
  * 获取 session 并进行类型校验
  */
-private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): HttpAuthedSession {
-    return when (val session = headerSession ?: MahContextHolder[sessionKey]) {
-        is HttpAuthedSession -> session
-        is AuthedSession -> proxyAuthedSession(session)
-        is TempSession -> throw NotVerifiedSessionException
-        else -> throw IllegalSessionException
+private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): Session {
+    val session = headerSession ?: MahContextHolder[sessionKey]
+        ?: throw IllegalSessionException
+    return when {
+        session.isAuthed && session.isHttpSession() -> session
+        session.isAuthed -> session.asHttpSession()
+        else -> throw NotVerifiedSessionException
     }
 }
-
-/**
- * 置换全局 session 为代理对象
- */
-private fun proxyAuthedSession(authedSession: AuthedSession): HttpAuthedSession =
-    HttpAuthedSession(authedSession).also {
-        MahContextHolder.sessionManager[authedSession.key] = it
-    }
 
 /**
  * 响应 [StateCode]

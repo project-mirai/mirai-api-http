@@ -26,9 +26,9 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 
-internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, content: String) {
+internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content: String) {
     val commandWrapper = content.jsonParseOrNull<WsIncoming>()
         ?: run {
             send(Frame.Text(StateCode.InvalidParameter.toJson()))
@@ -135,7 +135,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: AuthedSession, c
 private val EMPTY_JSON_ELEMENT = buildJsonObject {}
 
 private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
-    session: AuthedSession,
+    session: Session,
     content: JsonElement?,
     crossinline action: suspend (T) -> R
 ): JsonElement {

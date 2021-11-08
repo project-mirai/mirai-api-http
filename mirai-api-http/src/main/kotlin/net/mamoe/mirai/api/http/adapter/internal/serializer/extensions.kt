@@ -47,7 +47,7 @@ internal inline fun <reified T : Any> List<T>.toJsonElement(): JsonElement =
 internal inline fun <reified T : Any> String.jsonParseOrNull(): T? = runCatching<T> {
     InternalSerializerHolder.serializer.decode(this)
 }.onFailure {
-    MahContextHolder.mahContext.debugLog.error(it)
+    MahContextHolder.debugLog.error(it)
 }.getOrNull()
 
 
@@ -57,5 +57,5 @@ internal inline fun <reified T : Any> String.jsonParseOrNull(): T? = runCatching
 internal inline fun <reified T : Any> JsonElement.jsonElementParseOrNull(): T? = runCatching<T> {
     InternalSerializerHolder.serializer.decode(this)
 }.onFailure {
-    MahContextHolder.mahContext.debugLog.error(it)
+    MahContextHolder.debugLog.error(it)
 }.getOrNull()

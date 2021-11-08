@@ -13,18 +13,27 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
-import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
-import net.mamoe.mirai.api.http.context.session.TempSession
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
-import net.mamoe.mirai.api.http.setting.MainSetting
-import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.utils.MiraiLogger
 import net.mamoe.mirai.utils.withSwitch
-import kotlin.coroutines.EmptyCoroutineContext
+
+/**
+ * 全局的 mah 上下文
+ */
+object MahContextHolder: MahContext() {
+
+    operator fun get(sessionKey: String): Session? {
+        if (singleMode) {
+            return sessionManager[SINGLE_SESSION_KEY] ?: createSingleSession()
+        }
+
+        return sessionManager[sessionKey]
+    }
+}
 
 /**
  * mah 上下文，一般情况只有一个示例
@@ -46,21 +55,9 @@ open class MahContext internal constructor() {
     lateinit var sessionManager: SessionManager
 
     /**
-     * 全局消息缓存
-     */
-    val cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
-
-    /**
      * debug 模式，开启后会显示更多的 debug 日志
      */
     var debug = false
-
-    /**
-     * 本地模式, 调试使用. 不引用 Console, 从内部启动 adapter 进行调试
-     *
-     * 因此, 需要保证 adapter 的实现不能与 console 耦合
-     */
-    var localMode = false
 
     /**
      * 认证模式, 创建连接是否需要开启认证
@@ -94,86 +91,41 @@ open class MahContext internal constructor() {
         if (session == null) {
             synchronized(this) {
                 if (session == null) {
-                    val singleTempSession = TempSession(SINGLE_SESSION_KEY, EmptyCoroutineContext)
-                    sessionManager[SINGLE_SESSION_KEY] = singleTempSession
-                    session = singleTempSession
+                    session = sessionManager.createTempSession(SINGLE_SESSION_KEY)
                 }
             }
         }
 
         val autoVerify = !enableVerify
-        if (verified || autoVerify){
+        if (!session!!.isAuthed && (verified || autoVerify)) {
             session = authSingleSession()
         }
 
         return session!!
     }
 
-    private fun authSingleSession(): AuthedSession {
+    private fun authSingleSession(): Session {
         val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
-        val session = sessionManager[SINGLE_SESSION_KEY]
-        if (session is TempSession) {
-            sessionManager.authSession(bot, session)
-            MahContextHolder.listen(bot, SINGLE_SESSION_KEY)
+        return authSession(bot, SINGLE_SESSION_KEY)
+    }
+
+    private fun authSession(bot: Bot, sessionKey: String): Session {
+        val session = sessionManager[sessionKey]
+        session?.putExtElement(ListenableSessionWrapper.botEventHandler, ::handleBotEvent)
+        return sessionManager.authSession(bot, sessionKey)
+    }
+
+    private fun handleBotEvent(session: Session, event: BotEvent) = adapters.forEach { adapter ->
+        session.launch {
+            if (event is MessageEvent) {
+                session.sourceCache.offer(event.source)
+            }
+            adapter.onReceiveBotEvent(event, session)
         }
-        return sessionManager[SINGLE_SESSION_KEY] as AuthedSession
     }
 }
 
 
 fun interface MahContextBuilder {
     operator fun MahContext.invoke()
-}
-
-object MahContextHolder {
-    lateinit var mahContext: MahContext
-
-    operator fun get(sessionKey: String): Session? {
-        if (mahContext.singleMode) {
-            return sessionManager[MahContext.SINGLE_SESSION_KEY]
-                ?: mahContext.createSingleSession()
-        }
-
-        return sessionManager[sessionKey]
-    }
-
-    fun newCache(qq: Long): MessageSourceCache {
-        var cache = mahContext.cacheMap[qq]
-        if (cache == null) {
-            synchronized(this) {
-                if (cache == null) {
-                    cache = MessageSourceCache(MainSetting.cacheSize)
-                    mahContext.cacheMap[qq] = cache!!
-                }
-            }
-        }
-
-        return cache!!
-    }
-
-    fun listen(bot: Bot, sessionKey: String) {
-        var listener: Listener<BotEvent>? = null
-        listener = bot.eventChannel.subscribeAlways {
-            // 传入 sessionKey 而非 session 保证 session 不被闭包保存而无法更新
-            val session = get(sessionKey)
-            if (session == null || session !is AuthedSession) {
-                listener?.complete()
-                return@subscribeAlways
-            }
-            broadcast(it, session)
-        }
-    }
-
-    private suspend fun broadcast(event: BotEvent, session: AuthedSession) {
-        mahContext.adapters.forEach {
-            session.launch {
-                if (event is MessageEvent) {
-                    session.sourceCache.offer(event.source)
-                }
-                it.onReceiveBotEvent(event, session)
-            }
-        }
-    }
-
-    val sessionManager get() = mahContext.sessionManager
 }

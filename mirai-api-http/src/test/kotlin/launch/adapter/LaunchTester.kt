@@ -43,7 +43,6 @@ abstract class LaunchTester {
                 sessionManager = DefaultSessionManager(verifyKey)
                 enableVerify = false
                 singleMode = true
-                localMode = true
                 debug = true
 
                 for (adapter in adapters) {
