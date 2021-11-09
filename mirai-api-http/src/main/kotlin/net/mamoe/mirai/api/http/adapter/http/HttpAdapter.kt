@@ -34,7 +34,7 @@ class HttpAdapter : MahKtorAdapter("http") {
     }
 
     override fun onEnable() {
-        log.info(">>> [http adapter] is listening at http://${setting.host}:${setting.port}")
+        log.info(">>> [http adapter] is listening at http://${host}:${port}")
     }
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: Session) {
