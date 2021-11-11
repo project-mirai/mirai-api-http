@@ -19,13 +19,12 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.Session
 
 
 @ContextDsl
 internal inline fun Route.miraiWebsocket(
     path: String,
-    crossinline body: suspend DefaultWebSocketServerSession.(Session) -> Unit
+    crossinline body: suspend DefaultWebSocketServerSession.(String) -> Unit
 ) {
     webSocket(path) {
         val verifyKey = call.request.headers["verifyKey"] ?: call.parameters["verifyKey"]
@@ -40,7 +39,7 @@ internal inline fun Route.miraiWebsocket(
 
         // single 模式
         if (MahContextHolder.singleMode) {
-            body(MahContextHolder.createSingleSession(verified = true))
+            body(MahContextHolder.createSingleSession(verified = true).key)
             return@webSocket
         }
 
@@ -56,7 +55,7 @@ internal inline fun Route.miraiWebsocket(
                 authSession(bot, createTempSession().key)
             }
 
-            body(session)
+            body(session.key)
             return@webSocket
         }
 
@@ -78,7 +77,8 @@ internal inline fun Route.miraiWebsocket(
             return@webSocket
         }
 
-        body(session)
+        session.ref()
+        body(session.key)
     }
 }
 

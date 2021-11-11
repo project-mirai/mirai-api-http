@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
-import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.event.events.BotEvent
@@ -106,16 +105,10 @@ open class MahContext internal constructor() {
 
     private fun authSingleSession(): Session {
         val bot = Bot.instances.firstOrNull() ?: throw NoSuchBotException
-        return authSession(bot, SINGLE_SESSION_KEY)
+        return sessionManager.authSession(bot, SINGLE_SESSION_KEY)
     }
 
-    private fun authSession(bot: Bot, sessionKey: String): Session {
-        val session = sessionManager[sessionKey]
-        session?.putExtElement(ListenableSessionWrapper.botEventHandler, ::handleBotEvent)
-        return sessionManager.authSession(bot, sessionKey)
-    }
-
-    private fun handleBotEvent(session: Session, event: BotEvent) = adapters.forEach { adapter ->
+    fun handleBotEvent(session: Session, event: BotEvent) = adapters.forEach { adapter ->
         session.launch {
             if (event is MessageEvent) {
                 session.sourceCache.offer(event.source)

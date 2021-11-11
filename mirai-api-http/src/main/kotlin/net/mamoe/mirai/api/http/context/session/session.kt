@@ -32,10 +32,13 @@ class StandardSession constructor(
     private lateinit var _bot: Bot
     private lateinit var _cache: MessageSourceCache
     private var _isAuthed = false
+    private var _closed = false
+    private var _closing = false
 
     override val bot: Bot get() = if (isAuthed) _bot else throw RuntimeException("Session is not authed")
     override val sourceCache: MessageSourceCache get() = if (isAuthed) _cache else throw RuntimeException("Session is not authed")
     override val isAuthed get() = _isAuthed
+    override val isClosed get() = _closed
 
     override fun authWith(bot: Bot, sourceCache: MessageSourceCache) {
         if(isAuthed) {
@@ -56,9 +59,17 @@ class StandardSession constructor(
     }
 
     override fun close() {
-        if (lifeCounter.decrementAndGet() <= 0) {
-            supervisorJob.complete()
+        if (_closing) {
+            return
         }
+
+        _closing = true
+        if (!isClosed && lifeCounter.decrementAndGet() <= 0) {
+            _closed = true
+            manager.closeSession(key)
+            supervisorJob.cancel()
+        }
+        _closing = false
     }
 }
 
@@ -94,7 +105,7 @@ class ListenableSessionWrapper(val session: Session) : Session by session {
      */
     override fun close() {
         session.close()
-        if (!session.isActive) {
+        if (session.isClosed) {
             getExtElement(expiredJob)?.cancel()
             getExtElement(listenerJob)?.cancel()
         }
@@ -149,6 +160,7 @@ interface Session : CoroutineScope {
     val manager: SessionManager
 
     val isAuthed: Boolean
+    val isClosed: Boolean
     val sourceCache: MessageSourceCache
 
     /**

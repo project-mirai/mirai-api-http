@@ -19,7 +19,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
-import net.mamoe.mirai.api.http.context.session.Session
+import net.mamoe.mirai.api.http.context.MahContextHolder
 
 /**
  * ktor websocket 模块加载
@@ -61,26 +61,28 @@ private fun Application.wsRouter(wsAdapter: WebsocketAdapter) = routing {
 
 private suspend fun DefaultWebSocketServerSession.handleChannel(
     channel: MutableMap<String, SendChannel<Frame>>,
-    session: Session
+    sessionKey: String
 ) {
-    channel[session.key]?.close()
-    channel[session.key] = outgoing
+    channel[sessionKey]?.close()
+    channel[sessionKey] = outgoing
 
     // touch respond
     outgoing.send(
         Frame.Text(
             WsOutgoing(
                 syncId = "",
-                data = VerifyRetDTO(0, session.key).toJsonElement()
+                data = VerifyRetDTO(0, sessionKey).toJsonElement()
             ).toJson()
         )
     )
 
     for (frame in incoming) {
+        val session = MahContextHolder[sessionKey] ?: break
         outgoing.handleWsAction(session, String(frame.data))
     }
 
-    channel.remove(session.key, outgoing)
+    channel.remove(sessionKey, outgoing)
+    MahContextHolder.sessionManager.closeSession(sessionKey)
     // ensure close
     outgoing.close()
 }

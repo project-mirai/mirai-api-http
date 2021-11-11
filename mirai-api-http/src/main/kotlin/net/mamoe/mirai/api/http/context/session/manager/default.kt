@@ -10,13 +10,14 @@
 package net.mamoe.mirai.api.http.context.session.manager
 
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.StandardSession
 import net.mamoe.mirai.api.http.setting.MainSetting
 
-class DefaultSessionManager(override val verifyKey: String) : SessionManager {
+class DefaultSessionManager(override val verifyKey: String, val context: MahContext) : SessionManager {
     private val sessionMap: MutableMap<String, Session> = mutableMapOf()
     private val cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
 
@@ -35,6 +36,11 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
 
     override fun authSession(bot: Bot, tempSessionKey: String): Session {
         val session = get(tempSessionKey) ?: throw NoSuchElementException()
+        if (session.isAuthed) {
+            return session
+        }
+        session.ref()
+        session.putExtElement(ListenableSessionWrapper.botEventHandler, context::handleBotEvent)
         session.authWith(bot, getCache(bot.id))
         return session
     }

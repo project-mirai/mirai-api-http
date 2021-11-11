@@ -47,7 +47,6 @@ class WebhookHeader(configuration: Configuration) {
 
         override fun install(feature: WebhookHeader, scope: HttpClient) {
             scope.requestPipeline.intercept(HttpRequestPipeline.State) {
-                println("State")
                 feature.intercept(context)
             }
         }

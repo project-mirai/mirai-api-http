@@ -40,7 +40,7 @@ abstract class LaunchTester {
 
             // 创建上下文启动 mah 插件
             MahPluginImpl.start {
-                sessionManager = DefaultSessionManager(verifyKey)
+                sessionManager = DefaultSessionManager(verifyKey, this)
                 enableVerify = false
                 singleMode = true
                 debug = true

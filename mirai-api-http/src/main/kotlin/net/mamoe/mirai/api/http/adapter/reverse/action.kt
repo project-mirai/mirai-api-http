@@ -28,27 +28,27 @@ import net.mamoe.mirai.api.http.context.session.Session
 
 internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsClient) {
 
-    var session: Session? = null
+    var sessionKey: String? = null
 
     for (frame in incoming) {
         val command = String(frame.data).jsonParseOrNull<WsIncoming>()
             ?: continue
 
-        session = kotlin.runCatching {
+        sessionKey = kotlin.runCatching {
 
-            handleVerify(command)
+            handleVerify(command)?.key
 
         }.onFailure {
             outgoing.send(Frame.Text(it.localizedMessage ?: ""))
         }.getOrNull()
 
-        if (session != null) {
-            client.bindingSessionKey = session.key
+        if (sessionKey != null) {
+            client.bindingSessionKey = sessionKey
             outgoing.send(
                 Frame.Text(
                     WsOutgoing(
                         syncId = command.syncId,
-                        data = VerifyRetDTO(0, session.key).toJsonElement()
+                        data = VerifyRetDTO(0, sessionKey).toJsonElement()
                     ).toJson()
                 )
             )
@@ -57,10 +57,13 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
         }
     }
 
-    checkNotNull(session)
+    if (sessionKey != null) {
+        for (frame in incoming) {
+            val session = MahContextHolder[sessionKey] ?: break
+            outgoing.handleWsAction(session, String(frame.data))
+        }
 
-    for (frame in incoming) {
-        outgoing.handleWsAction(session, String(frame.data))
+        MahContextHolder.sessionManager.closeSession(sessionKey)
     }
 
     outgoing.close()
@@ -99,7 +102,9 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         }
 
         return with(MahContextHolder.sessionManager) {
-            createTempSession().also { authSession(bot, it.key) }
+            createTempSession().also {
+                authSession(bot, it.key)
+            }
         }
     }
 
@@ -121,6 +126,7 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         return null
     }
 
+    session.ref()
     return session
 }
 
