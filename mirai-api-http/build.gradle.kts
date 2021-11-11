@@ -13,7 +13,7 @@ kotlin {
     sourceSets["test"].apply {
         dependencies {
             api("org.slf4j:slf4j-simple:1.7.26")
-            api(kotlin("test-junit"))
+            api(kotlin("test-junit5"))
         }
     }
 
@@ -70,6 +70,10 @@ tasks.create("buildCiJar", Jar::class) {
             buildPluginFile.copyTo(it, true)
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 mavenCentralPublish {
