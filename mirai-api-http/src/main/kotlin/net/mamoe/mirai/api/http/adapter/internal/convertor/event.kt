@@ -38,7 +38,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is MessageRecallEvent.FriendRecall -> FriendRecallEventDTO(
         authorId,
         messageIds.firstOrNull() ?: 0,
-        messageTime.toLong() and 0xFFFF,
+        messageTime.toLong() and 0xFFFFFFFF,
         operatorId
     )
     is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(origin, new, GroupDTO(group))
