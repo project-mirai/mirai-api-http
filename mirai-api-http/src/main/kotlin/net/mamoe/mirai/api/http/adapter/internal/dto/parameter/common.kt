@@ -68,3 +68,25 @@ internal class MemberList(
 internal class RemoteFileList(
     val data: List<RemoteFileDTO>
 ) : RestfulResult()
+
+
+// user profile
+
+@Serializable
+internal class UserProfile(
+    val data: ProfileDTO
+) : RestfulResult()
+
+// group config
+
+@Serializable
+internal class GroupDetail(
+    val data: GroupDetailDTO
+) : RestfulResult()
+
+// member info
+
+@Serializable
+internal class MemberDetail(
+    val data: MemberDTO
+) : RestfulResult()
