@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 object MahPluginImpl : CoroutineScope {
     private const val DEFAULT_LOGGER_NAME = "Mirai HTTP API"
 
-    var logger = MiraiLogger.create(DEFAULT_LOGGER_NAME)
+    var logger = MiraiLogger.Factory.create(MahPluginImpl::class, DEFAULT_LOGGER_NAME)
     override val coroutineContext: CoroutineContext =
         CoroutineExceptionHandler { _, throwable -> logger.error(throwable) }
 

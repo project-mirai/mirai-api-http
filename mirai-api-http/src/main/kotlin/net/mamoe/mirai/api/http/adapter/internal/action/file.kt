@@ -19,7 +19,6 @@ import net.mamoe.mirai.api.http.util.merge
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.message.data.sendTo
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.RemoteFile
 import java.io.InputStream
 import kotlin.streams.toList
@@ -89,7 +88,7 @@ internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
     val contact = dto.session.bot.getFileSupported(dto)
 
     val moveTo = dto.moveToPath?.let(contact.filesRoot::resolve)
-        ?: contact.filesRoot.resolveById(dto.moveTo)
+        ?: dto.moveTo?.let { contact.filesRoot.resolveById(it, deep = true) }
         ?: throw NoSuchElementException()
 
     val succeed = contact.filesRoot.resolveById(dto.id)

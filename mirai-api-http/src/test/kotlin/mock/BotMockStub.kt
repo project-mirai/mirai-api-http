@@ -43,25 +43,25 @@ class BotMockStub : Bot {
 
     @OptIn(MiraiInternalApi::class)
     override val friends: ContactList<Friend> by lazy {
-        ContactList(listOf(asFriend))
+        ContactList(mutableListOf(asFriend))
     }
 
     @OptIn(MiraiInternalApi::class)
     override val groups: ContactList<Group> by lazy {
-        ContactList(listOf(GroupMockStub(this)))
+        ContactList(mutableListOf(GroupMockStub(this)))
     }
 
     override val id: Long = ID
     override val isOnline: Boolean = true
-    override val logger: MiraiLogger = MiraiLogger.create("Mock bot")
+    override val logger: MiraiLogger = MiraiLogger.Factory.create(BotMockStub::class, "Mock bot")
     override val nick: String = NICK_NAME
 
     @OptIn(MiraiInternalApi::class)
-    override val otherClients: ContactList<OtherClient> = ContactList(listOf())
+    override val otherClients: ContactList<OtherClient> = ContactList(mutableListOf())
 
     @OptIn(MiraiInternalApi::class)
     override val strangers: ContactList<Stranger> by lazy {
-        ContactList(listOf(asStranger))
+        ContactList(mutableListOf(asStranger))
     }
 
     override fun close(cause: Throwable?) {}

@@ -26,12 +26,10 @@ class WebhookHeader(configuration: Configuration) {
 
     private fun appendBotHeader(builder: HttpRequestBuilder) {
         val botHeader = builder.attributes[webhookHeaderValue]
-        builder.headers {
-            append("qq", botHeader)
-            append("X-qq", botHeader)
-            append("bot", botHeader)
-            append("X-bot", botHeader)
-        }
+        builder.header("qq", botHeader)
+        builder.header("X-qq", botHeader)
+        builder.header("bot", botHeader)
+        builder.header("X-bot", botHeader)
     }
 
     class Configuration {

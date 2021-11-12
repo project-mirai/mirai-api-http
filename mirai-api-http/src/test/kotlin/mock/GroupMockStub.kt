@@ -15,6 +15,7 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.GroupSettings
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.contact.announcement.Announcements
+import net.mamoe.mirai.contact.file.RemoteFiles
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource
@@ -37,7 +38,7 @@ class GroupMockStub(
     override val owner: NormalMember = MemberMockStub(this)
 
     @OptIn(MiraiInternalApi::class)
-    override val members: ContactList<NormalMember> = ContactList(listOf(owner))
+    override val members: ContactList<NormalMember> = ContactList(mutableListOf(owner))
 
     override fun contains(id: Long): Boolean {
         return id == MemberMockStub.ID
@@ -80,6 +81,8 @@ class GroupMockStub(
     override val botAsMember: NormalMember
         get() = TODO("Not yet implemented")
     override val coroutineContext: CoroutineContext
+        get() = TODO("Not yet implemented")
+    override val files: RemoteFiles
         get() = TODO("Not yet implemented")
     override val filesRoot: RemoteFile
         get() = TODO("Not yet implemented")

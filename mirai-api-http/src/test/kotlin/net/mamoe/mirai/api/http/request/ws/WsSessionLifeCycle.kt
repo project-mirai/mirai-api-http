@@ -45,6 +45,9 @@ class WsSessionLifeCycle {
         val sessionKey = wsRet?.session
         assertNotNull(sessionKey)
 
+        // socket 由客户端主动断开, 服务端需要一定时间感知
+        delay(1000)
+
         // after disconnect
         val session = MahContextHolder[sessionKey]
         assertNull(session)
@@ -78,7 +81,7 @@ class WsSessionLifeCycle {
         assertEquals(verifyRet.session, sessionKey)
 
         // socket 由客户端主动断开, 服务端需要一定时间感知
-        delay(100)
+        delay(1000)
 
         // websocket 断开时, session 引用依旧被 http 引用保留
         assertEquals(1, session.getRefCount())

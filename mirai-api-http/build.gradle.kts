@@ -1,11 +1,13 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("kotlinx-atomicfu")
     id("net.mamoe.maven-central-publish") version "0.6.1"
-    id("net.mamoe.mirai-console") version "2.7.0"
+    id("net.mamoe.mirai-console") version "2.8.0"
 }
 
 val ktorVersion: String by rootProject.extra
+val atomicFuVersion: String by rootProject.extra
 fun kotlinx(id: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
 fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
 
@@ -19,7 +21,7 @@ kotlin {
 
     sourceSets.all {
         languageSettings.enableLanguageFeature("InlineClasses")
-        languageSettings.useExperimentalAnnotation("kotlin.Experimental")
+        languageSettings.optIn("kotlin.Experimental")
 
         dependencies {
 

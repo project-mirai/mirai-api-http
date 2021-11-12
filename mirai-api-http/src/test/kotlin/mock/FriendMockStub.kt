@@ -11,6 +11,7 @@ package mock
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.roaming.RoamingMessages
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
@@ -27,6 +28,8 @@ class FriendMockStub(
     override val id: Long = bot.id
     override val nick: String = bot.nick
     override val remark: String = bot.nick
+    override val roamingMessages: RoamingMessages
+        get() = TODO("Not yet implemented")
 
     override suspend fun delete() {
     }

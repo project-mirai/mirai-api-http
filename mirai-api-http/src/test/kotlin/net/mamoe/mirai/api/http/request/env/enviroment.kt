@@ -92,9 +92,7 @@ internal class AdapterOperation(val port: Int) {
     suspend inline fun <reified T : DTO> get(path: String, query: Map<String, String> = emptyMap()): T {
         val content = client.get<String>(path) {
             port = this@AdapterOperation.port
-            url {
-                query.forEach { (k, v) -> parameters.append(k, v) }
-            }
+            query.forEach { (k, v) -> parameter(k, v) }
         }
         return content.jsonParseOrNull()!!
     }
@@ -111,9 +109,8 @@ internal class AdapterOperation(val port: Int) {
         var ret: WsOutgoing? = null
         runBlocking {
             wsClient.ws({
-                url("ws", "localhost", this@AdapterOperation.port, "all") {
-                    query.forEach { (k, v) -> parameters[k] = v }
-                }
+                url("ws", "localhost", this@AdapterOperation.port, "all")
+                query.forEach { (k, v) -> parameter(k ,v) }
             }) {
                 val frame = incoming.receive()
                 val content = String(frame.data)
