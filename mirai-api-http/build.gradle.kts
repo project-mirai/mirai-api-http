@@ -1,8 +1,8 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("net.mamoe.maven-central-publish") version "0.6.1"
     id("net.mamoe.mirai-console") version "2.7.0"
+    id("net.mamoe.maven-central-publish") version "0.7.0"
 }
 
 val ktorVersion: String by rootProject.extra
@@ -74,7 +74,13 @@ tasks.create("buildCiJar", Jar::class) {
 
 mavenCentralPublish {
     githubProject("project-mirai", "mirai-api-http")
-    licenseFromGitHubProject("licenseAgplv3", "master")
+    developer("Mamoe Technologies")
+    licenseAGplV3()
+    publication {
+        artifact(tasks["buildPlugin"]) {
+            extension = "mirai.jar"
+        }
+    }
 }
 
 dependencies {
