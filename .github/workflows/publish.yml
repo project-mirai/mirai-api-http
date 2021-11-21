@@ -1,0 +1,41 @@
+name: Publish Mah
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  build:
+
+    name: Publish to Maven Central
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Grant Execute Permission for gradlew
+        run: chmod +x gradlew
+
+      - run: ./gradlew checkMavenCentralPublication --info  --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - run: ./gradlew publish --info  --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+
+      - name: Gradle closeRepository
+        run: >
+          ./gradlew closeRepository --info --stacktrace --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+

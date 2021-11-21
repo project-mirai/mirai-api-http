@@ -29,10 +29,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew buildCiJar
 
-      - run: ./gradlew publish --info  --scan
-        env:
-          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
-
       - name: Get Tag
         id: tag
         uses: dawidd6/action-get-tag@v1

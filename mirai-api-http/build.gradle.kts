@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("net.mamoe.mirai-console") version "2.7.0"
-    id("net.mamoe.maven-central-publish") version "0.7.0"
+    id("net.mamoe.maven-central-publish")
 }
 
 val ktorVersion: String by rootProject.extra
