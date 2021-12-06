@@ -18,16 +18,13 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
-import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.TempSession
 
 
 @ContextDsl
 internal inline fun Route.miraiWebsocket(
     path: String,
-    crossinline body: suspend DefaultWebSocketServerSession.(AuthedSession) -> Unit
+    crossinline body: suspend DefaultWebSocketServerSession.(String) -> Unit
 ) {
     webSocket(path) {
         val verifyKey = call.request.headers["verifyKey"] ?: call.parameters["verifyKey"]
@@ -35,14 +32,14 @@ internal inline fun Route.miraiWebsocket(
         val qq = (call.request.headers["qq"] ?: call.parameters["qq"])?.toLongOrNull()
 
         // 校验
-        if (MahContextHolder.mahContext.enableVerify && MahContextHolder.sessionManager.verifyKey != verifyKey) {
+        if (MahContextHolder.enableVerify && MahContextHolder.sessionManager.verifyKey != verifyKey) {
             closeWithCode(StateCode.AuthKeyFail)
             return@webSocket
         }
 
         // single 模式
-        if (MahContextHolder.mahContext.singleMode) {
-            body(MahContextHolder.mahContext.createSingleSession(true) as AuthedSession)
+        if (MahContextHolder.singleMode) {
+            body(MahContextHolder.createSingleSession(verified = true).key)
             return@webSocket
         }
 
@@ -55,10 +52,10 @@ internal inline fun Route.miraiWebsocket(
             }
 
             val session = with(MahContextHolder.sessionManager) {
-                authSession(bot, createTempSession())
+                authSession(bot, createTempSession().key)
             }
 
-            body(session)
+            body(session.key)
             return@webSocket
         }
 
@@ -75,12 +72,13 @@ internal inline fun Route.miraiWebsocket(
             return@webSocket
         }
 
-        if (session is TempSession) {
+        if (!session.isAuthed) {
             closeWithCode(StateCode.NotVerifySession)
             return@webSocket
         }
 
-        body(session as AuthedSession)
+        session.ref()
+        body(session.key)
     }
 }
 

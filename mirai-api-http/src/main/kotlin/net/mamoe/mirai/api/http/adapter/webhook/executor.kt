@@ -17,7 +17,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
-import net.mamoe.mirai.api.http.context.session.OneTimeAuthedSession
+import net.mamoe.mirai.api.http.context.MahContextHolder
 
 internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
     val element = packet.content
@@ -71,7 +71,7 @@ private suspend inline fun <reified T : AuthedDTO, reified R : DTO> execute(
     crossinline action: suspend (T) -> R
 ) {
     val parameter = parseContent<T>(content)
-    parameter.session = OneTimeAuthedSession(bot)
+    parameter.session = MahContextHolder.sessionManager.createOneTimeSession(bot)
 
     action(parameter)
 }

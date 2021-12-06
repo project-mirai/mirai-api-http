@@ -12,8 +12,6 @@ package net.mamoe.mirai.api.http.adapter.internal.action
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
-import net.mamoe.mirai.contact.announcement.Announcement.Companion.publishAnnouncement
-import net.mamoe.mirai.contact.announcement.OfflineAnnouncement
 
 /**
  * 禁言所有人（需要相关权限）

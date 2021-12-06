@@ -79,6 +79,6 @@ internal data class MoveFileDTO(
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
-    val moveTo: String,
+    val moveTo: String? = null,
     val moveToPath: String? = null,
 ) : AbstractFileTargetDTO()

@@ -13,7 +13,6 @@ import io.ktor.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import net.mamoe.mirai.api.http.adapter.MahAdapter
-import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextBuilder
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.utils.MiraiLogger
@@ -25,30 +24,24 @@ import kotlin.coroutines.CoroutineContext
 object MahPluginImpl : CoroutineScope {
     private const val DEFAULT_LOGGER_NAME = "Mirai HTTP API"
 
-    var logger = MiraiLogger.create(DEFAULT_LOGGER_NAME)
+    var logger = MiraiLogger.Factory.create(MahPluginImpl::class, DEFAULT_LOGGER_NAME)
     override val coroutineContext: CoroutineContext =
         CoroutineExceptionHandler { _, throwable -> logger.error(throwable) }
 
     @OptIn(KtorExperimentalAPI::class)
     fun start(builder: MahContextBuilder) {
 
-        builder.run {
-            MahContext().apply {
-                MahContextHolder.mahContext = this
-                invoke()
-            }
-        }
-
+        builder.run { MahContextHolder.invoke() }
         logger.info("********************************************************")
 
-        MahContextHolder.mahContext.adapters.forEach {
+        MahContextHolder.adapters.forEach {
             it.initAdapter()
         }
-        MahContextHolder.mahContext.adapters.forEach {
+        MahContextHolder.adapters.forEach {
             it.enable()
         }
 
-        with(MahContextHolder.mahContext) {
+        with(MahContextHolder) {
             if (enableVerify) {
                 logger.info("Http api server is running with verifyKey: ${sessionManager.verifyKey}")
             } else {
@@ -61,5 +54,5 @@ object MahPluginImpl : CoroutineScope {
         logger.info("********************************************************")
     }
 
-    fun stop() = MahContextHolder.mahContext.adapters.forEach(MahAdapter::disable)
+    fun stop() = MahContextHolder.adapters.forEach(MahAdapter::disable)
 }

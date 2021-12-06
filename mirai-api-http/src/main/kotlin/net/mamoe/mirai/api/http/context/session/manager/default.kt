@@ -9,53 +9,40 @@
 
 package net.mamoe.mirai.api.http.context.session.manager
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.SampleAuthedSession
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.MahContext
+import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
+import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
-import net.mamoe.mirai.api.http.context.session.TempSession
-import kotlin.coroutines.EmptyCoroutineContext
+import net.mamoe.mirai.api.http.context.session.StandardSession
+import net.mamoe.mirai.api.http.setting.MainSetting
 
-class DefaultSessionManager(override val verifyKey: String) : SessionManager {
+class DefaultSessionManager(override val verifyKey: String, val context: MahContext) : SessionManager {
     private val sessionMap: MutableMap<String, Session> = mutableMapOf()
+    private val cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
 
-    override fun createTempSession(): TempSession =
-        TempSession(generateSessionKey(), EmptyCoroutineContext).also { newTempSession ->
-            sessionMap[newTempSession.key] = newTempSession
-            //设置180000ms后检测并回收
-            newTempSession.launch {
-                delay(180000)
-                sessionMap[newTempSession.key]?.run {
-                    if (this is TempSession) {
-                        closeSession(newTempSession.key)
-                    }
-                }
-            }
+    override fun createOneTimeSession(bot: Bot) =
+        StandardSession("", manager = this).also { oneTimeSession ->
+            oneTimeSession.authWith(bot, getCache(bot.id))
         }
 
-    override fun authSession(bot: Bot, tempSessionKey: String) =
-        authSession(tempSessionKey, SampleAuthedSession(bot, tempSessionKey, EmptyCoroutineContext))
+    override fun createTempSession() = createTempSession(generateSessionKey())
+    override fun createTempSession(key: String): Session =
+        StandardSession(key, manager = this).also { newTempSession ->
+            val proxy = ListenableSessionWrapper(newTempSession)
+            proxy.startExpiredCountdown(180000)
+            sessionMap[newTempSession.key] = proxy
+        }
 
-    override fun authSession(bot: Bot, tempSession: TempSession) = authSession(bot, tempSession.key)
-
-    override fun authSession(tempSession: TempSession, authedSession: AuthedSession): AuthedSession =
-        authSession(tempSession.key, authedSession)
-
-    override fun authSession(tempSessionKey: String, authedSession: AuthedSession): AuthedSession {
-        closeSession(tempSessionKey)
-        set(tempSessionKey, authedSession)
-
-        /**
-         * TODO: 从设计上解决循环依赖问题，目前 [MahContextHolder] 组合 [SessionManager]
-         * TODO: 但 [SessionManager] 依赖了 [MahContextHolder]
-         * TODO: bad design
-         */
-        MahContextHolder.listen(authedSession.bot, authedSession.key)
-
-        return authedSession
+    override fun authSession(bot: Bot, tempSessionKey: String): Session {
+        val session = get(tempSessionKey) ?: throw NoSuchElementException()
+        if (session.isAuthed) {
+            return session
+        }
+        session.ref()
+        session.putExtElement(ListenableSessionWrapper.botEventHandler, context::handleBotEvent)
+        session.authWith(bot, getCache(bot.id))
+        return session
     }
 
     override operator fun get(key: String) = sessionMap[key]
@@ -63,16 +50,29 @@ class DefaultSessionManager(override val verifyKey: String) : SessionManager {
     override operator fun set(key: String, session: Session) = sessionMap.set(key, session)
 
     override fun closeSession(key: String) {
-        sessionMap[key]?.close()
-        sessionMap.remove(key)
+        sessionMap[key]?.apply {
+            close()
+            if (getRefCount() <= 0) {
+                sessionMap.remove(key)
+            }
+        }
     }
 
-    override fun closeSession(session: Session) {
-        closeSession(session.key)
+    override fun close() = sessionMap.forEach { (key, _) -> closeSession(key) }
+
+    override fun authedSessions(): List<Session> =
+        sessionMap.filterValues { it.isAuthed }.map { it.value }
+
+    override fun getCache(id: Long): MessageSourceCache {
+        var cache = cacheMap[id]
+        if (cache == null) {
+            synchronized(this) {
+                if (cache == null) {
+                    cache = MessageSourceCache(MainSetting.cacheSize)
+                    cacheMap[id] = cache!!
+                }
+            }
+        }
+        return cache!!
     }
-
-    override fun close() = sessionMap.forEach { (_, session) -> session.close() }
-
-    override fun authedSessions(): List<AuthedSession> =
-        sessionMap.filterValues { it is AuthedSession }.map { it.value as AuthedSession }
 }

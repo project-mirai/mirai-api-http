@@ -63,14 +63,13 @@ class WsClient : CoroutineScope {
 
         with(destination) {
             it.method = HttpMethod(destination.method)
-            it.url(protocol, host, port, path) {
-                setting.extraParameters.forEach { p -> parameters[p.key] = p.value }
-                destination.extraParameters.forEach { p -> parameters[p.key] = p.value }
-            }
+            it.url(protocol, host, port, path)
+            setting.extraParameters.forEach { p -> it.parameter(p.key, p.value) }
+            destination.extraParameters.forEach { p -> it.parameter(p.key, p.value) }
 
             it.headers {
-                setting.extraHeaders.forEach { hd -> set(hd.key, hd.value) }
-                destination.extraHeaders.forEach { hd -> set(hd.key, hd.value) }
+                setting.extraHeaders.forEach { hd -> it.header(hd.key, hd.value) }
+                destination.extraHeaders.forEach { hd -> it.header(hd.key, hd.value) }
             }
         }
     }

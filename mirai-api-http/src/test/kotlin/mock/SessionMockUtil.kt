@@ -7,13 +7,15 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.http.dto
+package mock
 
-import kotlinx.serialization.Serializable
-import net.mamoe.mirai.api.http.adapter.http.session.unreadQueue
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+import kotlin.reflect.jvm.javaField
 
-@Serializable
-internal class CountDTO(val count: Int = 10) : AuthedDTO() {
-    val unreadQueue get() = session.unreadQueue()
+internal fun <T: AuthedDTO> T.withSession(sessionKey: String): T {
+    this::sessionKey.javaField?.apply {
+        isAccessible = true
+        set(this@withSession, sessionKey)
+    }
+    return this
 }

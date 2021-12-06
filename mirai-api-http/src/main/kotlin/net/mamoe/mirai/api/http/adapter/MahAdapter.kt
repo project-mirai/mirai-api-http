@@ -11,7 +11,7 @@ package net.mamoe.mirai.api.http.adapter
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.utils.MiraiLogger
@@ -40,7 +40,7 @@ abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
      */
     abstract fun disable()
 
-    abstract suspend fun onReceiveBotEvent(event: BotEvent, session: AuthedSession)
+    abstract suspend fun onReceiveBotEvent(event: BotEvent, session: Session)
 
     @OptIn(InternalSerializationApi::class)
     inline fun <reified T:Any> getSetting(): T? {

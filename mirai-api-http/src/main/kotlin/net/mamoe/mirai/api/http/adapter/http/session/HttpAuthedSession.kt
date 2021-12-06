@@ -9,15 +9,33 @@
 
 package net.mamoe.mirai.api.http.adapter.http.session
 
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 
-/**
- * 代理到 AuthSession
- *
- * 使用增强设计模式添加未读消息队列
- *
- * @author ryoii
- */
-internal class HttpAuthedSession(authedSession: AuthedSession) : AuthedSession by authedSession {
-    val unreadQueue: UnreadQueue = UnreadQueue()
+//import net.mamoe.mirai.api.http.context.session.AuthedSession
+//
+///**
+// * 代理到 AuthSession
+// *
+// * 使用增强设计模式添加未读消息队列
+// *
+// * @author ryoii
+// */
+//internal class HttpAuthedSession(authedSession: AuthedSession) : AuthedSession by authedSession {
+//    val unreadQueue: UnreadQueue = UnreadQueue()
+//}
+
+object UnreadQueueKey: Session.ExtKey<UnreadQueue>
+
+internal fun Session.asHttpSession(): Session {
+    val unreadQueue = UnreadQueue()
+    putExtElement(UnreadQueueKey, unreadQueue)
+    return this
+}
+
+internal fun Session.isHttpSession(): Boolean {
+    return getExtElement(UnreadQueueKey) != null
+}
+
+internal fun Session.unreadQueue(): UnreadQueue {
+    return getExtElement(UnreadQueueKey) ?: throw RuntimeException("Not a http session")
 }

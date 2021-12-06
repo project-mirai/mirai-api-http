@@ -18,8 +18,10 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.util.merge
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.contact.FileSupported
-import net.mamoe.mirai.message.data.sendTo
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.message.data.FileMessage
+import net.mamoe.mirai.message.data.firstIsInstance
+import net.mamoe.mirai.message.sourceMessage
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.RemoteFile
 import java.io.InputStream
 import kotlin.streams.toList
@@ -62,13 +64,14 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     )
 }
 
+@OptIn(MiraiExperimentalApi::class)
 internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
     val parent = contact.filesRoot.resolve(path)
     val fileMessage = stream.useStream {
-       parent.resolve(uploadFileName).upload(it)
-    }.apply { sendTo(contact) }
+       parent.resolve(uploadFileName).uploadAndSend(it)
+    }.run { sourceMessage.firstIsInstance<FileMessage>() }
 
     return ElementResult(
         RemoteFileDTO(fileMessage, parent, contact, true, fileMessage.size).toJsonElement()
@@ -89,7 +92,7 @@ internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
     val contact = dto.session.bot.getFileSupported(dto)
 
     val moveTo = dto.moveToPath?.let(contact.filesRoot::resolve)
-        ?: contact.filesRoot.resolveById(dto.moveTo)
+        ?: dto.moveTo?.let { contact.filesRoot.resolveById(it, deep = true) }
         ?: throw NoSuchElementException()
 
     val succeed = contact.filesRoot.resolveById(dto.id)

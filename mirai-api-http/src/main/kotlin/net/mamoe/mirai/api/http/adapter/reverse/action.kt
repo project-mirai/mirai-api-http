@@ -23,34 +23,32 @@ import net.mamoe.mirai.api.http.adapter.reverse.client.WsClient
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.router.handleWsAction
-import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
-import net.mamoe.mirai.api.http.context.session.TempSession
+import net.mamoe.mirai.api.http.context.session.Session
 
 internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsClient) {
 
-    var session: AuthedSession? = null
+    var sessionKey: String? = null
 
     for (frame in incoming) {
         val command = String(frame.data).jsonParseOrNull<WsIncoming>()
             ?: continue
 
-        session = kotlin.runCatching {
+        sessionKey = kotlin.runCatching {
 
-            handleVerify(command)
+            handleVerify(command)?.key
 
         }.onFailure {
             outgoing.send(Frame.Text(it.localizedMessage ?: ""))
         }.getOrNull()
 
-        if (session != null) {
-            client.bindingSessionKey = session.key
+        if (sessionKey != null) {
+            client.bindingSessionKey = sessionKey
             outgoing.send(
                 Frame.Text(
                     WsOutgoing(
                         syncId = command.syncId,
-                        data = VerifyRetDTO(0, session.key).toJsonElement()
+                        data = VerifyRetDTO(0, sessionKey).toJsonElement()
                     ).toJson()
                 )
             )
@@ -59,16 +57,19 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
         }
     }
 
-    checkNotNull(session)
+    if (sessionKey != null) {
+        for (frame in incoming) {
+            val session = MahContextHolder[sessionKey] ?: break
+            outgoing.handleWsAction(session, String(frame.data))
+        }
 
-    for (frame in incoming) {
-        outgoing.handleWsAction(session, String(frame.data))
+        MahContextHolder.sessionManager.closeSession(sessionKey)
     }
 
     outgoing.close()
 }
 
-private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): AuthedSession? {
+private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): Session? {
     if (commandWrapper.command != "verify") {
         sendWithCode(StateCode.AuthKeyFail)
         return null
@@ -82,14 +83,14 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
     }
 
     // 校验
-    if (MahContextHolder.mahContext.enableVerify && MahContextHolder.sessionManager.verifyKey != dto.verifyKey) {
+    if (MahContextHolder.enableVerify && MahContextHolder.sessionManager.verifyKey != dto.verifyKey) {
         sendWithCode(StateCode.AuthKeyFail)
         return null
     }
 
     // single 模式
-    if (MahContextHolder.mahContext.singleMode) {
-        return MahContextHolder[MahContext.SINGLE_SESSION_KEY] as AuthedSession
+    if (MahContextHolder.singleMode) {
+        return MahContextHolder.createSingleSession(verified = true)
     }
 
     // 注册新 session
@@ -101,7 +102,9 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         }
 
         return with(MahContextHolder.sessionManager) {
-            authSession(bot, createTempSession())
+            createTempSession().also {
+                authSession(bot, it.key)
+            }
         }
     }
 
@@ -118,12 +121,13 @@ private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: W
         return null
     }
 
-    if (session is TempSession) {
+    if (!session.isAuthed) {
         sendWithCode(StateCode.NotVerifySession)
         return null
     }
 
-    return session as AuthedSession
+    session.ref()
+    return session
 }
 
 internal suspend fun DefaultClientWebSocketSession.sendWithCode(code: StateCode) {

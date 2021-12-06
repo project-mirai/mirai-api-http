@@ -9,7 +9,6 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.handler
 
-import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException

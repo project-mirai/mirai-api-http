@@ -7,13 +7,10 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.http.dto
+package annotation
 
-import kotlinx.serialization.Serializable
-import net.mamoe.mirai.api.http.adapter.http.session.unreadQueue
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+/**
+ * annotation alias
+ */
 
-@Serializable
-internal class CountDTO(val count: Int = 10) : AuthedDTO() {
-    val unreadQueue get() = session.unreadQueue()
-}
+typealias ExtendWith = org.junit.jupiter.api.extension.ExtendWith

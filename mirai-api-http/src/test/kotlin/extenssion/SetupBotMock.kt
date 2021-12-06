@@ -7,13 +7,16 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.http.dto
+package extenssion
 
-import kotlinx.serialization.Serializable
-import net.mamoe.mirai.api.http.adapter.http.session.unreadQueue
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+import kotlinx.coroutines.runBlocking
+import mock.BotMockStub
+import org.junit.jupiter.api.extension.BeforeAllCallback
+import org.junit.jupiter.api.extension.ExtensionContext
 
-@Serializable
-internal class CountDTO(val count: Int = 10) : AuthedDTO() {
-    val unreadQueue get() = session.unreadQueue()
+class SetupBotMock: BeforeAllCallback {
+
+    override fun beforeAll(context: ExtensionContext?) {
+        runBlocking { BotMockStub().login() }
+    }
 }

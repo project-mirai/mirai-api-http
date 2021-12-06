@@ -46,11 +46,10 @@ object HttpApiPluginBase : KotlinPlugin(
 
             // 创建上下文启动 mah 插件
             MahPluginImpl.start {
-                sessionManager = DefaultSessionManager(verifyKey)
+                sessionManager = DefaultSessionManager(verifyKey, this)
                 enableVerify = this@with.enableVerify
                 singleMode = this@with.singleMode
                 debug = this@with.debug
-                localMode = false
 
                 parseAdapter(this@with.adapters).forEach(this::plusAssign)
             }

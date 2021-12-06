@@ -11,10 +11,11 @@ package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.application.*
 import io.ktor.routing.*
+import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
 import net.mamoe.mirai.api.http.util.getBotOrThrow
 
 /**
@@ -26,11 +27,11 @@ internal fun Application.authRouter() = routing {
      * 进行认证
      */
     httpVerify("/verify") {
-        if (!MahContextHolder.mahContext.enableVerify
-            || it.verifyKey == MahContextHolder.mahContext.sessionManager.verifyKey
+        if (!MahContextHolder.enableVerify
+            || it.verifyKey == MahContextHolder.sessionManager.verifyKey
         ) {
-            val session = if (MahContextHolder.mahContext.singleMode) {
-                MahContextHolder.mahContext.createSingleSession(verified = true)
+            val session = if (MahContextHolder.singleMode) {
+                MahContextHolder.createSingleSession(verified = true).asHttpSession()
             } else {
                 MahContextHolder.sessionManager.createTempSession()
             }
@@ -46,7 +47,7 @@ internal fun Application.authRouter() = routing {
      * 验证并分配session
      */
     httpBind("/bind") {
-        if (MahContextHolder.mahContext.singleMode) {
+        if (MahContextHolder.singleMode) {
             call.respondStateCode(StateCode.NoOperateSupport)
             return@httpBind
         }
@@ -55,9 +56,9 @@ internal fun Application.authRouter() = routing {
             return@httpBind
         }
 
-        if (session !is AuthedSession) {
+        if (!session.isAuthed) {
             val bot = getBotOrThrow(it.qq)
-            MahContextHolder.sessionManager.authSession(bot, it.sessionKey)
+            MahContextHolder.sessionManager.authSession(bot, it.sessionKey).asHttpSession()
         }
         call.respondStateCode(StateCode.Success)
     }
@@ -67,9 +68,9 @@ internal fun Application.authRouter() = routing {
      */
     httpBind("/release") {
         val bot = getBotOrThrow(it.qq)
-        val session = MahContextHolder[it.sessionKey] as AuthedSession
+        val session = MahContextHolder[it.sessionKey] ?: throw IllegalSessionException
         if (bot.id == session.bot.id) {
-            MahContextHolder.sessionManager.closeSession(it.sessionKey)
+            session.close()
             call.respondStateCode(StateCode.Success)
         } else {
             throw NoSuchElementException()

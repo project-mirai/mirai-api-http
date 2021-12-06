@@ -19,7 +19,7 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.webhook.client.WebhookHttpClient
 import net.mamoe.mirai.api.http.adapter.webhook.dto.WebhookPacket
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.AuthedSession
+import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
@@ -52,7 +52,7 @@ class WebhookAdapter : MahAdapter("webhook") {
 
             setting.destinations.forEach {
                 if (this is MessageEvent) {
-                    MahContextHolder.newCache(bot.id).offer(source)
+                    MahContextHolder.sessionManager.getCache(bot.id).offer(source)
                 }
 
                 bot.launch { hook(it, data, bot) }
@@ -71,12 +71,12 @@ class WebhookAdapter : MahAdapter("webhook") {
                 execute(bot, it)
             }
         }.onFailure {
-            MahContextHolder.mahContext.debugLog.error(it)
+            MahContextHolder.debugLog.error(it)
         }
     }
 
     // webhook 负责监听所有 bot 不依赖 session 进行
-    override suspend fun onReceiveBotEvent(event: BotEvent, session: AuthedSession) {
+    override suspend fun onReceiveBotEvent(event: BotEvent, session: Session) {
         // Ignore
     }
 

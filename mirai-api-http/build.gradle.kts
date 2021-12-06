@@ -1,11 +1,13 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("net.mamoe.mirai-console") version "2.7.0"
+    id("kotlinx-atomicfu")
+    id("net.mamoe.mirai-console") version "2.8.0"
     id("net.mamoe.maven-central-publish")
 }
 
 val ktorVersion: String by rootProject.extra
+val atomicFuVersion: String by rootProject.extra
 fun kotlinx(id: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
 fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
 
@@ -13,13 +15,13 @@ kotlin {
     sourceSets["test"].apply {
         dependencies {
             api("org.slf4j:slf4j-simple:1.7.26")
-            api(kotlin("test-junit"))
+            api(kotlin("test-junit5"))
         }
     }
 
     sourceSets.all {
         languageSettings.enableLanguageFeature("InlineClasses")
-        languageSettings.useExperimentalAnnotation("kotlin.Experimental")
+        languageSettings.optIn("kotlin.Experimental")
 
         dependencies {
 
@@ -70,6 +72,10 @@ tasks.create("buildCiJar", Jar::class) {
             buildPluginFile.copyTo(it, true)
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 mavenCentralPublish {
