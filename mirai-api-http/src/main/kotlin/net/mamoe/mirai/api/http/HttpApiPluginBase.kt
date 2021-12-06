@@ -24,7 +24,7 @@ import java.io.File
  * 主要职责为读取配置文件 [MainSetting] 和 启动具体实现 [MahPluginImpl]
  */
 object HttpApiPluginBase : KotlinPlugin(
-    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "2.3.3") {
+    JvmPluginDescription(id = "net.mamoe.mirai-api-http", version = "2.4.0") {
         author("ryoii")
         info("Mirai HTTP API Server Plugin")
     }
