@@ -2,6 +2,12 @@
 
 
 
+## 在线插件更新
+
+为保持旧插件的不会突然升级导致异常，2.x需要使用不同的 channel 进行更新，即 `channel stable-v2`
+
+> `./mcl --update-package net.mamoe:mirai-api-http --channel stable-v2 --type plugin`
+
 ## 配置文件
 
 拆分为多模块，添加了新的参数

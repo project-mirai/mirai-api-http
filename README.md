@@ -26,19 +26,20 @@ Mirai HTTP API (console) plugin
 ### 使用 [Mirai Console Loader](https://github.com/iTXTech/mirai-console-loader) 安装`mirai-api-http`
 
 * `MCL` 支持自动更新插件，支持设置插件更新频道等功能
+* `2.x` 版本需要切换到 `stable-v2` 的 channel
 
-`./mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin`
+`./mcl --update-package net.mamoe:mirai-api-http --channel stable-v2 --type plugin`
 
-### 手动安装`mirai-api-http`
+* 启动 `MCL` 完成自动更新和启动
 
-1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成plugins文件夹
-1. 从 [Releases](https://github.com/project-mirai/mirai-api-http/releases) 下载`jar`并将其放入`plugins`文件夹中
+`./mlc`
 
 ## 开始使用
 
-1. 编辑`config/MiraiApiHttp/setting.yml`配置文件 (没有则自行创建)
-1. 启动 [Mirai Console](https://github.com/mamoe/mirai-console)
-1. 记录日志中出现的`authKey`
+1. 编辑`config/net.mamoe.mirai-api-http/setting.yml`配置文件 (没有则自行创建)
+2. 启动MCL `./mcl` 
+3. 如果手动安装则启动 `mirai-console`(不建议)
+4. 记录日志中出现的`authKey`
 
 #### setting.yml模板
 
@@ -85,9 +86,9 @@ adapterSettings:
 
 ## Adapter
 
-`mirai-api-http` 提供了多种连接方式, 并进行模块化分离成 `adapter`
+`mirai-api-http` 提供了多种接口调用方式, 并进行模块化称为 `adapter`
 
-对于较常使用的连接方式, 内置了4种 `adapter`
+对于较常使用的调用方式, 内置了4种 `adapter`
 
 + [http](docs/adapter/HttpAdapter.md): 基于轮询的 http 接口
 + [ws](docs/adapter/WebsocketAdapter.md): websocket server 形式的接口
@@ -112,6 +113,8 @@ adapterSettings:
 [点我查看](CHANGELOG.md)
 
 ## 文档
+
+[在线文档](https://docs.mirai.mamoe.net/mirai-api-http/)
 
 + **[API文档参考](docs/api/API.md)**
   + [状态码](docs/api/API.md#状态码)
