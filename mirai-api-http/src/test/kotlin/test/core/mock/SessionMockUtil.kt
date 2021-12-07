@@ -7,10 +7,15 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package annotation
+package test.core.mock
 
-/**
- * annotation alias
- */
+import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
+import kotlin.reflect.jvm.javaField
 
-typealias ExtendWith = org.junit.jupiter.api.extension.ExtendWith
+internal fun <T: AuthedDTO> T.withSession(sessionKey: String): T {
+    this::sessionKey.javaField?.apply {
+        isAccessible = true
+        set(this@withSession, sessionKey)
+    }
+    return this
+}
