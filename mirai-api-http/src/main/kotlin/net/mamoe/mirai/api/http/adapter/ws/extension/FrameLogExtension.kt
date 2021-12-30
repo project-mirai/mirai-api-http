@@ -28,7 +28,7 @@ class FrameLogExtension(configuration: Configuration) :
     override fun processIncomingFrame(frame: Frame): Frame {
         if (enable) {
             val commandWrapper = String(frame.data).jsonParseOrNull<WsIncoming>() ?: return frame
-            logger.debug("with request parameter $commandWrapper")
+            logger.debug("[incoming] $commandWrapper")
         }
         return frame
     }

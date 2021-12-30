@@ -56,7 +56,7 @@ class HttpRouterAccessHandler private constructor(configure: Configuration) {
     private fun ApplicationCall.logAccess() {
         if (enableAccessLog) {
             logger.debug("requesting [${request.origin.version}] [${request.httpMethod.value}] ${request.uri}")
-            logger.debug("with request parameter ${parseRequestParameter()}")
+            logger.debug("with ${parseRequestParameter()}")
         }
     }
 
