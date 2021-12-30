@@ -19,13 +19,19 @@ import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
+import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 /**
  * ktor websocket 模块加载
  */
+@OptIn(ExperimentalWebSocketExtensionApi::class)
 fun Application.websocketRouteModule(wsAdapter: WebsocketAdapter) {
-    install(WebSockets)
+    install(WebSockets) {
+        extensions { 
+            install(FrameLogExtension) { enableAccessLog = MahContextHolder.debug }
+        }
+    }
     wsRouter(wsAdapter)
 }
 

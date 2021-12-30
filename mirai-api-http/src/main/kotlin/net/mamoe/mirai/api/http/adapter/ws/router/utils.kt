@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter.ws.router
 
+import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
@@ -18,6 +19,7 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
+import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
@@ -31,6 +33,9 @@ internal inline fun Route.miraiWebsocket(
         val sessionKey = call.request.headers["sessionKey"] ?: call.parameters["sessionKey"]
         val qq = (call.request.headers["qq"] ?: call.parameters["qq"])?.toLongOrNull()
 
+        // 注入无协商的扩展
+        installExtension(FrameLogExtension)
+        
         // 校验
         if (MahContextHolder.enableVerify && MahContextHolder.sessionManager.verifyKey != verifyKey) {
             closeWithCode(StateCode.AuthKeyFail)
@@ -89,3 +94,10 @@ internal suspend fun DefaultWebSocketServerSession.closeWithCode(code: StateCode
     close(CloseReason(CloseReason.Codes.NORMAL, code.msg))
 }
 
+
+@OptIn(ExperimentalWebSocketExtensionApi::class)
+internal fun <T: WebSocketExtension<*>> WebSocketServerSession.installExtension(factory: WebSocketExtensionFactory<*, T>) {
+    application.feature(WebSockets).extensionsConfig.build().find { it.factory.key == factory.key }?.let {
+        (extensions as MutableList<WebSocketExtension<*>>).add(it)
+    }
+}
