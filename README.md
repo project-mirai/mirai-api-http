@@ -75,7 +75,7 @@ adapterSettings:
   http:
     host: localhost
     port: 8080
-    cors: [*]
+    cors: ["*"]
   
   ## 详情看 websocket adapter 使用说明 配置
   ws:
