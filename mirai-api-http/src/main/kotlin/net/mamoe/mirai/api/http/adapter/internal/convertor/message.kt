@@ -30,6 +30,10 @@ internal suspend fun MessageEvent.toDTO() = when (this) {
     is GroupTempMessageEvent -> TempMessagePacketDTO(MemberDTO(sender))
     is StrangerMessageEvent -> StrangerMessagePacketDTO(QQDTO(sender))
     is OtherClientMessageEvent -> OtherClientMessagePacketDTO(OtherClientDTO(subject))
+    is FriendMessageSyncEvent -> FriendSyncMessagePacketDTO(QQDTO(sender))
+    is GroupMessageSyncEvent -> GroupSyncMessagePacketDTO(GroupDTO(subject))
+    is GroupTempMessageSyncEvent -> TempSyncMessagePacketDTO(MemberDTO(subject))
+    is StrangerMessageSyncEvent -> StrangerSyncMessagePacketDTO(QQDTO(subject))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
