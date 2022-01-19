@@ -16,7 +16,6 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /***************************
  * Core Message 对象转换函数
@@ -51,7 +50,6 @@ internal suspend fun MessageChain.toDTO(filter: (MessageDTO) -> Boolean): Messag
 /**
  * 具体消息类型转换
  */
-@OptIn(MiraiExperimentalApi::class)
 internal suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(ids.firstOrNull() ?: 0, time)
     is At -> AtDTO(target, "")

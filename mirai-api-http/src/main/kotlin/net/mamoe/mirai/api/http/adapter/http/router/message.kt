@@ -17,12 +17,10 @@ import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.EventListRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.IntRestfulResult
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
  * 消息路由
  */
-@OptIn(MiraiExperimentalApi::class)
 internal fun Application.messageRouter() = routing {
     /**
      * 获取未读消息剩余消息数量
