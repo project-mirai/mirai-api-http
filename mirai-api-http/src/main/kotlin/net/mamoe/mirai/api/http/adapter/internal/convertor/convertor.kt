@@ -94,6 +94,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     is QuoteDTO,
     is MessageSourceDTO,
     is FileDTO,
+    is MarketFaceDTO,
     is UnknownMessageDTO
     -> null
 }

@@ -16,6 +16,8 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.message.data.MarketFace
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /***************************
  * Core Message 对象转换函数
@@ -54,6 +56,7 @@ internal suspend fun MessageChain.toDTO(filter: (MessageDTO) -> Boolean): Messag
 /**
  * 具体消息类型转换
  */
+@OptIn(MiraiExperimentalApi::class)
 internal suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(ids.firstOrNull() ?: 0, time)
     is At -> AtDTO(target, "")
@@ -75,6 +78,7 @@ internal suspend fun Message.toDTO() = when (this) {
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
+    is MarketFace -> MarketFaceDTO(id, name)
     is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessage -> ForwardMessageDTO(nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })

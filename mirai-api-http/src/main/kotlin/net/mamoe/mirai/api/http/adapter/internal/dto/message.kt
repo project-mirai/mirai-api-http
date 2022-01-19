@@ -154,6 +154,13 @@ internal data class DiceDTO(
 ) : MessageDTO()
 
 @Serializable
+@SerialName("MarketFace")
+internal data class MarketFaceDTO(
+    val id: Int, 
+    val name: String,
+) : MessageDTO()
+
+@Serializable
 @SerialName("MusicShare")
 internal data class MusicShareDTO(
     val kind: String,
