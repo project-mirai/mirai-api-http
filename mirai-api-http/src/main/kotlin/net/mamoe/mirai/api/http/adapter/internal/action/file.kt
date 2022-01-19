@@ -9,58 +9,46 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.action
 
+import kotlinx.coroutines.flow.*
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.RemoteFileDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
-import net.mamoe.mirai.api.http.util.merge
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.contact.FileSupported
-import net.mamoe.mirai.message.data.FileMessage
-import net.mamoe.mirai.message.data.firstIsInstance
-import net.mamoe.mirai.message.sourceMessage
+import net.mamoe.mirai.contact.file.AbsoluteFile
+import net.mamoe.mirai.contact.file.AbsoluteFolder
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.RemoteFile
 import java.io.InputStream
-import kotlin.streams.toList
 
 internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
-    val data = dto.getResolveFile().listFilesCollection()
-        .stream().skip(dto.offset).limit(dto.size)
-        .toList()
+    val data = dto.getAbsoluteFolder().files()
+        .drop(dto.offset).take(dto.size)
         .map {
             if (dto.withDownloadInfo) {
-                merge(it::getDownloadInfo, it::getInfo) { downloadInfo, fileInfo ->
-                    RemoteFileDTO(it, it.isFile(), it.length(), downloadInfo, fileInfo)
-                }
+                RemoteFileDTO(it, true, it.getUrl())
             } else {
-                RemoteFileDTO(it, it.isFile(), it.length())
+                RemoteFileDTO(it, false)
             }
-        }
-
+        }.toList()
     return RemoteFileList(data = data)
 }
 
 internal suspend fun onGetFileInfo(dto: FileInfoDTO): ElementResult {
-    val remoteFile = dto.getResolveFile()
-    val data = if (dto.withDownloadInfo) {
-        merge(remoteFile::getDownloadInfo, remoteFile::getInfo) { downloadInfo, fileInfo ->
-            RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length(), downloadInfo, fileInfo)
-        }
-    } else { RemoteFileDTO(remoteFile, remoteFile.isFile(), remoteFile.length()) }
+    val file = dto.getAbsoluteFile()
+    val data = if (dto.withDownloadInfo) { RemoteFileDTO(file, true, file.getUrl()) } 
+    else { RemoteFileDTO(file, false) }
 
     return ElementResult(data.toJsonElement())
 }
 
 internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
-    val root = dto.session.bot.getFileSupported(dto).filesRoot
-    val remoteFile = root.resolve(dto.directoryName).also {
-        it.mkdir()
-    }
+    val parent = dto.getAbsoluteFolder()
+    val folder = parent.createFolder(dto.directoryName)
     return ElementResult(
-        RemoteFileDTO(remoteFile, false, remoteFile.length()).toJsonElement()
+        RemoteFileDTO(folder, false).toJsonElement()
     )
 }
 
@@ -68,18 +56,17 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
 internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
-    val parent = contact.filesRoot.resolve(path)
-    val fileMessage = stream.useStream {
-       parent.resolve(uploadFileName).uploadAndSend(it)
-    }.run { sourceMessage.firstIsInstance<FileMessage>() }
+    val file = stream.useStream { 
+        contact.files.uploadNewFile("$path/$uploadFileName", it)
+    }
 
     return ElementResult(
-        RemoteFileDTO(fileMessage, parent, contact, true, fileMessage.size).toJsonElement()
+        RemoteFileDTO(file, false).toJsonElement()
     )
 }
 
 internal suspend fun onDeleteFile(dto: FileTargetDTO): StateCode {
-    val succeed = dto.getResolveFile().delete()
+    val succeed = dto.getAbsoluteFile().delete()
 
     return if (succeed) {
         StateCode.Success
@@ -89,15 +76,14 @@ internal suspend fun onDeleteFile(dto: FileTargetDTO): StateCode {
 }
 
 internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
-    val contact = dto.session.bot.getFileSupported(dto)
+    val file = dto.getAbsoluteFile()
+    val contact = file.contact
 
-    val moveTo = dto.moveToPath?.let(contact.filesRoot::resolve)
-        ?: dto.moveTo?.let { contact.filesRoot.resolveById(it, deep = true) }
+    val moveTo = dto.moveToPath?.let{ contact.files.root.resolveFolder(it) }
+        ?: dto.moveTo?.let { contact.files.root.resolveFolderById(it) }
         ?: throw NoSuchElementException()
 
-    val succeed = contact.filesRoot.resolveById(dto.id)
-        ?.moveTo(moveTo)
-        ?: throw NoSuchElementException()
+    val succeed = file.moveTo(moveTo)
 
     return if (succeed) {
         StateCode.Success
@@ -107,7 +93,7 @@ internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
 }
 
 internal suspend fun onRenameFile(dto: RenameFileDTO): StateCode {
-    val succeed = dto.getResolveFile().renameTo(dto.renameTo)
+    val succeed = dto.getAbsoluteFile().renameTo(dto.renameTo)
 
     return if (succeed) {
         StateCode.Success
@@ -124,14 +110,26 @@ internal fun Bot.getFileSupported(dto: AbstractFileTargetDTO): FileSupported = w
     else -> throw NoSuchElementException()
 }
 
-private suspend fun AbstractFileTargetDTO.getResolveFile(): RemoteFile =
-    session.bot.getFileSupported(this).filesRoot.let {
+// 获取一个确定的文件
+private suspend fun AbstractFileTargetDTO.getAbsoluteFile(): AbsoluteFile = 
+    session.bot.getFileSupported(this).files.root.let {
         if (path != null) {
-            // stupid cast
-            it.resolve(path!!)
+            it.resolveFiles(path!!).firstOrNull()
         } else if (id.isEmpty()) {
-            it
+            null // 根目录不能作为文件
         } else {
-            it.resolveById(id)
+            it.resolveFileById(id)
+        }
+    } ?: throw NoSuchElementException()
+
+// 获取一个确定的文件夹
+private suspend fun AbstractFileTargetDTO.getAbsoluteFolder(): AbsoluteFolder =
+    session.bot.getFileSupported(this).files.root.let {
+        if (path != null) {
+            it.resolveFolder(path!!)
+        } else if (id.isEmpty()) {
+            it // 根目录不能作为文件
+        } else {
+            it.resolveFolderById(id)
         }
     } ?: throw NoSuchElementException()

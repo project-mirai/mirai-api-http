@@ -11,10 +11,9 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.util.toHexString
-import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.FileMessage
-import net.mamoe.mirai.utils.RemoteFile
+import net.mamoe.mirai.contact.file.AbsoluteFile
+import net.mamoe.mirai.contact.file.AbsoluteFileFolder
 
 @Serializable
 internal data class RemoteFileDTO(
@@ -29,48 +28,21 @@ internal data class RemoteFileDTO(
     val size: Long,
     val downloadInfo: DownloadInfoDTO? = null,
 ) : DTO {
-    constructor(remoteFile: RemoteFile, isFile: Boolean, size: Long, downloadInfo: RemoteFile.DownloadInfo? = null, fileInfo: RemoteFile.FileInfo? = null) : this(
-        remoteFile.name,
-        remoteFile.id,
-        remoteFile.path,
-        // 父级为目录，没有下载信息
-        remoteFile.parent?.let { RemoteFileDTO(it, false, 0, null, null) },
-        when (remoteFile.contact) {
-            is Group -> GroupDTO(remoteFile.contact as Group)
+    
+    constructor(file: AbsoluteFileFolder, withDownload: Boolean, url: String? = null) : this(
+        file.name,
+        file.id,
+        file.absolutePath,
+        file.parent?.let { RemoteFileDTO(file.parent!!, false) },
+        when (file.contact) {
+            is Group -> GroupDTO(file.contact as Group)
             else -> throw IllegalStateException("unsupported remote file type")
         },
-        isFile,
-        !isFile,
-        !isFile,
-        size,
-        fileInfo?.let { info ->
-            DownloadInfoDTO(
-                info.sha1.toHexString(),
-                info.md5.toHexString(),
-                info.downloadTimes,
-                info.uploaderId,
-                info.uploadTime,
-                info.lastModifyTime,
-                downloadInfo?.url ?: ""
-            )
-        },
-    )
-
-    // 通过 FileMessage 构建，避免文件上传后不能及时获取文件信息
-    constructor(fileMessage: FileMessage, parent: RemoteFile, contact: FileSupported, isFile: Boolean, size: Long) : this(
-        fileMessage.name,
-        fileMessage.id,
-        parent.resolve(fileMessage.name).path,
-        RemoteFileDTO(parent, false, 0, null),
-        when (contact) {
-            is Group -> GroupDTO(contact)
-            else -> throw IllegalStateException("unsupported remote file type")
-        },
-        isFile,
-        !isFile,
-        !isFile,
-        size,
-        null,
+        isFile = file.isFile,
+        isDictionary = file.isFolder,
+        isDirectory = file.isFolder,
+        size = if (file.isFile) (file as AbsoluteFile).size else 0,
+        downloadInfo = if (withDownload) DownloadInfoDTO(file as AbsoluteFile, url) else null
     )
 }
 
@@ -83,4 +55,14 @@ internal data class DownloadInfoDTO(
     val uploadTime: Long,
     val lastModifyTime: Long,
     val url: String,
-) : DTO
+) : DTO {
+    constructor(file: AbsoluteFile, url: String?): this(
+        file.sha1.toHexString(),
+        file.md5.toHexString(),
+        0,
+        file.uploaderId,
+        file.uploadTime,
+        file.lastModifiedTime,
+        url ?: ""
+    )
+}

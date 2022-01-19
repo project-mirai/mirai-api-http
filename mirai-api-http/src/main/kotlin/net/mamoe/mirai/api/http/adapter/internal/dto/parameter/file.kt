@@ -37,8 +37,8 @@ internal data class FileListDTO(
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
-    val offset: Long = 0,
-    val size: Long = Long.MAX_VALUE,
+    val offset: Int = 0,
+    val size: Int = Int.MAX_VALUE,
     val withDownloadInfo: Boolean = false,
 ): AbstractFileTargetDTO()
 
