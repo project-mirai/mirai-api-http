@@ -18,6 +18,7 @@ import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
@@ -40,6 +41,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
         val jsonElement: JsonElement = when (commandWrapper.command) {
             // about
             Paths.about -> StringMapRestfulResult(onAbout()).toJsonElement()
+            Paths.sessionInfo -> ElementResult(execute(session, element, ::onGetSessionInfo)).toJsonElement()
 
 
             // event
