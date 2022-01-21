@@ -10,11 +10,13 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.FriendList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberTargetDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.UserProfile
 
 /**
  * 查询好友列表
@@ -44,17 +46,17 @@ internal fun onGetMemberList(dto: LongTargetDTO): MemberList {
 /**
  * 查询 Bot 个人信息
  */
-internal suspend fun onGetBotProfile(dto: EmptyAuthedDTO): ProfileDTO =
-    ProfileDTO(dto.session.bot.asFriend.queryProfile())
+internal suspend fun onGetBotProfile(dto: EmptyAuthedDTO): UserProfile =
+    UserProfile(data = ProfileDTO(dto.session.bot.asFriend.queryProfile()))
 
 /**
  * 查询好友个人信息
  */
-internal suspend fun onGetFriendProfile(dto: LongTargetDTO): ProfileDTO =
-    ProfileDTO(dto.session.bot.getFriendOrFail(dto.target).queryProfile())
+internal suspend fun onGetFriendProfile(dto: LongTargetDTO): UserProfile =
+    UserProfile(data = ProfileDTO(dto.session.bot.getFriendOrFail(dto.target).queryProfile()))
 
 /**
  * 查询QQ群成员个人信息
  */
-internal suspend fun onGetMemberProfile(dto: MemberTargetDTO): ProfileDTO =
-    ProfileDTO(dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId).queryProfile())
+internal suspend fun onGetMemberProfile(dto: MemberTargetDTO): UserProfile =
+    UserProfile(data = ProfileDTO(dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId).queryProfile()))
