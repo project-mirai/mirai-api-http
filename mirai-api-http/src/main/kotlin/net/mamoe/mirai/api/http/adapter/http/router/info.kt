@@ -54,4 +54,10 @@ internal fun Application.infoRouter() = routing {
      * 查询QQ群成员个人信息
      */
     httpAuthedGet(Paths.memberProfile, respondDTOStrategy(::onGetMemberProfile))
+
+    /**
+     * 查询QQ账号信息
+     */
+    httpAuthedGet(Paths.userProfile, respondDTOStrategy(::onGetUserProfile))
+
 }
