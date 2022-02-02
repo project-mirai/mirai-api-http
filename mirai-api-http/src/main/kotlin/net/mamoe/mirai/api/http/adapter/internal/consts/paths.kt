@@ -45,6 +45,7 @@ object Paths {
     const val botProfile = "botProfile"
     const val friendProfile = "friendProfile"
     const val memberProfile = "memberProfile"
+    const val userProfile = "userProfile"
 
     // message
     const val messageFromId = "messageFromId"

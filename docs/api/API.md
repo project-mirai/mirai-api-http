@@ -21,6 +21,7 @@
   + [获取Bot资料](#获取Bot资料)
   + [获取好友资料](#获取好友资料)
   + [获取群成员资料](#获取群成员资料)
+  + [获取QQ用户资料](#获取QQ用户资料)
 + **[消息发送与撤回](#消息发送与撤回)**
   + [发送好友消息](#发送好友消息)
   + [发送群消息](#发送群消息)
@@ -307,6 +308,27 @@
 | sessionKey | true  | YourSessionKey | 你的session key |
 | target     | false | 123456789      | 指定群的群号    |
 | memberId   | false | 987654321      | 群成员QQ号码    |
+
+#### 响应:
+
+```json5
+{
+  "nickname":"nickname",
+  "email":"email",
+  "age":18,
+  "level":1,
+  "sign":"mirai",
+  "sex":"UNKNOWN" // UNKNOWN, MALE, FEMALE
+}
+```
+### 获取QQ用户资料
+
+#### 请求:
+
+| 名字         | 可选  | 举例           | 说明          |
+|------------| ----- | -------------- |-------------|
+| sessionKey | true  | YourSessionKey | 你的session key |
+| userId     | false | 987654321      | 要查询的QQ号码    |
 
 #### 响应:
 
