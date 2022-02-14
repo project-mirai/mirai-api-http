@@ -10,9 +10,9 @@
 package net.mamoe.mirai.api.http.request.env
 
 import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
-import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.MahPluginImpl
 import net.mamoe.mirai.api.http.adapter.MahAdapter
@@ -86,8 +86,8 @@ internal fun startAdapter(
 internal class AdapterOperation(val port: Int) {
 
 
-    private val client by lazy { HttpClient() }
-    private val wsClient by lazy { HttpClient() { install(WebSockets) }}
+    private val client by lazy { HttpClient(OkHttp) }
+    private val wsClient by lazy { HttpClient(OkHttp) { install(WebSockets) }}
 
     suspend inline fun <reified T : DTO> get(path: String, query: Map<String, String> = emptyMap()): T {
         val content = client.get<String>(path) {
