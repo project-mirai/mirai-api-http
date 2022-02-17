@@ -65,8 +65,3 @@ internal class RemoteFileList(
 internal class AnnouncementList(
     val data: List<AnnouncementDTO>
 ) : RestfulResult()
-// Common user target
-@Serializable
-internal data class UserTargetDTO(
-    val userId: Long
-) : AuthedDTO()

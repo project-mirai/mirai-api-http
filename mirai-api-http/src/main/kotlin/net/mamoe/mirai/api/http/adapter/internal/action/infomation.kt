@@ -16,7 +16,6 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberTargetDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.UserTargetDTO
 
 /**
  * 查询好友列表
@@ -64,5 +63,5 @@ internal suspend fun onGetMemberProfile(dto: MemberTargetDTO): ProfileDTO =
 /**
  * 查询QQ账号信息
  */
-internal suspend fun onGetUserProfile(dto: UserTargetDTO): ProfileDTO =
-    ProfileDTO(Mirai.queryProfile(dto.session.bot, dto.userId))
+internal suspend fun onGetUserProfile(dto: LongTargetDTO): ProfileDTO =
+    ProfileDTO(Mirai.queryProfile(dto.session.bot, dto.target))

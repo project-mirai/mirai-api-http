@@ -329,10 +329,10 @@
 
 #### 请求:
 
-| 名字         | 可选  | 举例           | 说明          |
-|------------| ----- | -------------- |-------------|
-| sessionKey | true  | YourSessionKey | 你的session key |
-| userId     | false | 987654321      | 要查询的QQ号码    |
+| 名字           | 可选      | 举例              | 说明              |
+|--------------|---------|-----------------|-----------------|
+| sessionKey   | true    | YourSessionKey  | 你的session key   |
+| target       | false   | 987654321       | 要查询的QQ号码        |
 
 #### 响应:
 
