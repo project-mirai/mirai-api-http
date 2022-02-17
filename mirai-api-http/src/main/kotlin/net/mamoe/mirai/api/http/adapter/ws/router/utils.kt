@@ -23,6 +23,7 @@ import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
+@OptIn(ExperimentalWebSocketExtensionApi::class)
 @ContextDsl
 internal inline fun Route.miraiWebsocket(
     path: String,
@@ -35,7 +36,7 @@ internal inline fun Route.miraiWebsocket(
 
         // 注入无协商的扩展
         installExtension(FrameLogExtension)
-        
+
         // 校验
         if (MahContextHolder.enableVerify && MahContextHolder.sessionManager.verifyKey != verifyKey) {
             closeWithCode(StateCode.AuthKeyFail)

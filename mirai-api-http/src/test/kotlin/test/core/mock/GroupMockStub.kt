@@ -72,6 +72,7 @@ class GroupMockStub(
         TODO("Not yet implemented")
     }
 
+    @Suppress("DEPRECATION_ERROR")
     override suspend fun uploadVoice(resource: ExternalResource): Voice {
         TODO("Not yet implemented")
     }

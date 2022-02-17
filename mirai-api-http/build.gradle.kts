@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
     id("net.mamoe.maven-central-publish") version "0.6.1"
-    id("net.mamoe.mirai-console") version "2.9.2"
+    id("net.mamoe.mirai-console") version "2.10.0"
 }
 
 val ktorVersion: String by rootProject.extra
