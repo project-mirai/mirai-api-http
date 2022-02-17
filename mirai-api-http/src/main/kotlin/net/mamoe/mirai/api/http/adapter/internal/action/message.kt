@@ -24,7 +24,6 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import java.io.InputStream
 
 /**
@@ -186,7 +185,6 @@ internal suspend fun onUploadImage(session: Session, stream: InputStream, type: 
 /**
  * 上传语音
  */
-@OptIn(MiraiExperimentalApi::class)
 internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: String): UploadVoiceRetDTO {
     val voice = stream.useStream {
         when (type) {

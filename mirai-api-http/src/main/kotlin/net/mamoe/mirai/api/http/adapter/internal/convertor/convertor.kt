@@ -14,8 +14,6 @@ import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.util.*
-import net.mamoe.mirai.api.http.util.toHexArray
-import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -24,13 +22,10 @@ import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.utils.ExternalResource
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiInternalApi
 import java.io.File
-import java.net.URL
 import java.util.*
 
 /***********************
@@ -99,6 +94,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     is QuoteDTO,
     is MessageSourceDTO,
     is FileDTO,
+    is MarketFaceDTO,
     is UnknownMessageDTO
     -> null
 }

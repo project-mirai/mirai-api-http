@@ -7,7 +7,7 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package mock
+package test.core.mock
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend

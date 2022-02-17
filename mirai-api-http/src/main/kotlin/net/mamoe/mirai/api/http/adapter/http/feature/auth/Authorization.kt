@@ -25,7 +25,7 @@ object Authorization : ApplicationFeature<Application, Unit, Authorization> {
      * 注册拦截器
      */
     override fun install(pipeline: Application, configure: Unit.() -> Unit): Authorization {
-        pipeline.intercept(ApplicationCallPipeline.Call) {
+        pipeline.intercept(ApplicationCallPipeline.Features) {
             if (MahContextHolder.singleMode) {
                 proceed()
                 return@intercept

@@ -7,16 +7,10 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package extenssion
+package test.core.annotation
 
-import kotlinx.coroutines.runBlocking
-import mock.BotMockStub
-import org.junit.jupiter.api.extension.BeforeAllCallback
-import org.junit.jupiter.api.extension.ExtensionContext
+/**
+ * annotation alias
+ */
 
-class SetupBotMock: BeforeAllCallback {
-
-    override fun beforeAll(context: ExtensionContext?) {
-        runBlocking { BotMockStub().login() }
-    }
-}
+typealias ExtendWith = org.junit.jupiter.api.extension.ExtendWith

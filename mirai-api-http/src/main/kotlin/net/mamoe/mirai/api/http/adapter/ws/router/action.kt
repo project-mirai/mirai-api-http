@@ -18,6 +18,7 @@ import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
@@ -40,6 +41,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
         val jsonElement: JsonElement = when (commandWrapper.command) {
             // about
             Paths.about -> StringMapRestfulResult(onAbout()).toJsonElement()
+            Paths.sessionInfo -> ElementResult(execute(session, element, ::onGetSessionInfo)).toJsonElement()
 
 
             // event
@@ -84,6 +86,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             Paths.botProfile -> execute(session, EMPTY_JSON_ELEMENT, ::onGetBotProfile)
             Paths.friendProfile -> execute(session, element, ::onGetFriendProfile)
             Paths.memberProfile -> execute(session, element, ::onGetMemberProfile)
+            Paths.userProfile -> execute(session, element, ::onGetUserProfile)
 
 
             // message
@@ -115,6 +118,11 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             // command
             Paths.commandExecute -> execute(session, element, ::onExecuteCommand)
             Paths.commandRegister -> execute(session, element, ::onRegisterCommand)
+            
+            // announcement
+            Paths.announcementList -> execute(session, element, ::onListAnnouncement)
+            Paths.announcementPublish -> execute(session, element, ::onPublishAnnouncement)
+            Paths.announcementDelete -> execute(session, element, ::onDeleteAnnouncement)
 
             else -> StateCode.NoOperateSupport.toJsonElement()
         }

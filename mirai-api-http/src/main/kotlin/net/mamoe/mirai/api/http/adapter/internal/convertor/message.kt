@@ -16,6 +16,7 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.message.data.MarketFace
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /***************************
@@ -31,6 +32,10 @@ internal suspend fun MessageEvent.toDTO() = when (this) {
     is GroupTempMessageEvent -> TempMessagePacketDTO(MemberDTO(sender))
     is StrangerMessageEvent -> StrangerMessagePacketDTO(QQDTO(sender))
     is OtherClientMessageEvent -> OtherClientMessagePacketDTO(OtherClientDTO(subject))
+    is FriendMessageSyncEvent -> FriendSyncMessagePacketDTO(QQDTO(sender))
+    is GroupMessageSyncEvent -> GroupSyncMessagePacketDTO(GroupDTO(subject))
+    is GroupTempMessageSyncEvent -> TempSyncMessagePacketDTO(MemberDTO(subject))
+    is StrangerMessageSyncEvent -> StrangerSyncMessagePacketDTO(QQDTO(subject))
     else -> IgnoreEventDTO
 }.apply {
     if (this is MessagePacketDTO) {
@@ -73,6 +78,7 @@ internal suspend fun Message.toDTO() = when (this) {
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
+    is MarketFace -> MarketFaceDTO(id, name)
     is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessage -> ForwardMessageDTO(nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })

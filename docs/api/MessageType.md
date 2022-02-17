@@ -89,6 +89,83 @@
 }
 ```
 
+## 同步消息链类型
+
+同步消息和普通消息一样, 但是由 Bot 账号的其他客户端发送的消息, 同步到 mirai 时产生的时间. 此类事发送人永远是 Bot 本身, 故省略
+
+### 同步好友消息
+
+```json5
+{
+    "type": "FriendSyncMessage",
+    "subject": {
+        "id": 123,
+        "nickname": "",
+        "remark": ""
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+> `subject` 为发送的目标好友
+
+### 同步群消息
+
+```json5
+{
+    "type": "GroupSyncMessage",
+    "subject": {
+      "id": 321,
+      "name": "",
+      "permission": "MEMBER",
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+> `subject` 为发送的目标群
+
+### 同步群临时消息
+
+```json5
+{
+    "type": "TempSyncMessage",
+    "subject": {
+        "id": 123,
+        "memberName": "",
+        "specialTitle": "",
+        "permission": "OWNER",
+        "joinTimestamp": 0,
+        "lastSpeakTimestamp": 0,
+        "muteTimeRemaining": 0,
+        "group": {
+            "id": 321,
+            "name": "",
+            "permission": "MEMBER",
+        },
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+> `subject` 为发送的目标群成员，对应群信息在群成员的 `group` 字段
+
+### 同步陌生人消息
+
+```json5
+{
+    "type": "StrangerSyncMessage",
+    "subject": {
+        "id": 123,
+        "nickname": "",
+        "remark": ""
+    },
+    "messageChain": [] // 数组，内容为下文消息类型
+}
+```
+
+> `subject` 为发送的目前陌生人账号
+
 ## 消息类型
 
 ### Source
@@ -316,6 +393,23 @@
 | 名字 | 类型   | 说明         |
 | ---- | ------ | ------------ |
 | value | Int | 点数 |
+
+### MarketFace
+
+```json5
+{
+  "type": "MarketFace",
+  "id": 123,
+  "name": "商城表情"
+}
+```
+
+| 名字   | 类型     | 说明       |
+|------|--------|----------|
+| id   | Int    | 商城表情唯一标识 |
+| name | String | 表情显示名称   |
+
+> 目前商城表情仅支持接收和转发，不支持构造发送
 
 ### MusicShare
 

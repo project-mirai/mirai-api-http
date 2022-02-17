@@ -9,7 +9,6 @@
 
 package net.mamoe.mirai.api.http.command
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.context.MahContextHolder
@@ -42,7 +41,6 @@ object CommandFactory {
         return CommandManager.registerCommand(command, override = true)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, net.mamoe.mirai.utils.MiraiExperimentalApi::class)
     private suspend fun Command.broadcastCommand(bot: Bot?, sender: CommandSender, args: MessageChain) {
         val receivedBots = MahContextHolder.sessionManager.authedSessions()
             .filter { bot == null || it.bot.id == bot.id }

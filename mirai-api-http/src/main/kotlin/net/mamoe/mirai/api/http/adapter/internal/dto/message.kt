@@ -11,7 +11,6 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import net.mamoe.mirai.contact.OtherClient
 
 @Serializable
 internal sealed class MessagePacketDTO : EventDTO() {
@@ -25,16 +24,32 @@ internal typealias MessageChainDTO = List<MessageDTO>
 internal data class FriendMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
 
 @Serializable
+@SerialName("FriendSyncMessage")
+internal data class FriendSyncMessagePacketDTO(val subject: QQDTO) : MessagePacketDTO()
+
+@Serializable
 @SerialName("GroupMessage")
 internal data class GroupMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
+
+@Serializable
+@SerialName("GroupSyncMessage")
+internal data class GroupSyncMessagePacketDTO(val subject: GroupDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("TempMessage")
 internal data class TempMessagePacketDTO(val sender: MemberDTO) : MessagePacketDTO()
 
 @Serializable
+@SerialName("TempSyncMessage")
+internal data class TempSyncMessagePacketDTO(val subject: MemberDTO) : MessagePacketDTO()
+
+@Serializable
 @SerialName("StrangerMessage")
 internal data class StrangerMessagePacketDTO(val sender: QQDTO) : MessagePacketDTO()
+
+@Serializable
+@SerialName("StrangerSyncMessage")
+internal data class StrangerSyncMessagePacketDTO(val subject: QQDTO) : MessagePacketDTO()
 
 @Serializable
 @SerialName("OtherClientMessage")
@@ -136,6 +151,13 @@ internal data class PokeMessageDTO(
 @SerialName("Dice")
 internal data class DiceDTO(
     val value: Int
+) : MessageDTO()
+
+@Serializable
+@SerialName("MarketFace")
+internal data class MarketFaceDTO(
+    val id: Int, 
+    val name: String,
 ) : MessageDTO()
 
 @Serializable

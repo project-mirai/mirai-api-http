@@ -21,6 +21,7 @@
   + [获取Bot资料](#获取Bot资料)
   + [获取好友资料](#获取好友资料)
   + [获取群成员资料](#获取群成员资料)
+  + [获取QQ用户资料](#获取QQ用户资料)
 + **[消息发送与撤回](#消息发送与撤回)**
   + [发送好友消息](#发送好友消息)
   + [发送群消息](#发送群消息)
@@ -49,6 +50,10 @@
   + [获取群员资料](#获取群员设置)
   + [修改群员资料](#修改群员设置)
   + [修改群员管理员](#修改群员管理员)
++ **[群公告](#群公告)**
+  + [获取群公告](#获取群公告)
+  + [发布群公告](#发布群公告)
+  + [删除群公告](#删除群公告)
 + **[事件处理](#事件处理)**
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请（Bot需要有管理员权限）)
@@ -283,7 +288,7 @@
 | 名字       | 可选  | 举例           | 说明            |
 | ---------- | ----- | -------------- | --------------- |
 | sessionKey | true  | YourSessionKey | 你的session key |
-| target     | false | 123456789      | 指定群的群号    |
+| target     | false | 123456789      | 指定好友账号        |
 
 #### 响应:
 
@@ -307,6 +312,27 @@
 | sessionKey | true  | YourSessionKey | 你的session key |
 | target     | false | 123456789      | 指定群的群号    |
 | memberId   | false | 987654321      | 群成员QQ号码    |
+
+#### 响应:
+
+```json5
+{
+  "nickname":"nickname",
+  "email":"email",
+  "age":18,
+  "level":1,
+  "sign":"mirai",
+  "sex":"UNKNOWN" // UNKNOWN, MALE, FEMALE
+}
+```
+### 获取QQ用户资料
+
+#### 请求:
+
+| 名字           | 可选      | 举例              | 说明              |
+|--------------|---------|-----------------|-----------------|
+| sessionKey   | true    | YourSessionKey  | 你的session key   |
+| target       | false   | 987654321       | 要查询的QQ号码        |
 
 #### 响应:
 
@@ -689,6 +715,8 @@
 
 ### 上传文件
 
+> 未通用，仅 http 支持
+
 ### 删除文件
 
 #### 请求
@@ -1055,10 +1083,6 @@
 
 使用此方法获取群员资料
 
-```
-[Get] /memberInfo?sessionKey=YourSessionKey&target=123456789
-```
-
 #### 请求:
 
 | 名字              | 可选  | 类型    | 举例             | 说明                 |
@@ -1090,10 +1114,6 @@
 ### 修改群员设置
 
 使用此方法修改群员资料（需要有相关限权）
-
-```
-[POST] /memberInfo
-```
 
 #### 请求:
 
@@ -1131,10 +1151,6 @@
 
 使用此方法修改群员的管理员权限（需要有群主限权）
 
-```
-[POST] /memberAdmin
-```
-
 #### 请求:
 
 ```json5
@@ -1152,6 +1168,114 @@
 | target            | false | Long    | 123456789        | 指定群的群号         |
 | memberId          | false | Long    | 987654321        | 群员QQ号             |
 | assign            | false | Boolean | true             | 是否设置为管理员       |
+
+#### 响应: 返回统一状态码
+
+```json5
+{
+  "code":0,
+  "msg":"success"
+}
+```
+
+## 群公告
+
+### 获取群公告
+
+此方法获取指定群公告列表
+
+#### 请求
+
+| 名字     | 可选    | 类型   | 举例        | 说明        |
+|--------|-------|------|-----------|-----------|
+| id     | false | Long | 123456789 | 群号        |
+| offset | true  | Long | 0         | 分页参数      |
+| size   | true  | Long | 10        | 分页参数，默认10 |
+
+#### 响应
+
+```json5
+{
+  "code": 0,
+  "msg": "",
+  "data":[
+    {
+      "group":{"id": 123456789, "name": "group name", "permission": "ADMINISTRATOR"},
+      "content": "群公告内容",
+      "senderId": 987654321,        // 发布者账号
+      "fid": "公告唯一id",
+      "allConfirmed": false,        // 是否所有群成员已确认
+      "confirmedMembersCount": 0,   // 确认群成员人数
+      "publicationTime": 1645085843 // 发布时间
+    }
+  ]
+}
+```
+
+### 发布群公告
+
+此方法向指定群发布群公告
+
+#### 请求
+
+```json5
+{
+  "target": 123456789,
+  "content": "测试公告内容",
+  "pinned": true
+}
+```
+
+| 名字                  | 可选    | 类型      | 举例        | 说明              |
+|---------------------|-------|---------|-----------|-----------------|
+| target              | false | Long    | 123456789 | 群号              |
+| content             | false | String  | ""        | 公告内容            |
+| sendToNewMember     | true  | Boolean | false     | 是否发送给新成员        |
+| pinned              | true  | Boolean | false     | 是否置顶            |
+| showEditCard        | true  | Boolean | false     | 是否显示群成员修改群名片的引导 |
+| showPopup           | true  | Boolean | false     | 是否自动弹出          |
+| requireConfirmation | true  | Boolean | false     | 是否需要群成员确认       |
+| imageUrl            | false | String  | null      | 公告图片url         |
+| imagePath           | false | String  | null      | 公告图片本地路径        |
+| imageBase64         | false | String  | null      | 公告图片base64编码    |
+
+#### 响应
+
+```json5
+{
+  "code": 0,
+  "msg": "",
+  "data":[
+    {
+      "group":{"id": 123456789, "name": "group name", "permission": "ADMINISTRATOR"},
+      "content": "群公告内容",
+      "senderId": 987654321,        // 发布者账号
+      "fid": "公告唯一id",
+      "allConfirmed": false,        // 是否所有群成员已确认
+      "confirmedMembersCount": 0,   // 确认群成员人数
+      "publicationTime": 1645085843 // 发布时间
+    }
+  ]
+}
+```
+
+### 删除群公告
+
+此方法删除指定群中一条公告
+
+#### 请求
+
+```json5
+{
+  "id": 123456789,
+  "fid": "群公告唯一id",
+}
+```
+
+| 名字  | 可选    | 类型      | 举例        | 说明              |
+|-----|-------|---------|-----------|-----------------|
+| id  | false | Long    | 123456789 | 群号              |
+| fid | false | String  | ""        | 群公告唯一id         |
 
 #### 响应: 返回统一状态码
 

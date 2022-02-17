@@ -9,11 +9,11 @@
 
 package net.mamoe.mirai.api.http.request.ws
 
-import extenssion.SetupBotMock
+import test.core.extenssion.SetupBotMock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import mock.BotMockStub
-import mock.withSession
+import test.core.mock.BotMockStub
+import test.core.mock.withSession
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO

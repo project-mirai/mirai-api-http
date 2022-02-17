@@ -2,20 +2,26 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.mirai-console") version "2.8.0"
-    id("net.mamoe.maven-central-publish")
+    id("net.mamoe.maven-central-publish") version "0.6.1"
+    id("net.mamoe.mirai-console") version "2.10.0"
 }
 
 val ktorVersion: String by rootProject.extra
-val atomicFuVersion: String by rootProject.extra
-fun kotlinx(id: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
-fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
+fun org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler.ktorApi(id: String, version: String = ktorVersion) {
+    api("io.ktor:ktor-$id:$version") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+        exclude(module = "slf4j-api")
+    }
+}
 
 kotlin {
     sourceSets["test"].apply {
         dependencies {
+            api("net.mamoe.yamlkt:yamlkt:0.9.0")
             api("org.slf4j:slf4j-simple:1.7.26")
             api(kotlin("test-junit5"))
+            ktorApi("server-test-host")
         }
     }
 
@@ -24,17 +30,14 @@ kotlin {
         languageSettings.optIn("kotlin.Experimental")
 
         dependencies {
-
-            // 支持到 localMode 调试使用, 打包时排除
-            api("net.mamoe.yamlkt:yamlkt:0.9.0")
-
-            api(ktor("server-cio"))
-            api(ktor("http-jvm"))
-            api(ktor("websockets"))
-            api(ktor("client-websockets"))
-
-            api(ktor("server-core"))
-            api(ktor("http"))
+            compileOnly("net.mamoe.yamlkt:yamlkt:0.9.0")
+            
+            ktorApi("server-cio")
+            ktorApi("http-jvm")
+            ktorApi("websockets")
+            ktorApi("client-websockets")
+            ktorApi("server-core")
+            ktorApi("http")
         }
     }
 }
@@ -44,24 +47,7 @@ project.version = httpVersion
 
 description = "Mirai HTTP API plugin"
 
-internal val excluded = listOf(
-    "kotlin-stdlib-.*",
-    "kotlin-reflect-.*",
-    "kotlinx-serialization-json.*",
-    "kotlinx-coroutines.*",
-    "kotlinx-serialization-core.*",
-    "slf4j-api.*"
-).map { "^$it\$".toRegex() }
-
-mirai {
-    this.configureShadow {
-        exclude { elm ->
-            excluded.any { it.matches(elm.path) }
-        }
-    }
-}
-
-tasks.create("buildCiJar", Jar::class) {
+tasks.register("buildCiJar", Jar::class) {
     dependsOn("buildPlugin")
     doLast {
         val buildPluginTask = tasks.getByName("buildPlugin", Jar::class)
@@ -80,21 +66,7 @@ tasks.test {
 
 mavenCentralPublish {
     githubProject("project-mirai", "mirai-api-http")
-    developer("Mamoe Technologies")
-    licenseAGplV3()
-    publication {
-        artifact(tasks["buildPlugin"]) {
-            extension = "mirai.jar"
-        }
-    }
-}
-
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-}
-
-repositories {
-    mavenCentral()
+    licenseFromGitHubProject("licenseAgplv3", "master")
 }
 
 tasks {

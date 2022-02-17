@@ -9,7 +9,6 @@
 
 package net.mamoe.mirai.api.http
 
-import io.ktor.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import net.mamoe.mirai.api.http.adapter.MahAdapter
@@ -28,7 +27,6 @@ object MahPluginImpl : CoroutineScope {
     override val coroutineContext: CoroutineContext =
         CoroutineExceptionHandler { _, throwable -> logger.error(throwable) }
 
-    @OptIn(KtorExperimentalAPI::class)
     fun start(builder: MahContextBuilder) {
 
         builder.run { MahContextHolder.invoke() }
