@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.maven-central-publish") version "0.6.1"
+    id("me.him188.maven-central-publish") version "1.0.0-dev-1"
     id("net.mamoe.mirai-console") version "2.10.0"
 }
 
