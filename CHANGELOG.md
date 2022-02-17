@@ -1,5 +1,30 @@
 # 更新日志
 
+## \[2.5.0\] - 2022-2-17
+
+### 修复
+
++ 配置文件中 adapter 声明顺序导致请求头中 sessionKey 丢失
+
+### 新增
+
++ 支持其他客户端的同步消息 `FriendMessageSyncEvent`, `GroupMessageSyncEvent`等 [新增消息类型](./docs/api/MessageType.md#同步消息链类型)
++ 支持商店标签 `MarketFace` [商店表情](./docs/api/MessageType.md#MarketFace)
++ 新增公告相关接口 [公告接口](./docs/api/API.md#群公告)
+  - [HttpAdapter](./docs/adapter/HttpAdapter.md#群公告)
+  - [WsAdapter](./docs/adapter/WebsocketAdapter.md#群公告)
+  - [ReverseWsAdapter](./docs/adapter/ReverseWebsocketAdapter.md#群公告)
+  - [WebhookAdapter](./docs/adapter/WebhookAdapter.md#群公告)
++ 新增查询非好友账号信息接口 [文档](./docs/api/API.md#获取QQ用户资料) @developer-ken
++ 查询 sessionInfo 接口追加到 WsAdapter, ReverseWsAdapter
++ 为 `websocket` 新增帧监听日志，通过配置文件的 debug 参数开启
+
+### 变更
+
++ 更新 core 到版本 2.10.0
+
+
+
 ## \[2.4.0\] - 2021-12-06
 
 ### 修复
