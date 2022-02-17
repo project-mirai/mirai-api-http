@@ -42,4 +42,5 @@ fun Application.httpModule(adapter: HttpAdapter) {
     aboutRouter()
     fileRouter()
     commandRouter()
+    announcementRouter()
 }

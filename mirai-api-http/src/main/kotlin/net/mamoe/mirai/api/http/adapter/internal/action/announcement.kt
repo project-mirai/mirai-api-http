@@ -8,10 +8,13 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.AnnouncementDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.GroupDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.AnnouncementDeleteDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.AnnouncementList
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.AnnouncementListDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.PublishAnnouncementDTO
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.contact.announcement.OfflineAnnouncement
@@ -21,20 +24,21 @@ import java.util.*
 /**
  * 获取群公告
  */
-internal suspend fun onListAnnouncement(dto: AnnouncementListDTO): List<AnnouncementDTO> {
+internal suspend fun onListAnnouncement(dto: AnnouncementListDTO): AnnouncementList {
     val group = dto.session.bot.getGroupOrFail(dto.id)
-    return group.announcements.asFlow()
+    val ls = group.announcements.asFlow()
         .drop(dto.offset)
         .take(dto.size)
-        .map { 
-            AnnouncementDTO(GroupDTO(group), it.senderId, it.fid, it.allConfirmed, it.confirmedMembersCount, it.publicationTime)
+        .map {
+            AnnouncementDTO(GroupDTO(group), it.content, it.senderId, it.fid, it.allConfirmed, it.confirmedMembersCount, it.publicationTime)
         }.toList()
+    return AnnouncementList(data = ls)
 }
 
 /**
  * 发布群公告
  */
-internal suspend fun onPublishAnnouncement(dto: PublishAnnouncementDTO): AnnouncementDTO {
+internal suspend fun onPublishAnnouncement(dto: PublishAnnouncementDTO): ElementResult {
     val group = dto.session.bot.getGroupOrFail(dto.target)
     val annImage = when {
         !dto.imageUrl.isNullOrBlank() -> withContext(Dispatchers.IO) {
@@ -61,7 +65,7 @@ internal suspend fun onPublishAnnouncement(dto: PublishAnnouncementDTO): Announc
     }.publishTo(group)
 
     return with(announcement) {
-        AnnouncementDTO(GroupDTO(group), senderId, fid, allConfirmed, confirmedMembersCount, publicationTime)
+        ElementResult(data = AnnouncementDTO(GroupDTO(group), content, senderId, fid, allConfirmed, confirmedMembersCount, publicationTime).toJsonElement())
     }
 }
 

@@ -118,6 +118,11 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             // command
             Paths.commandExecute -> execute(session, element, ::onExecuteCommand)
             Paths.commandRegister -> execute(session, element, ::onRegisterCommand)
+            
+            // announcement
+            Paths.announcementList -> execute(session, element, ::onListAnnouncement)
+            Paths.announcementPublish -> execute(session, element, ::onPublishAnnouncement)
+            Paths.announcementDelete -> execute(session, element, ::onDeleteAnnouncement)
 
             else -> StateCode.NoOperateSupport.toJsonElement()
         }

@@ -71,6 +71,11 @@ object Paths {
     // command
     const val commandExecute = "cmd_execute"
     const val commandRegister = "cmd_register"
+    
+    // announcement
+    const val announcementList = "anno_list"
+    const val announcementPublish = "anno_publish"
+    const val announcementDelete = "anno_delete"
 
     fun httpPath(s: String): String {
         val t = s.replace("_", "/")
