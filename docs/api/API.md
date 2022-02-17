@@ -284,7 +284,7 @@
 | 名字       | 可选  | 举例           | 说明            |
 | ---------- | ----- | -------------- | --------------- |
 | sessionKey | true  | YourSessionKey | 你的session key |
-| target     | false | 123456789      | 指定群的群号    |
+| target     | false | 123456789      | 指定好友账号        |
 
 #### 响应:
 
