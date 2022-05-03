@@ -2,8 +2,8 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("me.him188.maven-central-publish") version "1.0.0-dev-1"
-    id("net.mamoe.mirai-console") version "2.10.0"
+    id("net.mamoe.mirai-console") version "2.11.0-RC"
+    id("me.him188.maven-central-publish")
 }
 
 val ktorVersion: String by rootProject.extra
@@ -18,7 +18,7 @@ fun org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler.ktorApi(id: Strin
 kotlin {
     sourceSets["test"].apply {
         dependencies {
-            api("net.mamoe.yamlkt:yamlkt:0.9.0")
+            api("net.mamoe.yamlkt:yamlkt:0.11.0")
             api("org.slf4j:slf4j-simple:1.7.26")
             api(kotlin("test-junit5"))
             ktorApi("server-test-host")
@@ -26,12 +26,11 @@ kotlin {
     }
 
     sourceSets.all {
-        languageSettings.enableLanguageFeature("InlineClasses")
         languageSettings.optIn("kotlin.Experimental")
 
         dependencies {
             compileOnly("net.mamoe.yamlkt:yamlkt:0.9.0")
-            
+
             ktorApi("server-cio")
             ktorApi("http-jvm")
             ktorApi("websockets")
@@ -67,7 +66,38 @@ tasks.test {
 mavenCentralPublish {
     githubProject("project-mirai", "mirai-api-http")
     licenseFromGitHubProject("licenseAgplv3", "master")
+    publication {
+        artifact(tasks.getByName("buildPlugin"))
+        artifact(tasks.getByName("buildPluginLegacy"))
+    }
 }
+
+/*
+Publication Preview
+
+Root module:
+  GroupId: net.mamoe
+  ArtifactId: mirai-api-http
+  Version: 2.5.0
+
+Your project targets JVM platform only.
+Gradle users can add dependency by `implementation("net.mamoe:mirai-api-http:2.5.0")`.
+Maven users can add dependency as follows:
+<dependency>
+    <groupId>net.mamoe</groupId>
+    <artifactId>mirai-api-http</artifactId>
+    <version>2.5.0</version>
+</dependency>
+
+There are some extra files that are going to be published:
+
+[jvm]
+mirai-api-http-2.5.0.mirai2.jar  (extension=mirai2.jar, classifier=null)
+mirai-api-http-2.5.0.mirai.jar  (extension=mirai.jar, classifier=null)
+mirai-api-http-2.5.0-all.jar  (extension=jar, classifier=all)
+
+Publication Preview End
+ */
 
 tasks {
     compileKotlin {
@@ -76,8 +106,4 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile::class.java) {
-    kotlinOptions.freeCompilerArgs += "-XXLanguage:-JvmIrEnabledByDefault"
 }

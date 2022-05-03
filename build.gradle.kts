@@ -1,6 +1,6 @@
 plugins {
     id("io.codearte.nexus-staging") version "0.30.0"
-    id("net.mamoe.maven-central-publish") version "0.7.0" // to retrieve credentials
+    id("me.him188.maven-central-publish") version "1.0.0-dev-3" // to retrieve credentials
 }
 
 buildscript {

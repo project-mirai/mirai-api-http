@@ -17,10 +17,12 @@ import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.contact.announcement.Announcements
 import net.mamoe.mirai.contact.file.RemoteFiles
 import net.mamoe.mirai.message.MessageReceipt
-import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image
+import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.MessageSource
+import net.mamoe.mirai.message.data.OfflineAudio
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.MiraiInternalApi
-import net.mamoe.mirai.utils.RemoteFile
 import kotlin.coroutines.CoroutineContext
 
 class GroupMockStub(
@@ -72,8 +74,10 @@ class GroupMockStub(
         TODO("Not yet implemented")
     }
 
-    @Suppress("DEPRECATION_ERROR")
-    override suspend fun uploadVoice(resource: ExternalResource): Voice {
+
+    @Deprecated("use uploadAudio", replaceWith = ReplaceWith("uploadAudio(resource)"), level = DeprecationLevel.HIDDEN)
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
+    override suspend fun uploadVoice(resource: ExternalResource): net.mamoe.mirai.message.data.Voice {
         TODO("Not yet implemented")
     }
 
@@ -85,7 +89,10 @@ class GroupMockStub(
         get() = TODO("Not yet implemented")
     override val files: RemoteFiles
         get() = TODO("Not yet implemented")
-    override val filesRoot: RemoteFile
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Please use files instead.", replaceWith = ReplaceWith("files.root"))
+    override val filesRoot: net.mamoe.mirai.utils.RemoteFile
         get() = TODO("Not yet implemented")
     override val settings: GroupSettings
         get() = TODO("Not yet implemented")
