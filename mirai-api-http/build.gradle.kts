@@ -64,6 +64,7 @@ tasks.test {
 }
 
 mavenCentralPublish {
+    workingDir = rootProject.buildDir.resolve("pub").apply { mkdirs() }
     githubProject("project-mirai", "mirai-api-http")
     licenseFromGitHubProject("licenseAgplv3", "master")
     publication {
