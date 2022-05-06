@@ -67,6 +67,7 @@ mavenCentralPublish {
     workingDir = rootProject.buildDir.resolve("pub").apply { mkdirs() }
     githubProject("project-mirai", "mirai-api-http")
     licenseFromGitHubProject("licenseAgplv3", "master")
+    developer("Mamoe Technologies")
     publication {
         artifact(tasks.getByName("buildPlugin"))
         artifact(tasks.getByName("buildPluginLegacy"))
