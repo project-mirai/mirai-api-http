@@ -20,15 +20,14 @@ import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.file.AbsoluteFile
 import net.mamoe.mirai.contact.file.AbsoluteFolder
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import java.io.InputStream
 
 internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
-    val data = dto.getAbsoluteFolder().files()
+    val data = dto.getAbsoluteFolder().children()
         .drop(dto.offset).take(dto.size)
         .map {
             if (dto.withDownloadInfo) {
-                RemoteFileDTO(it, true, it.getUrl())
+                RemoteFileDTO(it, true, url = if (it is AbsoluteFile) it.getUrl() else null)
             } else {
                 RemoteFileDTO(it, false)
             }
@@ -52,7 +51,6 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     )
 }
 
-@OptIn(MiraiExperimentalApi::class)
 internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
