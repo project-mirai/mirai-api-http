@@ -1,3 +1,5 @@
+import net.mamoe.mirai.console.gradle.BuildMiraiPluginV2
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -49,7 +51,7 @@ description = "Mirai HTTP API plugin"
 tasks.register("buildCiJar", Jar::class) {
     dependsOn("buildPlugin")
     doLast {
-        val buildPluginTask = tasks.getByName("buildPlugin", Jar::class)
+        val buildPluginTask = tasks.getByName("buildPlugin", BuildMiraiPluginV2::class)
         val buildPluginFile = buildPluginTask.archiveFile.get().asFile
         project.buildDir.resolve("ci").also {
             it.mkdirs()
