@@ -18,7 +18,7 @@ fun org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler.ktorApi(id: Strin
 kotlin {
     sourceSets["test"].apply {
         dependencies {
-            api("net.mamoe.yamlkt:yamlkt:0.11.0")
+            api("net.mamoe.yamlkt:yamlkt:0.10.2")
             api("org.slf4j:slf4j-simple:1.7.26")
             api(kotlin("test-junit5"))
             ktorApi("server-test-host")
