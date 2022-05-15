@@ -26,6 +26,11 @@ internal data class RemoteFileDTO(
     val isDictionary: Boolean,
     val isDirectory: Boolean,
     val size: Long,
+    val sha1: String?,
+    val md5: String?,
+    val uploaderId: Long?,
+    val uploadTime: Long?,
+    val lastModifyTime: Long?,
     val downloadInfo: DownloadInfoDTO? = null,
 ) : DTO {
     
@@ -42,6 +47,11 @@ internal data class RemoteFileDTO(
         isDictionary = file.isFolder,
         isDirectory = file.isFolder,
         size = if (file.isFile) (file as AbsoluteFile).size else 0,
+        sha1 = if (file.isFile) (file as AbsoluteFile).sha1.toHexString() else null,
+        md5 = if (file.isFile) (file as AbsoluteFile).md5.toHexString() else null,
+        uploaderId = if (file.isFile) (file as AbsoluteFile).uploaderId else null,
+        uploadTime = if (file.isFile) (file as AbsoluteFile).uploadTime else null,
+        lastModifyTime = if (file.isFile) (file as AbsoluteFile).lastModifiedTime else null,
         downloadInfo = if (withDownload && file.isFile) DownloadInfoDTO(file as AbsoluteFile, url) else null
     )
 }
