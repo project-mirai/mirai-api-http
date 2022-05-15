@@ -37,7 +37,7 @@ internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
 
 internal suspend fun onGetFileInfo(dto: FileInfoDTO): ElementResult {
     val file = dto.getAbsoluteFile()
-    val data = if (dto.withDownloadInfo) { RemoteFileDTO(file, true, file.getUrl()) } 
+    val data = if (dto.withDownloadInfo) { RemoteFileDTO(file, true, file.getUrl()) }
     else { RemoteFileDTO(file, false) }
 
     return ElementResult(data.toJsonElement())
@@ -54,8 +54,12 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
 internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
-    val file = stream.useStream { 
-        contact.files.uploadNewFile("$path/$uploadFileName", it)
+    val file = stream.useStream {
+        val uploadFold = if (path.isEmpty() || path == "/") contact.files.root
+            else contact.files.root.resolveFolder(path)
+            ?: throw NoSuchElementException()
+
+        uploadFold.uploadNewFile(uploadFileName, it)
     }
 
     return ElementResult(
@@ -109,7 +113,7 @@ internal fun Bot.getFileSupported(dto: AbstractFileTargetDTO): FileSupported = w
 }
 
 // 获取一个确定的文件
-private suspend fun AbstractFileTargetDTO.getAbsoluteFile(): AbsoluteFile = 
+private suspend fun AbstractFileTargetDTO.getAbsoluteFile(): AbsoluteFile =
     session.bot.getFileSupported(this).files.root.let {
         if (path != null) {
             it.resolveFiles(path!!).firstOrNull()
@@ -123,7 +127,9 @@ private suspend fun AbstractFileTargetDTO.getAbsoluteFile(): AbsoluteFile =
 // 获取一个确定的文件夹
 private suspend fun AbstractFileTargetDTO.getAbsoluteFolder(): AbsoluteFolder =
     session.bot.getFileSupported(this).files.root.let {
-        if (path != null) {
+        if (path != null && path == "/") {
+            it
+        } else if (path != null) {
             it.resolveFolder(path!!)
         } else if (id.isEmpty()) {
             it // 根目录不能作为文件
