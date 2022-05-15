@@ -116,7 +116,7 @@ private suspend fun AbstractFileTargetDTO.getAbsoluteFile(): AbsoluteFile =
         } else if (id.isEmpty()) {
             null // 根目录不能作为文件
         } else {
-            it.resolveFileById(id)
+            it.resolveFileById(id, true)
         }
     } ?: throw NoSuchElementException()
 
