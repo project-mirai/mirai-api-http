@@ -42,7 +42,7 @@ internal data class RemoteFileDTO(
         isDictionary = file.isFolder,
         isDirectory = file.isFolder,
         size = if (file.isFile) (file as AbsoluteFile).size else 0,
-        downloadInfo = if (withDownload) DownloadInfoDTO(file as AbsoluteFile, url) else null
+        downloadInfo = if (withDownload && file.isFile) DownloadInfoDTO(file as AbsoluteFile, url) else null
     )
 }
 
