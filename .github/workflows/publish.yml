@@ -33,9 +33,9 @@ jobs:
         env:
           PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 
-      - name: Gradle closeRepository
-        run: >
-          ./gradlew mirai-api-http:closeRepository --info --stacktrace --scan
-        env:
-          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+#      - name: Gradle closeRepository
+#        run: >
+#          ./gradlew mirai-api-http:closeRepository --info --stacktrace --scan
+#        env:
+#          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 

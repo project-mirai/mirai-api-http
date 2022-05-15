@@ -58,5 +58,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./mirai-api-http/build/ci/mirai-api-http.jar
-          asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai.jar
+          asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai2.jar
           asset_content_type: application/zip
