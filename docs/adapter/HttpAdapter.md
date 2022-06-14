@@ -28,6 +28,7 @@ adapterSettings:
 + **[认证与会话](#认证与会话)**
   + [认证](#认证)
   + [绑定](#绑定)
+  + [获取会话信息](#获取会话信息)
   + [释放](#释放)
   + [传递(重要)](#传递(重要))
 + **[接收消息与事件](#接收消息与事件)**
@@ -166,6 +167,36 @@ adapterSettings:
 }
 ```
 
+### 获取会话信息
+
+使用此方法获取 session 的相关信息
+
+```
+[GET] /sessionInfo?sessionKey=YourSessionKey
+```
+
+#### 请求:
+
+| 名字       | 可选  | 举例           | 说明                 |
+| ---------- | ----- | -------------- | -------------------- |
+| sessionKey | false | YourSessionKey | 你的session key      |
+
+#### 响应: 
+
+```json5
+{
+  "code": 0,
+  "msg": "",
+  "data": {
+    "sessionKey": "YourSessionKey",
+    "qq": {
+      "id": 1234567890,
+      "nickname": "",
+      "remark": ""
+    }
+  }
+}
+```
 
 ### 释放
 
