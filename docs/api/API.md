@@ -8,6 +8,8 @@
 
 + [Adapter: 接口适配器](../adapter/Adapter.md)
 
+<!-- BEGIN DROP directory -->
+
 目录:
 
 + **[状态码](API.md#状态码)**
@@ -62,6 +64,9 @@
   + [执行命令](#执行命令)
   + [注册命令](#注册命令)
   + [命令接收](#命令接收)
+
+<!-- END DROP directory -->
+
 
 扩展阅读:
 
