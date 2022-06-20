@@ -32,7 +32,7 @@ Mirai HTTP API (console) plugin
 
 * 启动 `MCL` 完成自动更新和启动
 
-`./mcl`
+`./mcl -u`
 
 ## 开始使用
 
