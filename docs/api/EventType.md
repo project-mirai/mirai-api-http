@@ -317,6 +317,28 @@
 | operator         | Object | Bot被踢后获取操作人的 Member 对象 |
 
 
+### Bot因群主解散群而退出群, 操作人一定是群主
+
+```json5
+{
+  "type": "BotLeaveEventDisband",
+  "group": {
+    "id": 123456789,
+    "name": "Miral Technology",
+    "permission": "MEMBER"
+  },
+  operator: null
+}
+```
+
+| 名字             | 类型   | 说明                             |
+| ---------------- | ------ |--------------------------------|
+| group            | Object | Bot所在被解散的群的信息                  |
+| group.id         | Long   | 群号                             |
+| group.name       | String | 群名                             |
+| group.permission | String | Bot在群中的权限，ADMINISTRATOR或MEMBER |
+| operator         | Object | Bot离开群后获取操作人的 Member 对象        |
+
 
 ### 群消息撤回
 

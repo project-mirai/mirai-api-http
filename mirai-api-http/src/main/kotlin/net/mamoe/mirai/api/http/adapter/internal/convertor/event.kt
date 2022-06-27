@@ -48,6 +48,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is BotJoinGroupEvent.Retrieve -> BotJoinGroupEventDTO(GroupDTO(group))
     is BotLeaveEvent.Active -> BotLeaveEventActiveDTO(GroupDTO(group))
     is BotLeaveEvent.Kick -> BotLeaveEventKickDTO(GroupDTO(group), MemberDTO(operator))
+    is BotLeaveEvent.Disband - > BotLeaveEventDisbandDTO(GroupDTO(group), MemberDTO(operator))
     is GroupNameChangeEvent -> GroupNameChangeEventDTO(
         origin,
         new,
