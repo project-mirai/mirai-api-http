@@ -101,6 +101,13 @@ internal data class BotLeaveEventKickDTO(
 ) : BotEventDTO()
 
 @Serializable
+@SerialName("BotLeaveEventDisband")
+internal data class BotLeaveEventDisbandDTO(
+    val group: GroupDTO,
+    val operator: MemberDTO
+) : BotEventDTO()
+
+@Serializable
 @SerialName("GroupNameChangeEvent")
 internal data class GroupNameChangeEventDTO(
     val origin: String,
