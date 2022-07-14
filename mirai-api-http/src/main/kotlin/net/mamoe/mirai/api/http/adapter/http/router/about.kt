@@ -10,13 +10,14 @@
 package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
+import net.mamoe.mirai.api.http.adapter.internal.action.onGetBotsList
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetSessionInfo
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.EmptyAuthedDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.LongListRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 
@@ -36,5 +37,10 @@ internal fun Application.aboutRouter() = routing {
     httpAuthedGet<EmptyAuthedDTO>(Paths.sessionInfo) {
         val data = onGetSessionInfo(it)
         call.respondDTO(ElementResult(data = data.toJsonElement()))
+    }
+
+    get(Paths.botList) {
+        val data = onGetBotsList()
+        call.respondDTO(LongListRestfulResult(data))
     }
 }

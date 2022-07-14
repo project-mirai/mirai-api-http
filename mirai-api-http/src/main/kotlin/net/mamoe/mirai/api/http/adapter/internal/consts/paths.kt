@@ -17,6 +17,7 @@ object Paths {
     // about
     const val about = "about"
     const val sessionInfo = "sessionInfo"
+    const val botList = "botList"
 
     // event
     const val newFriend = "resp_newFriendRequestEvent"

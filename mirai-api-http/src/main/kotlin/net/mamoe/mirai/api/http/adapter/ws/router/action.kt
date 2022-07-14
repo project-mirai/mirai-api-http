@@ -16,6 +16,7 @@ import kotlinx.serialization.json.buildJsonObject
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
+import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
@@ -42,7 +43,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             // about
             Paths.about -> StringMapRestfulResult(onAbout()).toJsonElement()
             Paths.sessionInfo -> ElementResult(execute(session, element, ::onGetSessionInfo)).toJsonElement()
-
+            Paths.botList -> LongListRestfulResult(onGetBotsList()).toJsonElement()
 
             // event
             Paths.newFriend -> execute(session, element, ::onNewFriendRequestEvent)

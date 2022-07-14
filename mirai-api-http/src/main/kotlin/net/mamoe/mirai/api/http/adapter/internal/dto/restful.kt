@@ -44,6 +44,11 @@ internal data class StringListRestfulResult(
 ) : RestfulResult()
 
 @Serializable
+internal data class LongListRestfulResult(
+    val data: List<Long>
+) : RestfulResult()
+
+@Serializable
 internal data class StringMapRestfulResult(
     val data: Map<String, String>
 ) : RestfulResult()

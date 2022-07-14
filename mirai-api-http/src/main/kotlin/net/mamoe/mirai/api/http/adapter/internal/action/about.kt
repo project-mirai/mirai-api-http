@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.action
 
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.api.http.adapter.internal.dto.EmptyAuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.QQDTO
@@ -31,4 +32,11 @@ internal fun onAbout(): Map<String, String> {
  */
 internal fun onGetSessionInfo(dto: EmptyAuthedDTO): SessionDTO {
     return SessionDTO(dto.session.key, QQDTO(dto.session.bot.asFriend))
+}
+
+/**
+ * 获取所有已登录账号列表
+ */
+internal fun onGetBotsList(): List<Long> {
+    return Bot.instances.map { it.bot.id }
 }
