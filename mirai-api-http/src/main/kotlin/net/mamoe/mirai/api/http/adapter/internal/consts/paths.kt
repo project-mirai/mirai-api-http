@@ -59,6 +59,7 @@ object Paths {
     const val uploadImage = "uploadImage"
     const val uploadVoice = "uploadVoice"
     const val recall = "recall"
+    const val roamingMessages = "roamingMessages"
 
     // file
     const val fileList = "file_list"

@@ -127,4 +127,9 @@ internal fun Application.messageRouter() = routing {
      * 发送 戳一戳
      */
     httpAuthedPost(Paths.sendNudge, respondStateCodeStrategy(::onNudge))
+
+    /**
+     * 漫游消息
+     */
+    httpAuthedPost(Paths.roamingMessages, respondDTOStrategy(::onRoamingMessages))
 }

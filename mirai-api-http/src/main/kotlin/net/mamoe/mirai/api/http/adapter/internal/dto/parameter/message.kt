@@ -57,3 +57,10 @@ internal data class MessageIdDTO(
     val target: Long,
     val messageId: Int,
 ) : AuthedDTO()
+
+@Serializable
+internal data class RoamingMessageDTO(
+    val timeStart: Long,
+    val timeEnd: Long,
+    val target: Long,
+) : AuthedDTO()

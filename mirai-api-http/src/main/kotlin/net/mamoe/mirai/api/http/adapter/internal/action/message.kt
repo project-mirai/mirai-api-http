@@ -9,6 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.action
 
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
@@ -242,4 +244,14 @@ internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
         }
     }
     return StateCode.Success
+}
+
+internal suspend fun onRoamingMessages(dto: RoamingMessageDTO): EventListRestfulResult {
+    val friend = dto.session.bot.getFriendOrFail(dto.target)
+    val messagesIn = friend.roamingMessages.getMessagesIn(dto.timeStart, dto.timeEnd)
+    val packets = messagesIn.map { chain ->
+        FriendMessagePacketDTO(QQDTO(friend)).also { it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO }  }
+    }
+
+    return EventListRestfulResult(packets.toList())
 }
