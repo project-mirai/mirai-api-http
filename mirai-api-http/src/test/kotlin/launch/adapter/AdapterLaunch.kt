@@ -30,3 +30,13 @@ object WsAdapterLaunch : LaunchTester() {
         }
     }
 }
+
+object WebhookAdapterLaunch : LaunchTester() {
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        runBlocking {
+            runServer("webhook")
+        }
+    }
+}

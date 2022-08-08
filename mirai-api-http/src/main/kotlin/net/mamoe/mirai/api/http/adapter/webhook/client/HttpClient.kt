@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.webhook.client
 
 import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -21,7 +22,8 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
     /**
      * 使用 Ktor 的 [HttpClient]
      */
-    private val client = HttpClient() {
+    private val client = HttpClient(OkHttp) {
+
         install(WebhookHeader) { headers.forEach { (k, v) -> header(k, v) } }
     }
 
