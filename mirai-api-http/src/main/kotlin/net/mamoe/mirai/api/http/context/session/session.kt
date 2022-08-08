@@ -12,8 +12,8 @@ package net.mamoe.mirai.api.http.context.session
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import kotlin.coroutines.CoroutineContext
@@ -30,17 +30,17 @@ class StandardSession constructor(
     private val lifeCounter = atomic(0)
 
     private lateinit var _bot: Bot
-    private lateinit var _cache: MessageSourceCache
+    private lateinit var _cache: Persistence
     private var _isAuthed = false
     private var _closed = false
     private var _closing = false
 
     override val bot: Bot get() = if (isAuthed) _bot else throw RuntimeException("Session is not authed")
-    override val sourceCache: MessageSourceCache get() = if (isAuthed) _cache else throw RuntimeException("Session is not authed")
+    override val sourceCache: Persistence get() = if (isAuthed) _cache else throw RuntimeException("Session is not authed")
     override val isAuthed get() = _isAuthed
     override val isClosed get() = _closed
 
-    override fun authWith(bot: Bot, sourceCache: MessageSourceCache) {
+    override fun authWith(bot: Bot, sourceCache: Persistence) {
         if(isAuthed) {
             return
         }
@@ -91,7 +91,7 @@ class ListenableSessionWrapper(val session: Session) : Session by session {
      * 代理方法
      * 正常执行认证流程后, 直接开启
      */
-    override fun authWith(bot: Bot, sourceCache: MessageSourceCache) {
+    override fun authWith(bot: Bot, sourceCache: Persistence) {
         session.authWith(bot, sourceCache)
         val job = getExtElement(listenerJob)
         if (job == null) {
@@ -161,12 +161,12 @@ interface Session : CoroutineScope {
 
     val isAuthed: Boolean
     val isClosed: Boolean
-    val sourceCache: MessageSourceCache
+    val sourceCache: Persistence
 
     /**
      * 通过 Bot 和 cache 完成 Session 的认证过程, 执行 AuthedSession 初始化
      */
-    fun authWith(bot: Bot, sourceCache: MessageSourceCache)
+    fun authWith(bot: Bot, sourceCache: Persistence)
 
     /**
      * 引用 Session, 可以使得 Session 在关闭时先检查引用计数

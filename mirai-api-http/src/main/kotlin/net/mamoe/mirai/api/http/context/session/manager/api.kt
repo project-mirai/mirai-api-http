@@ -10,8 +10,8 @@
 package net.mamoe.mirai.api.http.context.session.manager
 
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
-import net.mamoe.mirai.api.http.context.session.*
+import net.mamoe.mirai.api.http.context.session.Session
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
 
 /**
  * Session管理
@@ -48,5 +48,5 @@ interface SessionManager {
 
     fun authedSessions(): List<Session>
 
-    fun getCache(id: Long): MessageSourceCache
+    fun getCache(bot: Bot): Persistence
 }

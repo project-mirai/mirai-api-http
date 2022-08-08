@@ -111,7 +111,7 @@ open class MahContext internal constructor() {
     fun handleBotEvent(session: Session, event: BotEvent) = adapters.forEach { adapter ->
         session.launch {
             if (event is MessageEvent) {
-                session.sourceCache.offer(event.source)
+                session.sourceCache.onMessage(event.source)
             }
             adapter.onReceiveBotEvent(event, session)
         }

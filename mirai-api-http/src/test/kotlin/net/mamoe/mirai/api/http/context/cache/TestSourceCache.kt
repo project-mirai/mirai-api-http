@@ -9,6 +9,7 @@
 
 package net.mamoe.mirai.api.http.context.cache
 
+import net.mamoe.mirai.api.http.spi.persistence.QueueCache
 import kotlin.concurrent.thread
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -48,7 +49,7 @@ class TestSourceCache {
     }
 }
 
-class SourceCache(maxSize: Int) : LRUCache<Int, Int>(maxSize) {
+class SourceCache(maxSize: Int) : QueueCache<Int, Int>(maxSize) {
 
     fun offer(value: Int) = put(value, value)
 }

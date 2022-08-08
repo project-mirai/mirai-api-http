@@ -12,12 +12,12 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
+import net.mamoe.mirai.api.http.spi.persistence.Context
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.api.http.util.*
 import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.UserOrBot
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.code.MiraiCode
@@ -52,7 +52,7 @@ internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
 /**
  * 转换一条消息链
  */
-internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: MessageSourceCache): MessageChain {
+internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: Persistence): MessageChain {
     return buildMessageChain { this@toMessageChain.forEach { it.toMessage(contact, cache)?.let(::add) } }
 }
 
@@ -60,7 +60,7 @@ internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: Mes
  * 转换一个具体的消息类型
  */
 @OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
-internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSourceCache) = when (this) {
+internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
     is FaceDTO -> when {
@@ -81,8 +81,8 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: MessageSource
     is ForwardMessageDTO -> buildForwardMessage(contact) {
         nodeList.forEach {
             if (it.messageId != null) {
-                cache.getOrDefault(it.messageId, null)?.apply {
-                    add(sender as UserOrBot, originalMessage, time)
+                cache.getMessageOrNull(Context(intArrayOf(it.messageId), contact))?.apply {
+                    add(fromId, "$fromId", originalMessage, time)
                 }
             } else if (it.senderId != null && it.senderName != null && it.messageChain != null) {
                 add(it.senderId, it.senderName, it.messageChain.toMessageChain(contact, cache), it.time ?: -1)

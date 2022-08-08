@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.adapter.internal.action
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.MemberDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
+import net.mamoe.mirai.api.http.spi.persistence.Context
 
 /**
  * 禁言所有人（需要相关权限）
@@ -65,9 +66,11 @@ internal suspend fun onQuit(dto: LongTargetDTO): StateCode {
 /**
  * 精华消息
  */
-internal suspend fun onSetEssence(essenceDTO: IntTargetDTO): StateCode {
-    val source = essenceDTO.session.sourceCache[essenceDTO.target]
-    return essenceDTO.session.bot.getGroup(source.target.id)?.run {
+internal suspend fun onSetEssence(essenceDTO: MessageIdDTO): StateCode {
+    // TODO fix
+    val context = Context(intArrayOf(essenceDTO.messageId), essenceDTO.session.bot.getGroupOrFail(essenceDTO.target))
+    val source = essenceDTO.session.sourceCache.getMessage(context)
+    return essenceDTO.session.bot.getGroup(essenceDTO.target)?.run {
         if (setEssenceMessage(source)) {
             StateCode.Success
         } else {

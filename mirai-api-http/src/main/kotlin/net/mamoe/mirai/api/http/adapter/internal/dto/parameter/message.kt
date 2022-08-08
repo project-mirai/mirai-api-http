@@ -51,3 +51,9 @@ internal class UploadImageRetDTO(
 internal class UploadVoiceRetDTO(
     val voiceId: String,
 ) : DTO
+
+@Serializable
+internal data class MessageIdDTO(
+    val target: Long,
+    val messageId: Int,
+) : AuthedDTO()

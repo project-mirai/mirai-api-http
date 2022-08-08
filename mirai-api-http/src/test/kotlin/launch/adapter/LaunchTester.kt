@@ -42,7 +42,7 @@ abstract class LaunchTester {
             MahPluginImpl.start {
                 sessionManager = DefaultSessionManager(verifyKey, this)
                 enableVerify = false
-                singleMode = true
+                singleMode = false
                 debug = true
 
                 for (adapter in adapters) {
@@ -54,7 +54,7 @@ abstract class LaunchTester {
         val bot = BotFactory.newBot(qq, password) {
             fileBasedDeviceInfo("device.json")
 
-            protocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH
+            protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE
         }
 
         bot.login()

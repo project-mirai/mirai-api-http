@@ -52,7 +52,7 @@ class WebhookAdapter : MahAdapter("webhook") {
 
             setting.destinations.forEach {
                 if (this is MessageEvent) {
-                    MahContextHolder.sessionManager.getCache(bot.id).offer(source)
+                    MahContextHolder.sessionManager.getCache(bot).onMessage(source)
                 }
 
                 bot.launch { hook(it, data, bot) }

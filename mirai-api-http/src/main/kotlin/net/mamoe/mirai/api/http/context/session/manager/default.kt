@@ -11,19 +11,24 @@ package net.mamoe.mirai.api.http.context.session.manager
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.context.MahContext
-import net.mamoe.mirai.api.http.context.cache.MessageSourceCache
 import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.StandardSession
-import net.mamoe.mirai.api.http.setting.MainSetting
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
+import net.mamoe.mirai.api.http.spi.persistence.PersistenceFactory
+import net.mamoe.mirai.api.http.spi.persistence.PersistenceManager
 
 class DefaultSessionManager(override val verifyKey: String, val context: MahContext) : SessionManager {
+
+    private val persistenceManager: PersistenceManager = PersistenceManager("built-id")
+    private val persistenceFactory: PersistenceFactory = persistenceManager.loadFactory()
+
     private val sessionMap: MutableMap<String, Session> = mutableMapOf()
-    private val cacheMap: MutableMap<Long, MessageSourceCache> = mutableMapOf()
+    private val cacheMap: MutableMap<Long, Persistence> = mutableMapOf()
 
     override fun createOneTimeSession(bot: Bot) =
         StandardSession("", manager = this).also { oneTimeSession ->
-            oneTimeSession.authWith(bot, getCache(bot.id))
+            oneTimeSession.authWith(bot, getCache(bot))
         }
 
     override fun createTempSession() = createTempSession(generateSessionKey())
@@ -41,7 +46,7 @@ class DefaultSessionManager(override val verifyKey: String, val context: MahCont
         }
         session.ref()
         session.putExtElement(ListenableSessionWrapper.botEventHandler, context::handleBotEvent)
-        session.authWith(bot, getCache(bot.id))
+        session.authWith(bot, getCache(bot))
         return session
     }
 
@@ -63,13 +68,13 @@ class DefaultSessionManager(override val verifyKey: String, val context: MahCont
     override fun authedSessions(): List<Session> =
         sessionMap.filterValues { it.isAuthed }.map { it.value }
 
-    override fun getCache(id: Long): MessageSourceCache {
-        var cache = cacheMap[id]
+    override fun getCache(bot: Bot): Persistence {
+        var cache = cacheMap[bot.id]
         if (cache == null) {
             synchronized(this) {
                 if (cache == null) {
-                    cache = MessageSourceCache(MainSetting.cacheSize)
-                    cacheMap[id] = cache!!
+                    cache = persistenceFactory.getService(bot)
+                    cacheMap[bot.id] = cache!!
                 }
             }
         }

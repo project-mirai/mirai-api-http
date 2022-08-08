@@ -16,9 +16,13 @@ import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.context.session.Session
+import net.mamoe.mirai.api.http.spi.persistence.Context
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.api.http.util.useUrl
-import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import net.mamoe.mirai.console.util.ContactUtils.getContact
+import net.mamoe.mirai.console.util.cast
+import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -29,8 +33,11 @@ import java.io.InputStream
 /**
  * 从缓存中通过 id 获取缓存消息
  */
-internal suspend fun onGetMessageFromId(dto: IntIdDTO): EventRestfulResult {
-    val source = dto.session.sourceCache[dto.id]
+@OptIn(ConsoleExperimentalApi::class)
+internal suspend fun onGetMessageFromId(dto: MessageIdDTO): EventRestfulResult {
+    val target = dto.session.bot.getContact(dto.target, false)
+    val context = Context(intArrayOf(dto.messageId), target)
+    val source = dto.session.sourceCache.getMessage(context)
 
     val packet = when (source) {
         is OnlineMessageSource.Outgoing.ToGroup -> GroupMessagePacketDTO(MemberDTO(source.target.botAsMember))
@@ -42,6 +49,13 @@ internal suspend fun onGetMessageFromId(dto: IntIdDTO): EventRestfulResult {
         is OnlineMessageSource.Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(source.sender))
         is OnlineMessageSource.Incoming.FromTemp -> TempMessagePacketDTO(MemberDTO(source.sender))
         is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDTO(QQDTO(source.sender))
+        is OfflineMessageSource -> when(source.kind) {
+            MessageSourceKind.GROUP -> GroupMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+            MessageSourceKind.FRIEND -> FriendMessagePacketDTO(QQDTO(target.cast<Friend>()))
+            // Maybe a bug
+            MessageSourceKind.TEMP -> TempMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+            MessageSourceKind.STRANGER -> StrangerMessagePacketDTO(QQDTO(target.cast<Stranger>()))
+        }
     }
 
     packet.messageChain = messageChainOf(source, source.originalMessage)
@@ -70,7 +84,6 @@ private suspend fun <C : Contact> sendMessage(
  * 发送消息给好友
  */
 internal suspend fun onSendFriendMessage(sendDTO: SendDTO): SendRetDTO {
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache[q].quote() }
     val bot = sendDTO.session.bot
 
     fun findQQ(qq: Long): Contact = bot.getFriend(qq)
@@ -84,8 +97,9 @@ internal suspend fun onSendFriendMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
+    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), qq)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(qq, cache), qq)
-    sendDTO.session.sourceCache.offer(receipt.source)
+    sendDTO.session.sourceCache.onMessage(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
 }
@@ -94,7 +108,6 @@ internal suspend fun onSendFriendMessage(sendDTO: SendDTO): SendRetDTO {
  * 发送消息到QQ群
  */
 internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache[q].quote() }
     val bot = sendDTO.session.bot
 
     val group = when {
@@ -104,8 +117,9 @@ internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
+    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), group)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(group, cache), group)
-    sendDTO.session.sourceCache.offer(receipt.source)
+    sendDTO.session.sourceCache.onMessage(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
 }
@@ -114,7 +128,6 @@ internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
  * 发送消息给临时会话
  */
 internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache[q].quote() }
     val bot = sendDTO.session.bot
 
     val member = when {
@@ -123,14 +136,14 @@ internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
+    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), member)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member, cache), member)
-    sendDTO.session.sourceCache.offer(receipt.source)
+    sendDTO.session.sourceCache.onMessage(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
 }
 
 internal suspend fun onSendOtherClientMessage(sendDTO: SendDTO): SendRetDTO {
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache[q].quote() }
     val bot = sendDTO.session.bot
 
     val client = when {
@@ -139,8 +152,9 @@ internal suspend fun onSendOtherClientMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
+    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), client)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(client, cache), client)
-    sendDTO.session.sourceCache.offer(receipt.source)
+    sendDTO.session.sourceCache.onMessage(receipt.source)
 
     return SendRetDTO(messageId = receipt.source.ids.firstOrNull() ?: -1)
 }
@@ -160,7 +174,7 @@ internal suspend fun onSendImageMessage(sendDTO: SendImageDTO): StringListRestfu
     val ls = sendDTO.urls.map { url -> url.useUrl { contact.uploadImage(it) } }
     val receipt = contact.sendMessage(buildMessageChain { addAll(ls) })
 
-    sendDTO.session.sourceCache.offer(receipt.source)
+    sendDTO.session.sourceCache.onMessage(receipt.source)
     return StringListRestfulResult(data = ls.map { image -> image.imageId })
 }
 
@@ -203,8 +217,10 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
 /**
  * 消息撤回
  */
-internal suspend fun onRecall(recallDTO: IntTargetDTO): StateCode {
-    recallDTO.session.sourceCache[recallDTO.target].recall()
+@OptIn(ConsoleExperimentalApi::class)
+internal suspend fun onRecall(recallDTO: MessageIdDTO): StateCode {
+    recallDTO.session.sourceCache.getMessage(Context(intArrayOf(recallDTO.messageId),
+        recallDTO.session.bot.getContact(recallDTO.target, false))).recall()
     return StateCode.Success
 }
 
