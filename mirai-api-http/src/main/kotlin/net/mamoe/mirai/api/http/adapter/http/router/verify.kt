@@ -13,6 +13,7 @@ import io.ktor.application.*
 import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.http.HttpAdapterSetting
 import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
 import net.mamoe.mirai.api.http.adapter.http.session.unloadHttpSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
@@ -22,7 +23,7 @@ import net.mamoe.mirai.api.http.util.getBotOrThrow
 /**
  * 授权路由
  */
-internal fun Application.authRouter() = routing {
+internal fun Application.authRouter(setting: HttpAdapterSetting) = routing {
 
     /**
      * 进行认证
@@ -32,7 +33,8 @@ internal fun Application.authRouter() = routing {
             || it.verifyKey == MahContextHolder.sessionManager.verifyKey
         ) {
             val session = if (MahContextHolder.singleMode) {
-                MahContextHolder.createSingleSession(verified = true).asHttpSession()
+                MahContextHolder.createSingleSession(verified = true)
+                    .asHttpSession(setting.unreadQueueMaxSize)
             } else {
                 MahContextHolder.sessionManager.createTempSession()
             }
@@ -59,7 +61,8 @@ internal fun Application.authRouter() = routing {
 
         if (!session.isAuthed) {
             val bot = getBotOrThrow(it.qq)
-            MahContextHolder.sessionManager.authSession(bot, it.sessionKey).asHttpSession()
+            MahContextHolder.sessionManager.authSession(bot, it.sessionKey)
+                .asHttpSession(setting.unreadQueueMaxSize)
         }
         call.respondStateCode(StateCode.Success)
     }

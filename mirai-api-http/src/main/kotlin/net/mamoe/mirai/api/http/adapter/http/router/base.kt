@@ -33,7 +33,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
     install(Authorization)
     install(HttpRouterAccessHandler) { enableAccessLog = MahContextHolder.debug }
 
-    authRouter()
+    authRouter(adapter.setting)
     messageRouter()
     eventRouter()
     infoRouter()

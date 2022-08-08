@@ -15,7 +15,14 @@ import java.util.concurrent.ConcurrentLinkedDeque
 /**
  * 未读消息队列
  */
-internal class UnreadQueue : ConcurrentLinkedDeque<EventDTO>() {
+internal class UnreadQueue(private val maxSize: Int) : ConcurrentLinkedDeque<EventDTO>() {
+
+    override fun offer(e: EventDTO?): Boolean {
+        if (maxSize > 0 && size in 0..maxSize) {
+            super.offer(e)
+        }
+        return true
+    }
 
     fun fetch(size: Int): List<EventDTO> {
         var cnt = size
@@ -44,4 +51,8 @@ internal class UnreadQueue : ConcurrentLinkedDeque<EventDTO>() {
     fun peek(size: Int): List<EventDTO> = asSequence().take(size).toList()
 
     fun peekLatest(size: Int): List<EventDTO> = reversed().asSequence().take(size).toList()
+
+    override fun removeLastOccurrence(o: Any?): Boolean {
+        return super.removeLastOccurrence(o)
+    }
 }

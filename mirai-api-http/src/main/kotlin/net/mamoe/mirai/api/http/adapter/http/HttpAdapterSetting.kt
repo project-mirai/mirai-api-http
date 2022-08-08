@@ -29,4 +29,8 @@ data class HttpAdapterSetting(
      */
     val cors: List<String> = listOf("*"),
 
+    /**
+     * 未读队列最大大小，为 0 时则不缓存
+     */
+    val unreadQueueMaxSize: Int = 100,
 )
