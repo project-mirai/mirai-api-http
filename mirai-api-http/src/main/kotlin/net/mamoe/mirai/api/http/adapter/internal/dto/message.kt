@@ -81,6 +81,11 @@ internal interface ImageLikeDTO {
     val url: String?
     val path: String?
     val base64: String?
+    val width: Int
+    val height: Int
+    val size: Long
+    val imageType: String
+    val isEmoji: Boolean
 }
 
 internal interface VoiceLikeDTO {
@@ -98,6 +103,11 @@ internal data class ImageDTO(
     override val url: String? = null,
     override val path: String? = null,
     override val base64: String? = null,
+    override val width: Int = 0,
+    override val height: Int = 0,
+    override val size: Long = 0,
+    override val imageType: String = "UNKNOWN",
+    override val isEmoji: Boolean = false,
 ) : MessageDTO(), ImageLikeDTO
 
 @Serializable
@@ -106,7 +116,12 @@ internal data class FlashImageDTO(
     override val imageId: String? = null,
     override val url: String? = null,
     override val path: String? = null,
-    override val base64: String? = null
+    override val base64: String? = null,
+    override val width: Int = 0,
+    override val height: Int = 0,
+    override val size: Long = 0,
+    override val imageType: String = "UNKNOWN",
+    override val isEmoji: Boolean = false,
 ) : MessageDTO(), ImageLikeDTO
 
 @Serializable

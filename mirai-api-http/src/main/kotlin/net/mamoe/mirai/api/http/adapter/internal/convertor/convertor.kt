@@ -100,7 +100,12 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
 }
 
 private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
-    !imageId.isNullOrBlank() -> Image(imageId!!)
+    !imageId.isNullOrBlank() -> Image(imageId!!) {
+        height = this@imageLikeToMessage.height
+        width = this@imageLikeToMessage.width
+        size = this@imageLikeToMessage.size
+        isEmoji = this@imageLikeToMessage.isEmoji
+    }
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
         url!!.useUrl { it.uploadAsImage(contact) }
     }
