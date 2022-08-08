@@ -144,10 +144,11 @@
 
 #### 请求:
 
-| 名字         | 类型   |  可选  | 举例            | 说明                 |
-| ----------- | ------ | ----- | -------------- | -------------------- |
-| sessionKey  | String | true  | YourSessionKey | 你的session key      |
-| id      | Int    | false | 1234567890     | 获取消息的messageId  |
+| 名字         | 类型     |  可选  | 举例            | 说明             |
+|------------|--------| ----- | -------------- |----------------|
+| sessionKey | String | true  | YourSessionKey | 你的session key  |
+| id         | Int    | false | 1234567890     | 获取消息的messageId |
+| target     | Long   | false | 1234567890     | 好友id或群id       |
 
 #### 响应: 
 
@@ -514,14 +515,16 @@
 ```json5
 {
   "sessionKey":"YourSession",
-  "target":987654321
+  "target":987654321,
+  "messageId":12345
 }
 ```
 
-| 名字         | 类型   | 可选  | 举例        | 说明                             |
-| ------------ | ------ | ----- | ----------- | -------------------------------- |
-| sessionKey   | String | true  | YourSession | 已经激活的Session                |
-| target       | Int    | false | 987654321   | 需要撤回的消息的messageId        |
+| 名字         | 类型     | 可选  | 举例          | 说明                |
+|------------|--------| ----- |-------------|-------------------|
+| sessionKey | String | true  | YourSession | 已经激活的Session      |
+| messageId  | Int    | false | 12345       | 需要撤回的消息的messageId |
+| target     | Long   | false | 987654321   | 好友id或群id          |
 
 #### 响应:
 
@@ -1072,10 +1075,11 @@
 }
 ```
 
-| 名字       | 可选  | 类型   | 举例             | 说明            |
-| ---------- | ----- | ------ | ---------------- | --------------- |
-| sessionKey | true  | String | "YourSessionKey" | 你的session key |
-| target     | false | Int   | 1234567           | 精华消息的messageId |
+| 名字         | 可选  | 类型     | 举例               | 说明             |
+|------------| ----- |--------|------------------|----------------|
+| sessionKey | true  | String | "YourSessionKey" | 你的session key  |
+| messageId  | false | Int    | 1234567          | 精华消息的messageId |
+| target     | false | Long   | 1234567890       | 群id            |
 
 #### 响应:
 
