@@ -32,6 +32,11 @@ internal fun Session.asHttpSession(): Session {
     return this
 }
 
+internal fun Session.unloadHttpSession(): Session {
+    removeExtElement(UnreadQueueKey)
+    return this
+}
+
 internal fun Session.isHttpSession(): Boolean {
     return getExtElement(UnreadQueueKey) != null
 }

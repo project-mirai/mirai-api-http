@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.context.session
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.api.http.adapter.common.NotVerifiedSessionException
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.event.Listener
@@ -35,8 +36,8 @@ class StandardSession constructor(
     private var _closed = false
     private var _closing = false
 
-    override val bot: Bot get() = if (isAuthed) _bot else throw RuntimeException("Session is not authed")
-    override val sourceCache: Persistence get() = if (isAuthed) _cache else throw RuntimeException("Session is not authed")
+    override val bot: Bot get() = if (isAuthed) _bot else throw NotVerifiedSessionException
+    override val sourceCache: Persistence get() = if (isAuthed) _cache else throw NotVerifiedSessionException
     override val isAuthed get() = _isAuthed
     override val isClosed get() = _closed
 
@@ -148,6 +149,10 @@ abstract class AbstractSession : Session {
     override fun <T> putExtElement(key: Session.ExtKey<T>, element: T) {
         extElement[key] = element
     }
+
+    override fun removeExtElement(key: Session.ExtKey<out Any>) {
+        extElement.remove(key)
+    }
 }
 
 /**
@@ -185,6 +190,7 @@ interface Session : CoroutineScope {
 
     fun <T> getExtElement(key: ExtKey<T>): T?
     fun <T> putExtElement(key: ExtKey<T>, element: T)
+    fun removeExtElement(key: ExtKey<out Any>)
 
     interface ExtKey<T>
 }

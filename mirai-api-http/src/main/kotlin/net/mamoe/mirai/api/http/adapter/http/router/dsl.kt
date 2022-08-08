@@ -20,12 +20,9 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
-import net.mamoe.mirai.api.http.adapter.common.NotVerifiedSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization.headerSession
 import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler.Feature.bodyContent
-import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
-import net.mamoe.mirai.api.http.adapter.http.session.isHttpSession
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
@@ -142,13 +139,8 @@ internal inline fun Route.httpAuthedMultiPart(
  * 获取 session 并进行类型校验
  */
 private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): Session {
-    val session = headerSession ?: MahContextHolder[sessionKey]
+    return headerSession ?: MahContextHolder[sessionKey]
         ?: throw IllegalSessionException
-    return when {
-        session.isAuthed && session.isHttpSession() -> session
-        session.isAuthed -> session.asHttpSession()
-        else -> throw NotVerifiedSessionException
-    }
 }
 
 /**

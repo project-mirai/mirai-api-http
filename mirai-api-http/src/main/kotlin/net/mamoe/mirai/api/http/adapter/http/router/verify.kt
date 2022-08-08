@@ -14,6 +14,7 @@ import io.ktor.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
+import net.mamoe.mirai.api.http.adapter.http.session.unloadHttpSession
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.util.getBotOrThrow
@@ -70,7 +71,10 @@ internal fun Application.authRouter() = routing {
         val bot = getBotOrThrow(it.qq)
         val session = MahContextHolder[it.sessionKey] ?: throw IllegalSessionException
         if (bot.id == session.bot.id) {
-            session.close()
+            session.apply {
+                unloadHttpSession()
+                close()
+            }
             call.respondStateCode(StateCode.Success)
         } else {
             throw NoSuchElementException()
