@@ -76,6 +76,7 @@ adapterSettings:
     host: localhost
     port: 8080
     cors: ["*"]
+    unreadQueueMaxSize: 100
   
   ## 详情看 websocket adapter 使用说明 配置
   ws:

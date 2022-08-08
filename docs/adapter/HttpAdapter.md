@@ -17,6 +17,9 @@ adapterSettings:
 
     ## 配置跨域, 默认允许来自所有域名
     cors: [*]
+
+    ## 未读队列最大容量，为 0 时不接收任何消息
+    unreadQueueMaxSize: 100
 ```
 
 ### 接口一览
