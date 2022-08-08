@@ -48,6 +48,11 @@ object MainSetting : ReadOnlyPluginConfig("setting") {
     val cacheSize: Int by value(4096)
 
     /**
+     * 消息持久化模式
+     */
+    val persistenceFactory: String by value("built-in")
+
+    /**
      * Adapter 配置
      */
     val adapterSettings: Map<String, YamlElement> by value()

@@ -14,13 +14,15 @@ import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.session.ListenableSessionWrapper
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.StandardSession
+import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.api.http.spi.persistence.PersistenceFactory
 import net.mamoe.mirai.api.http.spi.persistence.PersistenceManager
 
 class DefaultSessionManager(override val verifyKey: String, val context: MahContext) : SessionManager {
 
-    private val persistenceManager: PersistenceManager = PersistenceManager("built-id")
+    private val persistenceFactoryName = MainSetting.persistenceFactory
+    private val persistenceManager: PersistenceManager = PersistenceManager(persistenceFactoryName)
     private val persistenceFactory: PersistenceFactory = persistenceManager.loadFactory()
 
     private val sessionMap: MutableMap<String, Session> = mutableMapOf()
