@@ -354,7 +354,7 @@ adapterSettings:
 使用此方法获取所有当前登录账号
 
 ```
-[GET] /getBotList
+[GET] /botList
 ```
 
 通用接口定义: [获取登录账号](../api/API.md#获取登录账号)
