@@ -33,6 +33,7 @@ kotlin {
         dependencies {
             compileOnly("net.mamoe.yamlkt:yamlkt:0.9.0")
 
+            ktorApi("client-okhttp")
             ktorApi("server-cio")
             ktorApi("http-jvm")
             ktorApi("websockets")

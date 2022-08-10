@@ -13,6 +13,7 @@ import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdaptor
 import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
+import net.mamoe.mirai.utils.MiraiLogger
 
 /**
  * Adapter 工厂
@@ -21,6 +22,7 @@ import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
  */
 object MahAdapterFactory {
 
+    private val logger = MiraiLogger.Factory.create(MahAdapterFactory::class)
     private val registered: MutableMap<String, Class<out MahAdapter>> = mutableMapOf()
 
     init {
@@ -39,6 +41,9 @@ object MahAdapterFactory {
         val clazz = registered[name] ?: return null
         val noArgsConstructor = clazz.getConstructor() ?: return null
 
-        return kotlin.runCatching { noArgsConstructor.newInstance() }.getOrNull()
+        return kotlin.runCatching { noArgsConstructor.newInstance() }
+            .onFailure {
+                logger.error("build $name adapter failed", it)
+            }.getOrNull()
     }
 }
