@@ -65,7 +65,7 @@ internal suspend fun Message.toDTO() = when (this) {
     is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
     is FlashImage -> with(image) {
-        ImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
+        FlashImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
     }
     is OnlineAudio -> VoiceDTO(filename, urlForDownload, length = length)
     is ServiceMessage -> XmlDTO(content)
