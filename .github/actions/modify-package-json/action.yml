@@ -1,0 +1,24 @@
+name: 'Modify package json'
+description: 'Modify package json'
+inputs:
+  defaultChannel:
+    description: 'The Default Channel'
+    required: false
+  channel:
+    description: 'The channel will be edited'
+    required: false
+  version:
+    description: 'Version'
+    required: true
+  srcPath:
+    description: 'package.json path'
+    required: true
+  destPath:
+    description: 'Output path'
+    required: true
+outputs:
+  outputPath:
+    description: 'Output absolute path'
+runs:
+  using: 'node16'
+  main: 'index.js'
