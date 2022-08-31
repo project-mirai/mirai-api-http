@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -27,15 +27,69 @@ jobs:
           PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew buildPlugin
 
-      - run: ./gradlew mirai-api-http:publish --info  --scan
+      - name: Publish to Maven Central
+        run: ./gradlew mirai-api-http:publish --info  --scan
         env:
           PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 
-#      - name: Gradle closeRepository
-#        run: >
-#          ./gradlew mirai-api-http:closeRepository --info --stacktrace --scan
-#        env:
-#          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+      - name: Get Tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
 
+      - name: Generate Line Temp File
+        run: "cat CHANGELOG.md | grep -n '## \\\\' | cut -d: -f1 | head -n 2 >> line.tmp"
+
+      - name: Generate Release Log
+        run: "cat CHANGELOG.md | head -n $((`tail -n 1 line.tmp`-1)) | tail -n +`head -n 1 line.tmp` >> release.log"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: mirai-api-http-${{ steps.tag.outputs.tag }}
+          body_path: release.log
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./mirai-api-http/build/mirai/mirai-api-http-${{ steps.tag.outputs.tag }}.mirai2.jar
+          asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai2.jar
+          asset_content_type: application/zip
+
+      - name: Clone Mirai-Repo
+        uses: actions/checkout@v3
+        with:
+          repository: project-mirai/mirai-repo-mirror
+          token: ${{ secrets.MAMOEBOT_TOKEN }}
+          path: ./github/mirai-repo-mirror
+
+      - name: Modify package.json
+        uses: ./.github/actions/modify-package-json
+        with:
+          defaultChannel: stable-v2
+          version: ${{ steps.tag.outputs.tag }}
+          srcPath: .github/mirai-repo-mirror/net/mamoe/mirai-api-http/package.json
+          destPath: .github/package.json
+
+      - name: Move package.json
+        run: |
+          cp .github/package.json .github/mirai-repo-mirror/net/mamoe/mirai-api-http/package.json
+
+      - name: Create PR for Mirai-Repo
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.MAMOEBOT_TOKEN }}
+          commit-message: 'update: mirai-api-http ${{ steps.tag.outputs.tag }}'
+          title: 'update: mirai-api-http ${{ steps.tag.outputs.tag }}'
+          branch: create-pull-request/mah-update-version
+          delete-branch: true
