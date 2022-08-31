@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.reverse
 
 import net.mamoe.mirai.api.http.adapter.MahAdapter
+import net.mamoe.mirai.api.http.adapter.getSetting
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson

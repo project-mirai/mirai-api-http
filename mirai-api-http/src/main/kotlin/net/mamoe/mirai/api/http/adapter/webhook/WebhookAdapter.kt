@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.adapter.webhook
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
+import net.mamoe.mirai.api.http.adapter.getSetting
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull

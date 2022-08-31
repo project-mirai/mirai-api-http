@@ -7,6 +7,7 @@ buildscript {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.aliyun.com/repository/public")
         mavenCentral()
         gradlePluginPortal()
         google()
@@ -27,6 +28,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.aliyun.com/repository/public")
         mavenCentral()
         gradlePluginPortal()
         google()

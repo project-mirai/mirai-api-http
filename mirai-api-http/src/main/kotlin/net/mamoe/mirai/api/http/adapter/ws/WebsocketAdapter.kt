@@ -13,6 +13,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder
+import net.mamoe.mirai.api.http.adapter.getSetting
 import net.mamoe.mirai.api.http.adapter.internal.convertor.toDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.IgnoreEventDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson

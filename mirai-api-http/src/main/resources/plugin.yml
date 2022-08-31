@@ -1,0 +1,6 @@
+id: net.mamoe.mirai-api-http
+name: mirai-api-http
+main: net.mamoe.mirai.api.http.HttpApiPluginBase
+version: 2.6.2
+author: ryoii
+info: Mirai HTTP API Server Plugin
