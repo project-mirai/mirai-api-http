@@ -15,14 +15,18 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.reverse.Destination
 import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdapterSetting
 import net.mamoe.mirai.api.http.adapter.reverse.handleReverseWs
-import net.mamoe.mirai.api.http.adapter.ws.router.handleWsAction
+import net.mamoe.mirai.utils.MiraiLogger
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.math.roundToLong
+import java.net.ConnectException
+import java.net.SocketException
 
 class WsClient : CoroutineScope {
 
@@ -36,12 +40,21 @@ class WsClient : CoroutineScope {
 
     private lateinit var webSocketSession: DefaultClientWebSocketSession
 
-    fun listen(destination: Destination, setting: ReverseWebsocketAdapterSetting) {
+    fun listen(log: MiraiLogger, destination: Destination, setting: ReverseWebsocketAdapterSetting) {
         launch {
-            client.ws(buildWsRequest(destination, setting)) {
-                webSocketSession = this
+            while (client.isActive) {
+                try {
+                    client.ws(buildWsRequest(destination, setting)) {
+                        webSocketSession = this
 
-                handleReverseWs(this@WsClient)
+                        handleReverseWs(this@WsClient)
+                    }
+                }
+                catch (_: ConnectException){
+                }
+                catch (_: SocketException){}
+                log.warning("[reverse-ws] Connection to $destination failed. Retrying in ${setting.reconnectInterval} second(s).")
+                delay((setting.reconnectInterval * 1000).roundToLong())
             }
         }
     }

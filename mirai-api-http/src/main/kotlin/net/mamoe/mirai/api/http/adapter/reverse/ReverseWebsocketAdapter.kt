@@ -20,7 +20,7 @@ import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.event.events.BotEvent
 
-class ReverseWebsocketAdaptor : MahAdapter("reverse-ws") {
+class ReverseWebsocketAdapter : MahAdapter("reverse-ws") {
 
     private val clients = mutableListOf<WsClient>()
 
@@ -40,7 +40,7 @@ class ReverseWebsocketAdaptor : MahAdapter("reverse-ws") {
             val client = WsClient()
             clients += client
 
-            client.listen(dest, setting)
+            client.listen(log, dest, setting)
         }
     }
 
