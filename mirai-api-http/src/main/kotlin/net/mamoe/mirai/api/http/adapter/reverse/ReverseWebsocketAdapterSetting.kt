@@ -34,6 +34,8 @@ data class ReverseWebsocketAdapterSetting(
      * 主动消息 syncId 保留字
      */
     val reservedSyncId: String = "-1",
+
+    val reconnectInterval: Double = 5.0,
 )
 
 @Serializable
