@@ -19,7 +19,7 @@ Mirai 是一个在全平台下运行，提供 QQ Android 和 TIM PC 协议支持
 # mirai-api-http
 Mirai HTTP API (console) plugin
 
-<b>Mirai-API-http插件 提供HTTP API供所有语言使用mirai</b>
+<b>mirai-api-http插件 提供HTTP API供所有语言使用mirai</b>
 
 ## 安装`mirai-api-http`
 
@@ -56,13 +56,13 @@ adapters:
 enableVerify: true
 verifyKey: 1234567890
 
-## 开启一些调式信息
+## 开启一些调试信息
 debug: false
 
 ## 是否开启单 session 模式, 若为 true，则自动创建 session 绑定 console 中登录的 bot
 ## 开启后，接口中任何 sessionKey 不需要传递参数
 ## 若 console 中有多个 bot 登录，则行为未定义
-## 确保 console 中只有一个 bot 登陆时启用
+## 确保 console 中只有一个 bot 登录时启用
 singleMode: false
 
 ## 历史消息的缓存大小
