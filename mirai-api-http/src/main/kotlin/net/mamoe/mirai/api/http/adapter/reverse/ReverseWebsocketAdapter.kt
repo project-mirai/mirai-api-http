@@ -37,10 +37,10 @@ class ReverseWebsocketAdapter : MahAdapter("reverse-ws") {
 
         // 启动 websocket client 监听 destinations
         setting.destinations.forEach { dest ->
-            val client = WsClient()
+            val client = WsClient(log)
             clients += client
 
-            client.listen(log, dest, setting)
+            client.listen(dest, setting)
         }
     }
 
