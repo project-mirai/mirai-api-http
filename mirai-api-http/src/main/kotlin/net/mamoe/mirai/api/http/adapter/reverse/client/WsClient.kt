@@ -54,7 +54,7 @@ class WsClient(private var log: MiraiLogger) : CoroutineScope {
                     log.error("[reverse-ws] SocketException occurred: ${e.localizedMessage}")
                 }
                 webSocketSession = null
-                log.warning { "[reverse-ws] Connection to $destination interrupted. Trying reconnect in ${destination.reconnectInterval} ms" }
+                log.warning { "[reverse-ws] Connection to ${destination.host + ":" + destination.port + destination.path } interrupted. Trying reconnect in ${destination.reconnectInterval} ms." }
                 delay(destination.reconnectInterval)
             }
         }
