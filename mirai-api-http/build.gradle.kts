@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.mirai-console") version "2.12.0"
+    id("net.mamoe.mirai-console") version "2.13.0-dev-2da0a2d6"
     id("me.him188.maven-central-publish")
 }
 
@@ -21,7 +21,7 @@ kotlin {
     sourceSets["test"].apply {
         dependencies {
             api("net.mamoe.yamlkt:yamlkt:0.10.2")
-            api("org.slf4j:slf4j-simple:1.7.26")
+            api("org.slf4j:slf4j-simple:2.0.0")
             api(kotlin("test-junit5"))
             ktorApi("server-test-host")
         }
@@ -32,6 +32,7 @@ kotlin {
 
         dependencies {
             compileOnly("net.mamoe.yamlkt:yamlkt:0.9.0")
+            compileOnly("org.slf4j:slf4j-api:2.0.0")
 
             ktorApi("client-okhttp")
             ktorApi("server-cio")

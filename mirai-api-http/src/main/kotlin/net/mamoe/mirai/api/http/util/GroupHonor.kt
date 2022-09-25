@@ -27,7 +27,7 @@ class GroupHonor {
 
         @OptIn(MiraiExperimentalApi::class)
         operator fun get(honor: GroupHonorType): String {
-            return value[honor.value] ?: "未知群荣誉"
+            return value[honor.id] ?: "未知群荣誉"
         }
     }
 }

@@ -10,6 +10,7 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven(url = "https://repo.mirai.mamoe.net/snapshots/")
     }
 
     val kotlinVersion: String by project.extra
@@ -30,6 +31,7 @@ allprojects {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven(url = "https://repo.mirai.mamoe.net/snapshots/")
     }
 }
 
