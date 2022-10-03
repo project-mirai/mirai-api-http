@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.active.GroupActive
 import net.mamoe.mirai.contact.active.MemberActive
 import net.mamoe.mirai.data.GroupHonorType
 import net.mamoe.mirai.data.UserProfile
@@ -58,9 +59,10 @@ internal data class MemberDTO(
 internal data class GroupDTO(
     override val id: Long,
     val name: String,
-    val permission: MemberPermission
+    val permission: MemberPermission,
+    val active: GroupActiveDTO
 ) : ContactDTO() {
-    constructor(group: Group) : this(group.id, group.name, group.botPermission)
+    constructor(group: Group) : this(group.id, group.name, group.botPermission, GroupActiveDTO(group.active))
 }
 
 @Serializable
@@ -110,6 +112,17 @@ internal data class MemberActiveDTO(
     val honors: MutableList<String>
 ) : DTO {
     constructor(active: MemberActive) : this(active.temperature,active.point,active.rank, toStrList(active.honors))
+}
+
+@Serializable
+internal data class GroupActiveDTO(
+    val isHonorVisible: Boolean,
+    val isTemperatureVisible: Boolean,
+    val isTitleVisible: Boolean,
+    val rankTitles: Map<Int,String>,
+    val temperatureTitles: Map<Int,String>
+) : DTO {
+    constructor(active: GroupActive) : this(active.isHonorVisible,active.isTemperatureVisible,active.isTitleVisible,active.rankTitles,active.temperatureTitles)
 }
 
 fun toStrList(types: Set<GroupHonorType>): MutableList<String>{
