@@ -1,6 +1,9 @@
 package net.mamoe.mirai.api.http.spi.persistence
 
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.console.plugin.PluginManager
+import net.mamoe.mirai.console.plugin.dependencies
+import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.OnlineMessageSource
 import java.util.ServiceLoader
@@ -13,9 +16,22 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class PersistenceManager(private val serviceName: String) {
 
     fun loadFactory(): PersistenceFactory {
-        return ServiceLoader.load(PersistenceFactory::class.java)
-            .firstOrNull { it.getName() == serviceName }
-            ?: BuiltinPersistenceFactory()
+        val oc = Thread.currentThread().contextClassLoader
+        try {
+            for (plugin in PluginManager.plugins) {
+                if (plugin !is JvmPlugin) continue
+                if (plugin.dependencies.none { it.id == "net.mamoe.mirai-api-http" }) continue
+                val classLoader = plugin::class.java.classLoader
+                Thread.currentThread().contextClassLoader = classLoader
+                for (factory in ServiceLoader.load(PersistenceFactory::class.java, classLoader)) {
+                    if (factory.getName() == serviceName) return factory
+                }
+            }
+        } finally {
+            Thread.currentThread().contextClassLoader = oc
+        }
+
+        return BuiltinPersistenceFactory()
     }
 }
 
