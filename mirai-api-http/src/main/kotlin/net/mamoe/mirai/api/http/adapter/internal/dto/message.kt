@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MessageIdDTO
 
 @Serializable
 internal sealed class MessagePacketDTO : EventDTO() {
@@ -200,6 +201,7 @@ internal data class ForwardMessageNode(
     val senderName: String? = null,
     val messageChain: MessageChainDTO? = null,
     val messageId: Int? = null,
+    val messageRef: MessageIdDTO? = null,
 )
 
 @Serializable

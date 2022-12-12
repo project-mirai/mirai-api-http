@@ -15,6 +15,8 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.spi.persistence.Context
 import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.api.http.util.*
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import net.mamoe.mirai.console.util.ContactUtils.getFriendOrGroupOrNull
 import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -58,7 +60,7 @@ internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: Per
 /**
  * 转换一个具体的消息类型
  */
-@OptIn(MiraiExperimentalApi::class)
+@OptIn(MiraiExperimentalApi::class, ConsoleExperimentalApi::class)
 internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll
@@ -81,6 +83,11 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
         nodeList.forEach {
             if (it.messageId != null) {
                 cache.getMessageOrNull(Context(intArrayOf(it.messageId), contact))?.apply {
+                    add(fromId, "$fromId", originalMessage, time)
+                }
+            } else if (it.messageRef != null) {
+                val refContract = contact.bot.getFriendOrGroupOrNull(it.messageRef.target) ?: return@forEach
+                cache.getMessageOrNull(Context(intArrayOf(it.messageRef.messageId), refContract))?.apply {
                     add(fromId, "$fromId", originalMessage, time)
                 }
             } else if (it.senderId != null && it.senderName != null && it.messageChain != null) {
