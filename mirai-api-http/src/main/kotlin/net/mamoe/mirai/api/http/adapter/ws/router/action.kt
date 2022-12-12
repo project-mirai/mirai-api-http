@@ -9,7 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter.ws.router
 
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject

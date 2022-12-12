@@ -9,9 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.ws.router
 
-import io.ktor.application.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
@@ -25,7 +25,6 @@ import net.mamoe.mirai.api.http.context.MahContextHolder
 /**
  * ktor websocket 模块加载
  */
-@OptIn(ExperimentalWebSocketExtensionApi::class)
 fun Application.websocketRouteModule(wsAdapter: WebsocketAdapter) {
     install(WebSockets) {
         extensions { 

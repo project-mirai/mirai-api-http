@@ -10,7 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.webhook.client
 
 import io.ktor.client.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.util.*
@@ -41,11 +41,11 @@ class WebhookHeader(configuration: Configuration) {
         internal fun buildHeaders() = headers.build()
     }
 
-    companion object Feature : HttpClientFeature<Configuration, WebhookHeader> {
+    companion object Feature : HttpClientPlugin<Configuration, WebhookHeader> {
 
-        override fun install(feature: WebhookHeader, scope: HttpClient) {
+        override fun install(plugin: WebhookHeader, scope: HttpClient) {
             scope.requestPipeline.intercept(HttpRequestPipeline.State) {
-                feature.intercept(context)
+                plugin.intercept(context)
             }
         }
 

@@ -58,10 +58,13 @@ internal suspend fun onGetMessageFromId(dto: MessageIdDTO): EventRestfulResult {
             MessageSourceKind.TEMP -> TempMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
             MessageSourceKind.STRANGER -> StrangerMessagePacketDTO(QQDTO(target.cast<Stranger>()))
         }
+        else -> null
     }
 
-    packet.messageChain = messageChainOf(source, source.originalMessage)
-        .toDTO { d -> d != UnknownMessageDTO }
+    packet?.let {
+        it.messageChain = messageChainOf(source, source.originalMessage)
+            .toDTO { d -> d != UnknownMessageDTO }
+    }
 
     return EventRestfulResult(data = packet)
 }

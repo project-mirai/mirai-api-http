@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.adapter.serialization
 
 import io.ktor.http.*
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MessageIdDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.NudgeDTO
 import net.mamoe.mirai.api.http.context.MahContext
 import kotlin.test.Test
@@ -48,4 +49,13 @@ class KtorParameterFormatTest {
         assertEquals(MahContext.SINGLE_SESSION_KEY, dto.sessionKey, "KtorParameterSerializer default value decode failed")
     }
 
+    @Test
+    fun testMessage() {
+        val param = parametersOf(
+            "target" to listOf("123123"),
+            "messageId" to listOf("11111"),
+        )
+        val dto = KtorParameterFormat.DEFAULT.decode(param, MessageIdDTO.serializer())
+        println(dto)
+    }
 }

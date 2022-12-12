@@ -9,12 +9,12 @@
 
 package net.mamoe.mirai.api.http.adapter
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import net.mamoe.mirai.utils.MiraiLogger
-import org.slf4j.helpers.NOPLogger
+import org.slf4j.LoggerFactory
 import kotlin.properties.Delegates
 
 /**
@@ -48,7 +48,7 @@ abstract class MahKtorAdapter(name: String) : MahAdapter(name) {
                     coroutineLogger.error(throwable)
                 }
 
-                log = NOPLogger.NOP_LOGGER
+                log = LoggerFactory.getLogger(serverName)
 
                 modules.addAll(conf.modules)
 

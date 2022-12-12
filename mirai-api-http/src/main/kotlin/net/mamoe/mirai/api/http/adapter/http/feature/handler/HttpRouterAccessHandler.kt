@@ -9,13 +9,12 @@
 
 package net.mamoe.mirai.api.http.adapter.http.feature.handler
 
-import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.*
+import io.ktor.server.request.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.streams.*
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.router.respondDTO
@@ -78,7 +77,7 @@ class HttpRouterAccessHandler private constructor(configure: Configuration) {
         var enableAccessLog = false
     }
 
-    companion object Feature : ApplicationFeature<Application, Configuration, HttpRouterAccessHandler> {
+    companion object Feature : BaseApplicationPlugin<Application, Configuration, HttpRouterAccessHandler> {
 
         override val key: AttributeKey<HttpRouterAccessHandler> = AttributeKey("Http Router Exception Handler")
         val bodyContentAttrKey = AttributeKey<String>("Body Content")

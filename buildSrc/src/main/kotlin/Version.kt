@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 
 object Versions {
 
-    const val ktor = "1.6.7"
+    const val ktor = "2.1.1"
 }
 
 fun DependencyHandlerScope.ktorApi(id: String, version: String = Versions.ktor) =

@@ -24,7 +24,6 @@ import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.MiraiInternalApi
 import java.io.File
 import java.util.*
 
@@ -59,7 +58,7 @@ internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: Per
 /**
  * 转换一个具体的消息类型
  */
-@OptIn(MiraiInternalApi::class, MiraiExperimentalApi::class)
+@OptIn(MiraiExperimentalApi::class)
 internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) = when (this) {
     is AtDTO -> (contact as Group).getOrFail(target).at()
     is AtAllDTO -> AtAll

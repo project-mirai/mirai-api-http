@@ -9,9 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.defaultheaders.*
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization
 import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler
@@ -21,12 +21,11 @@ import net.mamoe.mirai.api.http.context.MahContextHolder
 fun Application.httpModule(adapter: HttpAdapter) {
     install(DefaultHeaders)
     install(CORS) {
-        method(HttpMethod.Options)
         allowNonSimpleContentTypes = true
         maxAgeInSeconds = 86_400 // aka 24 * 3600
 
         adapter.setting.cors.forEach {
-            host(it, schemes = listOf("http", "https"))
+            allowHost(it, schemes = listOf("http", "https"))
         }
     }
 

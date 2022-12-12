@@ -9,7 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter.ws
 
-import io.ktor.util.*
+import io.ktor.server.util.*
 import net.mamoe.mirai.api.http.util.smartTakeFrom
 import kotlin.test.Test
 import kotlin.test.assertEquals

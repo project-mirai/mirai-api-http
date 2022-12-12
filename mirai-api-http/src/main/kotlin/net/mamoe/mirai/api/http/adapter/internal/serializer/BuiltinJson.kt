@@ -31,7 +31,6 @@ internal class BuiltinJsonSerializer : InternalSerializer {
             isLenient = true
             ignoreUnknownKeys = true
 
-            @Suppress("UNCHECKED_CAST")
             serializersModule = SerializersModule {
                 polymorphicSealedClass(EventDTO::class, MessagePacketDTO::class)
                 polymorphicSealedClass(EventDTO::class, BotEventDTO::class)

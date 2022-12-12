@@ -20,14 +20,16 @@ class GroupHonor {
             3 to "群聊炽焰",
             5 to "冒尖小春笋",
             6 to "快乐源泉",
-            7 to "活跃头衔",
-            8 to "特殊头衔",
-            9 to "管理头衔",
+            7 to "学术新星",
+            8 to "至尊学神",
+            9 to "一笔当先",
+            10 to "壕礼皇冠",
+            11 to "善财福禄寿",
         )
 
         @OptIn(MiraiExperimentalApi::class)
         operator fun get(honor: GroupHonorType): String {
-            return value[honor.value] ?: "未知群荣誉"
+            return value[honor.id] ?: "未知群荣誉"
         }
     }
 }

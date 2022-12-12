@@ -9,8 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.reverse
 
-import io.ktor.client.features.websocket.*
-import io.ktor.http.cio.websocket.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.websocket.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode

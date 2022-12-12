@@ -1,12 +1,11 @@
 package net.mamoe.mirai.api.http.adapter.ws.extension
 
-import io.ktor.http.cio.websocket.*
 import io.ktor.util.*
+import io.ktor.websocket.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.utils.MiraiLogger
 
-@OptIn(ExperimentalWebSocketExtensionApi::class)
 class FrameLogExtension(configuration: Configuration) :
     WebSocketExtension<FrameLogExtension.Configuration> {
 

@@ -9,7 +9,7 @@
 
 package net.mamoe.mirai.api.http.adapter.ws
 
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapter
 import net.mamoe.mirai.api.http.adapter.MahKtorAdapterInitBuilder

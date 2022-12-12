@@ -14,6 +14,7 @@ import net.mamoe.mirai.contact.ContactList
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.GroupSettings
 import net.mamoe.mirai.contact.NormalMember
+import net.mamoe.mirai.contact.active.GroupActive
 import net.mamoe.mirai.contact.announcement.Announcements
 import net.mamoe.mirai.contact.file.RemoteFiles
 import net.mamoe.mirai.message.MessageReceipt
@@ -80,6 +81,9 @@ class GroupMockStub(
     override suspend fun uploadVoice(resource: ExternalResource): net.mamoe.mirai.message.data.Voice {
         TODO("Not yet implemented")
     }
+
+    override val active: GroupActive
+        get() = TODO("Not yet implemented")
 
     override val announcements: Announcements
         get() = TODO("Not yet implemented")

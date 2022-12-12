@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.mirai-console") version "2.12.0"
+    id("net.mamoe.mirai-console") version "2.13.2"
     id("me.him188.maven-central-publish")
 }
 
@@ -14,21 +14,24 @@ dependencies {
 
     implementation(project(":mirai-api-http-spi"))
 
-    // compile
     ktorImplementation("server-core")
-    ktorImplementation("websockets")
-    ktorImplementation("client-websockets")
     ktorImplementation("server-cio")
+    ktorImplementation("server-content-negotiation")
+    ktorImplementation("serialization-kotlinx-json")
+    ktorImplementation("server-websockets")
+    ktorImplementation("server-default-headers")
+    ktorImplementation("server-cors")
     ktorImplementation("client-okhttp")
-    ktorImplementation("http-jvm")
-    ktorImplementation("http")
-    implementation("net.mamoe.yamlkt:yamlkt:0.10.2")
+    ktorImplementation("client-websockets")
+
+    implementation("net.mamoe.yamlkt:yamlkt:0.12.0")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
 
     // test
-    testImplementation("net.mamoe.yamlkt:yamlkt:0.10.2")
-    testImplementation("org.slf4j:slf4j-simple:1.7.36")
+    testImplementation("net.mamoe.yamlkt:yamlkt:0.12.0")
+    testImplementation("org.slf4j:slf4j-simple:1.7.32")
     testImplementation(kotlin("test-junit5"))
-    ktorImplementation("server-test-host")
+    ktorTest("server-test-host")
 }
 
 val httpVersion: String by rootProject.extra

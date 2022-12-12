@@ -9,10 +9,10 @@
 
 package net.mamoe.mirai.api.http.adapter.ws.router
 
-import io.ktor.application.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.routing.*
-import io.ktor.util.pipeline.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.util.*
 import io.ktor.websocket.*
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -23,8 +23,7 @@ import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
-@OptIn(ExperimentalWebSocketExtensionApi::class)
-@ContextDsl
+@KtorDsl
 internal inline fun Route.miraiWebsocket(
     path: String,
     crossinline body: suspend DefaultWebSocketServerSession.(String) -> Unit
@@ -96,9 +95,8 @@ internal suspend fun DefaultWebSocketServerSession.closeWithCode(code: StateCode
 }
 
 
-@OptIn(ExperimentalWebSocketExtensionApi::class)
 internal fun <T: WebSocketExtension<*>> WebSocketServerSession.installExtension(factory: WebSocketExtensionFactory<*, T>) {
-    application.feature(WebSockets).extensionsConfig.build().find { it.factory.key == factory.key }?.let {
+    application.plugin(WebSockets).extensionsConfig.build().find { it.factory.key == factory.key }?.let {
         (extensions as MutableList<WebSocketExtension<*>>).add(it)
     }
 }

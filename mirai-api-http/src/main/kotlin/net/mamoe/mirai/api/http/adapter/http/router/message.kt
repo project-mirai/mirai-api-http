@@ -9,9 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.content.*
-import io.ktor.routing.*
+import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
