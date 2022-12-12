@@ -28,6 +28,11 @@ class DefaultSessionManager(override val verifyKey: String, val context: MahCont
     private val sessionMap: MutableMap<String, Session> = mutableMapOf()
     private val cacheMap: MutableMap<Long, Persistence> = mutableMapOf()
 
+    private val emptySession: Session by lazy { StandardSession("empty", this) }
+    override fun getEmptySession(): Session {
+        return emptySession
+    }
+
     override fun createOneTimeSession(bot: Bot) =
         StandardSession("", manager = this).also { oneTimeSession ->
             oneTimeSession.authWith(bot, getCache(bot))

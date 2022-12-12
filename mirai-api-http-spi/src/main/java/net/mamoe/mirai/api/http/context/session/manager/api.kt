@@ -24,6 +24,8 @@ interface SessionManager {
      */
     val verifyKey: String
 
+    fun getEmptySession(): Session
+
     fun createOneTimeSession(bot: Bot): Session
 
     /**

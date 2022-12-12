@@ -14,6 +14,7 @@ import io.ktor.websocket.*
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.common.StateCode
+import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
@@ -36,7 +37,17 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
 
         sessionKey = kotlin.runCatching {
 
-            handleVerify(command)?.key
+            when(command.command) {
+               "verify" -> handleVerify(command)?.key
+                Paths.about, Paths.botList -> {
+                    outgoing.handleWsAction(MahContextHolder.sessionManager.getEmptySession(), String(frame.data))
+                    null
+                }
+                else -> {
+                    sendWithCode(StateCode.AuthKeyFail)
+                    null
+                }
+            }
 
         }.onFailure {
             outgoing.send(Frame.Text(it.localizedMessage ?: ""))
@@ -70,11 +81,6 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
 }
 
 private suspend fun DefaultClientWebSocketSession.handleVerify(commandWrapper: WsIncoming): Session? {
-    if (commandWrapper.command != "verify") {
-        sendWithCode(StateCode.AuthKeyFail)
-        return null
-    }
-
     val dto = commandWrapper.content?.jsonElementParseOrNull<ReverseAuthDTO>()
 
     if (dto == null) {
