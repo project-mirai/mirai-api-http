@@ -10,6 +10,8 @@
 package net.mamoe.mirai.api.http.context
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
@@ -29,7 +31,7 @@ object MahContextHolder: MahContext() {
 
     operator fun get(sessionKey: String): Session? {
         if (singleMode) {
-            return sessionManager[SINGLE_SESSION_KEY] ?: createSingleSession()
+            return sessionManager[SINGLE_SESSION_KEY] ?: runBlocking { createSingleSession() }
         }
 
         return sessionManager[sessionKey]
@@ -43,6 +45,7 @@ open class MahContext internal constructor() {
 
     companion object {
         const val SINGLE_SESSION_KEY = "SINGLE_SESSION"
+        val mutex = Mutex()
     }
 
     /**
@@ -85,28 +88,26 @@ open class MahContext internal constructor() {
     }
 
     // 生成 SingleMode Session
-    fun createSingleSession(verified: Boolean = false): Session {
+    suspend fun createSingleSession(verified: Boolean = false): Session {
+        mutex.lock()
         var session = sessionManager[SINGLE_SESSION_KEY]
 
-        // double check lock
         if (session == null) {
-            synchronized(this) {
-                if (session == null) {
-                    session = sessionManager.createTempSession(SINGLE_SESSION_KEY)
-                }
-            }
+            session = sessionManager.createTempSession(SINGLE_SESSION_KEY)
         }
 
         val autoVerify = !enableVerify
-        if (!session!!.isAuthed && (verified || autoVerify)) {
+        if (!session.isAuthed && (verified || autoVerify)) {
             session = authSingleSession()
         }
 
         adapters.firstOrNull { it is HttpAdapter }?.let {
-            session!!.asHttpSession((it as HttpAdapter).setting.unreadQueueMaxSize)
+            session.asHttpSession((it as HttpAdapter).setting.unreadQueueMaxSize)
         }
 
-        return session!!
+        return session.also {
+            mutex.unlock()
+        }
     }
 
     private fun authSingleSession(): Session {
