@@ -103,7 +103,8 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         fromId,
         groupId,
         groupName,
-        fromNick
+        fromNick,
+        invitorId,
     )
     is BotInvitedJoinGroupRequestEvent -> BotInvitedJoinGroupRequestEventDTO(
         eventId,

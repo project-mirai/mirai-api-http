@@ -1100,18 +1100,20 @@
   "groupId": 654321,
   "groupName": "Group",
   "nick": "Nick Name",
-  "message": ""
+  "message": "",
+  "invitorId": null
 }
 ```
 
-| 名字      | 类型   | 说明                         |
-| --------- | ------ | ---------------------------- |
+| 名字      | 类型     | 说明             |
+| --------- |--------|----------------|
 | eventId   | Long   | 事件标识，响应该事件时的标识 |
-| fromId    | Long   | 申请人QQ号                   |
-| groupId   | Long   | 申请人申请入群的群号         |
-| groupName | String | 申请人申请入群的群名称       |
-| nick      | String | 申请人的昵称或群名片         |
-| message   | String | 申请消息                  |
+| fromId    | Long   | 申请人QQ号         |
+| groupId   | Long   | 申请人申请入群的群号     |
+| groupName | String | 申请人申请入群的群名称    |
+| nick      | String | 申请人的昵称或群名片     |
+| message   | String | 申请消息           |
+| invitorId   | Long   | 邀请人，可能为空       |
 
 
 
