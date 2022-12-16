@@ -55,12 +55,6 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
-    is GroupEntranceAnnouncementChangeEvent -> GroupEntranceAnnouncementChangeEventDTO(
-        origin,
-        new,
-        GroupDTO(group),
-        operator?.let(::MemberDTO)
-    )
     is GroupMuteAllEvent -> GroupMuteAllEventDTO(origin, new, GroupDTO(group), operator?.let(::MemberDTO))
     is GroupAllowAnonymousChatEvent -> GroupAllowAnonymousChatEventDTO(
         origin,
