@@ -76,6 +76,6 @@ class DefaultSessionManager(override val verifyKey: String, val context: MahCont
         sessionMap.filterValues { it.isAuthed }.map { it.value }
 
     override fun getCache(bot: Bot): Persistence {
-        return cacheMap.getOrDefault(bot.id, persistenceFactory.getService(bot))
+        return cacheMap.computeIfAbsent(bot.id) { persistenceFactory.getService(bot) }
     }
 }
