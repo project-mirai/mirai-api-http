@@ -9,6 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.webhook
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
@@ -25,13 +27,16 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
-class WebhookAdapter : MahAdapter("webhook") {
+class WebhookAdapter : MahAdapter("webhook"), CoroutineScope {
 
     internal val setting: WebhookAdapterSetting by lazy {
         getSetting() ?: WebhookAdapterSetting()
     }
 
+    override val coroutineContext: CoroutineContext = EmptyCoroutineContext
     private val client = WebhookHttpClient(setting.extraHeaders)
     private var botEventListener: Listener<BotEvent>? = null
 
@@ -56,7 +61,11 @@ class WebhookAdapter : MahAdapter("webhook") {
                     MahContextHolder.sessionManager.getCache(bot).onMessage(source)
                 }
 
-                bot.launch { hook(it, data, bot) }
+                if (bot.isActive && bot.isOnline) {
+                    bot.launch { hook(it, data, bot) }
+                } else {
+                    launch { hook(it, data, bot) }
+                }
             }
         }
     }
