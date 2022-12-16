@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.common.NoSuchBotException
+import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
+import net.mamoe.mirai.api.http.adapter.http.session.asHttpSession
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.context.session.manager.SessionManager
 import net.mamoe.mirai.event.events.BotEvent
@@ -98,6 +100,10 @@ open class MahContext internal constructor() {
         val autoVerify = !enableVerify
         if (!session!!.isAuthed && (verified || autoVerify)) {
             session = authSingleSession()
+        }
+
+        adapters.firstOrNull { it is HttpAdapter }?.let {
+            session!!.asHttpSession((it as HttpAdapter).setting.unreadQueueMaxSize)
         }
 
         return session!!
