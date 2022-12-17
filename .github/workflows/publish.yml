@@ -71,7 +71,7 @@ jobs:
         with:
           repository: project-mirai/mirai-repo-mirror
           token: ${{ secrets.MAMOEBOT_TOKEN }}
-          path: ./github/mirai-repo-mirror
+          path: ./.github/mirai-repo-mirror
 
       - name: Modify package.json
         uses: ./.github/actions/modify-package-json
