@@ -15,15 +15,20 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.reverse.Destination
 import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdapterSetting
 import net.mamoe.mirai.api.http.adapter.reverse.handleReverseWs
+import net.mamoe.mirai.utils.MiraiLogger
+import net.mamoe.mirai.utils.warning
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import java.net.ConnectException
+import java.net.SocketException
 
-class WsClient : CoroutineScope {
+class WsClient(private var log: MiraiLogger) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext = EmptyCoroutineContext
 
@@ -33,14 +38,24 @@ class WsClient : CoroutineScope {
         install(WebSockets)
     }
 
-    private lateinit var webSocketSession: DefaultClientWebSocketSession
+    private var webSocketSession: DefaultClientWebSocketSession? = null
 
     fun listen(destination: Destination, setting: ReverseWebsocketAdapterSetting) {
         launch {
-            client.ws(buildWsRequest(destination, setting)) {
-                webSocketSession = this
+            while (client.isActive) {
+                try {
+                    client.ws(buildWsRequest(destination, setting)) {
+                        webSocketSession = this
 
-                handleReverseWs(this@WsClient)
+                        handleReverseWs(this@WsClient)
+                    }
+                } catch (_: ConnectException) { // ignored
+                } catch (e: SocketException) { // log
+                    log.error("[reverse-ws] SocketException occurred: ${e.localizedMessage}")
+                }
+                webSocketSession = null
+                log.warning { "[reverse-ws] Connection to ${destination.host + ":" + destination.port + destination.path } interrupted. Trying reconnect in ${destination.reconnectInterval} ms." }
+                delay(destination.reconnectInterval)
             }
         }
     }
@@ -51,7 +66,8 @@ class WsClient : CoroutineScope {
 
     suspend fun send(content: String) {
         if (client.isActive) {
-            webSocketSession.outgoing.send(Frame.Text(content))
+            webSocketSession?.also { it.outgoing.send(Frame.Text(content)) }
+                ?: log.warning { "[reverse-ws] Dropped content $content while waiting for reconnect." }
         }
     }
 

@@ -147,7 +147,7 @@
 | 名字         | 类型     |  可选  | 举例            | 说明             |
 |------------|--------| ----- | -------------- |----------------|
 | sessionKey | String | true  | YourSessionKey | 你的session key  |
-| id         | Int    | false | 1234567890     | 获取消息的messageId |
+| messageId  | Int    | false | 1234567890     | 获取消息的messageId |
 | target     | Long   | false | 1234567890     | 好友id或群id       |
 
 #### 响应: 

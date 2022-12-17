@@ -73,4 +73,9 @@ data class Destination(
      * 额外请求头
      */
     val extraHeaders: Map<String, String> = emptyMap(),
+
+    /**
+     * 重试连接的间隔 (按毫秒计)
+     */
+    val reconnectInterval: Long = 5000,
 )

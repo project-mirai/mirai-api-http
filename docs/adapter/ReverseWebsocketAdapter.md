@@ -25,6 +25,8 @@ adapterSettings:
       ## 额外请求头，该连接有效
       extraHeaders:
         q: 1
+      ## 重试连接的间隔（以毫秒计)
+      reconnectInterval: 5000
 
     ## 同上
     - host: localhost2
