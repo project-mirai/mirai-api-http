@@ -4,7 +4,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.mirai-console") version "2.13.2"
     id("me.him188.maven-central-publish")
 }
 
@@ -24,7 +23,7 @@ dependencies {
     ktorImplementation("client-okhttp")
     ktorImplementation("client-websockets")
 
-    implementation("net.mamoe.yamlkt:yamlkt:0.12.0")
+    compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
     implementation("org.slf4j:slf4j-simple:1.7.32")
 
     // test
