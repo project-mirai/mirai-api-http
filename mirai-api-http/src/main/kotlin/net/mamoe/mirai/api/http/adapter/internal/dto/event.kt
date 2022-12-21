@@ -236,7 +236,8 @@ internal data class MemberJoinRequestEventDTO(
     val fromId: Long,
     val groupId: Long,
     val groupName: String,
-    val nick: String
+    val nick: String,
+    val invitorId: Long?,
 ) : BotEventDTO()
 
 @Serializable

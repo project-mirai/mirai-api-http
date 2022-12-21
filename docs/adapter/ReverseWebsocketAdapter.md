@@ -25,6 +25,8 @@ adapterSettings:
       ## 额外请求头，该连接有效
       extraHeaders:
         q: 1
+      ## 重试连接的间隔（以毫秒计)
+      reconnectInterval: 5000
 
     ## 同上
     - host: localhost2
@@ -107,6 +109,10 @@ adapterSettings:
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请)
   + [Bot被邀请入群申请](#Bot被邀请入群申请)
++ **[Console命令](#Console命令)**
+  + [执行命令](#执行命令)
+  + [注册命令](#注册命令)
+  + [命令接收](#命令接收)
 
 ## 认证与会话
 
@@ -572,3 +578,29 @@ adapterSettings:
 ```
 
 通用接口定义: [Bot被邀请入群申请](../api/API.md#Bot被邀请入群申请)
+
+## Console命令
+
+### 执行命令
+
+使用此方法向 console 提交一个消息作为命令执行
+
+```
+命令字: cmd_execute
+```
+
+通用接口定义: [执行命令](../api/API.md#执行命令)
+
+### 注册命令
+
+使用此方法向 console 注册一个指令, 当指令触发时, 会生成一个 [CommandExecutedEvent](../api/EventType.md#命令被执行)
+
+```
+命令字: cmd_register
+```
+
+通用接口定义: [执行命令](../api/API.md#注册命令)
+
+### 命令接收
+
+命令被调用时, 会触发 [CommandExecutedEvent](../api/EventType.md#命令被执行)

@@ -1,6 +1,37 @@
 # 更新日志
 
 
+## \[2.7.1\] - 2022-12-20
+
+### 修复
+
++ 修复依赖错误导致无法启动
+
+
+
+## \[2.7.0\] - 2022-12-17
+
+### 修复
+
++ 修复无法从其他插件中加载消息持久化 SPI 的问题 (#639)
++ 修复开启 single mode 并 关闭 verify 时, 无法使用 http 接口 (#658). (不建议这样使用)
++ 修复 webhook 在 bot 下线后无法发送 bot 离线事件 (#641)
++ 修复上传群文件后没有发送群消息提醒 (#637)
+
+### 新增
+
++ 支持反向 websocket 重连, 详情见 [反向 ws 配置文件](docs/adapter/ReverseWebsocketAdapter.md) (#621)
++ 支持反向 websocket 未认证时执行 `about`, `botList` 指令 (#610)
++ 转发消息支持从其他群、好友对话的缓存中获取消息来进行转发消息的构建，新增 `messageRef` 字段，[详情见文档](docs/api/MessageType.md#forwardmessage) (#623)
++ 用户申请入群事件 `MemberJoinRequestEvent` 新增可空字段 `invitorId`, 表示可能存在的邀请人
+
+### 变更
+
++ 升级 kotlin, ktor 版本
++ 升级 mirai core 版本, 支持 2.13.2
+
+
+
 ## \[2.6.2\] - 2022-8-31
 
 ### 修复

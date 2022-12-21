@@ -447,20 +447,29 @@
       "time": 0,
       "senderName": "sender name",
       "messageChain": [],
-      "messageId": 123
+      "messageId": 123,
+      "messageRef": {
+        "messageId": 123,
+        "target": 321,
+      }
     }
   ] 
 }
 ```
 
-| 名字 | 类型   | 说明         |
-| ---- | ------ | ------------ |
-| nodeList | object | 消息节点 |
-| senderId | Long | 发送人QQ号 |
-| time | Int | 发送时间 |
-| senderName | String | 显示名称 |
-| messageChain | Array | 消息数组 |
-| messageId | Int | 可以只使用消息messageId，从缓存中读取一条消息作为节点 |
+| 名字                   | 类型     | 说明                                     |
+|----------------------|--------|----------------------------------------|
+| nodeList             | object | 消息节点                                   |
+| senderId             | Long   | 发送人QQ号                                 |
+| time                 | Int    | 发送时间                                   |
+| senderName           | String | 显示名称                                   |
+| messageChain         | Array  | 消息数组                                   |
+| messageId            | Int    | 可以只使用消息messageId，从当前对话上下文缓存中读取一条消息作为节点 |
+| messageRef           | object | 引用缓存中其他对话上下文的消息作为节点                    |
+| messageRef.messageId | Int    | 引用的 messageId                          |
+| messageRef.target    | Int    | 引用的上下文目标，群号、好友账号                       |
+
+> (senderId, time, senderName, messageChain), messageId, messageRef 是三种不同构造引用节点的方式，选其中一个/组传参即可
 
 ### File
 

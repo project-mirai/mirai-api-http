@@ -11,6 +11,7 @@ package test.core.mock
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.friendgroup.FriendGroups
 import net.mamoe.mirai.event.EventChannel
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotEvent
@@ -40,6 +41,8 @@ class BotMockStub : Bot {
 
     override val eventChannel: EventChannel<BotEvent> =
         GlobalEventChannel.filterIsInstance<BotEvent>().filter { it.bot === this }
+    override val friendGroups: FriendGroups
+        get() = TODO("Not yet implemented")
 
     @OptIn(MiraiInternalApi::class)
     override val friends: ContactList<Friend> by lazy {

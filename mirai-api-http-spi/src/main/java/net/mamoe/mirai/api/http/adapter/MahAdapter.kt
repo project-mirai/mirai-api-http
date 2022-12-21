@@ -9,13 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter
 
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.context.session.Session
-import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.utils.MiraiLogger
-import net.mamoe.yamlkt.Yaml
 
 /**
  * Mah 接口规范，用于处理接收、发送消息后的处理逻辑
@@ -41,11 +37,4 @@ abstract class MahAdapter(val name: String = "Abstract MahAdapter") {
     abstract fun disable()
 
     abstract suspend fun onReceiveBotEvent(event: BotEvent, session: Session)
-
-    @OptIn(InternalSerializationApi::class)
-    inline fun <reified T:Any> getSetting(): T? {
-        return MainSetting.adapterSettings[name]?.let {
-            Yaml.decodeFromString(T::class.serializer(), Yaml.encodeToString(it))
-        }
-    }
 }

@@ -9,8 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.http.feature.auth
 
-import io.ktor.application.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import net.mamoe.mirai.api.http.context.MahContextHolder
@@ -19,13 +19,13 @@ import net.mamoe.mirai.api.http.context.session.Session
 /**
  * 拦截 http 请求, 解析 header 并写入可能存在的 sessionKey
  */
-object Authorization : ApplicationFeature<Application, Unit, Authorization> {
+object Authorization : BaseApplicationPlugin<Application, Unit, Authorization> {
 
     /**
      * 注册拦截器
      */
     override fun install(pipeline: Application, configure: Unit.() -> Unit): Authorization {
-        pipeline.intercept(ApplicationCallPipeline.Features) {
+        pipeline.intercept(ApplicationCallPipeline.Plugins) {
             if (MahContextHolder.singleMode) {
                 proceed()
                 return@intercept

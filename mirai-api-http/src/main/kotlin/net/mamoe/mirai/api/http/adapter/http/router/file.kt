@@ -9,9 +9,10 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.content.*
-import io.ktor.routing.*
+import io.ktor.server.routing.*
+import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetFileInfo
@@ -43,7 +44,7 @@ internal fun Application.fileRouter() = routing {
 
         val ret = part.file("file")?.run {
             onUploadFile(streamProvider(), path, originalFileName, contact!!)
-        } ?: throw IllegalAccessException("未知错误")
+        } ?: throw IllegalParamException("缺少参数 voice")
 
         call.respondDTO(ret)
     }

@@ -9,12 +9,13 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
@@ -63,7 +64,7 @@ internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline 
  *    路由 DSL 定义
  ***********************/
 
-@ContextDsl
+@KtorDsl
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
     route(Paths.httpPath(path), method) { handle { blk(Unit) } }
 
@@ -71,7 +72,7 @@ internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, cros
  * Auth，处理http server的验证
  * 为闭包传入一个AuthDTO对象
  */
-@ContextDsl
+@KtorDsl
 internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
         val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException()
@@ -79,7 +80,7 @@ internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<Ve
     }
 
 
-@ContextDsl
+@KtorDsl
 internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
         val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException()
@@ -94,7 +95,7 @@ internal inline fun Route.httpBind(path: String, crossinline body: Strategy<Bind
  *
  * it 为json解析出的DTO对象
  */
-@ContextDsl
+@KtorDsl
 internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
     crossinline body: Strategy<T>
@@ -110,7 +111,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
  * 验证请求参数中sessionKey参数的有效性
  */
 @OptIn(InternalSerializationApi::class)
-@ContextDsl
+@KtorDsl
 internal inline fun <reified T : AuthedDTO> Route.httpAuthedGet(
     path: String,
     crossinline body: Strategy<T>
@@ -121,7 +122,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedGet(
     this.body(dto)
 }
 
-@ContextDsl
+@KtorDsl
 internal inline fun Route.httpAuthedMultiPart(
     path: String, crossinline body: Strategy2<Session, List<PartData>>
 ) = routeWithHandle(path, HttpMethod.Post) {

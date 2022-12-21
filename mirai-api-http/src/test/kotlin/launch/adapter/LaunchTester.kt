@@ -42,7 +42,7 @@ abstract class LaunchTester {
             MahPluginImpl.start {
                 sessionManager = DefaultSessionManager(verifyKey, this)
                 enableVerify = false
-                singleMode = false
+                singleMode = true
                 debug = true
 
                 for (adapter in adapters) {

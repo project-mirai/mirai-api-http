@@ -9,11 +9,7 @@
 
 package net.mamoe.mirai.api.http.request.http
 
-import test.core.annotation.ExtendWith
-import test.core.extenssion.SetupBotMock
 import kotlinx.coroutines.isActive
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.session.isHttpSession
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
@@ -22,11 +18,11 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.request.env.startAdapter
-import java.lang.ref.WeakReference
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import test.core.annotation.ExtendWith
+import test.core.extenssion.SetupBotMock
+import test.core.mock.BotMockStub
+import test.core.mock.withSession
 import kotlin.test.*
 
 @ExtendWith(SetupBotMock::class)

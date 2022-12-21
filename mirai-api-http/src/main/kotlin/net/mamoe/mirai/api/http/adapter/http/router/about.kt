@@ -9,8 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetBotsList
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetSessionInfo

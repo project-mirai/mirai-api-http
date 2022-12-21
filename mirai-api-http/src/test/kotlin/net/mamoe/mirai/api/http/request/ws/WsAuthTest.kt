@@ -9,11 +9,6 @@
 
 package net.mamoe.mirai.api.http.request.ws
 
-import test.core.annotation.ExtendWith
-import test.core.extenssion.SetupBotMock
-import kotlinx.coroutines.runBlocking
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
@@ -22,7 +17,14 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.request.env.startAdapter
-import kotlin.test.*
+import test.core.annotation.ExtendWith
+import test.core.extenssion.SetupBotMock
+import test.core.mock.BotMockStub
+import test.core.mock.withSession
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 @ExtendWith(SetupBotMock::class)
 class WsAuthTest {

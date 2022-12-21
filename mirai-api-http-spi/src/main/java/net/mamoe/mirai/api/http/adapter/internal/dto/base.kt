@@ -11,9 +11,9 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
 
-internal interface DTO
+interface DTO
 
 @Serializable
-internal abstract class EventDTO : DTO
+abstract class EventDTO : DTO
 
-internal object IgnoreEventDTO : EventDTO()
+object IgnoreEventDTO : EventDTO()

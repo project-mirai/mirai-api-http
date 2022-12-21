@@ -10,7 +10,7 @@
 package net.mamoe.mirai.api.http.adapter
 
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
-import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdaptor
+import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdapter
 import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.utils.MiraiLogger
@@ -31,7 +31,7 @@ object MahAdapterFactory {
          */
         register("http", HttpAdapter::class.java)
         register("ws", WebsocketAdapter::class.java)
-        register("reverse-ws", ReverseWebsocketAdaptor::class.java)
+        register("reverse-ws", ReverseWebsocketAdapter::class.java)
         register("webhook", WebhookAdapter::class.java)
     }
 

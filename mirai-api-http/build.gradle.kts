@@ -4,45 +4,33 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
-    id("net.mamoe.mirai-console") version "2.13.0-RC"
     id("me.him188.maven-central-publish")
 }
 
 val ktorVersion: String by rootProject.extra
-fun org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler.ktorApi(id: String, version: String = ktorVersion) {
-    api("io.ktor:ktor-$id:$version") {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "org.jetbrains.kotlinx")
-        exclude(module = "slf4j-api")
-    }
-}
 
-kotlin {
-    sourceSets["test"].apply {
-        dependencies {
-            api("net.mamoe.yamlkt:yamlkt:0.10.2")
-            api("org.slf4j:slf4j-simple:2.0.0")
-            api(kotlin("test-junit5"))
-            ktorApi("server-test-host")
-        }
-    }
+dependencies {
 
-    sourceSets.all {
-        languageSettings.optIn("kotlin.Experimental")
+    implementation(project(":mirai-api-http-spi"))
 
-        dependencies {
-            compileOnly("net.mamoe.yamlkt:yamlkt:0.9.0")
-            compileOnly("org.slf4j:slf4j-api:2.0.0")
+    ktorImplementation("server-core")
+    ktorImplementation("server-cio")
+    ktorImplementation("server-content-negotiation")
+    ktorImplementation("serialization-kotlinx-json")
+    ktorImplementation("server-websockets")
+    ktorImplementation("server-default-headers")
+    ktorImplementation("server-cors")
+    ktorImplementation("client-okhttp")
+    ktorImplementation("client-websockets")
 
-            ktorApi("client-okhttp")
-            ktorApi("server-cio")
-            ktorApi("http-jvm")
-            ktorApi("websockets")
-            ktorApi("client-websockets")
-            ktorApi("server-core")
-            ktorApi("http")
-        }
-    }
+    compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
+
+    // test
+    testImplementation("net.mamoe.yamlkt:yamlkt:0.12.0")
+    testImplementation("org.slf4j:slf4j-simple:1.7.32")
+    testImplementation(kotlin("test-junit5"))
+    ktorTest("server-test-host")
 }
 
 val httpVersion: String by rootProject.extra
@@ -78,38 +66,18 @@ mavenCentralPublish {
     }
 }
 
-/*
-Publication Preview
-
-Root module:
-  GroupId: net.mamoe
-  ArtifactId: mirai-api-http
-  Version: 2.5.0
-
-Your project targets JVM platform only.
-Gradle users can add dependency by `implementation("net.mamoe:mirai-api-http:2.5.0")`.
-Maven users can add dependency as follows:
-<dependency>
-    <groupId>net.mamoe</groupId>
-    <artifactId>mirai-api-http</artifactId>
-    <version>2.5.0</version>
-</dependency>
-
-There are some extra files that are going to be published:
-
-[jvm]
-mirai-api-http-2.5.0.mirai2.jar  (extension=mirai2.jar, classifier=null)
-mirai-api-http-2.5.0.mirai.jar  (extension=mirai.jar, classifier=null)
-mirai-api-http-2.5.0-all.jar  (extension=jar, classifier=all)
-
-Publication Preview End
- */
-
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+}
+
+kotlin {
+    sourceSets.all {
+        languageSettings.optIn("kotlin.Experimental")
+        languageSettings.optIn("kotlin.RequiresOptIn")
     }
 }

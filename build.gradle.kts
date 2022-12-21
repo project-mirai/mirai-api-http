@@ -1,12 +1,14 @@
 plugins {
     id("io.codearte.nexus-staging") version "0.30.0"
     id("me.him188.maven-central-publish") version "1.0.0-dev-3" // to retrieve credentials
+    id("net.mamoe.mirai-console") version "2.13.2" apply false
 }
 
 buildscript {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.aliyun.com/repository/public")
         mavenCentral()
         gradlePluginPortal()
         google()
@@ -28,11 +30,16 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven(url = "https://maven.aliyun.com/repository/public")
         mavenCentral()
         gradlePluginPortal()
         google()
         maven(url = "https://repo.mirai.mamoe.net/snapshots/")
     }
+}
+
+subprojects {
+    plugins.apply("net.mamoe.mirai-console")
 }
 
 nexusStaging {

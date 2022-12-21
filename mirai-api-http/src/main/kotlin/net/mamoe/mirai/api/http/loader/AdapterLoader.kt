@@ -12,9 +12,11 @@ package net.mamoe.mirai.api.http.loader
 import net.mamoe.mirai.api.http.MahPluginImpl
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
+import net.mamoe.mirai.api.http.spi.adapter.MahAdapterServiceFactory
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import java.util.ServiceLoader
 import java.util.jar.JarFile
 
 class AdapterLoader(basePath: File) {
@@ -61,6 +63,19 @@ class AdapterLoader(basePath: File) {
                     MahPluginImpl.logger
                         .error("Can't load adapter form jar: $className")
                 }
+            }
+        }
+    }
+
+    fun loadAdapterFromService() {
+        ServiceLoader.load(MahAdapterServiceFactory::class.java).forEach { fac ->
+            kotlin.runCatching {
+                fac.getAdapterName() to fac.getAdapterClass()
+            }.onSuccess {
+                MahAdapterFactory.register(it.first, it.second)
+            }.onFailure {
+                MahPluginImpl.logger
+                    .error("Can't load adapter form service loader: ${fac.getAdapterName()}")
             }
         }
     }

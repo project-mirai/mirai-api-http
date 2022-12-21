@@ -99,6 +99,10 @@ adapterSettings:
   + [添加好友申请](#添加好友申请)
   + [用户入群申请](#用户入群申请)
   + [Bot被邀请入群申请](#Bot被邀请入群申请)
++ **[Console命令](#Console命令)**
+  + [执行命令](#执行命令)
+  + [注册命令](#注册命令)
+  + [命令接收](#命令接收)
 
 ## 认证与会话
 
@@ -366,7 +370,7 @@ adapterSettings:
 此方法通过 `messageId` 获取历史消息, 历史消息的缓存有容量大小, 在配置文件中设置
 
 ```
-[GET] /messageFromId?sessionKey=YourSessionKey&id=1234567890
+[GET] /messageFromId?sessionKey=YourSessionKey&messageId=1234567890&target=123456789
 ```
 
 **本接口为[GET]请求, 参数格式为url参数**
@@ -917,3 +921,33 @@ adapterSettings:
 **本接口为[POST]请求, 参数格式为`application/json`**
 
 通用接口定义: [Bot被邀请入群申请](../api/API.md#Bot被邀请入群申请)
+
+## Console命令
+
+### 执行命令
+
+使用此方法向 console 提交一个消息作为命令执行
+
+```
+[POST] /cmd/execute
+```
+
+**本接口为[POST]请求, 参数格式为`application/json`**
+
+通用接口定义: [执行命令](../api/API.md#执行命令)
+
+### 注册命令
+
+使用此方法向 console 注册一个指令, 当指令触发时, 会生成一个 [CommandExecutedEvent](../api/EventType.md#命令被执行)
+
+```
+[POST] /cmd/register
+```
+
+**本接口为[POST]请求, 参数格式为`application/json`**
+
+通用接口定义: [执行命令](../api/API.md#注册命令)
+
+### 命令接收
+
+命令被调用时, 会触发 [CommandExecutedEvent](../api/EventType.md#命令被执行)

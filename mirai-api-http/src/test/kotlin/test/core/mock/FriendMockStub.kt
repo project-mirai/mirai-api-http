@@ -11,6 +11,7 @@ package test.core.mock
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.friendgroup.FriendGroup
 import net.mamoe.mirai.contact.roaming.RoamingMessages
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Image
@@ -25,9 +26,11 @@ class FriendMockStub(
 ) : Friend {
 
     override val coroutineContext: CoroutineContext = EmptyCoroutineContext
+    override val friendGroup: FriendGroup
+        get() = TODO("Not yet implemented")
     override val id: Long = bot.id
     override val nick: String = bot.nick
-    override val remark: String = bot.nick
+    override var remark: String = bot.nick
     override val roamingMessages: RoamingMessages
         get() = TODO("Not yet implemented")
 

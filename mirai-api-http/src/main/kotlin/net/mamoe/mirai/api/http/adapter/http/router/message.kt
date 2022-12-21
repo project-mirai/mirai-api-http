@@ -9,9 +9,10 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.content.*
-import io.ktor.routing.*
+import io.ktor.server.routing.*
+import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
@@ -104,7 +105,7 @@ internal fun Application.messageRouter() = routing {
     httpAuthedMultiPart(Paths.uploadImage) { session, parts ->
         val type = parts.value("type")
         val ret = parts.file("img")?.run { onUploadImage(session, streamProvider(), type) }
-            ?: throw IllegalAccessException("未知错误")
+            ?: throw IllegalParamException("缺少参数 img")
         call.respondDTO(ret)
     }
 
@@ -114,7 +115,7 @@ internal fun Application.messageRouter() = routing {
     httpAuthedMultiPart(Paths.uploadVoice) { session, parts ->
         val type = parts.value("type")
         val ret = parts.file("voice")?.run { onUploadVoice(session, streamProvider(), type) }
-            ?: throw IllegalAccessException("未知错误")
+            ?: throw IllegalParamException("缺少参数 voice")
         call.respondDTO(ret)
     }
 

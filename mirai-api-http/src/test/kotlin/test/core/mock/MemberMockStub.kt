@@ -13,6 +13,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.contact.NormalMember
+import net.mamoe.mirai.contact.active.MemberActive
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
@@ -31,6 +32,8 @@ class MemberMockStub(
     }
 
     override val coroutineContext: CoroutineContext = EmptyCoroutineContext
+    override val active: MemberActive
+        get() = TODO("Not yet implemented")
 
     override val bot: Bot = group.bot
     override val id: Long = ID
