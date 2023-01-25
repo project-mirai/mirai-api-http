@@ -62,8 +62,6 @@ internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: S
         uploadFold.uploadNewFile(uploadFileName, it)
     }
 
-    contact.sendMessage(file.toMessage())
-
     return ElementResult(
         RemoteFileDTO(file, false).toJsonElement()
     )
