@@ -44,7 +44,7 @@ internal fun Application.fileRouter() = routing {
 
         val ret = part.file("file")?.run {
             onUploadFile(streamProvider(), path, originalFileName, contact!!)
-        } ?: throw IllegalParamException("缺少参数 voice")
+        } ?: throw IllegalParamException("缺少参数 file")
 
         call.respondDTO(ret)
     }
