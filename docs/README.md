@@ -39,16 +39,14 @@ footer: AGPL-3.0 License | Project Mirai
 ```shell
 ./mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin
 ```
-
-* `MCL` 支持自动更新插件，支持设置插件更新频道等功能
 * `2.x` 版本需要切换到 `stable-v2` 的 channel
 ```shell
 ./mcl --update-package net.mamoe:mirai-api-http --channel stable-v2 --type plugin
 ```
 * 启动 `MCL` 完成自动更新和启动
-
-`./mcl -u`
-
+```shell
+./mcl -u
+```
 
 ## 手动安装`mirai-api-http`
 
