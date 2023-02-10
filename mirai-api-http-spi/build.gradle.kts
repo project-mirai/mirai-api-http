@@ -26,7 +26,6 @@ tasks {
 }
 
 tasks.register("buildSpi", Jar::class) {
-    dependsOn("build")
     doLast {
         val jarTask = tasks.getByName("jar", Jar::class)
         val buildPluginFile = jarTask.archiveFile.get().asFile
