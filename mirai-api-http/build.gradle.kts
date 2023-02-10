@@ -45,7 +45,7 @@ tasks.register("buildCiJar", Jar::class) {
         val buildPluginFile = buildPluginTask.archiveFile.get().asFile
         project.buildDir.resolve("ci").also {
             it.mkdirs()
-        }.resolve("mirai-api-http.jar").let {
+        }.resolve("mirai-api-http-${{ project.version }}.mirai2.jar").let {
             buildPluginFile.copyTo(it, true)
         }
     }

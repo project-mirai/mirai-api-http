@@ -29,14 +29,24 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew buildCiJar
 
+      - name: Build SPI
+        run: ./gradlew buildSpi
+
       - name: Publish to Maven Central
         run: ./gradlew mirai-api-http:publish --info  --scan
         env:
           PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 
+      - name: Publish to SPI Maven Central
+        run: ./gradlew mirai-api-http-spi:publish --info  --scan
+        env:
+          PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
+
       - name: Get Tag
         id: tag
-        uses: dawidd6/action-get-tag@v1
+        run: |
+          tag=$(echo ${{ github.ref }} | cut -dv -f2)
+          echo "tag=$tag" >> $GITHUB_OUTPUT
 
       - name: Generate Line Temp File
         run: "cat CHANGELOG.md | grep -n '## \\\\' | cut -d: -f1 | head -n 2 >> line.tmp"
@@ -46,25 +56,15 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: mirai-api-http-${{ steps.tag.outputs.tag }}
+          name: mirai-api-http-${{ steps.tag.outputs.tag }}
           body_path: release.log
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./mirai-api-http/build/ci/mirai-api-http.jar
-          asset_name: mirai-api-http-${{ steps.tag.outputs.tag }}.mirai2.jar
-          asset_content_type: application/zip
+          files: |
+            ./mirai-api-http/build/ci/mirai-api-http-${{ steps.tag.outputs.tag }}.mirai2.jar
 
       - name: Clone Mirai-Repo
         uses: actions/checkout@v3
