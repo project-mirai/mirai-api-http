@@ -49,7 +49,8 @@ internal data class GroupDetailDTO(
     val confessTalk: Boolean? = null,
     val allowMemberInvite: Boolean? = null,
     val autoApprove: Boolean? = null,
-    val anonymousChat: Boolean? = null
+    val anonymousChat: Boolean? = null,
+    val muteAll: Boolean? = null,
 ) : DTO {
     @OptIn(MiraiExperimentalApi::class)
     constructor(group: Group) : this(
@@ -57,7 +58,8 @@ internal data class GroupDetailDTO(
         false,
         group.settings.isAllowMemberInvite,
         group.settings.isAutoApproveEnabled,
-        group.settings.isAnonymousChatEnabled
+        group.settings.isAnonymousChatEnabled,
+        group.settings.isMuteAll,
     )
 }
 

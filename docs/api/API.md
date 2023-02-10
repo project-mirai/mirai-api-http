@@ -1145,7 +1145,8 @@
   "confessTalk":true,
   "allowMemberInvite":true,
   "autoApprove":true,
-  "anonymousChat":true
+  "anonymousChat":true,
+  "muteAll":true
 }
 ```
 
