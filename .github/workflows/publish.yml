@@ -22,7 +22,7 @@ jobs:
       - name: Grant Execute Permission for gradlew
         run: chmod +x gradlew
 
-      - run: ./gradlew mirai-api-http:checkMavenCentralPublication --info  --scan
+      - run: ./gradlew checkMavenCentralPublication --info  --scan
         env:
           PUBLICATION_CREDENTIALS: ${{ secrets.PUBLICATION_CREDENTIALS }}
 

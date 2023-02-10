@@ -45,7 +45,7 @@ tasks.register("buildCiJar", Jar::class) {
         val buildPluginFile = buildPluginTask.archiveFile.get().asFile
         project.buildDir.resolve("ci").also {
             it.mkdirs()
-        }.resolve("mirai-api-http-${{ project.version }}.mirai2.jar").let {
+        }.resolve("mirai-api-http-${project.version}.mirai2.jar").let {
             buildPluginFile.copyTo(it, true)
         }
     }
@@ -56,7 +56,7 @@ tasks.test {
 }
 
 mavenCentralPublish {
-    workingDir = rootProject.buildDir.resolve("pub").apply { mkdirs() }
+    workingDir = project.buildDir.resolve("pub").apply { mkdirs() }
     githubProject("project-mirai", "mirai-api-http")
     licenseFromGitHubProject("licenseAgplv3", "master")
     developer("Mamoe Technologies")

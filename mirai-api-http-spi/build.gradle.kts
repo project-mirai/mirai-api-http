@@ -32,14 +32,14 @@ tasks.register("buildSpi", Jar::class) {
         val buildPluginFile = jarTask.archiveFile.get().asFile
         project.buildDir.resolve("ci").also {
             it.mkdirs()
-        }.resolve("mirai-api-http-spi-${{ project.version }}.jar").let {
+        }.resolve("mirai-api-http-spi-${project.version}.jar").let {
             buildPluginFile.copyTo(it, true)
         }
     }
 }
 
 mavenCentralPublish {
-    workingDir = rootProject.buildDir.resolve("pub").apply { mkdirs() }
+    workingDir = project.buildDir.resolve("pub").apply { mkdirs() }
     githubProject("project-mirai", "mirai-api-http-spi")
     licenseFromGitHubProject("licenseAgplv3", "master")
     developer("Mamoe Technologies")
