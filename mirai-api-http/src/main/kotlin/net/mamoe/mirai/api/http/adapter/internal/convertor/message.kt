@@ -82,7 +82,7 @@ internal suspend fun Message.toDTO() = when (this) {
     is Dice -> DiceDTO(value)
     is MarketFace -> MarketFaceDTO(id, name)
     is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
-    is ForwardMessage -> ForwardMessageDTO(nodeList.map {
+    is ForwardMessage -> ForwardMessageDTO(null, nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
     })
     is FileMessage -> FileDTO(id, name, size)
