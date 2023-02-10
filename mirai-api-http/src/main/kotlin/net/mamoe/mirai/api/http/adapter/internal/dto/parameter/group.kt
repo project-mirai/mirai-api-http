@@ -26,6 +26,7 @@ internal data class MuteDTO(
 internal data class KickDTO(
     val target: Long,
     val memberId: Long,
+    val block: Boolean = false,
     val msg: String = ""
 ) : AuthedDTO()
 
