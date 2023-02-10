@@ -31,19 +31,12 @@ class WebhookHttpClient(private val headers: Map<String, String>) {
     /**
      * POST请求 (String)
      */
-    suspend fun post(path: String, content: String, botId: Long? = null): String? {
+    suspend fun post(path: String, content: String, botId: Long? = null): String {
         return client.request {
             url { smartTakeFrom(path) }
             botHeader(botId.toString())
             method = HttpMethod.Post
             setBody(TextContent(content, ContentType.Application.Json.withCharset(StandardCharsets.UTF_8)))
-        }.let {
-            val contentLength = it.contentLength()
-            if (it.status != HttpStatusCode.OK || contentLength == null || contentLength == 0L) {
-                return null
-            }
-
-            it.bodyAsText()
-        }
+        }.bodyAsText()
     }
 }

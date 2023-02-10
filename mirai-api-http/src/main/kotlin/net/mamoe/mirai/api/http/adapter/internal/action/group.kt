@@ -50,7 +50,7 @@ internal suspend fun onUnmute(dto: MuteDTO): StateCode {
  * 移出群聊（需要相关权限）
  */
 internal suspend fun onKick(dto: KickDTO): StateCode {
-    dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId).kick(dto.msg)
+    dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId).kick(dto.msg, dto.block)
     return StateCode.Success
 }
 

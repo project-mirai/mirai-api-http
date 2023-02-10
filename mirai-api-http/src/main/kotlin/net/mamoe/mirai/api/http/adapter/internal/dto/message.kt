@@ -12,6 +12,8 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MessageIdDTO
+import net.mamoe.mirai.message.data.ForwardMessage
+import net.mamoe.mirai.message.data.RawForwardMessage
 
 @Serializable
 internal sealed class MessagePacketDTO : EventDTO() {
@@ -172,7 +174,7 @@ internal data class DiceDTO(
 @Serializable
 @SerialName("MarketFace")
 internal data class MarketFaceDTO(
-    val id: Int, 
+    val id: Int,
     val name: String,
 ) : MessageDTO()
 
@@ -191,8 +193,24 @@ internal data class MusicShareDTO(
 @Serializable
 @SerialName("Forward")
 internal data class ForwardMessageDTO(
-    val nodeList: List<ForwardMessageNode>
+    val display: ForwardMessageDisplayDTO?,
+    val nodeList: List<ForwardMessageNode>,
 ) : MessageDTO()
+
+@Serializable
+internal data class ForwardMessageDisplayDTO(
+    val brief: String?,
+    val preview: List<String>?,
+    val source: String?,
+    val summary: String?,
+    val title: String?,
+) : ForwardMessage.DisplayStrategy {
+    override fun generateBrief(forward: RawForwardMessage) = brief ?: super.generateBrief(forward)
+    override fun generatePreview(forward: RawForwardMessage) = preview ?: super.generatePreview(forward)
+    override fun generateSource(forward: RawForwardMessage) = source ?: super.generateSource(forward)
+    override fun generateSummary(forward: RawForwardMessage) = summary ?: super.generateSummary(forward)
+    override fun generateTitle(forward: RawForwardMessage) = title ?: super.generateTitle(forward)
+}
 
 @Serializable
 internal data class ForwardMessageNode(

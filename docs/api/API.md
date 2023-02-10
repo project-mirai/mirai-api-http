@@ -287,6 +287,41 @@
   ]
 }
 ```
+
+### 获取最新群成员列表
+
+#### 请求:
+
+| 名字   | 可选  | 举例             | 说明              |
+|------| ----- |----------------|-----------------|
+| sessionKey | true  | YourSessionKey | 你的session key   |
+| target | false | 123456789      | 指定群的群号          |
+| memberIds | false | \[9876543210\] | 群成员账号, 为空表示获取所有 |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"",
+  "data":[
+    {
+      "id":9876543210,
+      "memberName":"",
+      "specialTitle":"群头衔",
+      "permission":"OWNER",
+      "joinTimestamp":12345678,
+      "lastSpeakTimestamp":8765432,
+      "muteTimeRemaining":0,
+      "group":{
+        "id":123456789,
+        "name":"群名2",
+        "permission":"MEMBER"
+      }
+    }
+  ]
+}
+```
 ------
 
 ### 获取Bot资料
@@ -982,16 +1017,18 @@
   "sessionKey":"YourSessionKey",
   "target":123456789,
   "memberId":987654321,
+  "block":false,
   "msg":"您已被移出群聊"
 }
 ```
 
-| 名字       | 可选  | 类型   | 举例             | 说明            |
-| ---------- | ----- | ------ | ---------------- | --------------- |
-| sessionKey | true  | String | "YourSessionKey" | 你的session key |
-| target     | false | Long   | 123456789        | 指定群的群号    |
-| memberId   | false | Long   | 987654321        | 指定群员QQ号    |
-| msg        | true  | String | ""               | 信息            |
+| 名字         | 可选    | 类型      | 举例               | 说明              |
+|------------|-------|---------|------------------|-----------------|
+| sessionKey | true  | String  | "YourSessionKey" | 你的session key   |
+| target     | false | Long    | 123456789        | 指定群的群号          |
+| memberId   | false | Long    | 987654321        | 指定群员QQ号         |
+| block      | true  | Boolean | false            | 移除后拉黑，默认为 false |
+| msg        | true  | String  | ""               | 信息              |
 
 #### 响应
 
@@ -1108,7 +1145,8 @@
   "confessTalk":true,
   "allowMemberInvite":true,
   "autoApprove":true,
-  "anonymousChat":true
+  "anonymousChat":true,
+  "muteAll":true
 }
 ```
 

@@ -10,10 +10,9 @@
 package net.mamoe.mirai.api.http.adapter.http.util
 
 import io.ktor.http.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialFormat
+import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -43,19 +42,18 @@ internal class KtorParameterFormat : SerialFormat {
  *
  * 暂不支持
  * + 级联
- * + 数组、集合
  */
 @OptIn(ExperimentalSerializationApi::class)
 internal class KtorParameterDecoder(parameters: Parameters) : AbstractDecoder() {
 
-    private var entryHolder: Map.Entry<String, List<String>>? = null
+    private lateinit var entryHolder: Map.Entry<String, List<String>>
     private val iterator = parameters.entries().iterator()
+    private var curPos = 0
 
     override val serializersModule: SerializersModule = EmptySerializersModule
 
     override fun decodeValue(): String {
-        return entryHolder?.value?.firstOrNull()
-            ?: throw IllegalStateException("empty value for key: ${entryHolder?.key}")
+        return entryHolder.value[(curPos - 1).coerceAtLeast(0)]
     }
 
     override fun decodeNotNullMark(): Boolean = true
@@ -71,11 +69,20 @@ internal class KtorParameterDecoder(parameters: Parameters) : AbstractDecoder() 
     override fun decodeString(): String = decodeValue()
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        if (descriptor.kind == StructureKind.LIST) {
+            if (curPos == entryHolder.value.size) {
+                curPos = 0
+                return DECODE_DONE
+            }
+
+            return curPos++
+        }
+
         if (!iterator.hasNext()) {
             return DECODE_DONE
         }
 
         entryHolder = iterator.next()
-        return descriptor.getElementIndex(entryHolder!!.key)
+        return descriptor.getElementIndex(entryHolder.key)
     }
 }

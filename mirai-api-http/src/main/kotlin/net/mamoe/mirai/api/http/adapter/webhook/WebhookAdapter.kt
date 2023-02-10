@@ -77,7 +77,7 @@ class WebhookAdapter : MahAdapter("webhook"), CoroutineScope {
     private suspend fun hook(destination: String, data: String, bot: Bot) {
         kotlin.runCatching {
             val resp = client.post(destination, data, bot.id)
-            resp?.jsonParseOrNull<WebhookPacket>()?.let {
+            resp.takeIf(String::isNotEmpty)?.jsonParseOrNull<WebhookPacket>()?.let {
                 execute(bot, it)
             }
         }.onFailure {

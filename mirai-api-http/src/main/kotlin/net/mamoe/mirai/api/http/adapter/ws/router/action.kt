@@ -84,6 +84,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             Paths.friendList -> execute(session, EMPTY_JSON_ELEMENT, ::onGetFriendList)
             Paths.groupList -> execute(session, EMPTY_JSON_ELEMENT, ::onGetGroupList)
             Paths.memberList -> execute(session, element, ::onGetMemberList)
+            Paths.latestMemberList -> execute(session, element, ::onLatestMemberList)
             Paths.botProfile -> execute(session, EMPTY_JSON_ELEMENT, ::onGetBotProfile)
             Paths.friendProfile -> execute(session, element, ::onGetFriendProfile)
             Paths.memberProfile -> execute(session, element, ::onGetMemberProfile)
