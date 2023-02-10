@@ -67,6 +67,30 @@ internal data class MemberTargetDTO(
 ) : AuthedDTO()
 
 @Serializable
+internal data class MemberMultiTargetDTO(
+    val target: Long,
+    val memberIds: LongArray?
+) : AuthedDTO() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MemberMultiTargetDTO
+
+        if (target != other.target) return false
+        if (!memberIds.contentEquals(other.memberIds)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = target.hashCode()
+        result = 31 * result + memberIds.contentHashCode()
+        return result
+    }
+}
+
+@Serializable
 internal data class MemberInfoDTO(
     val target: Long,
     val memberId: Long,

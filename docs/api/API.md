@@ -287,6 +287,41 @@
   ]
 }
 ```
+
+### 获取最新群成员列表
+
+#### 请求:
+
+| 名字   | 可选  | 举例             | 说明              |
+|------| ----- |----------------|-----------------|
+| sessionKey | true  | YourSessionKey | 你的session key   |
+| target | false | 123456789      | 指定群的群号          |
+| memberIds | false | \[9876543210\] | 群成员账号, 为空表示获取所有 |
+
+#### 响应:
+
+```json5
+{
+  "code":0,
+  "msg":"",
+  "data":[
+    {
+      "id":9876543210,
+      "memberName":"",
+      "specialTitle":"群头衔",
+      "permission":"OWNER",
+      "joinTimestamp":12345678,
+      "lastSpeakTimestamp":8765432,
+      "muteTimeRemaining":0,
+      "group":{
+        "id":123456789,
+        "name":"群名2",
+        "permission":"MEMBER"
+      }
+    }
+  ]
+}
+```
 ------
 
 ### 获取Bot资料

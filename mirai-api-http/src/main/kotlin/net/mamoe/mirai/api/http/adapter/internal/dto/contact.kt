@@ -10,8 +10,11 @@
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.data.UserProfile
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 @Serializable
 internal abstract class ContactDTO : DTO {
@@ -46,6 +49,15 @@ internal data class MemberDTO(
         lastSpeakTimestamp = if (member is NormalMember) member.lastSpeakTimestamp else 0,
         muteTimeRemaining = if (member is NormalMember) member.muteTimeRemaining else 0,
         group = GroupDTO(member.group)
+    )
+
+    @OptIn(LowLevelApi::class, MiraiExperimentalApi::class)
+    constructor(member: MemberInfo, group: Group): this(
+        member.uin, member.nameCard.takeIf { it.isNotEmpty() } ?: member.nick, member.specialTitle, member.permission,
+        joinTimestamp = member.joinTimestamp,
+        lastSpeakTimestamp = member.joinTimestamp,
+        muteTimeRemaining = if (member.muteTimestamp == 0 || member.muteTimestamp == 0xFFFFFFFF.toInt()) 0 else (member.muteTimestamp - System.currentTimeMillis()/1000).toInt().coerceAtLeast(0),
+        group = GroupDTO(group)
     )
 }
 

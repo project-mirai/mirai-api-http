@@ -43,6 +43,7 @@ object Paths {
     const val friendList = "friendList"
     const val groupList = "groupList"
     const val memberList = "memberList"
+    const val latestMemberList = "latestMemberList"
     const val botProfile = "botProfile"
     const val friendProfile = "friendProfile"
     const val memberProfile = "memberProfile"
