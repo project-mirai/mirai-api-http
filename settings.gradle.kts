@@ -10,5 +10,5 @@ pluginManagement {
 
 rootProject.name = "mirai-api-http"
 
+include(":mirai-api-http-spi")
 include(":mirai-api-http")
-include("mirai-api-http-spi")
