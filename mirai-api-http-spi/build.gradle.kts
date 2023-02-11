@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
+    id("net.mamoe.mirai-console")
     id("me.him188.maven-central-publish")
 }
 
@@ -26,7 +27,7 @@ tasks {
 }
 
 tasks.register("buildSpi", Jar::class) {
-    dependsOn("build")
+    dependsOn("jar")
     doLast {
         val jarTask = tasks.getByName("jar", Jar::class)
         val buildPluginFile = jarTask.archiveFile.get().asFile
@@ -43,7 +44,4 @@ mavenCentralPublish {
     githubProject("project-mirai", "mirai-api-http-spi")
     licenseFromGitHubProject("licenseAgplv3", "master")
     developer("Mamoe Technologies")
-    publication {
-        artifact(tasks.getByName("buildSpi"))
-    }
 }

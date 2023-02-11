@@ -36,10 +36,6 @@ allprojects {
     }
 }
 
-subprojects {
-    plugins.apply("net.mamoe.mirai-console")
-}
-
 nexusStaging {
     packageGroup = "net.mamoe" // from Sonatype accounts, do not change
     username = mavenCentralPublish.credentials?.sonatypeUsername

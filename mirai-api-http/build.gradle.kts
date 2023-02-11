@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
+    id("net.mamoe.mirai-console")
     id("me.him188.maven-central-publish")
 }
 
