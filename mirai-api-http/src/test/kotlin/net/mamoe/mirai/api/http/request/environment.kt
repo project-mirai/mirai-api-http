@@ -7,14 +7,16 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.request.env
+package net.mamoe.mirai.api.http.request
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.server.testing.*
 import io.ktor.util.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.MahPluginImpl
 import net.mamoe.mirai.api.http.adapter.MahAdapter
@@ -89,7 +91,7 @@ internal class AdapterOperation(val port: Int) {
 
 
     private val client by lazy { HttpClient(OkHttp) }
-    private val wsClient by lazy { HttpClient(OkHttp) { install(WebSockets) }}
+    private val wsClient by lazy { HttpClient(OkHttp) { install(WebSockets) } }
 
     suspend inline fun <reified T : DTO> get(path: String, query: Map<String, String> = emptyMap()): T {
         val content = client.get(path) {
@@ -107,21 +109,27 @@ internal class AdapterOperation(val port: Int) {
         return context.jsonParseOrNull()!!
     }
 
-    inline fun <reified T : DTO>wsConnect(query: Map<String, String>): T? {
-        var ret: WsOutgoing? = null
-        runBlocking {
+    fun <R> wsConnect(query: Map<String, String>, operation: suspend WsAdapterOperation.() -> R): R {
+        return runBlocking {
+            var ret: R? = null
             wsClient.ws({
                 url("ws", "localhost", this@AdapterOperation.port, "all")
-                query.forEach { (k, v) -> parameter(k ,v) }
+                query.forEach { (k, v) -> parameter(k, v) }
             }) {
-                val frame = incoming.receive()
-                val content = String(frame.data)
-                // println(content)
-                ret = content.jsonParseOrNull()
-                return@ws
+                ret = operation.invoke(WsAdapterOperation(this))
             }
+            return@runBlocking ret!!
         }
-        return ret?.data?.jsonElementParseOrNull()
+    }
+}
+
+internal class WsAdapterOperation(val session: WebSocketSession) {
+
+    suspend inline fun <reified T : DTO> receiveDTO(): T? {
+        val frame = session.incoming.receive()
+        val content = String(frame.data)
+        val pkg: WsOutgoing? = content.jsonParseOrNull()
+        return pkg?.data?.jsonElementParseOrNull()
     }
 }
 

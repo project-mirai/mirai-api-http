@@ -15,12 +15,11 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
-import net.mamoe.mirai.api.http.request.env.AdapterOperation
-import net.mamoe.mirai.api.http.request.env.startAdapter
-import test.core.annotation.ExtendWith
-import test.core.extenssion.SetupBotMock
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
+import net.mamoe.mirai.api.http.request.AdapterOperation
+import net.mamoe.mirai.api.http.request.startAdapter
+import net.mamoe.mirai.api.http.util.ExtendWith
+import net.mamoe.mirai.api.http.util.SetupMockBot
+import net.mamoe.mirai.api.http.util.withSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -28,7 +27,7 @@ import kotlin.test.assertNotNull
 /**
  * 测试 Session 在不同情况下的正确性
  */
-@ExtendWith(SetupBotMock::class)
+@ExtendWith(SetupMockBot::class)
 class HttpAuthTest {
 
     private val verifyKey = "session test"
@@ -48,7 +47,7 @@ class HttpAuthTest {
         debug = false,
     ) {
         // 单例 session 未认证
-        testAction(null, StateCode.NotVerifySession)
+        getSessionInfoAndExpect(null, StateCode.NotVerifySession)
 
         val data = VerifyDTO("wrong $verifyKey").toJson()
         val ret = post<StateCode>(verifyPath, data)
@@ -58,7 +57,7 @@ class HttpAuthTest {
         val correctRet = post<VerifyRetDTO>(Paths.httpPath("verify"), correctData)
         assertEquals(StateCode.Success.code, correctRet.code)
 
-        testAction(null)
+        getSessionInfoAndExpect(null)
     }
 
     /**
@@ -72,7 +71,7 @@ class HttpAuthTest {
         debug = false,
     ) {
         // 无需认证的单例 session 模式可以直接访问
-        testAction(null)
+        getSessionInfoAndExpect(null)
 
         val data = VerifyDTO(verifyKey).toJson()
         val ret = post<VerifyRetDTO>(verifyPath, data)
@@ -82,7 +81,7 @@ class HttpAuthTest {
         val wrongRet = post<VerifyRetDTO>(verifyPath, wrongData)
         assertEquals(StateCode.Success.code, wrongRet.code)
 
-        testAction(null)
+        getSessionInfoAndExpect(null)
     }
 
     /**
@@ -96,7 +95,7 @@ class HttpAuthTest {
         debug = false,
     ) {
         // 非单例 session 模式下，出现找不到 session 异常
-        testAction("nonexistent session", StateCode.IllegalSession)
+        getSessionInfoAndExpect("nonexistent session", StateCode.IllegalSession)
 
         var data = VerifyDTO("wrong $verifyKey").toJson()
         val wrongRet = post<StateCode>(verifyPath, data)
@@ -108,18 +107,18 @@ class HttpAuthTest {
         assertNotNull(verifyRet.session)
 
         // 认证但未绑定
-        testAction(verifyRet.session, errorState = StateCode.NotVerifySession)
+        getSessionInfoAndExpect(verifyRet.session, errorState = StateCode.NotVerifySession)
 
         // use session to bind
-        data = BindDTO(BotMockStub.ID).toJson()
+        data = BindDTO(SetupMockBot.ID).toJson()
         var bindRet: StateCode = post(bindPath, data)
         assertEquals(StateCode.IllegalSession.code, bindRet.code)
 
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         bindRet = post(bindPath, data)
         assertEquals(StateCode.Success.code, bindRet.code)
 
-        testAction(verifyRet.session)
+        getSessionInfoAndExpect(verifyRet.session)
     }
 
     @Test
@@ -130,7 +129,7 @@ class HttpAuthTest {
         debug = false,
     ) {
         // 非单例 session 模式下，出现找不到 session 异常
-        testAction("nonexistent session", StateCode.IllegalSession)
+        getSessionInfoAndExpect("nonexistent session", StateCode.IllegalSession)
 
         // 无需认证key，但仍需要通过认证接口获取 session
         var data = VerifyDTO("Arbitrary $verifyKey").toJson()
@@ -139,17 +138,17 @@ class HttpAuthTest {
         assertNotNull(verifyRet.session)
 
         // 认证但未绑定
-        testAction(verifyRet.session, errorState = StateCode.NotVerifySession)
+        getSessionInfoAndExpect(verifyRet.session, errorState = StateCode.NotVerifySession)
 
         // use session to bind
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         val bindRet = post<StateCode>(bindPath, data)
         assertEquals(StateCode.Success.code, bindRet.code)
 
-        testAction(verifyRet.session)
+        getSessionInfoAndExpect(verifyRet.session)
     }
 
-    private suspend fun AdapterOperation.testAction(sessionKey: String?, errorState: StateCode? = null) {
+    private suspend fun AdapterOperation.getSessionInfoAndExpect(sessionKey: String?, errorState: StateCode? = null) {
         val query = sessionKey?.let {
             mapOf("sessionKey" to it)
         } ?: emptyMap()
@@ -159,7 +158,7 @@ class HttpAuthTest {
                 .data.jsonElementParseOrNull<SessionDTO>()
             assertNotNull(ret)
             assertEquals(sessionKey ?: MahContext.SINGLE_SESSION_KEY, ret.sessionKey)
-            assertEquals(BotMockStub.ID, ret.qq.id)
+            assertEquals(SetupMockBot.ID, ret.qq.id)
         } else {
             val ret = get<StateCode>(action, query)
             assertEquals(errorState.code, ret.code)

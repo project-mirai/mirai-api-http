@@ -9,11 +9,8 @@
 
 package net.mamoe.mirai.api.http.request.ws
 
-import test.core.extenssion.SetupBotMock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
@@ -21,11 +18,13 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.request.env.startAdapter
+import net.mamoe.mirai.api.http.request.startAdapter
+import net.mamoe.mirai.api.http.util.SetupMockBot
+import net.mamoe.mirai.api.http.util.withSession
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.*
 
-@ExtendWith(SetupBotMock::class)
+@ExtendWith(SetupMockBot::class)
 class WsSessionLifeCycle {
 
     private val verifyKey = "HttpSessionLifeCycle"
@@ -41,9 +40,13 @@ class WsSessionLifeCycle {
         singleMode = false,
     ) {
         // 通过 ws 创建新 session 并绑定
-        val wsRet = wsConnect<VerifyRetDTO>(mapOf("verifyKey" to verifyKey, "qq" to "${BotMockStub.ID}"))
-        val sessionKey = wsRet?.session
-        assertNotNull(sessionKey)
+        val sessionKey = wsConnect(mapOf("verifyKey" to verifyKey, "qq" to "${SetupMockBot.ID}")) {
+            val wsRet = receiveDTO<VerifyRetDTO>()
+            val sessionKey = wsRet?.session
+            assertNotNull(sessionKey)
+
+            return@wsConnect sessionKey
+        }
 
         // socket 由客户端主动断开, 服务端需要一定时间感知
         delay(1000)
@@ -70,15 +73,17 @@ class WsSessionLifeCycle {
         assertEquals(0, session.getRefCount())
 
         // 认证 http session 并引用
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         val bindRet = post<StateCode>(bindPath, data)
         assertEquals(StateCode.Success.code, bindRet.code)
         assertEquals(1, session.getRefCount())
 
         // 通过 websocket 复用 session
-        val wsRet = wsConnect<VerifyRetDTO>(mapOf("verifyKey" to verifyKey, "sessionKey" to verifyRet.session))
-        val sessionKey = wsRet?.session
-        assertEquals(verifyRet.session, sessionKey)
+        wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to verifyRet.session)) {
+            val wsRet = receiveDTO<VerifyRetDTO>()
+            val sessionKey = wsRet?.session
+            assertEquals(verifyRet.session, sessionKey)
+        }
 
         // socket 由客户端主动断开, 服务端需要一定时间感知
         delay(1000)
@@ -89,7 +94,7 @@ class WsSessionLifeCycle {
         assertTrue(session.isActive)
 
         // http 释放 session
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         val releaseRet = post<StateCode>(releasePath, data)
         assertEquals(StateCode.Success.code, releaseRet.code)
         assertEquals(0, session.getRefCount())
