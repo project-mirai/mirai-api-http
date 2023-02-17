@@ -193,17 +193,17 @@ internal data class MusicShareDTO(
 @Serializable
 @SerialName("Forward")
 internal data class ForwardMessageDTO(
-    val display: ForwardMessageDisplayDTO?,
+    val display: ForwardMessageDisplayDTO? = null,
     val nodeList: List<ForwardMessageNode>,
 ) : MessageDTO()
 
 @Serializable
 internal data class ForwardMessageDisplayDTO(
-    val brief: String?,
-    val preview: List<String>?,
-    val source: String?,
-    val summary: String?,
-    val title: String?,
+    val brief: String? = null,
+    val preview: List<String>? = null,
+    val source: String? = null,
+    val summary: String? = null,
+    val title: String? = null,
 ) : ForwardMessage.DisplayStrategy {
     override fun generateBrief(forward: RawForwardMessage) = brief ?: super.generateBrief(forward)
     override fun generatePreview(forward: RawForwardMessage) = preview ?: super.generatePreview(forward)
@@ -242,4 +242,3 @@ object UnknownMessageDTO : MessageDTO()
 
 @Serializable
 sealed class MessageDTO : DTO
-
