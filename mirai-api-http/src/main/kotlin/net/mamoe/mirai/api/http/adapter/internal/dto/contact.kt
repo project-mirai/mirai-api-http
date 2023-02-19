@@ -9,19 +9,36 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.data.UserProfile
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-internal abstract class ContactDTO : DTO {
+@JsonClassDiscriminator("kind")
+sealed class ContactDTO : DTO {
     abstract val id: Long
+
+    // Dynamically creating contact dto
+    companion object {
+        operator fun invoke(contact: Contact): ContactDTO = when (contact) {
+            is Stranger -> StrangerDTO(contact)
+            is Friend -> QQDTO(contact)
+            is Group -> GroupDTO(contact)
+            is OtherClient -> OtherClientDTO(contact)
+            else -> error("Contact type ${contact::class.simpleName} not supported")
+        }
+    }
 }
 
 @Serializable
+@SerialName("Friend")
 internal data class QQDTO(
     override val id: Long,
     val nickname: String,
@@ -31,8 +48,18 @@ internal data class QQDTO(
     constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
 }
 
+@Serializable
+@SerialName("Stranger")
+internal data class StrangerDTO(
+    override val id: Long,
+    val nickname: String,
+    val remark: String,
+): ContactDTO() {
+    constructor(qq: Stranger): this(qq.id, qq.nick, qq.remark)
+}
 
 @Serializable
+@SerialName("Member")
 internal data class MemberDTO(
     override val id: Long,
     val memberName: String,
@@ -62,6 +89,7 @@ internal data class MemberDTO(
 }
 
 @Serializable
+@SerialName("Group")
 internal data class GroupDTO(
     override val id: Long,
     val name: String,
@@ -71,6 +99,7 @@ internal data class GroupDTO(
 }
 
 @Serializable
+@SerialName("OtherClient")
 internal data class OtherClientDTO(
     override val id: Long,
     val platform: String
@@ -78,21 +107,21 @@ internal data class OtherClientDTO(
     constructor(otherClient: OtherClient): this(otherClient.id, otherClient.platform?.name ?: "unknown")
 }
 
-@Serializable
-internal data class ComplexSubjectDTO(
-    override val id: Long,
-    val kind: String
-) : ContactDTO() {
-    constructor(contact: Contact) : this(
-        contact.id, when (contact) {
-            is Stranger -> "Stranger"
-            is Friend -> "Friend"
-            is Group -> "Group"
-            is OtherClient -> "OtherClient"
-            else -> error("Contact type ${contact::class.simpleName} not supported")
-        }
-    )
-}
+//@Serializable
+//internal data class ComplexSubjectDTO(
+//    override val id: Long,
+//    val kind: String
+//) : ContactDTO() {
+//    constructor(contact: Contact) : this(
+//        contact.id, when (contact) {
+//            is Stranger -> "Stranger"
+//            is Friend -> "Friend"
+//            is Group -> "Group"
+//            is OtherClient -> "OtherClient"
+//            else -> error("Contact type ${contact::class.simpleName} not supported")
+//        }
+//    )
+//}
 
 @Serializable
 internal data class ProfileDTO(

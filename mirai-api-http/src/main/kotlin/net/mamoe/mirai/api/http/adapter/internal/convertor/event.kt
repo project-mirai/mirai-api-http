@@ -108,7 +108,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         groupName,
         invitorNick
     )
-    is NudgeEvent -> NudgeEventDTO(from.id, target.id, ComplexSubjectDTO(subject), action, suffix)
+    is NudgeEvent -> NudgeEventDTO(from.id, target.id, ContactDTO(subject), action, suffix)
     is FriendInputStatusChangedEvent -> FriendInputStatusChangedEventDTO(QQDTO(friend), inputting)
     is FriendNickChangedEvent -> FriendNickChangedEventDTO(QQDTO(friend), from, to)
     is MemberHonorChangeEvent.Achieve -> MemberHonorChangeEventDTO(MemberDTO(member), "achieve", GroupHonor[honorType])

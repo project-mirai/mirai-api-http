@@ -106,4 +106,11 @@ class SerializationTest {
         val incoming = InternalSerializerHolder.serializer.decode(input, WsIncoming::class)
         assertNotNull(incoming, "WsIncoming 序列化异常")
     }
+
+    @Test
+    fun tesNudgeEventSerialization() {
+        val dto = NudgeEventDTO(1, 2, QQDTO(11, "ni", "re"), "action", "suffix")
+        val expect = """{"fromId":1,"target":2,"subject":{"kind":"Friend","id":11,"nickname":"ni","remark":"re"},"action":"action","suffix":"suffix"}"""
+        assertEquals(expect, InternalSerializerHolder.serializer.encode(dto, NudgeEventDTO::class))
+    }
 }
