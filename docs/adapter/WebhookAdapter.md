@@ -18,6 +18,15 @@ adapterSettings:
       Authorization: 'bearer SV*(&*(SH@ID^G'
       header1: value1
       header2: value2
+
+    ## 超时时间，默认都是 10 秒
+    timeout:
+      ## 从请求到取得响应的超时时间
+      requestTimeoutMillis: 10000
+      ## connectTimeoutMillis
+      connectTimeoutMillis: 10000
+      ## socketTimeoutMillis, 即 read timeout 和 write timeout
+      socketTimeoutMillis: 10000
 ```
 
 ### 接口一览
