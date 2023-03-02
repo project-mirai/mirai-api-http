@@ -37,7 +37,7 @@ class WebhookAdapter : MahAdapter("webhook"), CoroutineScope {
     }
 
     override val coroutineContext: CoroutineContext = EmptyCoroutineContext
-    private val client = WebhookHttpClient(setting.extraHeaders)
+    private val client = WebhookHttpClient(setting.extraHeaders, setting.timeout)
     private var botEventListener: Listener<BotEvent>? = null
 
     override fun initAdapter() {
