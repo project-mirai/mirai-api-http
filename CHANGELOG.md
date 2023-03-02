@@ -1,11 +1,12 @@
 # 更新日志
 
 
-## \[2.9.0\] - 2023-3-2
+## \[2.9.1\] - 2023-3-2
 
 ### 修复
 
 + websocket 异常断开时连接无法释放
++ ForwardMessage 的 `display` 字段中属性可空 @ProgramRipper
 
 ### 新增
 

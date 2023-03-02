@@ -98,4 +98,5 @@ jobs:
           title: 'update: mirai-api-http ${{ steps.tag.outputs.tag }}'
           branch: create-pull-request/mah-update-version
           delete-branch: true
+          path: ./mirai-repo-mirror
           base: master
