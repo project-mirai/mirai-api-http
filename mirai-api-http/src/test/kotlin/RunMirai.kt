@@ -7,8 +7,6 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package test.core.mirai
-
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.api.http.HttpApiPluginBase
 import net.mamoe.mirai.console.MiraiConsole

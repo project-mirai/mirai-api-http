@@ -43,6 +43,7 @@ object Paths {
     const val friendList = "friendList"
     const val groupList = "groupList"
     const val memberList = "memberList"
+    const val latestMemberList = "latestMemberList"
     const val botProfile = "botProfile"
     const val friendProfile = "friendProfile"
     const val memberProfile = "memberProfile"
@@ -73,7 +74,7 @@ object Paths {
     // command
     const val commandExecute = "cmd_execute"
     const val commandRegister = "cmd_register"
-    
+
     // announcement
     const val announcementList = "anno_list"
     const val announcementPublish = "anno_publish"

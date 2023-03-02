@@ -20,7 +20,7 @@ class WebhookHeader(configuration: Configuration) {
     private val defaultHeaders: Headers = configuration.buildHeaders()
 
     private fun intercept(builder: HttpRequestBuilder) {
-        defaultHeaders.forEach { n, v -> builder.header(n, v)}
+        defaultHeaders.forEach { n, v -> builder.header(n, v) }
         appendBotHeader(builder)
     }
 

@@ -40,6 +40,18 @@ footer: AGPL-3.0 License | Project Mirai
 ./mcl --update-package net.mamoe:mirai-api-http --channel stable --type plugin
 ```
 
+* `2.x` 版本需要切换到 `stable-v2` 的 channel
+
+```shell
+./mcl --update-package net.mamoe:mirai-api-http --channel stable-v2 --type plugin
+```
+
+* 启动 `MCL` 完成自动更新和启动
+
+```shell
+./mcl -u
+```
+
 ## 手动安装`mirai-api-http`
 
 1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成 plugins 文件夹
@@ -53,6 +65,7 @@ footer: AGPL-3.0 License | Project Mirai
 
 ## setting.yml 模板
 
+以下为 2.x 版本模板：
 ```yaml
 ## 配置文件中的值，全为默认值
 

@@ -27,13 +27,16 @@ class StandardSession constructor(
     override val manager: SessionManager,
 ) : AbstractSession() {
     private val supervisorJob = SupervisorJob()
-    override val coroutineContext: CoroutineContext = supervisorJob
+    override val coroutineContext: CoroutineContext = supervisorJob + CoroutineName("session-$key")
     private val lifeCounter = atomic(0)
 
     private lateinit var _bot: Bot
     private lateinit var _cache: Persistence
+    @Volatile
     private var _isAuthed = false
+    @Volatile
     private var _closed = false
+    @Volatile
     private var _closing = false
 
     override val bot: Bot get() = if (isAuthed) _bot else throw NotVerifiedSessionException
@@ -42,7 +45,7 @@ class StandardSession constructor(
     override val isClosed get() = _closed
 
     override fun authWith(bot: Bot, sourceCache: Persistence) {
-        if(isAuthed) {
+        if (isAuthed) {
             return
         }
 
@@ -127,7 +130,7 @@ class ListenableSessionWrapper(val session: Session) : Session by session {
         check(isAuthed) { "Session is not authed" }
 
         val handler = botEventHandler ?: getExtElement(Key.botEventHandler)
-        val element = bot.eventChannel.subscribeAlways<BotEvent> { event ->
+        val element = bot.eventChannel.subscribeAlways(BotEvent::class, coroutineContext) { event ->
             handler?.invoke(session, event)
         }
 

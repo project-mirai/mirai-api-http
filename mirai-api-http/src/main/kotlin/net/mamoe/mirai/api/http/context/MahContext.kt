@@ -27,7 +27,7 @@ import net.mamoe.mirai.utils.withSwitch
 /**
  * 全局的 mah 上下文
  */
-object MahContextHolder: MahContext() {
+object MahContextHolder : MahContext() {
 
     operator fun get(sessionKey: String): Session? {
         if (singleMode) {

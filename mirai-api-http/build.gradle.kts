@@ -4,30 +4,37 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("kotlinx-atomicfu")
+    id("net.mamoe.mirai-console")
     id("me.him188.maven-central-publish")
 }
 
 val ktorVersion: String by rootProject.extra
+val miraiVersion: String by lazy {
+    rootProject.buildscript.configurations.getByName("classpath").dependencies
+        .first { it.name == "net.mamoe.mirai-console.gradle.plugin" }
+        .version!!
+}
 
 dependencies {
 
     implementation(project(":mirai-api-http-spi"))
 
-    ktorImplementation("server-core")
-    ktorImplementation("server-cio")
-    ktorImplementation("server-content-negotiation")
-    ktorImplementation("serialization-kotlinx-json")
-    ktorImplementation("server-websockets")
-    ktorImplementation("server-default-headers")
-    ktorImplementation("server-cors")
-    ktorImplementation("client-okhttp")
-    ktorImplementation("client-websockets")
+    ktorApi("server-core")
+    ktorApi("server-cio")
+    ktorApi("server-content-negotiation")
+    ktorApi("serialization-kotlinx-json")
+    ktorApi("server-websockets")
+    ktorApi("server-default-headers")
+    ktorApi("server-cors")
+    ktorApi("client-okhttp")
+    ktorApi("client-websockets")
 
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
     implementation("org.slf4j:slf4j-simple:1.7.32")
 
     // test
     testImplementation("net.mamoe.yamlkt:yamlkt:0.12.0")
+    testImplementation("net.mamoe:mirai-core-mock:$miraiVersion")
     testImplementation("org.slf4j:slf4j-simple:1.7.32")
     testImplementation(kotlin("test-junit5"))
     ktorTest("server-test-host")
@@ -45,7 +52,7 @@ tasks.register("buildCiJar", Jar::class) {
         val buildPluginFile = buildPluginTask.archiveFile.get().asFile
         project.buildDir.resolve("ci").also {
             it.mkdirs()
-        }.resolve("mirai-api-http.jar").let {
+        }.resolve("mirai-api-http-${project.version}.mirai2.jar").let {
             buildPluginFile.copyTo(it, true)
         }
     }
@@ -56,7 +63,7 @@ tasks.test {
 }
 
 mavenCentralPublish {
-    workingDir = rootProject.buildDir.resolve("pub").apply { mkdirs() }
+    workingDir = project.buildDir.resolve("pub").apply { mkdirs() }
     githubProject("project-mirai", "mirai-api-http")
     licenseFromGitHubProject("licenseAgplv3", "master")
     developer("Mamoe Technologies")

@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 
 @Serializable
-internal abstract class AbstractFileTargetDTO: AuthedDTO() {
+internal abstract class AbstractFileTargetDTO : AuthedDTO() {
     abstract val id: String
     abstract val path: String?
     abstract val target: Long?
@@ -28,7 +28,7 @@ internal data class FileTargetDTO(
     override val target: Long? = null,
     override val group: Long? = null,
     override val qq: Long? = null,
-): AbstractFileTargetDTO()
+) : AbstractFileTargetDTO()
 
 @Serializable
 internal data class FileListDTO(
@@ -40,7 +40,7 @@ internal data class FileListDTO(
     val offset: Int = 0,
     val size: Int = Int.MAX_VALUE,
     val withDownloadInfo: Boolean = false,
-): AbstractFileTargetDTO()
+) : AbstractFileTargetDTO()
 
 @Serializable
 internal data class FileInfoDTO(
@@ -50,7 +50,7 @@ internal data class FileInfoDTO(
     override val group: Long? = null,
     override val qq: Long? = null,
     val withDownloadInfo: Boolean = false
-): AbstractFileTargetDTO()
+) : AbstractFileTargetDTO()
 
 @Serializable
 internal data class MkDirDTO(

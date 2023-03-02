@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.serialization
 
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MessageIdDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.NudgeDTO
@@ -46,8 +47,29 @@ class KtorParameterFormatTest {
         )
         val dto = KtorParameterFormat.DEFAULT.decode(param, NudgeDTO.serializer())
         assertEquals(expected, dto, "KtorParameterSerializer decode failed")
-        assertEquals(MahContext.SINGLE_SESSION_KEY, dto.sessionKey, "KtorParameterSerializer default value decode failed")
+        assertEquals(
+            MahContext.SINGLE_SESSION_KEY,
+            dto.sessionKey,
+            "KtorParameterSerializer default value decode failed"
+        )
     }
+
+    @Test
+    fun testArray() {
+        val expected = TestMulti(1, listOf("5", "1", "4"))
+        val param = parametersOf(
+            "target" to listOf("1"),
+            "memberIds" to listOf("5", "1", "4"),
+        )
+        val dto = KtorParameterFormat.DEFAULT.decode(param, TestMulti.serializer())
+        assertEquals(expected, dto, "KtorParameterSerializer decode failed")
+    }
+
+    @Serializable
+    data class TestMulti(
+        val target: Long,
+        val memberIds: List<String>?
+    )
 
     @Test
     fun testMessage() {

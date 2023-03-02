@@ -18,14 +18,14 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.request.env.startAdapter
-import test.core.annotation.ExtendWith
-import test.core.extenssion.SetupBotMock
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
+import net.mamoe.mirai.api.http.request.startAdapter
+import net.mamoe.mirai.api.http.util.ExtendWith
+import net.mamoe.mirai.api.http.util.SetupMockBot
+import net.mamoe.mirai.api.http.util.withSession
+
 import kotlin.test.*
 
-@ExtendWith(SetupBotMock::class)
+@ExtendWith(SetupMockBot::class)
 open class HttpSessionLifeCycle {
 
     private val verifyKey = "HttpSessionLifeCycle"
@@ -49,7 +49,7 @@ open class HttpSessionLifeCycle {
         assertFalse(session.isAuthed)
         assertFalse(session.isHttpSession())
 
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         val bindRet = post<StateCode>(bindPath, data)
         assertEquals(StateCode.Success.code, bindRet.code)
 
@@ -62,7 +62,7 @@ open class HttpSessionLifeCycle {
         // same object
         assertSame(session, authedSession)
 
-        data = BindDTO(BotMockStub.ID).withSession(verifyRet.session).toJson()
+        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
         val releaseRet = post<StateCode>(releasePath, data)
         assertEquals(StateCode.Success.code, releaseRet.code)
 

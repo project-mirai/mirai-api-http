@@ -23,10 +23,10 @@ import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdapterSetting
 import net.mamoe.mirai.api.http.adapter.reverse.handleReverseWs
 import net.mamoe.mirai.utils.MiraiLogger
 import net.mamoe.mirai.utils.warning
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 import java.net.ConnectException
 import java.net.SocketException
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 class WsClient(private var log: MiraiLogger) : CoroutineScope {
 
@@ -54,7 +54,7 @@ class WsClient(private var log: MiraiLogger) : CoroutineScope {
                     log.error("[reverse-ws] SocketException occurred: ${e.localizedMessage}")
                 }
                 webSocketSession = null
-                log.warning { "[reverse-ws] Connection to ${destination.host + ":" + destination.port + destination.path } interrupted. Trying reconnect in ${destination.reconnectInterval} ms." }
+                log.warning { "[reverse-ws] Connection to ${destination.host + ":" + destination.port + destination.path} interrupted. Trying reconnect in ${destination.reconnectInterval} ms." }
                 delay(destination.reconnectInterval)
             }
         }

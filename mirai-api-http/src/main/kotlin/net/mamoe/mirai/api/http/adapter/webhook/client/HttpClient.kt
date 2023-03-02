@@ -11,39 +11,38 @@ package net.mamoe.mirai.api.http.adapter.webhook.client
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import net.mamoe.mirai.api.http.adapter.webhook.WebHookClientTimeout
 import net.mamoe.mirai.api.http.util.smartTakeFrom
 import java.nio.charset.StandardCharsets
 
-class WebhookHttpClient(private val headers: Map<String, String>) {
+class WebhookHttpClient(private val headers: Map<String, String>, timeout: WebHookClientTimeout) {
 
     /**
      * 使用 Ktor 的 [HttpClient]
      */
     private val client = HttpClient(OkHttp) {
-
+        install(HttpTimeout) {
+            requestTimeoutMillis = timeout.requestTimeoutMillis
+            connectTimeoutMillis = timeout.connectTimeoutMillis
+            socketTimeoutMillis = timeout.socketTimeoutMillis
+        }
         install(WebhookHeader) { headers.forEach { (k, v) -> header(k, v) } }
     }
 
     /**
      * POST请求 (String)
      */
-    suspend fun post(path: String, content: String, botId: Long? = null): String? {
+    suspend fun post(path: String, content: String, botId: Long? = null): String {
         return client.request {
             url { smartTakeFrom(path) }
             botHeader(botId.toString())
             method = HttpMethod.Post
             setBody(TextContent(content, ContentType.Application.Json.withCharset(StandardCharsets.UTF_8)))
-        }.let {
-            val contentLength = it.contentLength()
-            if (it.status != HttpStatusCode.OK || contentLength == null || contentLength == 0L) {
-                return null
-            }
-
-            it.bodyAsText()
-        }
+        }.bodyAsText()
     }
 }

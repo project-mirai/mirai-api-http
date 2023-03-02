@@ -131,10 +131,12 @@ private fun URLBuilder.parseFile(urlString: String, startIndex: Int, endIndex: I
             host = urlString.substring(startIndex, nextSlash)
             encodedPath = urlString.substring(nextSlash, endIndex)
         }
+
         3 -> {
             host = ""
             encodedPath = "/" + urlString.substring(startIndex, endIndex)
         }
+
         else -> throw IllegalArgumentException("Invalid file url: $urlString")
     }
 }
@@ -200,8 +202,8 @@ private fun findScheme(urlString: String, startIndex: Int, endIndex: Int): Int {
         // Character ':' means the end of the scheme and at this point the length of the scheme should be returned or
         // the exception should be thrown in case the scheme contains illegal characters.
         if (char == ':' && current + 2 < endIndex
-            && urlString[current+2] == '/'
-            && urlString[current+1] == '/'
+            && urlString[current + 2] == '/'
+            && urlString[current + 1] == '/'
         ) {
             if (incorrectSchemePosition != -1) {
                 throw IllegalArgumentException("Illegal character in scheme at position $incorrectSchemePosition")

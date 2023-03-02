@@ -62,8 +62,8 @@ internal suspend fun execute(bot: Bot, packet: WebhookPacket) {
         // command
         Paths.commandExecute -> execute(bot, element, ::onExecuteCommand)
         Paths.commandRegister -> execute(bot, element, ::onRegisterCommand)
-        
-        
+
+
         // announcement
         Paths.announcementList -> execute(bot, element, ::onListAnnouncement)
         Paths.announcementPublish -> execute(bot, element, ::onPublishAnnouncement)

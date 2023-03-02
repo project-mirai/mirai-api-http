@@ -40,7 +40,7 @@ class HttpAdapter : MahKtorAdapter("http") {
 
     override suspend fun onReceiveBotEvent(event: BotEvent, session: Session) {
         if (session.isAuthed && session.isHttpSession()) {
-            event.toDTO().takeIf { it != IgnoreEventDTO }?.let (session.unreadQueue()::offer)
+            event.toDTO().takeIf { it != IgnoreEventDTO }?.let(session.unreadQueue()::offer)
         }
     }
 }

@@ -10,7 +10,9 @@
 package net.mamoe.mirai.api.http.adapter.serialization
 
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.adapter.internal.dto.EventDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.NudgeEventDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.QQDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
@@ -102,8 +104,17 @@ class SerializationTest {
 
     @Test
     fun testWsCommand() {
-        val input = """{"syncId": "999", "command": "sendGroupMessage", content: {"target": 123123, messageChain: [{type: "Plain", text: "hello world"}]}}"""
+        val input =
+            """{"syncId": "999", "command": "sendGroupMessage", content: {"target": 123123, messageChain: [{type: "Plain", text: "hello world"}]}}"""
         val incoming = InternalSerializerHolder.serializer.decode(input, WsIncoming::class)
         assertNotNull(incoming, "WsIncoming 序列化异常")
+    }
+
+    @Test
+    fun tesNudgeEventSerialization() {
+        val dto = NudgeEventDTO(1, 2, QQDTO(11, "ni", "re"), "action", "suffix")
+        val expect =
+            """{"fromId":1,"target":2,"subject":{"kind":"Friend","id":11,"nickname":"ni","remark":"re"},"action":"action","suffix":"suffix"}"""
+        assertEquals(expect, InternalSerializerHolder.serializer.encode(dto, NudgeEventDTO::class))
     }
 }

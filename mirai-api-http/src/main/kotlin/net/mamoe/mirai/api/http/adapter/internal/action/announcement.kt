@@ -30,7 +30,15 @@ internal suspend fun onListAnnouncement(dto: AnnouncementListDTO): AnnouncementL
         .drop(dto.offset)
         .take(dto.size)
         .map {
-            AnnouncementDTO(GroupDTO(group), it.content, it.senderId, it.fid, it.allConfirmed, it.confirmedMembersCount, it.publicationTime)
+            AnnouncementDTO(
+                GroupDTO(group),
+                it.content,
+                it.senderId,
+                it.fid,
+                it.allConfirmed,
+                it.confirmedMembersCount,
+                it.publicationTime
+            )
         }.toList()
     return AnnouncementList(data = ls)
 }
@@ -44,14 +52,17 @@ internal suspend fun onPublishAnnouncement(dto: PublishAnnouncementDTO): Element
         !dto.imageUrl.isNullOrBlank() -> withContext(Dispatchers.IO) {
             dto.imageUrl.useUrl { group.announcements.uploadImage(it) }
         }
+
         !dto.imagePath.isNullOrBlank() -> with(File(dto.imagePath)) {
             if (exists()) {
                 inputStream().useStream { group.announcements.uploadImage(it) }
             } else throw NoSuchFileException(this)
         }
+
         !dto.imageBase64.isNullOrBlank() -> with(Base64.getDecoder().decode(dto.imageBase64)) {
             inputStream().useStream { group.announcements.uploadImage(it) }
         }
+
         else -> null
     }
 
@@ -65,7 +76,17 @@ internal suspend fun onPublishAnnouncement(dto: PublishAnnouncementDTO): Element
     }.publishTo(group)
 
     return with(announcement) {
-        ElementResult(data = AnnouncementDTO(GroupDTO(group), content, senderId, fid, allConfirmed, confirmedMembersCount, publicationTime).toJsonElement())
+        ElementResult(
+            data = AnnouncementDTO(
+                GroupDTO(group),
+                content,
+                senderId,
+                fid,
+                allConfirmed,
+                confirmedMembersCount,
+                publicationTime
+            ).toJsonElement()
+        )
     }
 }
 

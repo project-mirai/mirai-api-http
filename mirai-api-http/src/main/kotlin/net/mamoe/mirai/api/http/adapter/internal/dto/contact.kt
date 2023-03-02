@@ -9,20 +9,41 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
+import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.active.GroupActive
 import net.mamoe.mirai.contact.active.MemberActive
 import net.mamoe.mirai.data.GroupHonorType
+import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.data.UserProfile
+import net.mamoe.mirai.utils.MiraiExperimentalApi
+import java.util.stream.Collectors
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-internal abstract class ContactDTO : DTO {
+@JsonClassDiscriminator("kind")
+sealed class ContactDTO : DTO {
     abstract val id: Long
+
+    // Dynamically creating contact dto
+    companion object {
+        operator fun invoke(contact: Contact): ContactDTO = when (contact) {
+            is Stranger -> StrangerDTO(contact)
+            is Friend -> QQDTO(contact)
+            is Group -> GroupDTO(contact)
+            is OtherClient -> OtherClientDTO(contact)
+            else -> error("Contact type ${contact::class.simpleName} not supported")
+        }
+    }
 }
 
 @Serializable
+@SerialName("Friend")
 internal data class QQDTO(
     override val id: Long,
     val nickname: String,
@@ -32,8 +53,18 @@ internal data class QQDTO(
     constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
 }
 
+@Serializable
+@SerialName("Stranger")
+internal data class StrangerDTO(
+    override val id: Long,
+    val nickname: String,
+    val remark: String,
+) : ContactDTO() {
+    constructor(qq: Stranger) : this(qq.id, qq.nick, qq.remark)
+}
 
 @Serializable
+@SerialName("Member")
 internal data class MemberDTO(
     override val id: Long,
     val memberName: String,
@@ -53,9 +84,25 @@ internal data class MemberDTO(
         group = GroupDTO(member.group),
         active = MemberActiveDTO(member.active)
     )
+
+    @OptIn(LowLevelApi::class, MiraiExperimentalApi::class)
+    constructor(member: MemberInfo, group: Group) : this(
+        member.uin, member.nameCard.takeIf { it.isNotEmpty() } ?: member.nick, member.specialTitle, member.permission,
+        joinTimestamp = member.joinTimestamp,
+        lastSpeakTimestamp = member.joinTimestamp,
+        muteTimeRemaining = if (member.muteTimestamp == 0 || member.muteTimestamp == 0xFFFFFFFF.toInt()) 0 else (member.muteTimestamp - System.currentTimeMillis() / 1000).toInt()
+            .coerceAtLeast(0),
+        group = GroupDTO(group),
+        active = MemberActiveDTO(
+            member.temperature, member.point, member.rank, member.honors.stream().map { it.toString() }.collect(
+                Collectors.toList()
+            )
+        )
+    )
 }
 
 @Serializable
+@SerialName("Group")
 internal data class GroupDTO(
     override val id: Long,
     val name: String,
@@ -66,11 +113,12 @@ internal data class GroupDTO(
 }
 
 @Serializable
+@SerialName("OtherClient")
 internal data class OtherClientDTO(
     override val id: Long,
     val platform: String
 ) : ContactDTO() {
-    constructor(otherClient: OtherClient): this(otherClient.id, otherClient.platform?.name ?: "unknown")
+    constructor(otherClient: OtherClient) : this(otherClient.id, otherClient.platform?.name ?: "unknown")
 }
 
 @Serializable
@@ -111,7 +159,7 @@ internal data class MemberActiveDTO(
     val rank: Int,
     val honors: MutableList<String>
 ) : DTO {
-    constructor(active: MemberActive) : this(active.temperature,active.point,active.rank, toStrList(active.honors))
+    constructor(active: MemberActive) : this(active.temperature, active.point, active.rank, toStrList(active.honors))
 }
 
 @Serializable
@@ -119,13 +167,19 @@ internal data class GroupActiveDTO(
     val isHonorVisible: Boolean,
     val isTemperatureVisible: Boolean,
     val isTitleVisible: Boolean,
-    val rankTitles: Map<Int,String>,
-    val temperatureTitles: Map<Int,String>
+    val rankTitles: Map<Int, String>,
+    val temperatureTitles: Map<Int, String>
 ) : DTO {
-    constructor(active: GroupActive) : this(active.isHonorVisible,active.isTemperatureVisible,active.isTitleVisible,active.rankTitles,active.temperatureTitles)
+    constructor(active: GroupActive) : this(
+        active.isHonorVisible,
+        active.isTemperatureVisible,
+        active.isTitleVisible,
+        active.rankTitles,
+        active.temperatureTitles
+    )
 }
 
-fun toStrList(types: Set<GroupHonorType>): MutableList<String>{
+fun toStrList(types: Set<GroupHonorType>): MutableList<String> {
     val mutableList: MutableList<String> = ArrayList()
     types.forEach { mutableList.add(GroupHonor.get(it)) }
     return mutableList

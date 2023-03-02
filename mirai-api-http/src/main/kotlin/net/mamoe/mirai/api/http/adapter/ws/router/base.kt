@@ -27,7 +27,7 @@ import net.mamoe.mirai.api.http.context.MahContextHolder
  */
 fun Application.websocketRouteModule(wsAdapter: WebsocketAdapter) {
     install(WebSockets) {
-        extensions { 
+        extensions {
             install(FrameLogExtension) { enableAccessLog = MahContextHolder.debug }
         }
     }
@@ -81,13 +81,15 @@ private suspend fun DefaultWebSocketServerSession.handleChannel(
         )
     )
 
-    for (frame in incoming) {
-        val session = MahContextHolder[sessionKey] ?: break
-        outgoing.handleWsAction(session, String(frame.data))
+    try {
+        for (frame in incoming) {
+            val session = MahContextHolder[sessionKey] ?: break
+            outgoing.handleWsAction(session, String(frame.data))
+        }
+    } finally {
+        channel.remove(sessionKey, outgoing)
+        MahContextHolder.sessionManager.closeSession(sessionKey)
+        // ensure close
+        outgoing.close()
     }
-
-    channel.remove(sessionKey, outgoing)
-    MahContextHolder.sessionManager.closeSession(sessionKey)
-    // ensure close
-    outgoing.close()
 }

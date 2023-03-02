@@ -29,7 +29,7 @@ internal inline fun <reified T : Any> List<T>.toJson(): String =
 /**
  * 列化 object
  */
-internal inline fun <reified T: Any> T.toJsonElement(): JsonElement =
+internal inline fun <reified T : Any> T.toJsonElement(): JsonElement =
     InternalSerializerHolder.serializer.encodeElement(this)
 
 /**

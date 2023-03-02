@@ -88,14 +88,16 @@ internal inline fun Route.miraiWebsocket(
 }
 
 internal suspend fun DefaultWebSocketServerSession.closeWithCode(code: StateCode) {
-    outgoing.send(Frame.Text(
-        WsOutgoing(syncId = "", code.toJsonElement()).toJson()
-    ))
+    outgoing.send(
+        Frame.Text(
+            WsOutgoing(syncId = "", code.toJsonElement()).toJson()
+        )
+    )
     close(CloseReason(CloseReason.Codes.NORMAL, code.msg))
 }
 
 
-internal fun <T: WebSocketExtension<*>> WebSocketServerSession.installExtension(factory: WebSocketExtensionFactory<*, T>) {
+internal fun <T : WebSocketExtension<*>> WebSocketServerSession.installExtension(factory: WebSocketExtensionFactory<*, T>) {
     application.plugin(WebSockets).extensionsConfig.build().find { it.factory.key == factory.key }?.let {
         (extensions as MutableList<WebSocketExtension<*>>).add(it)
     }

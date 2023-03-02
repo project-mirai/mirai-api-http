@@ -9,8 +9,8 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.server.application.*
 import io.ktor.http.content.*
+import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
@@ -60,7 +60,7 @@ internal fun Application.messageRouter() = routing {
         val data = it.unreadQueue.peek(it.count)
         call.respondDTO(EventListRestfulResult(data = data))
     }
-    
+
     /**
      * 获取指定条数最新的消息，和 `/fetchLatestMessage` 不一样，这个方法不会删除消息
      */

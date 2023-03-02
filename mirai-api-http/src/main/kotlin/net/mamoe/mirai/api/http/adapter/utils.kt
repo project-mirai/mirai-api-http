@@ -6,7 +6,7 @@ import net.mamoe.mirai.api.http.setting.MainSetting
 import net.mamoe.yamlkt.Yaml
 
 @OptIn(InternalSerializationApi::class)
-inline fun <reified T:Any> MahAdapter.getSetting(): T? {
+inline fun <reified T : Any> MahAdapter.getSetting(): T? {
     return MainSetting.adapterSettings[name]?.let {
         Yaml.decodeFromString(T::class.serializer(), Yaml.encodeToString(it))
     }

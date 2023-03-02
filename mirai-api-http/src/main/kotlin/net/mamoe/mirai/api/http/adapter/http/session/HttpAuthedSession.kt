@@ -24,7 +24,7 @@ import net.mamoe.mirai.api.http.context.session.Session
 //    val unreadQueue: UnreadQueue = UnreadQueue()
 //}
 
-object UnreadQueueKey: Session.ExtKey<UnreadQueue>
+object UnreadQueueKey : Session.ExtKey<UnreadQueue>
 
 internal fun Session.asHttpSession(queueMaxSize: Int): Session {
     val unreadQueue = UnreadQueue(queueMaxSize)

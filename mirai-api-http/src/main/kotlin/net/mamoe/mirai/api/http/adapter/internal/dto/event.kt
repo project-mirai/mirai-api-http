@@ -256,7 +256,7 @@ internal data class BotInvitedJoinGroupRequestEventDTO(
 internal data class NudgeEventDTO(
     val fromId: Long,
     val target: Long,
-    val subject: ComplexSubjectDTO,
+    val subject: ContactDTO,
     val action: String,
     val suffix: String,
 ) : BotEventDTO()

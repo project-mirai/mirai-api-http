@@ -23,4 +23,28 @@ data class WebhookAdapterSetting(
      * 额外请求头
      */
     val extraHeaders: Map<String, String> = emptyMap(),
+
+    /**
+     * 超时时间
+     */
+    val timeout: WebHookClientTimeout = WebHookClientTimeout()
+
+)
+
+@Serializable
+data class WebHookClientTimeout(
+    /**
+     * 从请求到取得响应的超时时间
+     */
+    val requestTimeoutMillis: Long = 10_000,
+
+    /**
+     * 建立 TCP 连接的超市时间
+     */
+    val connectTimeoutMillis: Long = 10_000,
+
+    /**
+     * socket 两个数据包间最小间隔时间
+     */
+    val socketTimeoutMillis: Long = 10_000,
 )

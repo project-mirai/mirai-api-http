@@ -69,6 +69,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
         name.isNotEmpty() -> Face(FaceMap[name])
         else -> Face(255)
     }
+
     is PlainDTO -> PlainText(text)
     is ImageDTO -> imageLikeToMessage(contact)
     is FlashImageDTO -> imageLikeToMessage(contact)?.flash()
@@ -80,6 +81,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
     is DiceDTO -> Dice(value)
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
     is ForwardMessageDTO -> buildForwardMessage(contact) {
+        display?.let { displayStrategy = display }
         nodeList.forEach {
             if (it.messageId != null) {
                 cache.getMessageOrNull(Context(intArrayOf(it.messageId), contact))?.apply {
@@ -95,6 +97,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
             }
         }
     }
+
     is MiraiCodeDTO -> MiraiCode.deserializeMiraiCode(code)
     // ignore
     is QuoteDTO,
@@ -112,33 +115,47 @@ private suspend fun ImageLikeDTO.imageLikeToMessage(contact: Contact) = when {
         size = this@imageLikeToMessage.size
         isEmoji = this@imageLikeToMessage.isEmoji
     }
+
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
         url!!.useUrl { it.uploadAsImage(contact) }
     }
+
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
             inputStream().useStream { it.uploadAsImage(contact) }
         } else throw NoSuchFileException(this)
     }
+
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
         inputStream().useStream { it.uploadAsImage(contact) }
     }
+
     else -> null
 }
 
 private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     contact !is AudioSupported -> null
-    !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, AudioCodec.SILK, null)
+    !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(
+        voiceId!!,
+        voiceId!!.substringBefore(".").toHexArray(),
+        0,
+        AudioCodec.SILK,
+        null
+    )
+
     !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
         url!!.useUrl { contact.uploadAudio(it) }
     }
+
     !path.isNullOrBlank() -> with(File(path!!)) {
         if (exists()) {
             inputStream().useStream { contact.uploadAudio(it) }
         } else throw NoSuchFileException(this)
     }
+
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
         inputStream().useStream { contact.uploadAudio(it) }
     }
+
     else -> null
 }

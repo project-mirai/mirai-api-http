@@ -16,7 +16,6 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.MarketFace
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /***************************
@@ -63,10 +62,28 @@ internal suspend fun Message.toDTO() = when (this) {
     is AtAll -> AtAllDTO(0L)
     is Face -> FaceDTO(id, FaceMap[id])
     is PlainText -> PlainDTO(content)
-    is Image -> ImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
+    is Image -> ImageDTO(
+        imageId,
+        queryUrl(),
+        width = width,
+        height = height,
+        size = size,
+        imageType = imageType.name,
+        isEmoji = isEmoji
+    )
+
     is FlashImage -> with(image) {
-        FlashImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
+        FlashImageDTO(
+            imageId,
+            queryUrl(),
+            width = width,
+            height = height,
+            size = size,
+            imageType = imageType.name,
+            isEmoji = isEmoji
+        )
     }
+
     is OnlineAudio -> VoiceDTO(filename, urlForDownload, length = length)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
@@ -74,17 +91,20 @@ internal suspend fun Message.toDTO() = when (this) {
         groupId = when {
             source is OfflineMessageSource && (source as OfflineMessageSource).kind == MessageSourceKind.GROUP ||
                     source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
+
             else -> 0L
         },
         // 避免套娃
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
+
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
     is MarketFace -> MarketFaceDTO(id, name)
     is MusicShare -> MusicShareDTO(kind.name, title, summary, jumpUrl, pictureUrl, musicUrl, brief)
-    is ForwardMessage -> ForwardMessageDTO(nodeList.map {
+    is ForwardMessage -> ForwardMessageDTO(null, nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
     })
+
     is FileMessage -> FileDTO(id, name, size)
     else -> UnknownMessageDTO
 }

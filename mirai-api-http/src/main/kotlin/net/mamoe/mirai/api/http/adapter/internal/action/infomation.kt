@@ -9,13 +9,11 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.action
 
+import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.Mirai
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.FriendList
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupList
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberList
-import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MemberTargetDTO
+import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
  * 查询好友列表
@@ -40,6 +38,24 @@ internal fun onGetMemberList(dto: LongTargetDTO): MemberList {
     val ls = dto.session.bot.getGroupOrFail(dto.target).members
         .toList().map { member -> MemberDTO(member) }
     return MemberList(data = ls)
+}
+
+/**
+ * 获取最新QQ群成员列表
+ */
+@OptIn(LowLevelApi::class, MiraiExperimentalApi::class)
+internal suspend fun onLatestMemberList(dto: MemberMultiTargetDTO): MemberList {
+    val bot = dto.session.bot
+    val group = bot.getGroupOrFail(dto.target)
+    var seq = Mirai.getRawGroupMemberList(bot, Mirai.getUin(group), group.id, group.owner.id)
+    if (dto.memberIds != null && dto.memberIds.isNotEmpty()) {
+        seq = seq.filter { dto.memberIds.contains(it.uin) }
+    }
+    var dtoSeq = seq.map { MemberDTO(it, group) }
+    if (dto.memberIds != null && dto.memberIds.isNotEmpty()) {
+        dtoSeq = dtoSeq.take(dto.memberIds.size)
+    }
+    return MemberList(dtoSeq.toList())
 }
 
 /**

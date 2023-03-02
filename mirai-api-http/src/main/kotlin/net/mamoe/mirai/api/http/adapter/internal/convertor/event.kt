@@ -34,12 +34,14 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
+
     is MessageRecallEvent.FriendRecall -> FriendRecallEventDTO(
         authorId,
         messageIds.firstOrNull() ?: 0,
         messageTime.toLong() and 0xFFFFFFFF,
         operatorId
     )
+
     is BotGroupPermissionChangeEvent -> BotGroupPermissionChangeEventDTO(origin, new, GroupDTO(group))
     is BotMuteEvent -> BotMuteEventDTO(durationSeconds, MemberDTO(operator))
     is BotUnmuteEvent -> BotUnmuteEventDTO(MemberDTO(operator))
@@ -55,6 +57,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
+
     is GroupMuteAllEvent -> GroupMuteAllEventDTO(origin, new, GroupDTO(group), operator?.let(::MemberDTO))
     is GroupAllowAnonymousChatEvent -> GroupAllowAnonymousChatEventDTO(
         origin,
@@ -62,18 +65,21 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
+
     is GroupAllowConfessTalkEvent -> GroupAllowConfessTalkEventDTO(
         origin,
         new,
         GroupDTO(group),
         isByBot
     )
+
     is GroupAllowMemberInviteEvent -> GroupAllowMemberInviteEventDTO(
         origin,
         new,
         GroupDTO(group),
         operator?.let(::MemberDTO)
     )
+
     is MemberJoinEvent.Active -> MemberJoinEventDTO(MemberDTO(member))
     is MemberJoinEvent.Invite -> MemberJoinEventDTO(MemberDTO(member), MemberDTO(invitor))
     is MemberJoinEvent.Retrieve -> MemberJoinEventDTO(MemberDTO(member))
@@ -91,6 +97,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         fromGroupId,
         fromNick
     )
+
     is MemberJoinRequestEvent -> MemberJoinRequestEventDTO(
         eventId,
         message,
@@ -100,6 +107,7 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         fromNick,
         invitorId,
     )
+
     is BotInvitedJoinGroupRequestEvent -> BotInvitedJoinGroupRequestEventDTO(
         eventId,
         "",
@@ -108,7 +116,8 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         groupName,
         invitorNick
     )
-    is NudgeEvent -> NudgeEventDTO(from.id, target.id, ComplexSubjectDTO(subject), action, suffix)
+
+    is NudgeEvent -> NudgeEventDTO(from.id, target.id, ContactDTO(subject), action, suffix)
     is FriendInputStatusChangedEvent -> FriendInputStatusChangedEventDTO(QQDTO(friend), inputting)
     is FriendNickChangedEvent -> FriendNickChangedEventDTO(QQDTO(friend), from, to)
     is MemberHonorChangeEvent.Achieve -> MemberHonorChangeEventDTO(MemberDTO(member), "achieve", GroupHonor[honorType])
@@ -117,12 +126,21 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
     is OtherClientOfflineEvent -> OtherClientOfflineEventDTO(OtherClientDTO(client))
     is CommandExecutedEvent -> CommandExecutedEventDTO(
         command.primaryName,
-        friend = if (sender.user != null && sender.user is Friend) { QQDTO(sender.user as Friend) } else { null },
-        member = if (sender.user != null && sender.user is Member) { MemberDTO(sender.user as Member) } else { null },
+        friend = if (sender.user != null && sender.user is Friend) {
+            QQDTO(sender.user as Friend)
+        } else {
+            null
+        },
+        member = if (sender.user != null && sender.user is Member) {
+            MemberDTO(sender.user as Member)
+        } else {
+            null
+        },
         args = args.toDTO { it != UnknownMessageDTO }
     )
+
     else -> {
-        if(MahContextHolder.debug) {
+        if (MahContextHolder.debug) {
             MahContextHolder.debugLog.debug { "Unknown event: ${this.javaClass.simpleName}" }
         }
         IgnoreEventDTO

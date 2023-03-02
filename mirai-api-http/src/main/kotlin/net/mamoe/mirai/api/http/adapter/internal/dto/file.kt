@@ -33,7 +33,7 @@ internal data class RemoteFileDTO(
     val lastModifyTime: Long?,
     val downloadInfo: DownloadInfoDTO? = null,
 ) : DTO {
-    
+
     constructor(file: AbsoluteFileFolder, withDownload: Boolean, url: String? = null) : this(
         file.name,
         file.id,
@@ -66,7 +66,7 @@ internal data class DownloadInfoDTO(
     val lastModifyTime: Long,
     val url: String,
 ) : DTO {
-    constructor(file: AbsoluteFile, url: String?): this(
+    constructor(file: AbsoluteFile, url: String?) : this(
         file.sha1.toHexString(),
         file.md5.toHexString(),
         0,

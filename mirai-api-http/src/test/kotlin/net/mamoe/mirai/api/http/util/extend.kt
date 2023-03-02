@@ -7,16 +7,27 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package test.core.extenssion
+package net.mamoe.mirai.api.http.util
 
-import kotlinx.coroutines.runBlocking
-import test.core.mock.BotMockStub
+import net.mamoe.mirai.mock.MockBotFactory
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 
-class SetupBotMock: BeforeAllCallback {
+typealias ExtendWith = org.junit.jupiter.api.extension.ExtendWith
+
+class SetupMockBot : BeforeAllCallback {
 
     override fun beforeAll(context: ExtensionContext?) {
-        runBlocking { BotMockStub().login() }
+        MockBotFactory.initialize()
+        val bot = MockBotFactory.newMockBotBuilder()
+            .id(ID)
+            .create()
+
+        bot.addFriend(FRIEND_ID, "friend")
+    }
+
+    companion object {
+        const val ID = 1L
+        const val FRIEND_ID = 11L
     }
 }

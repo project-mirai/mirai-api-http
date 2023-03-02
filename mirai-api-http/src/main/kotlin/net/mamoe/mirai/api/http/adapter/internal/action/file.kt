@@ -37,8 +37,11 @@ internal suspend fun onListFile(dto: FileListDTO): RemoteFileList {
 
 internal suspend fun onGetFileInfo(dto: FileInfoDTO): ElementResult {
     val file = dto.getAbsoluteFile()
-    val data = if (dto.withDownloadInfo) { RemoteFileDTO(file, true, file.getUrl()) }
-    else { RemoteFileDTO(file, false) }
+    val data = if (dto.withDownloadInfo) {
+        RemoteFileDTO(file, true, file.getUrl())
+    } else {
+        RemoteFileDTO(file, false)
+    }
 
     return ElementResult(data.toJsonElement())
 }
@@ -51,18 +54,21 @@ internal suspend fun onMkDir(dto: MkDirDTO): ElementResult {
     )
 }
 
-internal suspend fun onUploadFile(stream: InputStream, path: String, fileName: String?, contact: FileSupported): ElementResult {
+internal suspend fun onUploadFile(
+    stream: InputStream,
+    path: String,
+    fileName: String?,
+    contact: FileSupported
+): ElementResult {
     // 正常通过 multipart 传的正常文件，都是有文件名的
     val uploadFileName = fileName ?: System.currentTimeMillis().toString()
     val file = stream.useStream {
         val uploadFold = if (path.isEmpty() || path == "/") contact.files.root
-            else contact.files.root.resolveFolder(path)
+        else contact.files.root.resolveFolder(path)
             ?: throw NoSuchElementException()
 
         uploadFold.uploadNewFile(uploadFileName, it)
     }
-
-    contact.sendMessage(file.toMessage())
 
     return ElementResult(
         RemoteFileDTO(file, false).toJsonElement()
@@ -83,7 +89,7 @@ internal suspend fun onMoveFile(dto: MoveFileDTO): StateCode {
     val file = dto.getAbsoluteFile()
     val contact = file.contact
 
-    val moveTo = dto.moveToPath?.let{ contact.files.root.resolveFolder(it) }
+    val moveTo = dto.moveToPath?.let { contact.files.root.resolveFolder(it) }
         ?: dto.moveTo?.let { contact.files.root.resolveFolderById(it) }
         ?: throw NoSuchElementException()
 

@@ -17,10 +17,6 @@ import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.ElementResult
-import net.mamoe.mirai.api.http.adapter.internal.dto.StringMapRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.handler.handleException
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
@@ -70,6 +66,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
                     else -> StateCode.NoOperateSupport.toJsonElement()
                 }
             }
+
             Paths.memberInfo -> {
                 when (commandWrapper.subCommand) {
                     "get" -> execute(session, element, ::onGetMemberInfo)
@@ -77,6 +74,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
                     else -> StateCode.NoOperateSupport.toJsonElement()
                 }
             }
+
             Paths.memberAdmin -> execute(session, element, ::onModifyMemberAdmin)
 
 
@@ -84,6 +82,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             Paths.friendList -> execute(session, EMPTY_JSON_ELEMENT, ::onGetFriendList)
             Paths.groupList -> execute(session, EMPTY_JSON_ELEMENT, ::onGetGroupList)
             Paths.memberList -> execute(session, element, ::onGetMemberList)
+            Paths.latestMemberList -> execute(session, element, ::onLatestMemberList)
             Paths.botProfile -> execute(session, EMPTY_JSON_ELEMENT, ::onGetBotProfile)
             Paths.friendProfile -> execute(session, element, ::onGetFriendProfile)
             Paths.memberProfile -> execute(session, element, ::onGetMemberProfile)
@@ -120,7 +119,7 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             // command
             Paths.commandExecute -> execute(session, element, ::onExecuteCommand)
             Paths.commandRegister -> execute(session, element, ::onRegisterCommand)
-            
+
             // announcement
             Paths.announcementList -> execute(session, element, ::onListAnnouncement)
             Paths.announcementPublish -> execute(session, element, ::onPublishAnnouncement)
@@ -129,16 +128,24 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             else -> StateCode.NoOperateSupport.toJsonElement()
         }
 
-        send(Frame.Text(WsOutgoing(
-            syncId = commandWrapper.syncId,
-            data = jsonElement
-        ).toJson()))
+        send(
+            Frame.Text(
+                WsOutgoing(
+                    syncId = commandWrapper.syncId,
+                    data = jsonElement
+                ).toJson()
+            )
+        )
 
     }?.also { code ->
-        send(Frame.Text(WsOutgoing(
-            syncId = commandWrapper.syncId,
-            data = code.toJsonElement()
-        ).toJson()))
+        send(
+            Frame.Text(
+                WsOutgoing(
+                    syncId = commandWrapper.syncId,
+                    data = code.toJsonElement()
+                ).toJson()
+            )
+        )
     }
 }
 

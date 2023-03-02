@@ -19,7 +19,7 @@ internal open class RestfulResult(
 ) : DTO
 
 @Serializable
-internal data class  ElementResult(
+internal data class ElementResult(
     val data: JsonElement
 ) : RestfulResult()
 

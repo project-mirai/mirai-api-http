@@ -51,13 +51,24 @@ internal suspend fun onGetMessageFromId(dto: MessageIdDTO): EventRestfulResult {
         is OnlineMessageSource.Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(source.sender))
         is OnlineMessageSource.Incoming.FromTemp -> TempMessagePacketDTO(MemberDTO(source.sender))
         is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDTO(QQDTO(source.sender))
-        is OfflineMessageSource -> when(source.kind) {
-            MessageSourceKind.GROUP -> GroupMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+        is OfflineMessageSource -> when (source.kind) {
+            MessageSourceKind.GROUP -> GroupMessagePacketDTO(
+                MemberDTO(
+                    target.cast<Group>().getMemberOrFail(source.fromId)
+                )
+            )
+
             MessageSourceKind.FRIEND -> FriendMessagePacketDTO(QQDTO(target.cast<Friend>()))
             // Maybe a bug
-            MessageSourceKind.TEMP -> TempMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+            MessageSourceKind.TEMP -> TempMessagePacketDTO(
+                MemberDTO(
+                    target.cast<Group>().getMemberOrFail(source.fromId)
+                )
+            )
+
             MessageSourceKind.STRANGER -> StrangerMessagePacketDTO(QQDTO(target.cast<Stranger>()))
         }
+
         else -> null
     }
 
@@ -122,7 +133,8 @@ internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), group)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), group)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(group, cache), group)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -141,7 +153,8 @@ internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), member)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), member)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member, cache), member)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -157,7 +170,8 @@ internal suspend fun onSendOtherClientMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), client)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), client)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(client, cache), client)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -193,6 +207,7 @@ internal suspend fun onUploadImage(session: Session, stream: InputStream, type: 
             "Friend", "friend",
             "Temp", "temp"
             -> session.bot.friends.firstOrNull()?.uploadImage(it)
+
             else -> null
         }
     }
@@ -211,6 +226,7 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
             "Friend", "friend",
             "Temp", "temp"
             -> session.bot.friends.firstOrNull()?.uploadAudio(it)
+
             else -> null
         }
     }
@@ -224,8 +240,12 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
  */
 @OptIn(ConsoleExperimentalApi::class)
 internal suspend fun onRecall(recallDTO: MessageIdDTO): StateCode {
-    recallDTO.session.sourceCache.getMessage(Context(intArrayOf(recallDTO.messageId),
-        recallDTO.session.bot.getContact(recallDTO.target, false))).recall()
+    recallDTO.session.sourceCache.getMessage(
+        Context(
+            intArrayOf(recallDTO.messageId),
+            recallDTO.session.bot.getContact(recallDTO.target, false)
+        )
+    ).recall()
     return StateCode.Success
 }
 
@@ -236,11 +256,13 @@ internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
             val receiver = it.getFriend(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
+
         "Stranger", "stranger" -> nudgeDTO.session.bot.let {
             val target = it.getStranger(nudgeDTO.target) ?: return StateCode.NoElement
             val receiver = it.getStranger(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
+
         "Group", "group" -> nudgeDTO.session.bot.let {
             val target = it.getGroup(nudgeDTO.subject)?.get(nudgeDTO.target) ?: return StateCode.NoElement
             target.nudge().sendTo(target.group)
@@ -253,7 +275,7 @@ internal suspend fun onRoamingMessages(dto: RoamingMessageDTO): EventListRestful
     val friend = dto.session.bot.getFriendOrFail(dto.target)
     val messagesIn = friend.roamingMessages.getMessagesIn(dto.timeStart, dto.timeEnd)
     val packets = messagesIn.map { chain ->
-        FriendMessagePacketDTO(QQDTO(friend)).also { it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO }  }
+        FriendMessagePacketDTO(QQDTO(friend)).also { it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO } }
     }
 
     return EventListRestfulResult(packets.toList())

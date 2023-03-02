@@ -11,12 +11,12 @@ class FrameLogExtension(configuration: Configuration) :
 
     private val logger = configuration.logger.value
     private val enable = configuration.enableAccessLog
-    
+
     override val factory = FrameLogExtension
     override val protocols = emptyList<WebSocketExtensionHeader>()
 
     override fun clientNegotiation(negotiatedProtocols: List<WebSocketExtensionHeader>): Boolean {
-        
+
         return true
     }
 
@@ -43,11 +43,11 @@ class FrameLogExtension(configuration: Configuration) :
 
     companion object : WebSocketExtensionFactory<Configuration, FrameLogExtension> {
         override val key = AttributeKey<FrameLogExtension>("FRAME LOG")
-        
+
         override val rsv1: Boolean = false
         override val rsv2: Boolean = false
         override val rsv3: Boolean = false
-        
+
         override fun install(config: Configuration.() -> Unit): FrameLogExtension {
             return FrameLogExtension(Configuration().apply(config))
         }

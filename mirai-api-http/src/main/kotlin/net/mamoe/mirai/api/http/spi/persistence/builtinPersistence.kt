@@ -6,7 +6,7 @@ import net.mamoe.mirai.console.plugin.dependencies
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.OnlineMessageSource
-import java.util.ServiceLoader
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -16,6 +16,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class PersistenceManager(private val serviceName: String) {
 
     fun loadFactory(): PersistenceFactory {
+        if (serviceName == "built-in") {
+            return BuiltinPersistenceFactory()
+        }
+
         val oc = Thread.currentThread().contextClassLoader
         try {
             for (plugin in PluginManager.plugins) {

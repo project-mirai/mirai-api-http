@@ -35,6 +35,11 @@ internal fun Application.infoRouter() = routing {
     httpAuthedGet(Paths.memberList, respondDTOStrategy(::onGetMemberList))
 
     /**
+     * 查询最新QQ群成员列表
+     */
+    httpAuthedGet(Paths.latestMemberList, respondDTOStrategy(::onLatestMemberList))
+
+    /**
      * 查询 Bot 个人信息
      */
     httpAuthedGet(Paths.botProfile, respondDTOStrategy(::onGetBotProfile))

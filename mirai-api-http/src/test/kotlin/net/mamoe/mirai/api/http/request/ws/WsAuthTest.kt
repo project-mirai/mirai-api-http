@@ -16,17 +16,16 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
-import net.mamoe.mirai.api.http.request.env.startAdapter
-import test.core.annotation.ExtendWith
-import test.core.extenssion.SetupBotMock
-import test.core.mock.BotMockStub
-import test.core.mock.withSession
+import net.mamoe.mirai.api.http.request.startAdapter
+import net.mamoe.mirai.api.http.util.ExtendWith
+import net.mamoe.mirai.api.http.util.SetupMockBot
+import net.mamoe.mirai.api.http.util.withSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-@ExtendWith(SetupBotMock::class)
+@ExtendWith(SetupMockBot::class)
 class WsAuthTest {
 
     private val verifyKey = "session test"
@@ -44,11 +43,15 @@ class WsAuthTest {
         singleMode = true,
         debug = false,
     ) {
-        val stateCode = wsConnect<StateCode>(mapOf("verifyKey" to "wrong $verifyKey"))
-        assertEquals(StateCode.AuthKeyFail.code, stateCode?.code)
+        wsConnect(mapOf("verifyKey" to "wrong $verifyKey")) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.AuthKeyFail.code, stateCode?.code)
+        }
 
-        val ret = wsConnect<VerifyRetDTO>(mapOf("verifyKey" to verifyKey))
-        assertEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+        wsConnect(mapOf("verifyKey" to verifyKey)) {
+            val ret = receiveDTO<VerifyRetDTO>()
+            assertEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+        }
     }
 
     /**
@@ -63,8 +66,10 @@ class WsAuthTest {
         debug = false,
     ) {
         // connect anyway
-        val ret = wsConnect<VerifyRetDTO>(emptyMap())
-        assertEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+        wsConnect(emptyMap()) {
+            val ret = receiveDTO<VerifyRetDTO>()
+            assertEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+        }
     }
 
     /**
@@ -79,18 +84,22 @@ class WsAuthTest {
         debug = false,
     ) {
         // 错误 verify key
-        var stateCode: StateCode? = wsConnect(mapOf("verifyKey" to "wrong $verifyKey"))
-        assertEquals(StateCode.AuthKeyFail.code, stateCode?.code)
+        wsConnect(mapOf("verifyKey" to "wrong $verifyKey")) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.AuthKeyFail.code, stateCode?.code)
+        }
 
         // 不绑定账号
-        stateCode = wsConnect(mapOf("verifyKey" to verifyKey))
-        assertEquals(StateCode.InvalidParameter.code, stateCode?.code)
+        wsConnect(mapOf("verifyKey" to verifyKey)) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.InvalidParameter.code, stateCode?.code)
+        }
 
         // 无法绑定账号(绑定错误账号)
-        stateCode = wsConnect(mapOf("verifyKey" to verifyKey, "qq" to "${BotMockStub.ID + 1}"))
-        assertEquals(StateCode.NoBot.code, stateCode?.code)
-
-
+        wsConnect(mapOf("verifyKey" to verifyKey, "qq" to "${SetupMockBot.ID + 1}")) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.NoBot.code, stateCode?.code)
+        }
 
         // 通过已有 session 绑定
 
@@ -98,28 +107,37 @@ class WsAuthTest {
         val session = post<VerifyRetDTO>(verifyPath, VerifyDTO(verifyKey).toJson()).session
 
         // 通过 ws 绑定错误 session
-        stateCode = wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to "wrong $session"))
-        assertEquals(StateCode.IllegalSession.code, stateCode?.code)
+        wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to "wrong $session")) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.IllegalSession.code, stateCode?.code)
+        }
 
         // 通过 ws 绑定已有未认证 session
-        stateCode = wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to session))
-        assertEquals(StateCode.NotVerifySession.code, stateCode?.code)
+        wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to session)) {
+            val stateCode = receiveDTO<StateCode>()
+            assertEquals(StateCode.NotVerifySession.code, stateCode?.code)
+        }
 
         // 通过 http 认证 session
-        post<StateCode>(bindPath, BindDTO(BotMockStub.ID).withSession(session).toJson())
+        post<StateCode>(bindPath, BindDTO(SetupMockBot.ID).withSession(session).toJson())
 
         // 通过 ws 绑定已有已认证 session
-        val ret = wsConnect<VerifyRetDTO>(mapOf("verifyKey" to verifyKey, "sessionKey" to session))
-        assertEquals(StateCode.Success.code, ret?.code)
-        assertNotNull(ret?.session)
-        assertNotEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+        val ret = wsConnect(mapOf("verifyKey" to verifyKey, "sessionKey" to session)) {
+            val ret = receiveDTO<VerifyRetDTO>()
+            assertEquals(StateCode.Success.code, ret?.code)
+            assertNotNull(ret?.session)
+            assertNotEquals(MahContext.SINGLE_SESSION_KEY, ret?.session)
+            return@wsConnect ret
+        }
 
         // 通过 ws 创建新 session 并绑定
-        val wsRet = wsConnect<VerifyRetDTO>(mapOf("verifyKey" to verifyKey, "qq" to "${BotMockStub.ID}"))
-        assertEquals(StateCode.Success.code, wsRet?.code)
-        assertNotNull(wsRet?.session)
-        assertNotEquals(MahContext.SINGLE_SESSION_KEY, wsRet?.session)
-        // not same session
-        assertNotEquals(ret?.session, wsRet?.session)
+        wsConnect(mapOf("verifyKey" to verifyKey, "qq" to "${SetupMockBot.ID}")) {
+            val wsRet = receiveDTO<VerifyRetDTO>()
+            assertEquals(StateCode.Success.code, wsRet?.code)
+            assertNotNull(wsRet?.session)
+            assertNotEquals(MahContext.SINGLE_SESSION_KEY, wsRet?.session)
+            // not same session
+            assertNotEquals(ret?.session, wsRet?.session)
+        }
     }
 }

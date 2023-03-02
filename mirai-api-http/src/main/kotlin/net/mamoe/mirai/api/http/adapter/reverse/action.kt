@@ -37,12 +37,13 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
 
         sessionKey = kotlin.runCatching {
 
-            when(command.command) {
-               "verify" -> handleVerify(command)?.key
+            when (command.command) {
+                "verify" -> handleVerify(command)?.key
                 Paths.about, Paths.botList -> {
                     outgoing.handleWsAction(MahContextHolder.sessionManager.getEmptySession(), String(frame.data))
                     null
                 }
+
                 else -> {
                     sendWithCode(StateCode.AuthKeyFail)
                     null
@@ -69,12 +70,14 @@ internal suspend fun DefaultClientWebSocketSession.handleReverseWs(client: WsCli
     }
 
     if (sessionKey != null) {
-        for (frame in incoming) {
-            val session = MahContextHolder[sessionKey] ?: break
-            outgoing.handleWsAction(session, String(frame.data))
+        try {
+            for (frame in incoming) {
+                val session = MahContextHolder[sessionKey] ?: break
+                outgoing.handleWsAction(session, String(frame.data))
+            }
+        } finally {
+            MahContextHolder.sessionManager.closeSession(sessionKey)
         }
-
-        MahContextHolder.sessionManager.closeSession(sessionKey)
     }
 
     outgoing.close()
