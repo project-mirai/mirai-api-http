@@ -74,6 +74,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: project-mirai/mirai-repo-mirror
+          ref: master
           token: ${{ secrets.MAMOEBOT_TOKEN }}
           path: ./mirai-repo-mirror
 
