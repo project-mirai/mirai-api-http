@@ -19,12 +19,15 @@ class SetupMockBot : BeforeAllCallback {
 
     override fun beforeAll(context: ExtensionContext?) {
         MockBotFactory.initialize()
-        MockBotFactory.newMockBotBuilder()
+        val bot = MockBotFactory.newMockBotBuilder()
             .id(ID)
             .create()
+
+        bot.addFriend(FRIEND_ID, "friend")
     }
 
     companion object {
         const val ID = 1L
+        const val FRIEND_ID = 11L
     }
 }

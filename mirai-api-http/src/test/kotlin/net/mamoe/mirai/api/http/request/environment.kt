@@ -24,6 +24,9 @@ import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonElementParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
+import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
+import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
@@ -130,6 +133,12 @@ internal class WsAdapterOperation(val session: WebSocketSession) {
         val content = String(frame.data)
         val pkg: WsOutgoing? = content.jsonParseOrNull()
         return pkg?.data?.jsonElementParseOrNull()
+    }
+
+    suspend inline fun <reified T : DTO> sendDTO(dto: T?, command: String, subCommand: String = "") {
+        val pkg = WsIncoming("0", command, subCommand, dto?.toJsonElement())
+        val frame = Frame.Text(pkg.toJson())
+        session.outgoing.send(frame)
     }
 }
 
