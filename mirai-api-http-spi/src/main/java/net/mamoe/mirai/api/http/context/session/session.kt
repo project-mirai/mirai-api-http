@@ -32,9 +32,9 @@ class StandardSession constructor(
 
     private lateinit var _bot: Bot
     private lateinit var _cache: Persistence
-    private var _isAuthed = false
-    private var _closed = false
-    private var _closing = false
+    @Volatile private var _isAuthed = false
+    @Volatile private var _closed = false
+    @Volatile private var _closing = false
 
     override val bot: Bot get() = if (isAuthed) _bot else throw NotVerifiedSessionException
     override val sourceCache: Persistence get() = if (isAuthed) _cache else throw NotVerifiedSessionException
