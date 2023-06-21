@@ -121,6 +121,9 @@ internal suspend fun BotEvent.convertBotEvent() = when (this) {
         member = if (sender.user != null && sender.user is Member) { MemberDTO(sender.user as Member) } else { null },
         args = args.toDTO { it != UnknownMessageDTO }
     )
+    is FriendAddEvent -> FriendAddEventDTO(QQDTO(friend), false)
+    is FriendDeleteEvent -> FriendDeleteEventDTO(QQDTO(friend))
+    is StrangerRelationChangeEvent.Friended -> FriendAddEventDTO(QQDTO(friend), true)
     else -> {
         if(MahContextHolder.debug) {
             MahContextHolder.debugLog.debug { "Unknown event: ${this.javaClass.simpleName}" }
