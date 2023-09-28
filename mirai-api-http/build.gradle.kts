@@ -40,6 +40,7 @@ dependencies {
     testImplementation("org.slf4j:slf4j-simple:1.7.32")
     testImplementation(kotlin("test-junit5"))
     ktorTest("server-test-host")
+    ktorTest("server-netty")
 }
 
 val httpVersion: String by rootProject.extra

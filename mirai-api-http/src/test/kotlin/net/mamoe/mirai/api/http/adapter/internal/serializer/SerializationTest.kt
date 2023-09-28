@@ -26,8 +26,6 @@ class SerializationTest {
      */
     @Test
     fun testMessageChain() {
-        println(System.getenv())
-
         val chain = groupMessageDTO()
         val json = chain.toJson()
         assertEquals(chain, json.jsonParseOrNull(), "messageChain 序列化异常")

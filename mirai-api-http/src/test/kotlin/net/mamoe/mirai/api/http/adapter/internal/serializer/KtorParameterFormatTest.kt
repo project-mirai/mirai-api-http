@@ -66,14 +66,4 @@ class KtorParameterFormatTest {
         val target: Long,
         val memberIds: List<String>?
     )
-
-    @Test
-    fun testMessage() {
-        val param = parametersOf(
-            "target" to listOf("123123"),
-            "messageId" to listOf("11111"),
-        )
-        val dto = KtorParameterFormat.DEFAULT.decode(param, MessageIdDTO.serializer())
-        println(dto)
-    }
 }

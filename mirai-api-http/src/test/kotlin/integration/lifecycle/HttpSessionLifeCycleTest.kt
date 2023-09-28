@@ -7,7 +7,7 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.request.http
+package integration.lifecycle
 
 import kotlinx.coroutines.isActive
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -18,15 +18,15 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContextHolder
-import net.mamoe.mirai.api.http.request.startAdapter
-import net.mamoe.mirai.api.http.util.ExtendWith
-import net.mamoe.mirai.api.http.util.SetupMockBot
-import net.mamoe.mirai.api.http.util.withSession
+import framework.testMahApplication
+import framework.ExtendWith
+import framework.SetupMockBot
+import integration.withSession
 
 import kotlin.test.*
 
 @ExtendWith(SetupMockBot::class)
-open class HttpSessionLifeCycle {
+open class HttpSessionLifeCycleTest {
 
     private val verifyKey = "HttpSessionLifeCycle"
     private val verifyPath = Paths.httpPath("verify")
@@ -34,24 +34,25 @@ open class HttpSessionLifeCycle {
     private val releasePath = Paths.httpPath("release")
 
     @Test
-    fun testReleaseSession() = startAdapter(
-        "http",
+    fun testReleaseSession() = testMahApplication(
         verifyKey = verifyKey,
         enableVerify = true,
         singleMode = false,
     ) {
-        var data = VerifyDTO(verifyKey).toJson()
-        val verifyRet = post<VerifyRetDTO>(verifyPath, data)
-        assertNotNull(verifyRet.session)
+        installHttpAdapter()
+
+        val verifyRet = postJsonData<VerifyRetDTO>(verifyPath, VerifyDTO(verifyKey)).also {
+            assertEquals(StateCode.Success.code, it.code)
+        }
 
         val session = MahContextHolder[verifyRet.session]
         assertNotNull(session)
         assertFalse(session.isAuthed)
         assertFalse(session.isHttpSession())
 
-        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
-        val bindRet = post<StateCode>(bindPath, data)
-        assertEquals(StateCode.Success.code, bindRet.code)
+        postJsonData<StateCode>(bindPath, BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()).also {
+            assertEquals(StateCode.Success.code, it.code)
+        }
 
         val authedSession = MahContextHolder[verifyRet.session]
         assertNotNull(authedSession)
@@ -62,9 +63,9 @@ open class HttpSessionLifeCycle {
         // same object
         assertSame(session, authedSession)
 
-        data = BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()
-        val releaseRet = post<StateCode>(releasePath, data)
-        assertEquals(StateCode.Success.code, releaseRet.code)
+        postJsonData<StateCode>(releasePath, BindDTO(SetupMockBot.ID).withSession(verifyRet.session).toJson()).also {
+            assertEquals(StateCode.Success.code, it.code)
+        }
 
         val releasedSession = MahContextHolder[verifyRet.session]
         assertNull(releasedSession)

@@ -7,7 +7,7 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.util
+package framework
 
 import net.mamoe.mirai.mock.MockBotFactory
 import org.junit.jupiter.api.extension.BeforeAllCallback

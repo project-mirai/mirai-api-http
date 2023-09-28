@@ -1,11 +1,13 @@
-package net.mamoe.mirai.api.http.integration
+package framework
 
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -13,9 +15,11 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
+import kotlinx.serialization.json.Json
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule
+import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.manager.DefaultSessionManager
@@ -52,7 +56,7 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
     }
 
     fun installWebHookAdapter() {
-        // TODO
+       buildAdapter<WebhookAdapter>("webhook").enable()
     }
 
     private inline fun <reified T : MahAdapter> buildAdapter(adapter: String): T {
@@ -62,6 +66,9 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
 
 
     override val client by lazy { createClient {
+        install(WebSockets) {
+            contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        }
         install(ContentNegotiation) {
             json()
         }
