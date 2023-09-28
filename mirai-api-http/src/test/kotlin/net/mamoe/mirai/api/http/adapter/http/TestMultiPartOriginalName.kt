@@ -16,7 +16,6 @@ import net.mamoe.mirai.api.http.adapter.http.router.file
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(io.ktor.utils.io.core.internal.DangerousInternalIoApi::class)
 class TestMultiPartOriginalName {
 
     @Test
@@ -35,7 +34,7 @@ class TestMultiPartOriginalName {
         client.post("/test/readOriginalName") {
             val boundary = "readOriginalNameWithUTF8"
 
-            body = MultiPartFormDataContent(
+            setBody(MultiPartFormDataContent(
                 listOf(
                     PartData.FileItem({ "".byteInputStream().asInput() }, {}, headersOf(
                         HttpHeaders.ContentDisposition,
@@ -47,7 +46,7 @@ class TestMultiPartOriginalName {
                 ),
                 boundary,
                 ContentType.MultiPart.FormData.withParameter("boundary", boundary)
-            )
+            ))
         }.apply {
             assertEquals(filename, content.readUTF8Line())
         }
