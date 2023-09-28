@@ -7,10 +7,9 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.ws
+package net.mamoe.mirai.api.http.util
 
 import io.ktor.server.util.*
-import net.mamoe.mirai.api.http.util.smartTakeFrom
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

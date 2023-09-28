@@ -7,7 +7,7 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.serialization
+package net.mamoe.mirai.api.http.adapter.internal.serializer
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.contact.MemberPermission

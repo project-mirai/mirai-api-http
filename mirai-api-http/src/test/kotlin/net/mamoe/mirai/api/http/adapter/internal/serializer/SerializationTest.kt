@@ -7,13 +7,10 @@
  * https://github.com/mamoe/mirai/blob/master/LICENSE
  */
 
-package net.mamoe.mirai.api.http.adapter.serialization
+package net.mamoe.mirai.api.http.adapter.internal.serializer
 
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
-import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
-import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
-import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsIncoming
 import net.mamoe.mirai.api.http.context.serializer.InternalSerializerHolder
 import kotlin.reflect.full.isSubclassOf
