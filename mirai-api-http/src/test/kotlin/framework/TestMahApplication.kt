@@ -87,8 +87,8 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
 @KtorDsl
 fun testMahApplication(
     verifyKey: String = "verifyKey",
-    enableVerify: Boolean = true,
-    singleMode: Boolean = false,
+    enableVerify: Boolean = false,
+    singleMode: Boolean = true,
     debug: Boolean = false,
     block: suspend MahApplicationTestBuilder.() -> Unit
 ) = testApplication {
