@@ -70,7 +70,7 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
         install(ContentNegotiation) {
-            json()
+            json(json = buildPolyJson())
         }
     }}
 
@@ -82,6 +82,30 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
         contentType(ContentType.Application.Json)
         setBody(body)
     }.body<T>()
+}
+
+@KtorDsl
+fun testHttpApplication(
+    verifyKey: String = "verifyKey",
+    enableVerify: Boolean = false,
+    singleMode: Boolean = true,
+    debug: Boolean = false,
+    block: suspend MahApplicationTestBuilder.() -> Unit
+) = testMahApplication(verifyKey, enableVerify, singleMode, debug) {
+    installHttpAdapter()
+    block.invoke(this)
+}
+
+@KtorDsl
+fun testWebsocketApplication(
+    verifyKey: String = "verifyKey",
+    enableVerify: Boolean = false,
+    singleMode: Boolean = true,
+    debug: Boolean = false,
+    block: suspend MahApplicationTestBuilder.() -> Unit
+) = testMahApplication(verifyKey, enableVerify, singleMode, debug) {
+    installWsAdapter()
+    block.invoke(this)
 }
 
 @KtorDsl
