@@ -28,6 +28,8 @@ dependencies {
     ktorApi("server-cors")
     ktorApi("client-okhttp")
     ktorApi("client-websockets")
+    ktorApi("client-content-negotiation")
+    ktorApi("serialization-kotlinx-json")
 
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
     implementation("org.slf4j:slf4j-simple:1.7.32")
