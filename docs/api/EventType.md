@@ -479,51 +479,6 @@
 
 
 
-### 某群入群公告改变
-
-```json5
-{
-  "type": "GroupEntranceAnnouncementChangeEvent",
-  "origin": "abc",
-  "current": "cba",
-  "group": {
-    "id": 123456789,
-    "name": "Miral Technology",
-    "permission": "MEMBER"
-  },
-  "operator": {
-    "id": 123456789,
-    "memberName": "我是管理员",
-    "permission": "ADMINISTRATOR",
-    "specialTitle":"群头衔",
-    "joinTimestamp":12345678,
-    "lastSpeakTimestamp":8765432,
-    "muteTimeRemaining":0,
-    "group": {
-      "id": 123456789,
-      "name": "Miral Technology",
-      "permission": "MEMBER"
-    }
-  }
-}
-```
-
-| 名字                | 类型    | 说明                                          |
-| ------------------- | ------- | --------------------------------------------- |
-| origin              | String  | 原公告                                        |
-| current             | String  | 新公告                                        |
-| group               | Object  | 公告改变的群信息                              |
-| group.id            | Long    | 群号                                          |
-| group.name          | String  | 群名                                          |
-| group.permission    | String  | Bot在群中的权限，OWNER、ADMINISTRATOR或MEMBER |
-| operator            | Object? | 操作的管理员或群主信息，当null时为Bot操作     |
-| operator.id         | Long    | 操作者的QQ号                                  |
-| operator.memberName | String  | 操作者的群名片                                |
-| operator.permission | String  | 操作者在群中的权限，OWNER或ADMINISTRATOR      |
-| operator.group      | Object  | 同group                                       |
-
-
-
 ### 全员禁言
 
 ```json5

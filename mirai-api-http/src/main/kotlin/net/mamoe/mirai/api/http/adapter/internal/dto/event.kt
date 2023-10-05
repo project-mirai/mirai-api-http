@@ -12,7 +12,6 @@ package net.mamoe.mirai.api.http.adapter.internal.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.contact.MemberPermission
-import net.mamoe.mirai.event.events.*
 
 @Serializable
 internal sealed class BotEventDTO : EventDTO()
@@ -110,15 +109,6 @@ internal data class BotLeaveEventDisbandDTO(
 @Serializable
 @SerialName("GroupNameChangeEvent")
 internal data class GroupNameChangeEventDTO(
-    val origin: String,
-    val current: String,
-    val group: GroupDTO,
-    val operator: MemberDTO?
-) : BotEventDTO()
-
-@Serializable
-@SerialName("GroupEntranceAnnouncementChangeEvent")
-internal data class GroupEntranceAnnouncementChangeEventDTO(
     val origin: String,
     val current: String,
     val group: GroupDTO,
