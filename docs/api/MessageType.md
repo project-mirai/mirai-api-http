@@ -271,16 +271,26 @@
     //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
     "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "path": null,
-    "base64": null
+    "base64": null,
+    "width": 0,
+    "height": 0,
+    "size": 0,
+    "imageType": "UNKNOWN",
+    "isEmoji": false
 }
 ```
 
-| 名字    | 类型   | 说明                                                         |
-| ------- | ------ | ------------------------------------------------------------ |
-| imageId | String | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性 |
-| url     | String | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载 |
-| path    | String | 图片的路径，发送本地图片，路径相对于 JVM 工作路径（默认是当前路径，可通过 `-Duser.dir=...`指定），也可传入绝对路径。 |
-| base64  | String | 图片的 Base64 编码                                           |
+| 名字        | 类型      | 说明                                                                    |
+|-----------|---------|-----------------------------------------------------------------------|
+| imageId   | String  | 图片的imageId，群图片与好友图片格式不同。不为空时将忽略url属性                                  |
+| url       | String  | 图片的URL，发送时可作网络图片的链接；接收时为腾讯图片服务器的链接，可用于图片下载                            |
+| path      | String  | 图片的路径，发送本地图片，路径相对于 JVM 工作路径（默认是当前路径，可通过 `-Duser.dir=...`指定），也可传入绝对路径。 |
+| base64    | String  | 图片的 Base64 编码                                                         |
+| width     | Int     | 图片宽度                                                                  |
+| height    | Int     | 图片高度                                                                  |
+| size      | Long    | 图片大小                                                                  |
+| imageType | String  | 图片类型，bmp,jpg 等                                                        |
+| isEmoji   | Boolean | 图片是否为动画表情                                                             |
 
 ### FlashImage
 
@@ -291,7 +301,12 @@
     //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
     "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "path": null,
-    "base64": null
+    "base64": null,
+    "width": 0,
+    "height": 0,
+    "size": 0,
+    "imageType": "UNKNOWN",
+    "isEmoji": false
 }
 ```
 
