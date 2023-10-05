@@ -95,10 +95,6 @@ internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
     with(dto.config) {
         name?.let { group.name = it }
         allowMemberInvite?.let { group.settings.isAllowMemberInvite = it }
-        // TODO: 待core接口实现设置可改
-        //    confessTalk?.let { group.settings.isConfessTalkEnabled = it }
-        //    autoApprove?.let { group.autoApprove = it }
-        //    anonymousChat?.let { group.anonymousChat = it }
     }
     return StateCode.Success
 }
@@ -108,7 +104,7 @@ internal fun onUpdateGroupConfig(dto: GroupConfigDTO): StateCode {
  */
 internal fun onGetMemberInfo(dto: MemberTargetDTO): MemberDTO {
     val member = dto.session.bot.getGroupOrFail(dto.target).getOrFail(dto.memberId)
-    return MemberDTO(member)
+    return MemberDTO(member, withActiveInfo = true)
 }
 
 /**

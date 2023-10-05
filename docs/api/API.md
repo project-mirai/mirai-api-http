@@ -1214,6 +1214,12 @@
   "joinTimestamp":12345678,
   "lastSpeakTimestamp":8765432,
   "muteTimeRemaining":0,
+  "active": {
+    "rank": 6,            // 群活跃等级 1-6
+    "point": 100,         // 群活跃积分
+    "honors": ["群聊之火"],// 群荣誉表示
+    "temperature": 100    // 群荣誉等级 LV 1-100
+  },
   "group":{
     "id":12345,
     "name":"群名1",

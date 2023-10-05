@@ -14,8 +14,10 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.GroupDetailDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.KickDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.LongTargetDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MuteDTO
+import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.contact.nameCardOrNick
+import net.mamoe.mirai.data.GroupHonorType
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import kotlin.test.*
 
@@ -154,6 +156,12 @@ class GroupActionTest {
         val bot = SetupMockBot.instance()
         val group = bot.addGroup(456, "test group")
         val member = group.addMember(456, "test member")
+        member.active.apply {
+            mockSetRank(1)
+            mockSetPoint(2)
+            mockSetTemperature(3)
+            mockSetHonors(setOf(GroupHonorType.BRONZE, GroupHonorType.GOLDEN))
+        }
 
         client.get(Paths.memberInfo) {
             parameter("target", group.id)
@@ -163,6 +171,12 @@ class GroupActionTest {
             assertEquals(member.nameCardOrNick, it.memberName)
             assertEquals(member.specialTitle, it.specialTitle)
             assertEquals(member.permission, it.permission)
+
+            assertNotNull(it.active)
+            assertEquals(1, it.active.rank)
+            assertEquals(2, it.active.point)
+            assertEquals(3, it.active.temperature)
+            assertTrue(listOf(GroupHonor[GroupHonorType.BRONZE], GroupHonor[GroupHonorType.GOLDEN]).containsAll(it.active.honors))
         }
 
         postJsonData<StateCode>(

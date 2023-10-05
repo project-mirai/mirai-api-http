@@ -10,7 +10,6 @@
 package net.mamoe.mirai.api.http.util
 
 import net.mamoe.mirai.data.GroupHonorType
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 class GroupHonor {
     companion object {
@@ -27,7 +26,6 @@ class GroupHonor {
             11 to "善财福禄寿",
         )
 
-        @OptIn(MiraiExperimentalApi::class)
         operator fun get(honor: GroupHonorType): String {
             return value[honor.id] ?: "未知群荣誉"
         }

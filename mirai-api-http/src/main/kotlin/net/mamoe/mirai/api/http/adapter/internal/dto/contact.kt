@@ -14,10 +14,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 import net.mamoe.mirai.LowLevelApi
+import net.mamoe.mirai.api.http.util.GroupHonor
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.active.MemberActive
 import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.data.UserProfile
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -68,23 +69,37 @@ internal data class MemberDTO(
     val joinTimestamp: Int,
     val lastSpeakTimestamp: Int,
     val muteTimeRemaining: Int,
-    val group: GroupDTO
+    val group: GroupDTO,
+    val active: MemberActiveDTO? = null,
 ) : ContactDTO() {
-    constructor(member: Member) : this(
+    constructor(member: Member, withActiveInfo: Boolean = false) : this(
         member.id, member.nameCardOrNick, member.specialTitle, member.permission,
         joinTimestamp = if (member is NormalMember) member.joinTimestamp else 0,
         lastSpeakTimestamp = if (member is NormalMember) member.lastSpeakTimestamp else 0,
         muteTimeRemaining = if (member is NormalMember) member.muteTimeRemaining else 0,
-        group = GroupDTO(member.group)
+        group = GroupDTO(member.group),
+        active = if (withActiveInfo) MemberActiveDTO(member.active) else null,
     )
 
-    @OptIn(LowLevelApi::class, MiraiExperimentalApi::class)
+    @OptIn(LowLevelApi::class)
     constructor(member: MemberInfo, group: Group): this(
         member.uin, member.nameCard.takeIf { it.isNotEmpty() } ?: member.nick, member.specialTitle, member.permission,
         joinTimestamp = member.joinTimestamp,
         lastSpeakTimestamp = member.joinTimestamp,
         muteTimeRemaining = if (member.muteTimestamp == 0 || member.muteTimestamp == 0xFFFFFFFF.toInt()) 0 else (member.muteTimestamp - System.currentTimeMillis()/1000).toInt().coerceAtLeast(0),
-        group = GroupDTO(group)
+        group = GroupDTO(group),
+    )
+}
+
+@Serializable
+internal data class MemberActiveDTO(
+    val rank: Int,
+    val point: Int,
+    val honors: List<String>,
+    val temperature: Int,
+) : DTO {
+    constructor(active: MemberActive) : this(
+        active.rank, active.point, active.honors.map(GroupHonor::get), active.temperature
     )
 }
 
@@ -106,22 +121,6 @@ internal data class OtherClientDTO(
 ) : ContactDTO() {
     constructor(otherClient: OtherClient): this(otherClient.id, otherClient.platform?.name ?: "unknown")
 }
-
-//@Serializable
-//internal data class ComplexSubjectDTO(
-//    override val id: Long,
-//    val kind: String
-//) : ContactDTO() {
-//    constructor(contact: Contact) : this(
-//        contact.id, when (contact) {
-//            is Stranger -> "Stranger"
-//            is Friend -> "Friend"
-//            is Group -> "Group"
-//            is OtherClient -> "OtherClient"
-//            else -> error("Contact type ${contact::class.simpleName} not supported")
-//        }
-//    )
-//}
 
 @Serializable
 internal data class ProfileDTO(
