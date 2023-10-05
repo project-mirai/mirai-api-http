@@ -615,11 +615,12 @@ adapterSettings:
 
 #### 请求:
 
-| 名字         | 类型   | 可选  | 举例        | 说明                               |
-| ------------ | ------ | ----- | ----------- | ---------------------------------- |
-| sessionKey   | String | true | YourSession | 已经激活的Session                  |
-| type         | String | false | "friend"    | "friend" 或 "group" 或 "temp"        |
-| img          | File   | false | -           | 图片文件                           |
+| 名字         | 类型     | 可选    | 举例        | 说明                          |
+|------------|--------|-------| ----------- |-----------------------------|
+| sessionKey | String | true  | YourSession | 已经激活的Session                |
+| type       | String | false | "friend"    | "friend" 或 "group" 或 "temp" |
+| img        | File   | true  | -           | 图片文件                        |
+| url        | String | true  | -           | 图片URL                       |
 
 #### 响应: 
 
@@ -642,11 +643,12 @@ adapterSettings:
 
 #### 请求:
 
-| 名字         | 类型   | 可选  | 举例        | 说明                               |
-| ------------ | ------ | ----- | ----------- | ---------------------------------- |
-| sessionKey   | String | true  | YourSession | 已经激活的Session                  |
-| type         | String | false | "group"     | 当前仅支持 "group"                   |
-| voice        | File   | false | -           | 语音文件                           |
+| 名字         | 类型     | 可选    | 举例        | 说明            |
+|------------|--------|-------| ----------- |---------------|
+| sessionKey | String | true  | YourSession | 已经激活的Session  |
+| type       | String | false | "group"     | 当前仅支持 "group" |
+| voice      | File   | true  | -           | 语音文件          |
+| url        | String | true  | -           | 语音文件 URL      |
 
 #### 响应: 
 
