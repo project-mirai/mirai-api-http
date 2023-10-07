@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -37,7 +37,7 @@ class SerializationTest {
     @Test
     fun testPolymorphic() {
         val expected = """
-            [{"type":"GroupMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"memberName":"","specialTitle":"","permission":"OWNER","joinTimestamp":0,"lastSpeakTimestamp":0,"muteTimeRemaining":0,"group":{"id":0,"name":"","permission":"OWNER"}}},{"type":"FriendMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"nickname":"","remark":""}}]
+            [{"type":"GroupMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"memberName":"","specialTitle":"","permission":"OWNER","joinTimestamp":0,"lastSpeakTimestamp":0,"muteTimeRemaining":0,"group":{"id":0,"name":"","permission":"OWNER"},"active":null}},{"type":"FriendMessage","messageChain":[{"type":"At","target":0,"display":"at name"},{"type":"Plain","text":"test plain text content"}],"sender":{"id":0,"nickname":"","remark":""}}]
         """.trimIndent()
         val ls: List<EventDTO> = listOf(groupMessageDTO(), friendMessageDTO())
         val json = ls.toJson()
