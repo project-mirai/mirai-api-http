@@ -27,8 +27,10 @@ import net.mamoe.mirai.api.http.context.MahContextHolder
  */
 fun Application.websocketRouteModule(wsAdapter: WebsocketAdapter) {
     install(WebSockets) {
-        extensions { 
-            install(FrameLogExtension) { enableAccessLog = MahContextHolder.debug }
+        extensions {
+            if (MahContextHolder.debug) {
+                install(FrameLogExtension)
+            }
         }
     }
     wsRouter(wsAdapter)

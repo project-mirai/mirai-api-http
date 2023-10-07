@@ -21,6 +21,8 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.api.http.adapter.reverse.Destination
 import net.mamoe.mirai.api.http.adapter.reverse.ReverseWebsocketAdapterSetting
 import net.mamoe.mirai.api.http.adapter.reverse.handleReverseWs
+import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
+import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.utils.MiraiLogger
 import net.mamoe.mirai.utils.warning
 import kotlin.coroutines.CoroutineContext
@@ -35,7 +37,13 @@ class WsClient(private var log: MiraiLogger) : CoroutineScope {
     var bindingSessionKey: String? = null
 
     private val client = HttpClient {
-        install(WebSockets)
+        install(WebSockets) {
+            extensions {
+                if (MahContextHolder.debug) {
+                    install(FrameLogExtension)
+                }
+            }
+        }
     }
 
     private var webSocketSession: DefaultClientWebSocketSession? = null
