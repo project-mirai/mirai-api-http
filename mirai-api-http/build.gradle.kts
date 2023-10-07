@@ -26,6 +26,7 @@ dependencies {
     ktorApi("server-websockets")
     ktorApi("server-default-headers")
     ktorApi("server-cors")
+    ktorApi("server-double-receive")
     ktorApi("client-okhttp")
     ktorApi("client-websockets")
     ktorApi("client-content-negotiation")

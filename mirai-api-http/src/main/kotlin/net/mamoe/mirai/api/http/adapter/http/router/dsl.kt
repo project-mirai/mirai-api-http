@@ -9,9 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
-import io.ktor.server.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -22,8 +22,7 @@ import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
-import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization.headerSession
-import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler.Feature.bodyContent
+import net.mamoe.mirai.api.http.adapter.http.plugin.session
 import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
@@ -140,7 +139,7 @@ internal inline fun Route.httpAuthedMultiPart(
  * 获取 session 并进行类型校验
  */
 private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: String): Session {
-    return headerSession ?: MahContextHolder[sessionKey]
+    return call.session ?: MahContextHolder[sessionKey]
         ?: throw IllegalSessionException
 }
 
@@ -169,8 +168,8 @@ internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatu
 /**
  * 接收 http body 指定类型 [T] 的 [DTO]
  */
-internal inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
-    bodyContent().jsonParseOrNull()
+internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
+    receive<String>().jsonParseOrNull()
 
 /**
  * 接收 http multi part 值类型

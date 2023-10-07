@@ -12,9 +12,10 @@ package net.mamoe.mirai.api.http.adapter.http.router
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.plugins.doublereceive.*
 import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
-import net.mamoe.mirai.api.http.adapter.http.feature.auth.Authorization
-import net.mamoe.mirai.api.http.adapter.http.feature.handler.HttpRouterAccessHandler
+import net.mamoe.mirai.api.http.adapter.http.plugin.Authorization
+import net.mamoe.mirai.api.http.adapter.http.plugin.HttpRouterMonitor
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
@@ -30,7 +31,10 @@ fun Application.httpModule(adapter: HttpAdapter) {
     }
 
     install(Authorization)
-    install(HttpRouterAccessHandler) { enableAccessLog = MahContextHolder.debug }
+    if (MahContextHolder.debug) {
+        install(DoubleReceive)
+        install(HttpRouterMonitor)
+    }
 
     authRouter(adapter.setting)
     messageRouter()
