@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -22,11 +22,8 @@ import kotlin.reflect.KClass
 @OptIn(InternalSerializationApi::class)
 internal class BuiltinJsonSerializer : InternalSerializer {
 
-    /**
-     * Json解析规则，需要注册支持的多态的类
-     */
-    private val json by lazy {
-        Json {
+    companion object {
+        fun buildJson() = Json {
             encodeDefaults = true
             isLenient = true
             ignoreUnknownKeys = true
@@ -36,22 +33,27 @@ internal class BuiltinJsonSerializer : InternalSerializer {
                 polymorphicSealedClass(EventDTO::class, BotEventDTO::class)
             }
         }
+
+        /**
+         * 从 sealed class 里注册到多态序列化
+         */
+        @InternalSerializationApi
+        @Suppress("UNCHECKED_CAST")
+        private fun <B : Any, S : B> SerializersModuleBuilder.polymorphicSealedClass(
+            baseClass: KClass<B>,
+            sealedClass: KClass<S>
+        ) {
+            sealedClass.sealedSubclasses.forEach {
+                val c = it as KClass<S>
+                polymorphic(baseClass, c, c.serializer())
+            }
+        }
     }
 
     /**
-     * 从 sealed class 里注册到多态序列化
+     * Json解析规则，需要注册支持的多态的类
      */
-    @InternalSerializationApi
-    @Suppress("UNCHECKED_CAST")
-    private fun <B : Any, S : B> SerializersModuleBuilder.polymorphicSealedClass(
-        baseClass: KClass<B>,
-        sealedClass: KClass<S>
-    ) {
-        sealedClass.sealedSubclasses.forEach {
-            val c = it as KClass<S>
-            polymorphic(baseClass, c, c.serializer())
-        }
-    }
+    private val json by lazy { buildJson()  }
 
     override fun <T : Any> encode(dto: T, clazz: KClass<T>): String = when (dto) {
         is StateCode -> json.encodeToString(StateCode.serializer(), dto)

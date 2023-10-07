@@ -1,3 +1,12 @@
+/*
+ * Copyright 2023 Mamoe Technologies and contributors.
+ *
+ * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
+ * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
+ *
+ * https://github.com/mamoe/mirai/blob/master/LICENSE
+ */
+
 package framework
 
 import io.ktor.client.*
@@ -19,6 +28,7 @@ import kotlinx.serialization.json.Json
 import net.mamoe.mirai.api.http.adapter.MahAdapter
 import net.mamoe.mirai.api.http.adapter.MahAdapterFactory
 import net.mamoe.mirai.api.http.adapter.http.router.httpModule
+import net.mamoe.mirai.api.http.adapter.internal.serializer.BuiltinJsonSerializer
 import net.mamoe.mirai.api.http.adapter.webhook.WebhookAdapter
 import net.mamoe.mirai.api.http.adapter.ws.router.websocketRouteModule
 import net.mamoe.mirai.api.http.context.MahContextHolder
@@ -70,7 +80,7 @@ class MahApplicationTestBuilder(private val builder: ApplicationTestBuilder): Cl
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
         install(ContentNegotiation) {
-            json(json = buildPolyJson())
+            json(json = BuiltinJsonSerializer.buildJson())
         }
     }}
 

@@ -9,7 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.http.router
 
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.doublereceive.*
@@ -17,6 +19,7 @@ import net.mamoe.mirai.api.http.adapter.http.HttpAdapter
 import net.mamoe.mirai.api.http.adapter.http.plugin.Authorization
 import net.mamoe.mirai.api.http.adapter.http.plugin.GlobalExceptionHandler
 import net.mamoe.mirai.api.http.adapter.http.plugin.HttpRouterMonitor
+import net.mamoe.mirai.api.http.adapter.internal.serializer.BuiltinJsonSerializer
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
@@ -31,6 +34,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
         }
     }
 
+    install(ContentNegotiation) { json(json = BuiltinJsonSerializer.buildJson()) }
     install(GlobalExceptionHandler)
     install(Authorization)
     if (MahContextHolder.debug) {
