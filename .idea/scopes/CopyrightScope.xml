@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="CopyrightScope" pattern="test[mirai-api-http.mirai-api-http.test]:*..*||src[mirai-api-http.buildSrc.main]:*..*||src[mirai-api-http.mirai-api-http.main]:*..*||src[mirai-api-http.mirai-api-http-spi.main]:*..*" />
+</component>
