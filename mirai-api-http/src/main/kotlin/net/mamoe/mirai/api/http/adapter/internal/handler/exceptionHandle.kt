@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -24,24 +24,17 @@ internal suspend inline fun handleException(
 ): StateCode? = try {
     blk()
     null
-} catch (e: NoSuchBotException) { // Bot不存在
-    StateCode.NoBot
-} catch (e: IllegalSessionException) { // Session过期
-    StateCode.IllegalSession
-} catch (e: NotVerifiedSessionException) { // Session未认证
-    StateCode.NotVerifySession
-} catch (e: NoSuchElementException) { // 指定对象不存在
-    StateCode.NoElement
-} catch (e: NoSuchFileException) { // 文件不存在
-    StateCode.NoFile(e.file)
-} catch (e: PermissionDeniedException) { // 缺少权限
-    StateCode.PermissionDenied
-} catch (e: BotIsBeingMutedException) { // Bot被禁言
-    StateCode.BotMuted
-} catch (e: MessageTooLargeException) { // 消息过长
-    StateCode.MessageTooLarge
-} catch (e: IllegalAccessException) { // 错误访问
-    StateCode.IllegalAccess(e.message)
-} catch (e: Throwable) {
-    StateCode.InternalError(e.localizedMessage ?: "", e)
+} catch (e: Throwable) { e.toStateCode() }
+
+internal fun Throwable.toStateCode(): StateCode = when (this) {
+    is NoSuchBotException -> StateCode.NoBot
+    is IllegalSessionException -> StateCode.IllegalSession
+    is NotVerifiedSessionException -> StateCode.NotVerifySession
+    is NoSuchElementException -> StateCode.NoElement
+    is NoSuchFileException -> StateCode.NoFile(this.file)
+    is PermissionDeniedException -> StateCode.PermissionDenied
+    is BotIsBeingMutedException -> StateCode.BotMuted
+    is MessageTooLargeException -> StateCode.MessageTooLarge
+    is IllegalAccessException -> StateCode.IllegalAccess(this.message)
+    else -> StateCode.InternalError(this.localizedMessage ?: "", this)
 }
