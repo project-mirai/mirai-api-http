@@ -9,6 +9,9 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.handler
 
+import io.ktor.server.plugins.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import net.mamoe.mirai.api.http.adapter.common.*
 import net.mamoe.mirai.contact.BotIsBeingMutedException
 import net.mamoe.mirai.contact.MessageTooLargeException
@@ -35,6 +38,26 @@ internal fun Throwable.toStateCode(): StateCode = when (this) {
     is PermissionDeniedException -> StateCode.PermissionDenied
     is BotIsBeingMutedException -> StateCode.BotMuted
     is MessageTooLargeException -> StateCode.MessageTooLarge
+    is BadRequestException -> StateCode.IllegalAccess(findMissingFiled() ?: this.localizedMessage ?: "")
     is IllegalAccessException -> StateCode.IllegalAccess(this.message)
     else -> StateCode.InternalError(this.localizedMessage ?: "", this)
 }
+
+@OptIn(ExperimentalSerializationApi::class)
+internal fun Throwable.findMissingFiled(): String? {
+    if (rootCause is MissingFieldException) {
+        return (rootCause as MissingFieldException)
+            .missingFields
+            .joinToString(prefix = "参数错误，缺少字段: ", separator = ", ")
+    }
+    return null
+}
+
+private val Throwable.rootCause: Throwable?
+    get() {
+        var rootCause: Throwable? = this
+        while (rootCause?.cause != null) {
+            rootCause = rootCause.cause
+        }
+        return rootCause
+    }

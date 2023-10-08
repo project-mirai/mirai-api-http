@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -29,7 +29,6 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
-import net.mamoe.mirai.api.http.adapter.internal.serializer.jsonParseOrNull
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
@@ -74,7 +73,7 @@ internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, cros
 @KtorDsl
 internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<VerifyDTO>() ?: throw IllegalParamException()
+        val dto = context.receiveDTO<VerifyDTO>()
         this.body(dto)
     }
 
@@ -82,7 +81,7 @@ internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<Ve
 @KtorDsl
 internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<BindDTO>() ?: throw IllegalParamException()
+        val dto = context.receiveDTO<BindDTO>()
         body(dto)
     }
 
@@ -99,7 +98,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
     crossinline body: Strategy<T>
 ) = routeWithHandle(path, HttpMethod.Post) {
-    val dto = context.receiveDTO<T>() ?: throw IllegalParamException()
+    val dto = context.receiveDTO<T>()
 
     getAuthedSession(dto.sessionKey).also { dto.session = it }
     this.body(dto)
@@ -168,8 +167,7 @@ internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatu
 /**
  * 接收 http body 指定类型 [T] 的 [DTO]
  */
-internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T? =
-    receive<String>().jsonParseOrNull()
+internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T = receive<T>()
 
 /**
  * 接收 http multi part 值类型
