@@ -95,12 +95,7 @@ internal inline fun Route.httpBind(path: String, crossinline body: Strategy<Bind
 internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
     crossinline body: Strategy<T>
-) = routeWithHandle(path, HttpMethod.Post) {
-    val dto = context.receive<T>()
-
-    getAuthedSession(dto.sessionKey).also { dto.session = it }
-    this.body(dto)
-}
+) = routeWithHandle(path, HttpMethod.Post) { body(context.receive<T>()) }
 
 /**
  * Get，用于获取bot的属性

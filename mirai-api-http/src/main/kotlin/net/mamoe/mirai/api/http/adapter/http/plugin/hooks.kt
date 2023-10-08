@@ -10,11 +10,24 @@
 package net.mamoe.mirai.api.http.adapter.http.plugin
 
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 
 internal object Monitor : Hook<suspend (ApplicationCall) -> Unit> {
     override fun install(pipeline: ApplicationCallPipeline, handler: suspend (ApplicationCall) -> Unit) {
         pipeline.intercept(ApplicationCallPipeline.Monitoring) {
             handler(call)
+        }
+    }
+}
+
+internal object ReceiveBodyTransformed : Hook<suspend (ApplicationCall, Any) -> Any> {
+    override fun install(
+        pipeline: ApplicationCallPipeline,
+        handler: suspend (call: ApplicationCall, state: Any) -> Any
+    ) {
+        pipeline.receivePipeline.intercept(ApplicationReceivePipeline.After) {
+            val body = handler(call, it)
+            proceedWith(body)
         }
     }
 }

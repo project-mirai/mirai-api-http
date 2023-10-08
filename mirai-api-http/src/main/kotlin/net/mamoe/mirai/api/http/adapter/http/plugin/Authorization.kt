@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -12,6 +12,8 @@ package net.mamoe.mirai.api.http.adapter.http.plugin
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.util.*
+import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
+import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.Session
 
@@ -29,6 +31,14 @@ val Authorization = createApplicationPlugin("Authorization") {
                 call.attributes.put(sessionAttr, it)
             }
         }
+    }
+
+    on(ReceiveBodyTransformed) { call, body ->
+        if (body is AuthedDTO) {
+            body.session = call.session ?: MahContextHolder[body.sessionKey]
+                    ?: throw IllegalSessionException
+        }
+        body
     }
 }
 
