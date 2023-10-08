@@ -17,13 +17,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.serializer
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
 import net.mamoe.mirai.api.http.adapter.http.plugin.session
-import net.mamoe.mirai.api.http.adapter.http.util.KtorParameterFormat
+import net.mamoe.mirai.api.http.adapter.http.support.receiveParameter
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
@@ -108,13 +106,12 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
  * Get，用于获取bot的属性
  * 验证请求参数中sessionKey参数的有效性
  */
-@OptIn(InternalSerializationApi::class)
 @KtorDsl
 internal inline fun <reified T : AuthedDTO> Route.httpAuthedGet(
     path: String,
     crossinline body: Strategy<T>
 ) = routeWithHandle(path, HttpMethod.Get) {
-    val dto = KtorParameterFormat.DEFAULT.decode(context.parameters, T::class.serializer())
+    val dto = call.receiveParameter<T>()
 
     getAuthedSession(dto.sessionKey).also { dto.session = it }
     this.body(dto)
