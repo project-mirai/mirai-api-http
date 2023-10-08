@@ -71,7 +71,7 @@ internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, cros
 @KtorDsl
 internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<VerifyDTO>()
+        val dto = context.receive<VerifyDTO>()
         this.body(dto)
     }
 
@@ -79,7 +79,7 @@ internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<Ve
 @KtorDsl
 internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
     routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receiveDTO<BindDTO>()
+        val dto = context.receive<BindDTO>()
         body(dto)
     }
 
@@ -96,7 +96,7 @@ internal inline fun <reified T : AuthedDTO> Route.httpAuthedPost(
     path: String,
     crossinline body: Strategy<T>
 ) = routeWithHandle(path, HttpMethod.Post) {
-    val dto = context.receiveDTO<T>()
+    val dto = context.receive<T>()
 
     getAuthedSession(dto.sessionKey).also { dto.session = it }
     this.body(dto)
@@ -160,11 +160,6 @@ internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(
  */
 internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
     respondText(json, defaultTextContentType(ContentType.Application.Json), status)
-
-/**
- * 接收 http body 指定类型 [T] 的 [DTO]
- */
-internal suspend inline fun <reified T : DTO> ApplicationCall.receiveDTO(): T = receive<T>()
 
 /**
  * 接收 http multi part 值类型
