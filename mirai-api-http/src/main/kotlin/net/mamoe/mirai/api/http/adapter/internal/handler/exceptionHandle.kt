@@ -38,9 +38,9 @@ internal fun Throwable.toStateCode(): StateCode = when (this) {
     is PermissionDeniedException -> StateCode.PermissionDenied
     is BotIsBeingMutedException -> StateCode.BotMuted
     is MessageTooLargeException -> StateCode.MessageTooLarge
-    is BadRequestException -> StateCode.IllegalAccess(findMissingFiled() ?: this.localizedMessage ?: "")
+    is BadRequestException -> StateCode.IllegalAccess(findMissingFiled() ?: this.localizedMessage)
     is IllegalAccessException -> StateCode.IllegalAccess(this.message)
-    else -> StateCode.InternalError(this.localizedMessage ?: "", this)
+    else -> StateCode.InternalError(this.localizedMessage)
 }
 
 @OptIn(ExperimentalSerializationApi::class)
