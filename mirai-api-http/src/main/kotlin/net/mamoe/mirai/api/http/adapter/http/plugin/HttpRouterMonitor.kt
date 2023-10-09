@@ -13,11 +13,18 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
+import io.ktor.util.*
 import net.mamoe.mirai.utils.MiraiLogger
 
-val logger by lazy { MiraiLogger.Factory.create(HttpRouterMonitor::class, "MAH Access") }
+private val monitor = AttributeKey<Unit>("HttpRouterMonitor")
+private val logger by lazy { MiraiLogger.Factory.create(HttpRouterMonitor::class, "MAH Access") }
+
 val HttpRouterMonitor = createApplicationPlugin("HttpRouterAccessMonitor") {
     on(Monitor) { call ->
+        if (call.attributes.contains(monitor)) {
+            return@on
+        }
+        call.attributes.put(monitor, Unit)
         call.logAccess()
     }
 }
