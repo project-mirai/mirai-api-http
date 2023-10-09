@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.http.dto.CountDTO
@@ -29,7 +30,7 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedGet<CountDTO>("/countMessage") {
         val count = it.unreadQueue.size
-        call.respondDTO(IntRestfulResult(data = count))
+        call.respond(IntRestfulResult(data = count))
     }
 
     /**
@@ -37,7 +38,7 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedGet<CountDTO>("/fetchMessage") {
         val data = it.unreadQueue.fetch(it.count)
-        call.respondDTO(EventListRestfulResult(data = data))
+        call.respond(EventListRestfulResult(data = data))
     }
 
     /**
@@ -45,7 +46,7 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedGet<CountDTO>("/fetchLatestMessage") {
         val data = it.unreadQueue.fetchLatest(it.count)
-        call.respondDTO(EventListRestfulResult(data = data))
+        call.respond(EventListRestfulResult(data = data))
     }
 
     /**
@@ -53,13 +54,13 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedGet<CountDTO>("/peekMessage") {
         val data = it.unreadQueue.peek(it.count)
-        call.respondDTO(EventListRestfulResult(data = data))
+        call.respond(EventListRestfulResult(data = data))
     }
 
     /*兼容旧接口*/
     httpAuthedGet<CountDTO>("/peakMessage") {
         val data = it.unreadQueue.peek(it.count)
-        call.respondDTO(EventListRestfulResult(data = data))
+        call.respond(EventListRestfulResult(data = data))
     }
     
     /**
@@ -67,7 +68,7 @@ internal fun Application.messageRouter() = routing {
      */
     httpAuthedGet<CountDTO>("/peekLatestMessage") {
         val data = it.unreadQueue.peekLatest(it.count)
-        call.respondDTO(EventListRestfulResult(data = data))
+        call.respond(EventListRestfulResult(data = data))
     }
 
     /**
@@ -114,7 +115,7 @@ internal fun Application.messageRouter() = routing {
         }
 
         val ret = onUploadImage(session, stream, type)
-        call.respondDTO(ret)
+        call.respond(ret)
     }
 
     /**
@@ -130,7 +131,7 @@ internal fun Application.messageRouter() = routing {
             f.streamProvider()
         }
         val ret = onUploadVoice(session, stream, type)
-        call.respondDTO(ret)
+        call.respond(ret)
     }
 
     /**

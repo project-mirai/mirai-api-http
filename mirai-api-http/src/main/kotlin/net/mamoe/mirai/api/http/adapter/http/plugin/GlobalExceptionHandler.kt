@@ -11,11 +11,11 @@ package net.mamoe.mirai.api.http.adapter.http.plugin
 
 import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
-import net.mamoe.mirai.api.http.adapter.http.router.respondStateCode
+import io.ktor.server.response.*
 import net.mamoe.mirai.api.http.adapter.internal.handler.toStateCode
 
 val GlobalExceptionHandler = createApplicationPlugin("GlobalExceptionHandler") {
     on(CallFailed) { call, cause ->
-        call.respondStateCode(cause.toStateCode())
+        call.respond(cause.toStateCode())
     }
 }

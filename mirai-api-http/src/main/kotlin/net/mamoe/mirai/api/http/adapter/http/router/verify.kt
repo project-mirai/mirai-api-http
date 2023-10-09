@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalSessionException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -39,11 +40,11 @@ internal fun Application.authRouter(setting: HttpAdapterSetting) = routing {
                 MahContextHolder.sessionManager.createTempSession()
             }
 
-            call.respondDTO(VerifyRetDTO(0, session.key))
+            call.respond(VerifyRetDTO(0, session.key))
             return@httpVerify
         }
 
-        call.respondStateCode(StateCode.AuthKeyFail)
+        call.respond(StateCode.AuthKeyFail)
     }
 
     /**
@@ -51,11 +52,11 @@ internal fun Application.authRouter(setting: HttpAdapterSetting) = routing {
      */
     httpBind("/bind") {
         if (MahContextHolder.singleMode) {
-            call.respondStateCode(StateCode.NoOperateSupport)
+            call.respond(StateCode.NoOperateSupport)
             return@httpBind
         }
         val session = MahContextHolder[it.sessionKey] ?: kotlin.run {
-            call.respondStateCode(StateCode.IllegalSession)
+            call.respond(StateCode.IllegalSession)
             return@httpBind
         }
 
@@ -64,7 +65,7 @@ internal fun Application.authRouter(setting: HttpAdapterSetting) = routing {
             MahContextHolder.sessionManager.authSession(bot, it.sessionKey)
                 .asHttpSession(setting.unreadQueueMaxSize)
         }
-        call.respondStateCode(StateCode.Success)
+        call.respond(StateCode.Success)
     }
 
     /**
@@ -78,7 +79,7 @@ internal fun Application.authRouter(setting: HttpAdapterSetting) = routing {
                 unloadHttpSession()
                 close()
             }
-            call.respondStateCode(StateCode.Success)
+            call.respond(StateCode.Success)
         } else {
             throw NoSuchElementException()
         }

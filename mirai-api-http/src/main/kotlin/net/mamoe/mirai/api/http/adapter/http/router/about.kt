@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.internal.action.onAbout
 import net.mamoe.mirai.api.http.adapter.internal.action.onGetBotsList
@@ -31,16 +32,16 @@ internal fun Application.aboutRouter() = routing {
      */
     get(Paths.about) {
         val data = onAbout()
-        call.respondDTO(StringMapRestfulResult(data = data))
+        call.respond(StringMapRestfulResult(data = data))
     }
 
     httpAuthedGet<EmptyAuthedDTO>(Paths.sessionInfo) {
         val data = onGetSessionInfo(it)
-        call.respondDTO(ElementResult(data = data.toJsonElement()))
+        call.respond(ElementResult(data = data.toJsonElement()))
     }
 
     get(Paths.botList) {
         val data = onGetBotsList()
-        call.respondDTO(LongListRestfulResult(data))
+        call.respond(LongListRestfulResult(data))
     }
 }

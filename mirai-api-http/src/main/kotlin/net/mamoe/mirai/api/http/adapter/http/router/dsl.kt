@@ -27,7 +27,6 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
-import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.Session
@@ -48,13 +47,13 @@ private fun <T> buildStrategy(block: Strategy<T>) = block
  * 处理策略: 返回状态码
  */
 internal inline fun <reified T> respondStateCodeStrategy(crossinline action: suspend (T) -> StateCode) =
-    buildStrategy<T> { call.respondStateCode(action(it)) }
+    buildStrategy<T> { call.respond(action(it)) }
 
 /**
  * 处理策略: 返回 DTO
  */
 internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline action: suspend (T) -> R) =
-    buildStrategy<T> { call.respondDTO(action(it)) }
+    buildStrategy<T> { call.respond(action(it)) }
 
 /***********************
  *    路由 DSL 定义
@@ -133,28 +132,6 @@ private fun PipelineContext<*, ApplicationCall>.getAuthedSession(sessionKey: Str
     return call.session ?: MahContextHolder[sessionKey]
         ?: throw IllegalSessionException
 }
-
-/**
- * 响应 [StateCode]
- */
-internal suspend inline fun <reified T : StateCode> ApplicationCall.respondStateCode(
-    code: T,
-    status: HttpStatusCode = HttpStatusCode.OK
-) = respondJson(code.toJson(), status)
-
-/**
- * 响应 [DTO]
- */
-internal suspend inline fun <reified T : DTO> ApplicationCall.respondDTO(
-    dto: T,
-    status: HttpStatusCode = HttpStatusCode.OK
-) = respondJson(dto.toJson(), status)
-
-/**
- * 响应 Json 字符串
- */
-internal suspend fun ApplicationCall.respondJson(json: String, status: HttpStatusCode = HttpStatusCode.OK) =
-    respondText(json, defaultTextContentType(ContentType.Application.Json), status)
 
 /**
  * 接收 http multi part 值类型

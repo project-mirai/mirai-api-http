@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -11,6 +11,7 @@ package net.mamoe.mirai.api.http.adapter.http.router
 
 import io.ktor.server.application.*
 import io.ktor.http.content.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -37,7 +38,7 @@ internal fun Application.fileRouter() = routing {
         val contact = when (type) {
             "group" -> session.bot.getGroup(target)
             else -> {
-                call.respondStateCode(StateCode.NoOperateSupport)
+                call.respond(StateCode.NoOperateSupport)
                 return@httpAuthedMultiPart
             }
         }
@@ -46,7 +47,7 @@ internal fun Application.fileRouter() = routing {
             onUploadFile(streamProvider(), path, originalFileName, contact!!)
         } ?: throw IllegalParamException("缺少参数 file")
 
-        call.respondDTO(ret)
+        call.respond(ret)
     }
 
     httpAuthedPost(Paths.fileDelete, respondDTOStrategy(::onDeleteFile))
