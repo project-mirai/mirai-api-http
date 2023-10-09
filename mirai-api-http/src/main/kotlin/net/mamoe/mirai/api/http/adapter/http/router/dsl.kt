@@ -24,9 +24,7 @@ import net.mamoe.mirai.api.http.adapter.http.plugin.session
 import net.mamoe.mirai.api.http.adapter.http.support.receiveParameter
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.AuthedDTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.BindDTO
 import net.mamoe.mirai.api.http.adapter.internal.dto.DTO
-import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyDTO
 import net.mamoe.mirai.api.http.context.MahContext
 import net.mamoe.mirai.api.http.context.MahContextHolder
 import net.mamoe.mirai.api.http.context.session.Session
@@ -62,25 +60,6 @@ internal inline fun <reified T, reified R : DTO> respondDTOStrategy(crossinline 
 @KtorDsl
 internal inline fun Route.routeWithHandle(path: String, method: HttpMethod, crossinline blk: Strategy<Unit>) =
     route(Paths.httpPath(path), method) { handle { blk(Unit) } }
-
-/**
- * Auth，处理http server的验证
- * 为闭包传入一个AuthDTO对象
- */
-@KtorDsl
-internal inline fun Route.httpVerify(path: String, crossinline body: Strategy<VerifyDTO>) =
-    routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receive<VerifyDTO>()
-        this.body(dto)
-    }
-
-
-@KtorDsl
-internal inline fun Route.httpBind(path: String, crossinline body: Strategy<BindDTO>) =
-    routeWithHandle(path, HttpMethod.Post) {
-        val dto = context.receive<BindDTO>()
-        body(dto)
-    }
 
 
 /**
