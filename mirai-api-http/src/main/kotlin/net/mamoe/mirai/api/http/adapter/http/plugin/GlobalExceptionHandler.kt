@@ -12,10 +12,22 @@ package net.mamoe.mirai.api.http.adapter.http.plugin
 import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
 import io.ktor.server.response.*
+import io.ktor.util.*
 import net.mamoe.mirai.api.http.adapter.internal.handler.toStateCode
 
-val GlobalExceptionHandler = createApplicationPlugin("GlobalExceptionHandler") {
+val GlobalExceptionHandler = createApplicationPlugin(
+    "GlobalExceptionHandler",
+    ::GlobalExceptionHandlerConfig
+) {
     on(CallFailed) { call, cause ->
+        if (pluginConfig.printTrace) {
+            cause.printStackTrace()
+        }
         call.respond(cause.toStateCode())
     }
+}
+
+@KtorDsl
+class GlobalExceptionHandlerConfig {
+    var printTrace: Boolean = false
 }

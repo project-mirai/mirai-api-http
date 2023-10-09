@@ -35,7 +35,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
     }
 
     install(ContentNegotiation) { json(json = BuiltinJsonSerializer.buildJson()) }
-    install(GlobalExceptionHandler)
+    install(GlobalExceptionHandler) { printTrace = MahContextHolder.debug }
     install(Authorization)
     if (MahContextHolder.debug) {
         install(DoubleReceive)
