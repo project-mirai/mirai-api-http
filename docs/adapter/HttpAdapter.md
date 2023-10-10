@@ -681,18 +681,22 @@ adapterSettings:
 
 ```json5
 {
-  "name":"setu.png",
-  "id":"/12314d-1wf13-a98ffa",
-  "path":"/setu.png",
-  "parent":null,
-  "contact":{
-    "id":123123,
-    "name":"setu qun",
-    "permission":"OWNER"
-  },
-  "isFile":true,
-  "isDictionary":false,
-  "isDirectory":false
+  "code": 0,
+  "msg": "",
+  "data": {
+    "name":"setu.png",
+    "id":"/12314d-1wf13-a98ffa",
+    "path":"/setu.png",
+    "parent":null,
+    "contact":{
+      "id":123123,
+      "name":"setu qun",
+      "permission":"OWNER"
+    },
+    "isFile":true,
+    "isDictionary":false,
+    "isDirectory":false
+  }
 }
 ```
 
