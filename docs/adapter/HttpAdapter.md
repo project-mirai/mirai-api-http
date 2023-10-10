@@ -27,7 +27,9 @@ adapterSettings:
 #### 专有接口
 
 专有接口为该 `adapter` 特有的接口
-
++ **[测试](#测试接口)**
+  + [路由](#路由)
+  + [回响](#回响)
 + **[认证与会话](#认证与会话)**
   + [认证](#认证)
   + [绑定](#绑定)
@@ -103,6 +105,46 @@ adapterSettings:
   + [执行命令](#执行命令)
   + [注册命令](#注册命令)
   + [命令接收](#命令接收)
+
+## 测试
+
+### 路由
+
+#### 接口名称
+```
+[GET] /router/{path}
+[GET] /router?router={path}
+[GET} /router/{path1}?router={path2}  // 使用 path1
+
+[POST] /router
+[POST] /router/{path}
+```
+此方法为万能路由，通过 path 参数将请求 **转发** 到其他接口
+
++ 对于 [GET] 请求，通过 query 传递参数
++ 对于 [POST] 请求，通过 body 传递参数
++ 对于 [POST] multi-part 请求，建议通过 `/router/{path}` 请求
+
+#### Post Body 请求:
+```json5
+{
+  "router": "/sendFriendMessage",
+  "body": {}
+}
+```
+
+### 回响
+
+#### 接口名称
+```
+[GET] /echo
+[POST] /echo
+```
+此方法将请求的 query 或 body 原样返回
+
+> 为保证 server 不按不确定的格式解析传入参数，统一以字符串形式返回
+> 
+> POST 请求返回 Content-Type: text/plain
 
 ## 认证与会话
 
