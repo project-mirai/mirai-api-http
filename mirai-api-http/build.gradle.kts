@@ -9,11 +9,7 @@ plugins {
 }
 
 val ktorVersion: String by rootProject.extra
-val miraiVersion: String by lazy {
-    rootProject.buildscript.configurations.getByName("classpath").dependencies
-        .first { it.name == "net.mamoe.mirai-console.gradle.plugin" }
-        .version!!
-}
+val mockVersion = "2.15.0"
 
 dependencies {
 
@@ -37,7 +33,7 @@ dependencies {
 
     // test
     testImplementation("net.mamoe.yamlkt:yamlkt:0.12.0")
-    testImplementation("net.mamoe:mirai-core-mock:$miraiVersion")
+    testImplementation("net.mamoe:mirai-core-mock:$mockVersion")
     testImplementation("org.slf4j:slf4j-simple:1.7.32")
     testImplementation(kotlin("test-junit5"))
     ktorTest("server-test-host")
