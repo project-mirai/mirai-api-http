@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -10,6 +10,7 @@
 package net.mamoe.mirai.api.http.adapter.internal.action
 
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
 import net.mamoe.mirai.api.http.adapter.common.IllegalParamException
 import net.mamoe.mirai.api.http.adapter.common.StateCode
@@ -25,6 +26,8 @@ import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.console.util.ContactUtils.getContact
 import net.mamoe.mirai.console.util.cast
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.roaming.RoamingSupported
+import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -51,19 +54,29 @@ internal suspend fun onGetMessageFromId(dto: MessageIdDTO): EventRestfulResult {
         is OnlineMessageSource.Incoming.FromFriend -> FriendMessagePacketDTO(QQDTO(source.sender))
         is OnlineMessageSource.Incoming.FromTemp -> TempMessagePacketDTO(MemberDTO(source.sender))
         is OnlineMessageSource.Incoming.FromStranger -> StrangerMessagePacketDTO(QQDTO(source.sender))
-        is OfflineMessageSource -> when(source.kind) {
-            MessageSourceKind.GROUP -> GroupMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+        is OfflineMessageSource -> when (source.kind) {
+            MessageSourceKind.GROUP -> GroupMessagePacketDTO(
+                MemberDTO(
+                    target.cast<Group>().getMemberOrFail(source.fromId)
+                )
+            )
+
             MessageSourceKind.FRIEND -> FriendMessagePacketDTO(QQDTO(target.cast<Friend>()))
             // Maybe a bug
-            MessageSourceKind.TEMP -> TempMessagePacketDTO(MemberDTO(target.cast<Group>().getMemberOrFail(source.fromId)))
+            MessageSourceKind.TEMP -> TempMessagePacketDTO(
+                MemberDTO(
+                    target.cast<Group>().getMemberOrFail(source.fromId)
+                )
+            )
+
             MessageSourceKind.STRANGER -> StrangerMessagePacketDTO(QQDTO(target.cast<Stranger>()))
         }
+
         else -> null
     }
 
     packet?.let {
-        it.messageChain = messageChainOf(source, source.originalMessage)
-            .toDTO { d -> d != UnknownMessageDTO }
+        it.messageChain = messageChainOf(source, source.originalMessage).toDTO { d -> d != UnknownMessageDTO }
     }
 
     return EventRestfulResult(data = packet)
@@ -73,9 +86,7 @@ internal suspend fun onGetMessageFromId(dto: MessageIdDTO): EventRestfulResult {
  * 发送消息
  */
 private suspend fun <C : Contact> sendMessage(
-    quote: QuoteReply?,
-    messageChain: MessageChain,
-    target: C
+    quote: QuoteReply?, messageChain: MessageChain, target: C
 ): MessageReceipt<Contact> {
     val send = if (quote == null) {
         messageChain
@@ -91,9 +102,8 @@ private suspend fun <C : Contact> sendMessage(
 internal suspend fun onSendFriendMessage(sendDTO: SendDTO): SendRetDTO {
     val bot = sendDTO.session.bot
 
-    fun findQQ(qq: Long): Contact = bot.getFriend(qq)
-        ?: bot.getStranger(qq)
-        ?: throw NoSuchElementException("friend $qq not found")
+    fun findQQ(qq: Long): Contact =
+        bot.getFriend(qq) ?: bot.getStranger(qq) ?: throw NoSuchElementException("friend $qq not found")
 
     val qq = when {
         sendDTO.target != null -> findQQ(sendDTO.target)
@@ -122,7 +132,8 @@ internal suspend fun onSendGroupMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), group)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), group)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(group, cache), group)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -141,7 +152,8 @@ internal suspend fun onSendTempMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), member)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), member)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(member, cache), member)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -157,7 +169,8 @@ internal suspend fun onSendOtherClientMessage(sendDTO: SendDTO): SendRetDTO {
     }
 
     val cache = sendDTO.session.sourceCache
-    val quote = sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), client)).quote() }
+    val quote =
+        sendDTO.quote?.let { q -> sendDTO.session.sourceCache.getMessage(Context(intArrayOf(q), client)).quote() }
     val receipt = sendMessage(quote, sendDTO.messageChain.toMessageChain(client, cache), client)
     sendDTO.session.sourceCache.onMessage(receipt.source)
 
@@ -190,15 +203,13 @@ internal suspend fun onUploadImage(session: Session, stream: InputStream, type: 
     val image = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadImage(it)
-            "Friend", "friend",
-            "Temp", "temp"
-            -> session.bot.friends.firstOrNull()?.uploadImage(it)
+            "Friend", "friend", "Temp", "temp" -> session.bot.friends.firstOrNull()?.uploadImage(it)
+
             else -> null
         }
     }
 
-    return image?.run { UploadImageRetDTO(imageId, queryUrl()) }
-        ?: throw IllegalAccessException("图片上传错误")
+    return image?.run { UploadImageRetDTO(imageId, queryUrl()) } ?: throw IllegalAccessException("图片上传错误")
 }
 
 /**
@@ -208,15 +219,13 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
     val voice = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it)
-            "Friend", "friend",
-            "Temp", "temp"
-            -> session.bot.friends.firstOrNull()?.uploadAudio(it)
+            "Friend", "friend", "Temp", "temp" -> session.bot.friends.firstOrNull()?.uploadAudio(it)
+
             else -> null
         }
     }
 
-    return voice?.run { UploadVoiceRetDTO(filename) }
-        ?: throw IllegalAccessException("语音上传错误")
+    return voice?.run { UploadVoiceRetDTO(filename) } ?: throw IllegalAccessException("语音上传错误")
 }
 
 /**
@@ -224,8 +233,11 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
  */
 @OptIn(ConsoleExperimentalApi::class)
 internal suspend fun onRecall(recallDTO: MessageIdDTO): StateCode {
-    recallDTO.session.sourceCache.getMessage(Context(intArrayOf(recallDTO.messageId),
-        recallDTO.session.bot.getContact(recallDTO.target, false))).recall()
+    recallDTO.session.sourceCache.getMessage(
+        Context(
+            intArrayOf(recallDTO.messageId), recallDTO.session.bot.getContact(recallDTO.target, false)
+        )
+    ).recall()
     return StateCode.Success
 }
 
@@ -236,11 +248,13 @@ internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
             val receiver = it.getFriend(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
+
         "Stranger", "stranger" -> nudgeDTO.session.bot.let {
             val target = it.getStranger(nudgeDTO.target) ?: return StateCode.NoElement
             val receiver = it.getStranger(nudgeDTO.subject) ?: return StateCode.NoElement
             target.nudge().sendTo(receiver)
         }
+
         "Group", "group" -> nudgeDTO.session.bot.let {
             val target = it.getGroup(nudgeDTO.subject)?.get(nudgeDTO.target) ?: return StateCode.NoElement
             target.nudge().sendTo(target.group)
@@ -250,10 +264,31 @@ internal suspend fun onNudge(nudgeDTO: NudgeDTO): StateCode {
 }
 
 internal suspend fun onRoamingMessages(dto: RoamingMessageDTO): EventListRestfulResult {
-    val friend = dto.session.bot.getFriendOrFail(dto.target)
-    val messagesIn = friend.roamingMessages.getMessagesIn(dto.timeStart, dto.timeEnd)
-    val packets = messagesIn.map { chain ->
-        FriendMessagePacketDTO(QQDTO(friend)).also { it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO }  }
+    val bot = dto.session.bot
+    val contact = when {
+        dto.target != null -> bot.getFriend(dto.target) ?: bot.getGroupOrFail(dto.target)
+        dto.qq != null && dto.group != null -> bot.getGroupOrFail(dto.group).getOrFail(dto.qq)
+        dto.qq != null -> bot.getFriendOrFail(dto.qq)
+        dto.group != null -> bot.getGroupOrFail(dto.group)
+        else -> throw IllegalParamException("target、qq、group不可全为null")
+    } as RoamingSupported
+
+    val packets = when (contact) {
+        is Friend -> contact.roamingMessages.getMessagesIn(dto.timeStart, dto.timeEnd).map { chain ->
+                FriendMessagePacketDTO(QQDTO(contact)).also {
+                    it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO }
+                }
+            }
+
+        is Group -> contact.roamingMessages.getMessagesIn(dto.timeStart, dto.timeEnd).mapNotNull { chain ->
+                val source = chain[MessageSource] ?: return@mapNotNull null
+                val member = contact.getMember(source.fromId)?.run { MemberDTO(this) } ?: MemberDTO(
+                    source.fromId, "", "", MemberPermission.MEMBER, 0, 0, 0, GroupDTO(contact)
+                )
+                GroupMessagePacketDTO(member).also { it.messageChain = chain.toDTO { d -> d != UnknownMessageDTO } }
+            }
+
+        else -> throw IllegalParamException("target、qq、group不可全为null")
     }
 
     return EventListRestfulResult(packets.toList())
