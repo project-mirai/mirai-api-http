@@ -99,7 +99,8 @@ internal data class AtAllDTO(val target: Long = 0) : MessageDTO() {
 
 @Serializable
 @SerialName("Face")
-internal data class FaceDTO(val faceId: Int = -1, val name: String = "", val isSuperFace: Boolean = false) : MessageDTO() {
+internal data class FaceDTO(val faceId: Int = -1, val name: String = "", val isSuperFace: Boolean = false) :
+    MessageDTO() {
     override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
         return when {
             faceId >= 0 -> Face(faceId)
@@ -135,14 +136,17 @@ internal interface ImageLikeDTO {
             size = this@ImageLikeDTO.size
             isEmoji = this@ImageLikeDTO.isEmoji
         }
+
         !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
             url!!.useUrl { it.uploadAsImage(contact) }
         }
+
         !path.isNullOrBlank() -> with(File(path!!)) {
             if (exists()) {
                 inputStream().useStream { it.uploadAsImage(contact) }
             } else throw NoSuchFileException(this)
         }
+
         !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
             inputStream().useStream { it.uploadAsImage(contact) }
         }
@@ -161,23 +165,23 @@ internal interface VoiceLikeDTO {
     suspend fun voiceLikeToMessage(contact: Contact) = when {
         contact !is AudioSupported -> null
         !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(
-            voiceId!!,
-            voiceId!!.substringBefore(".").toHexArray(),
-            0,
-            AudioCodec.SILK,
-            null
+            voiceId!!, voiceId!!.substringBefore(".").toHexArray(), 0, AudioCodec.SILK, null
         )
+
         !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
             url!!.useUrl { contact.uploadAudio(it) }
         }
+
         !path.isNullOrBlank() -> with(File(path!!)) {
             if (exists()) {
                 inputStream().useStream { contact.uploadAudio(it) }
             } else throw NoSuchFileException(this)
         }
+
         !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
             inputStream().useStream { contact.uploadAudio(it) }
         }
+
         else -> null
     }
 }
@@ -200,6 +204,7 @@ internal interface VedioLikeDTO {
                 }
             }
         }
+
         else -> {
             OfflineShortVideo(
                 videoId,
@@ -291,11 +296,7 @@ internal data class AppDTO(val content: String) : MessageDTO() {
 @Serializable
 @SerialName("Quote")
 internal data class QuoteDTO(
-    val id: Int,
-    val senderId: Long,
-    val targetId: Long,
-    val groupId: Long,
-    val origin: MessageChainDTO
+    val id: Int, val senderId: Long, val targetId: Long, val groupId: Long, val origin: MessageChainDTO
 ) : MessageDTO()
 
 @Serializable

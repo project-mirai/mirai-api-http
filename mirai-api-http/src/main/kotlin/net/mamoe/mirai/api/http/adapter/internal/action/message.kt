@@ -27,7 +27,6 @@ import net.mamoe.mirai.console.util.ContactUtils.getContact
 import net.mamoe.mirai.console.util.cast
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.roaming.RoamingSupported
-import net.mamoe.mirai.data.MemberInfo
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl

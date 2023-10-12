@@ -65,10 +65,28 @@ internal suspend fun Message.toDTO() = when (this) {
     is Face -> FaceDTO(id, FaceMap[id], isSuperFace = false)
     is SuperFace -> FaceDTO(face, FaceMap[face], isSuperFace = true)
     is PlainText -> PlainDTO(content)
-    is Image -> ImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
+    is Image -> ImageDTO(
+        imageId,
+        queryUrl(),
+        width = width,
+        height = height,
+        size = size,
+        imageType = imageType.name,
+        isEmoji = isEmoji
+    )
+
     is FlashImage -> with(image) {
-        FlashImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
+        FlashImageDTO(
+            imageId,
+            queryUrl(),
+            width = width,
+            height = height,
+            size = size,
+            imageType = imageType.name,
+            isEmoji = isEmoji
+        )
     }
+
     is OnlineAudio -> VoiceDTO(filename, urlForDownload, length = length)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
@@ -76,10 +94,12 @@ internal suspend fun Message.toDTO() = when (this) {
         groupId = when {
             source is OfflineMessageSource && (source as OfflineMessageSource).kind == MessageSourceKind.GROUP ||
                     source is OnlineMessageSource && (source as OnlineMessageSource).subject is Group -> source.targetId
+
             else -> 0L
         },
         // 避免套娃
         origin = source.originalMessage.toDTO { it != UnknownMessageDTO && it !is QuoteDTO })
+
     is PokeMessage -> PokeMessageDTO(PokeMap[pokeType])
     is Dice -> DiceDTO(value)
     is MarketFace -> MarketFaceDTO(id, name)
@@ -87,6 +107,7 @@ internal suspend fun Message.toDTO() = when (this) {
     is ForwardMessage -> ForwardMessageDTO(null, nodeList.map {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
     })
+
     is FileMessage -> FileDTO(id, name, size)
     is OnlineShortVideo -> ShortVideoDTO(videoId, fileMd5.toHexString(), fileSize, fileFormat, filename, urlForDownload)
     is OfflineShortVideo -> ShortVideoDTO(videoId, fileMd5.toHexString(), fileSize, fileFormat, filename, null)
