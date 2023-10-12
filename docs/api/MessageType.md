@@ -240,14 +240,16 @@
 {
     "type": "Face",
     "faceId": 123,
-    "name": "bu"
+    "name": "bu",
+    "superFace": false
 }
 ```
 
-| 名字   | 类型    | 说明                           |
-| ------ | ------- | ------------------------------ |
-| faceId | Int     | QQ表情编号，可选，优先高于name |
-| name   | String  | QQ表情拼音，可选               |
+| 名字          | 类型      | 说明               |
+|-------------|---------|------------------|
+| faceId      | Int     | QQ表情编号，可选，优先高于name |
+| name        | String  | QQ表情拼音，可选        |
+| isSuperFace | Boolean | 超级表情，默认 false    |
 
 ### Plain
 

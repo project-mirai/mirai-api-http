@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -61,7 +61,8 @@ internal suspend fun Message.toDTO() = when (this) {
     is MessageSource -> MessageSourceDTO(ids.firstOrNull() ?: 0, time)
     is At -> AtDTO(target, "")
     is AtAll -> AtAllDTO(0L)
-    is Face -> FaceDTO(id, FaceMap[id])
+    is Face -> FaceDTO(id, FaceMap[id], isSuperFace = false)
+    is SuperFace -> FaceDTO(face, FaceMap[face], isSuperFace = true)
     is PlainText -> PlainDTO(content)
     is Image -> ImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
     is FlashImage -> with(image) {
