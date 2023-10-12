@@ -99,6 +99,16 @@ internal interface VoiceLikeDTO {
     val length: Long
 }
 
+internal interface VedioLikeDTO {
+    val videoId: String
+    val fileMd5: String
+    val fileSize: Long
+    val fileFormat: String
+    val filename: String
+    val videoUrl: String?
+    val thumbnailUrl: String?
+}
+
 @Serializable
 @SerialName("Image")
 internal data class ImageDTO(
@@ -229,6 +239,18 @@ internal data class FileDTO(
     val name: String,
     val size: Long,
 ) : MessageDTO()
+
+@Serializable
+@SerialName("ShortVideo")
+internal data class ShortVideoDTO(
+    override val videoId: String,
+    override val fileMd5: String,
+    override val fileSize: Long,
+    override val fileFormat: String,
+    override val filename: String,
+    override val videoUrl: String? = null,
+    override val thumbnailUrl: String? = null,
+) : MessageDTO(), VedioLikeDTO
 
 @Serializable
 @SerialName("MiraiCode")

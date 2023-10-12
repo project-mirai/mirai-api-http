@@ -12,6 +12,7 @@ package net.mamoe.mirai.api.http.adapter.internal.convertor
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
+import net.mamoe.mirai.api.http.util.toHexString
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
@@ -87,5 +88,7 @@ internal suspend fun Message.toDTO() = when (this) {
         ForwardMessageNode(it.senderId, it.time, it.senderName, it.messageChain.toDTO { d -> d != UnknownMessageDTO })
     })
     is FileMessage -> FileDTO(id, name, size)
+    is OnlineShortVideo -> ShortVideoDTO(videoId, fileMd5.toHexString(), fileSize, fileFormat, filename, urlForDownload)
+    is OfflineShortVideo -> ShortVideoDTO(videoId, fileMd5.toHexString(), fileSize, fileFormat, filename, null)
     else -> UnknownMessageDTO
 }

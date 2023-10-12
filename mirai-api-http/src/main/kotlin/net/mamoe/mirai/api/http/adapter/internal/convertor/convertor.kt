@@ -80,6 +80,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
     is PokeMessageDTO -> PokeMap[name]
     is DiceDTO -> Dice(value)
     is MusicShareDTO -> MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+    is ShortVideoDTO -> videoLikeToMessage(contact)
     is ForwardMessageDTO -> buildForwardMessage(contact) {
         display?.let { displayStrategy = display }
         nodeList.forEach {
@@ -158,4 +159,24 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
     }
 
     else -> null
+}
+
+private suspend fun VedioLikeDTO.videoLikeToMessage(contact: Contact) = when {
+    contact !is AudioSupported -> null
+    videoUrl != null && thumbnailUrl != null -> withContext(Dispatchers.IO) {
+        thumbnailUrl!!.useUrl { thumb ->
+            videoUrl!!.useUrl { video ->
+                contact.uploadShortVideo(thumb, video, filename)
+            }
+        }
+    }
+    else -> {
+        OfflineShortVideo(
+            videoId,
+            filename,
+            fileFormat,
+            fileMd5.toHexArray(),
+            fileSize,
+        )
+    }
 }
