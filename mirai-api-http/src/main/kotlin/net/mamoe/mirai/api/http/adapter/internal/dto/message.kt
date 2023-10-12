@@ -9,11 +9,29 @@
 
 package net.mamoe.mirai.api.http.adapter.internal.dto
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.mamoe.mirai.api.http.adapter.internal.convertor.toMessageChain
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.MessageIdDTO
-import net.mamoe.mirai.message.data.ForwardMessage
-import net.mamoe.mirai.message.data.RawForwardMessage
+import net.mamoe.mirai.api.http.spi.persistence.Context
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
+import net.mamoe.mirai.api.http.util.*
+import net.mamoe.mirai.api.http.util.toHexArray
+import net.mamoe.mirai.api.http.util.useStream
+import net.mamoe.mirai.api.http.util.useUrl
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import net.mamoe.mirai.console.util.ContactUtils.getFriendOrGroupOrNull
+import net.mamoe.mirai.contact.AudioSupported
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.code.MiraiCode
+import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import net.mamoe.mirai.utils.MiraiExperimentalApi
+import java.io.File
+import java.util.*
 
 @Serializable
 internal sealed class MessagePacketDTO : EventDTO() {
@@ -65,19 +83,39 @@ internal data class MessageSourceDTO(val id: Int, val time: Int) : MessageDTO()
 
 @Serializable
 @SerialName("At")
-internal data class AtDTO(val target: Long, val display: String = "") : MessageDTO()
+internal data class AtDTO(val target: Long, val display: String = "") : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return (contact as Group).getOrFail(target).at()
+    }
+}
 
 @Serializable
 @SerialName("AtAll")
-internal data class AtAllDTO(val target: Long = 0) : MessageDTO() // target为保留字段
+internal data class AtAllDTO(val target: Long = 0) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return AtAll
+    }
+}
 
 @Serializable
 @SerialName("Face")
-internal data class FaceDTO(val faceId: Int = -1, val name: String = "", val isSuperFace: Boolean = false) : MessageDTO()
+internal data class FaceDTO(val faceId: Int = -1, val name: String = "", val isSuperFace: Boolean = false) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return when {
+            faceId >= 0 -> Face(faceId)
+            name.isNotEmpty() -> Face(FaceMap[name])
+            else -> Face(255)
+        }.let { if (isSuperFace) it.toSuperFace() else it }
+    }
+}
 
 @Serializable
 @SerialName("Plain")
-internal data class PlainDTO(val text: String) : MessageDTO()
+internal data class PlainDTO(val text: String) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return PlainText(text)
+    }
+}
 
 internal interface ImageLikeDTO {
     val imageId: String?
@@ -89,6 +127,28 @@ internal interface ImageLikeDTO {
     val size: Long
     val imageType: String
     val isEmoji: Boolean
+
+    suspend fun imageLikeToMessage(contact: Contact) = when {
+        !imageId.isNullOrBlank() -> Image(imageId!!) {
+            height = this@ImageLikeDTO.height
+            width = this@ImageLikeDTO.width
+            size = this@ImageLikeDTO.size
+            isEmoji = this@ImageLikeDTO.isEmoji
+        }
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
+            url!!.useUrl { it.uploadAsImage(contact) }
+        }
+        !path.isNullOrBlank() -> with(File(path!!)) {
+            if (exists()) {
+                inputStream().useStream { it.uploadAsImage(contact) }
+            } else throw NoSuchFileException(this)
+        }
+        !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
+            inputStream().useStream { it.uploadAsImage(contact) }
+        }
+
+        else -> null
+    }
 }
 
 internal interface VoiceLikeDTO {
@@ -97,6 +157,29 @@ internal interface VoiceLikeDTO {
     val path: String?
     val base64: String?
     val length: Long
+
+    suspend fun voiceLikeToMessage(contact: Contact) = when {
+        contact !is AudioSupported -> null
+        !voiceId.isNullOrBlank() -> OfflineAudio.Factory.create(
+            voiceId!!,
+            voiceId!!.substringBefore(".").toHexArray(),
+            0,
+            AudioCodec.SILK,
+            null
+        )
+        !url.isNullOrBlank() -> withContext(Dispatchers.IO) {
+            url!!.useUrl { contact.uploadAudio(it) }
+        }
+        !path.isNullOrBlank() -> with(File(path!!)) {
+            if (exists()) {
+                inputStream().useStream { contact.uploadAudio(it) }
+            } else throw NoSuchFileException(this)
+        }
+        !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
+            inputStream().useStream { contact.uploadAudio(it) }
+        }
+        else -> null
+    }
 }
 
 internal interface VedioLikeDTO {
@@ -107,6 +190,26 @@ internal interface VedioLikeDTO {
     val filename: String
     val videoUrl: String?
     val thumbnailUrl: String?
+
+    suspend fun VedioLikeDTO.videoLikeToMessage(contact: Contact) = when {
+        contact !is AudioSupported -> null
+        videoUrl != null && thumbnailUrl != null -> withContext(Dispatchers.IO) {
+            thumbnailUrl!!.useUrl { thumb ->
+                videoUrl!!.useUrl { video ->
+                    contact.uploadShortVideo(thumb, video, filename)
+                }
+            }
+        }
+        else -> {
+            OfflineShortVideo(
+                videoId,
+                filename,
+                fileFormat,
+                fileMd5.toHexArray(),
+                fileSize,
+            )
+        }
+    }
 }
 
 @Serializable
@@ -121,7 +224,11 @@ internal data class ImageDTO(
     override val size: Long = 0,
     override val imageType: String = "UNKNOWN",
     override val isEmoji: Boolean = false,
-) : MessageDTO(), ImageLikeDTO
+) : MessageDTO(), ImageLikeDTO {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message? {
+        return imageLikeToMessage(contact)
+    }
+}
 
 @Serializable
 @SerialName("FlashImage")
@@ -135,7 +242,11 @@ internal data class FlashImageDTO(
     override val size: Long = 0,
     override val imageType: String = "UNKNOWN",
     override val isEmoji: Boolean = false,
-) : MessageDTO(), ImageLikeDTO
+) : MessageDTO(), ImageLikeDTO {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message? {
+        return imageLikeToMessage(contact)
+    }
+}
 
 @Serializable
 @SerialName("Voice")
@@ -145,19 +256,37 @@ internal data class VoiceDTO(
     override val path: String? = null,
     override val base64: String? = null,
     override val length: Long = 0L,
-) : MessageDTO(), VoiceLikeDTO
+) : MessageDTO(), VoiceLikeDTO {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message? {
+        return voiceLikeToMessage(contact)
+    }
+}
 
 @Serializable
 @SerialName("Xml")
-internal data class XmlDTO(val xml: String) : MessageDTO()
+internal data class XmlDTO(val xml: String) : MessageDTO() {
+    @OptIn(MiraiExperimentalApi::class)
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return SimpleServiceMessage(60, xml)
+    }
+}
 
 @Serializable
 @SerialName("Json")
-internal data class JsonDTO(val json: String) : MessageDTO()
+internal data class JsonDTO(val json: String) : MessageDTO() {
+    @OptIn(MiraiExperimentalApi::class)
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return SimpleServiceMessage(1, json)
+    }
+}
 
 @Serializable
 @SerialName("App")
-internal data class AppDTO(val content: String) : MessageDTO()
+internal data class AppDTO(val content: String) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return LightApp(content)
+    }
+}
 
 @Serializable
 @SerialName("Quote")
@@ -173,13 +302,21 @@ internal data class QuoteDTO(
 @SerialName("Poke")
 internal data class PokeMessageDTO(
     val name: String
-) : MessageDTO()
+) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return PokeMap[name]
+    }
+}
 
 @Serializable
 @SerialName("Dice")
 internal data class DiceDTO(
     val value: Int
-) : MessageDTO()
+) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return Dice(value)
+    }
+}
 
 @Serializable
 @SerialName("MarketFace")
@@ -198,14 +335,39 @@ internal data class MusicShareDTO(
     val pictureUrl: String,
     val musicUrl: String,
     val brief: String,
-) : MessageDTO()
+) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return MusicShare(MusicKind.valueOf(kind), title, summary, jumpUrl, pictureUrl, musicUrl, brief)
+    }
+}
 
 @Serializable
 @SerialName("Forward")
 internal data class ForwardMessageDTO(
     val display: ForwardMessageDisplayDTO?,
     val nodeList: List<ForwardMessageNode>,
-) : MessageDTO()
+) : MessageDTO() {
+    @OptIn(ConsoleExperimentalApi::class)
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return buildForwardMessage(contact) {
+            display?.let { displayStrategy = display }
+            nodeList.forEach {
+                if (it.messageId != null) {
+                    persistence.getMessageOrNull(Context(intArrayOf(it.messageId), contact))?.apply {
+                        add(fromId, "$fromId", originalMessage, time)
+                    }
+                } else if (it.messageRef != null) {
+                    val refContract = contact.bot.getFriendOrGroupOrNull(it.messageRef.target) ?: return@forEach
+                    persistence.getMessageOrNull(Context(intArrayOf(it.messageRef.messageId), refContract))?.apply {
+                        add(fromId, "$fromId", originalMessage, time)
+                    }
+                } else if (it.senderId != null && it.senderName != null && it.messageChain != null) {
+                    add(it.senderId, it.senderName, it.messageChain.toMessageChain(contact, persistence), it.time ?: -1)
+                }
+            }
+        }
+    }
+}
 
 @Serializable
 internal data class ForwardMessageDisplayDTO(
@@ -250,18 +412,27 @@ internal data class ShortVideoDTO(
     override val filename: String,
     override val videoUrl: String? = null,
     override val thumbnailUrl: String? = null,
-) : MessageDTO(), VedioLikeDTO
+) : MessageDTO(), VedioLikeDTO {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message? {
+        return videoLikeToMessage(contact)
+    }
+}
 
 @Serializable
 @SerialName("MiraiCode")
 internal data class MiraiCodeDTO(
     val code: String
-) : MessageDTO()
+) : MessageDTO() {
+    override suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message {
+        return MiraiCode.deserializeMiraiCode(code)
+    }
+}
 
 @Serializable
 @SerialName("Unknown")
 object UnknownMessageDTO : MessageDTO()
 
 @Serializable
-sealed class MessageDTO : DTO
-
+sealed class MessageDTO : DTO {
+    open suspend fun convertToMessage(contact: Contact, persistence: Persistence): Message? = null
+}
