@@ -74,6 +74,7 @@ internal suspend fun MessageDTO.toMessage(contact: Contact, cache: Persistence) 
     is ImageDTO -> imageLikeToMessage(contact)
     is FlashImageDTO -> imageLikeToMessage(contact)?.flash()
     is VoiceDTO -> voiceLikeToMessage(contact)
+    is ShortVideoDTO -> shortVideoLikeToMessage(contact)
     is XmlDTO -> SimpleServiceMessage(60, xml)
     is JsonDTO -> SimpleServiceMessage(1, json)
     is AppDTO -> LightApp(content)
@@ -155,6 +156,44 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
 
     !base64.isNullOrBlank() -> with(Base64.getDecoder().decode(base64)) {
         inputStream().useStream { contact.uploadAudio(it) }
+    }
+
+    else -> null
+}
+
+private suspend fun ShortVideoLikeDTO.shortVideoLikeToMessage(contact: Contact) = when {
+    !videoId.isNullOrBlank() -> OfflineShortVideo.Builder.newBuilder(
+        videoId!!,
+        filename!!,
+        "mp4",
+        ByteArray(16),
+        0
+    ).build()
+
+    !url.isNullOrBlank() && !thumbnailUrl.isNullOrBlank() -> withContext(Dispatchers.IO) {
+        thumbnailUrl!!.useUrl { it1 ->
+            url!!.useUrl { it2 -> contact.uploadShortVideo(it1, it2) }
+        }
+    }
+
+    !path.isNullOrBlank() && !thumbnailPath.isNullOrBlank() -> with(Pair(File(thumbnailPath!!), File(path!!))) {
+        if (first.exists()) {
+            if (second.exists()) {
+                first.inputStream().useStream { it1 ->
+                    second.inputStream().useStream { it2 ->
+                        contact.uploadShortVideo(it1, it2)
+                    }
+                }
+            } else throw NoSuchFileException(second)
+        } else throw NoSuchFileException(first)
+    }
+
+    !base64.isNullOrBlank() && !thumbnailBase64.isNullOrBlank() -> with(Pair(Base64.getDecoder().decode(thumbnailBase64), Base64.getDecoder().decode(base64))) {
+        first.inputStream().useStream { it1 ->
+            second.inputStream().useStream { it2 ->
+                contact.uploadShortVideo(it1, it2)
+            }
+        }
     }
 
     else -> null

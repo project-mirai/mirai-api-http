@@ -120,6 +120,18 @@ internal fun Application.messageRouter() = routing {
     }
 
     /**
+     * 上传短视频
+     */
+    httpAuthedMultiPart(Paths.uploadShortVideo) { session, parts ->
+        val type = parts.value("type")
+        val thumbnail = parts.file("thumbnail")?.run { streamProvider() } ?: throw IllegalParamException("缺少参数 thumbnail")
+        val video = parts.file("video")?.run{ streamProvider() } ?: throw IllegalParamException("缺少参数 video")
+
+        val ret = onUploadShortVideo(session, thumbnail, video, type)
+        call.respondDTO(ret)
+    }
+
+    /**
      * 撤回消息
      */
     httpAuthedPost(Paths.recall, respondStateCodeStrategy(::onRecall))

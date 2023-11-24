@@ -99,6 +99,18 @@ internal interface VoiceLikeDTO {
     val length: Long
 }
 
+internal interface ShortVideoLikeDTO {
+    val videoId: String?
+    val filename: String?
+    val url: String?
+    val thumbnailUrl: String?
+    val path: String?
+    val thumbnailPath: String?
+    val base64: String?
+    val thumbnailBase64: String?
+    val fileSize: Long
+}
+
 @Serializable
 @SerialName("Image")
 internal data class ImageDTO(
@@ -136,6 +148,20 @@ internal data class VoiceDTO(
     override val base64: String? = null,
     override val length: Long = 0L,
 ) : MessageDTO(), VoiceLikeDTO
+
+@Serializable
+@SerialName("ShortVideo")
+internal data class ShortVideoDTO(
+    override val videoId: String? = null,
+    override val filename: String? = null,
+    override val url: String? = null,
+    override val thumbnailUrl: String? = null,
+    override val path: String? = null,
+    override val thumbnailPath: String? = null,
+    override val base64: String? = null,
+    override val thumbnailBase64: String? = null,
+    override val fileSize: Long = 0L,
+) : MessageDTO(), ShortVideoLikeDTO
 
 @Serializable
 @SerialName("Xml")

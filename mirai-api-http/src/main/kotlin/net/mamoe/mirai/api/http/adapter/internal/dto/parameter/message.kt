@@ -53,6 +53,12 @@ internal class UploadVoiceRetDTO(
 ) : DTO
 
 @Serializable
+@Suppress("unused")
+internal class UploadShortVideoRetDTO(
+    val videoId: String,
+) : DTO
+
+@Serializable
 internal data class MessageIdDTO(
     val target: Long,
     val messageId: Int,

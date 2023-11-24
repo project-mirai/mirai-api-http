@@ -102,6 +102,8 @@ internal suspend fun SendChannel<Frame>.handleWsAction(session: Session, content
             Paths.uploadImage -> StateCode.NoOperateSupport.toJsonElement()
             // TODO: implement upload voice
             Paths.uploadVoice -> StateCode.NoOperateSupport.toJsonElement()
+            // TODO: implement upload short video
+            Paths.uploadShortVideo -> StateCode.NoOperateSupport.toJsonElement()
             Paths.recall -> execute(session, element, ::onRecall)
             Paths.sendNudge -> execute(session, element, ::onNudge)
             Paths.roamingMessages -> execute(session, element, ::onRoamingMessages)

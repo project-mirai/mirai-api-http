@@ -59,6 +59,7 @@ object Paths {
     const val sendNudge = "sendNudge"
     const val uploadImage = "uploadImage"
     const val uploadVoice = "uploadVoice"
+    const val uploadShortVideo = "uploadShortVideo"
     const val recall = "recall"
     const val roamingMessages = "roamingMessages"
 

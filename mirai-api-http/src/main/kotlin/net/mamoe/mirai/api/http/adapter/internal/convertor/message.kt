@@ -68,6 +68,7 @@ internal suspend fun Message.toDTO() = when (this) {
         FlashImageDTO(imageId, queryUrl(), width = width, height = height, size = size, imageType = imageType.name, isEmoji = isEmoji)
     }
     is OnlineAudio -> VoiceDTO(filename, urlForDownload, length = length)
+    is OnlineShortVideo -> ShortVideoDTO(videoId, filename, urlForDownload, fileSize = fileSize)
     is ServiceMessage -> XmlDTO(content)
     is LightApp -> AppDTO(content)
     is QuoteReply -> QuoteDTO(source.ids.firstOrNull() ?: 0, source.fromId, source.targetId,
