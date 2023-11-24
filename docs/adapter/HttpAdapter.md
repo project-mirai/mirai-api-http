@@ -44,6 +44,7 @@ adapterSettings:
 + **[多媒体内容上传](#多媒体内容上传)**
   * [图片文件上传](#图片文件上传)
   * [语音文件上传](#语音文件上传)
+  * [短视频文件上传](#短视频文件上传)
   * [群文件上传](#群文件上传)
 -------
 
@@ -653,6 +654,34 @@ adapterSettings:
 ```json5
 {
   "voiceId":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.amr", //语音的VoiceId
+  "url":"xxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+### 短视频文件上传
+
+使用此方法上传短视频文件至服务器并返回VideoId
+
+```
+[POST] /uploadShortVideo
+```
+
+**本接口为[POST]请求, 参数格式为`multipart/form-data`**
+
+#### 请求:
+
+| 名字         | 类型     | 可选    | 举例          | 说明                 |
+|------------|--------|-------|-------------|--------------------|
+| sessionKey | String | true  | YourSession | 已经激活的Session       |
+| type       | String | false | "group"     | "friend" 或 "group" |
+| thumbnail  | File   | false | -           | 视频封面文件             |
+| video      | File   | false | -           | 短视频文件              |
+
+#### 响应:
+
+```json5
+{
+  "videoId":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", //短视频的videoId
   "url":"xxxxxxxxxxxxxxxxxxxx"
 }
 ```

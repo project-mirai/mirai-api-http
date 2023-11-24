@@ -322,6 +322,36 @@
 
 > 三个参数任选其一，出现多个参数时，按照voiceId > url > path > base64的优先级
 
+### ShortVideo
+
+```json5
+{
+    "type": "ShortVideo",
+    "videoId": "30510201000436303402010002042c14a1e5xxxxxxxxxx",
+    "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "thumbnailUrl": "https://xxxxxxxxxxxxxxxxxxxxxx",
+    "path": null,
+    "thumbnailPath": null,
+    "base64": null,
+    "thumbnailBase64": null,
+    "fileSize": 1024,
+}
+```
+
+| 名字              | 类型     | 说明                                                                     |
+|-----------------|--------|------------------------------------------------------------------------|
+| videoId         | String | 短视频的videoId，不为空时将忽略url, thumbnailUrl属性                                 |
+| url             | String | 短视频的URL，发送时可作网络视频的链接；接收时为腾讯的视频服务器的链接，可用于视频下载                           |
+| thumbnailUrl    | String | 短视频的缩略图URL，同上                                                          |
+| path            | String | 短视频的路径，发送本地视频，路径相对于 JVM 工作路径（默认是当前路径，可通过 `-Duser.dir=...`指定），也可传入绝对路径。 |
+| thumbnailPath   | String | 短视频的缩略图路径，同上                                                           |
+| base64          | String | 短视频的 Base64 编码                                                         |
+| thumbnailBase64 | String | 短视频缩略图的 Base64 编码                                                      |
+| fileSize        | Long   | 返回的视频文件大小, 发送消息时可以不传                                                   |
+
+> 三个参数任选其一，出现多个参数时，按照videoId > url > path > base64的优先级  
+> 当使用 url, path, base64 其中一种参数时，必须要提供缩略图
+
 ### Xml
 
 ```json5
