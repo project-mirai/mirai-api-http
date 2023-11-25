@@ -205,7 +205,7 @@ internal suspend fun onUploadImage(session: Session, stream: InputStream, type: 
  * 上传语音
  */
 internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: String): UploadVoiceRetDTO {
-    val video = stream.useStream {
+    val voice = stream.useStream {
         when (type) {
             "Group", "group" -> session.bot.groups.firstOrNull()?.uploadAudio(it)
             "Friend", "friend",
@@ -215,7 +215,7 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
         }
     }
 
-    return video?.run { UploadVoiceRetDTO(filename) }
+    return voice?.run { UploadVoiceRetDTO(filename) }
         ?: throw IllegalAccessException("语音上传错误")
 }
 
