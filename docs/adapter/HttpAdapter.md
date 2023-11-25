@@ -682,6 +682,7 @@ adapterSettings:
 ```json5
 {
   "videoId":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", //短视频的videoId
+  "videoMd5": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", //短视频的videoMd5
   "url":"xxxxxxxxxxxxxxxxxxxx"
 }
 ```

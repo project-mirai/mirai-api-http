@@ -101,6 +101,7 @@ internal interface VoiceLikeDTO {
 
 internal interface ShortVideoLikeDTO {
     val videoId: String?
+    val videoMd5: String?
     val filename: String?
     val url: String?
     val thumbnailUrl: String?
@@ -153,6 +154,7 @@ internal data class VoiceDTO(
 @SerialName("ShortVideo")
 internal data class ShortVideoDTO(
     override val videoId: String? = null,
+    override val videoMd5: String? = null,
     override val filename: String? = null,
     override val url: String? = null,
     override val thumbnailUrl: String? = null,

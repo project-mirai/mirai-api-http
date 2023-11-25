@@ -56,6 +56,7 @@ internal class UploadVoiceRetDTO(
 @Suppress("unused")
 internal class UploadShortVideoRetDTO(
     val videoId: String,
+    val videoMd5: String
 ) : DTO
 
 @Serializable

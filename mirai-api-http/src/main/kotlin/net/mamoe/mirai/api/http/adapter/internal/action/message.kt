@@ -19,6 +19,7 @@ import net.mamoe.mirai.api.http.adapter.internal.dto.*
 import net.mamoe.mirai.api.http.adapter.internal.dto.parameter.*
 import net.mamoe.mirai.api.http.context.session.Session
 import net.mamoe.mirai.api.http.spi.persistence.Context
+import net.mamoe.mirai.api.http.util.toHexString
 import net.mamoe.mirai.api.http.util.useStream
 import net.mamoe.mirai.api.http.util.useUrl
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -236,7 +237,7 @@ internal suspend fun onUploadShortVideo(session: Session, stream: InputStream, s
         }
     }
 
-    return video?.run { UploadShortVideoRetDTO(videoId) }
+    return video?.run { UploadShortVideoRetDTO(videoId, fileMd5.toHexString()) }
         ?: throw IllegalAccessException("视频上传错误")
 }
 

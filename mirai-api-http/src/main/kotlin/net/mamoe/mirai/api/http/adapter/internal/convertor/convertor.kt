@@ -164,9 +164,9 @@ private suspend fun VoiceLikeDTO.voiceLikeToMessage(contact: Contact) = when {
 private suspend fun ShortVideoLikeDTO.shortVideoLikeToMessage(contact: Contact) = when {
     !videoId.isNullOrBlank() -> OfflineShortVideo.Builder.newBuilder(
         videoId!!,
-        filename!!,
+        filename ?: "",
         "mp4",
-        ByteArray(16),
+        if (videoMd5.isNullOrBlank()) ByteArray(16) else videoMd5!!.toHexArray(),
         0
     ).build()
 

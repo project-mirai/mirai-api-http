@@ -328,6 +328,8 @@
 {
     "type": "ShortVideo",
     "videoId": "30510201000436303402010002042c14a1e5xxxxxxxxxx",
+    "videoMd5": "E8052517FF38F5E4986C561A037387A1",
+    "filename": "8de6bfc94414c030257413606a5273d3",
     "url": "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "thumbnailUrl": "https://xxxxxxxxxxxxxxxxxxxxxx",
     "path": null,
@@ -341,6 +343,8 @@
 | 名字              | 类型     | 说明                                                                     |
 |-----------------|--------|------------------------------------------------------------------------|
 | videoId         | String | 短视频的videoId，不为空时将忽略url, thumbnailUrl属性                                 |
+| videoMd5        | String | 短视频的文件md5                                                              |
+| filename        | String | 短视频文件名，不包括扩展名                                                          |
 | url             | String | 短视频的URL，发送时可作网络视频的链接；接收时为腾讯的视频服务器的链接，可用于视频下载                           |
 | thumbnailUrl    | String | 短视频的缩略图URL，同上                                                          |
 | path            | String | 短视频的路径，发送本地视频，路径相对于 JVM 工作路径（默认是当前路径，可通过 `-Duser.dir=...`指定），也可传入绝对路径。 |
@@ -350,6 +354,7 @@
 | fileSize        | Long   | 返回的视频文件大小, 发送消息时可以不传                                                   |
 
 > 三个参数任选其一，出现多个参数时，按照videoId > url > path > base64的优先级  
+> 当使用 videoId 参数时，需要提供 videoMd5  
 > 当使用 url, path, base64 其中一种参数时，必须要提供缩略图
 
 ### Xml
