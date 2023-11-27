@@ -513,6 +513,32 @@
 | name | String | 文件名     |
 | size | Long   | 文件大小   |
 
+### ShortVideo
+
+```json5
+{
+  "type": "ShortVideo",
+  "videoId": "",
+  "fileMd5": "",
+  "fileSize": 0,
+  "fileFormat": "",
+  "filename": "",
+  "videoUrl": "",
+  "thumbnailUrl": null
+}
+```
+
+| 名字           | 类型   | 说明                     |
+|--------------| ------ |------------------------|
+| videoId      | String | 短视频id                  |
+| fileMd5      | String | 短视频MD5                 |
+| fileSize     | Long   | 文件大小                   |
+| fileFormat   | String   | 文件格式                   |
+| filename     | String   | 文件名，不含扩展名              |
+| videoUrl     | String   | 适配文件下载地址, 离线消息可能为 null |
+| thumbnailUrl | String   | 封面地址,一般为 null          |
+
+
 ### MiraiCode
 
 ```json5
