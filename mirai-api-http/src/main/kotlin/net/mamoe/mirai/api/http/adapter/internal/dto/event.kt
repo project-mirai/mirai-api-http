@@ -259,6 +259,19 @@ internal data class FriendInputStatusChangedEventDTO(
 ) : BotEventDTO()
 
 @Serializable
+@SerialName("FriendAddEvent")
+internal data class FriendAddEventDTO(
+    val friend: QQDTO,
+    val stranger: Boolean
+) : BotEventDTO()
+
+@Serializable
+@SerialName("FriendDeleteEvent")
+internal data class FriendDeleteEventDTO(
+    val friend: QQDTO
+) : BotEventDTO()
+
+@Serializable
 @SerialName("FriendNickChangedEvent")
 internal data class FriendNickChangedEventDTO(
     val friend: QQDTO,

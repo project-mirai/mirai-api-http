@@ -145,6 +145,49 @@
 
 
 
+### 添加好友
+
+```json5
+{
+  "type": "FriendAddEvent",
+  "friend": {
+    "id": 123123,
+    "nickname": "nick",
+    "remark": "remark"
+  },
+  "stranger": true
+}
+```
+
+| 名字       | 类型   | 说明                                                                            |
+|----------| ------ |-------------------------------------------------------------------------------|
+| id       | Long   | 好友 QQ 号码                                                                      |
+| nickname | String | 好友昵称(值不确定)                                                                    |
+| remark   | String | 好友备注                                                                          |
+| stranger | String | 是否为陌生人添加，若为 `true` 对应为 `StrangerRelationChangeEvent.Friended` 的 mirai 事件，否则为 `FriendAddEvent` |
+
+
+### 好友删除
+
+```json5
+{
+  "type": "FriendDeleteEvent",
+  "friend": {
+    "id": 123123,
+    "nickname": "nick",
+    "remark": "remark"
+  }
+}
+```
+
+| 名字             | 类型   | 说明                                          |
+| ---------------- | ------ | --------------------------------------------- |
+| id               | Long   | 好友 QQ 号码     |
+| nickname         | String | 好友昵称(值不确定)     |
+| remark           | String | 好友备注                          |
+
+
+
 
 ## 群事件
 
