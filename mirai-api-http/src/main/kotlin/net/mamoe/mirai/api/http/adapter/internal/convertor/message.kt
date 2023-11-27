@@ -10,15 +10,25 @@
 package net.mamoe.mirai.api.http.adapter.internal.convertor
 
 import net.mamoe.mirai.api.http.adapter.internal.dto.*
+import net.mamoe.mirai.api.http.spi.persistence.Persistence
 import net.mamoe.mirai.api.http.util.FaceMap
 import net.mamoe.mirai.api.http.util.PokeMap
 import net.mamoe.mirai.api.http.util.toHexString
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MarketFace
 import net.mamoe.mirai.utils.MiraiExperimentalApi
+
+/**
+ * 转换一条消息链
+ */
+internal suspend fun MessageChainDTO.toMessageChain(contact: Contact, cache: Persistence): MessageChain {
+    return buildMessageChain { this@toMessageChain.forEach { it.convertToMessage(contact, cache)?.let(::add) } }
+}
+
 
 /***************************
  * Core Message 对象转换函数

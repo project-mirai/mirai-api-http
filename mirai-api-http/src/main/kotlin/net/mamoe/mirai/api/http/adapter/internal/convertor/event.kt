@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -18,6 +18,17 @@ import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.debug
+
+/**
+ * Core 对象转换为 DTO 对象
+ *
+ * 对于事件类型, 见 event.kt
+ * 对于消息类型， 见 message.kt
+ */
+internal suspend fun BotEvent.toDTO(): EventDTO = when (this) {
+    is MessageEvent -> toDTO()
+    else -> convertBotEvent()
+}
 
 // TODO: 切换为 跳表 或利用函数重载去掉冗长的 when 语句
 @OptIn(MiraiExperimentalApi::class)

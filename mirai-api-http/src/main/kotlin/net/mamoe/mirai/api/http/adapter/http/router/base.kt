@@ -22,6 +22,7 @@ import net.mamoe.mirai.api.http.adapter.http.plugin.HttpRouterMonitor
 import net.mamoe.mirai.api.http.adapter.internal.serializer.BuiltinJsonSerializer
 import net.mamoe.mirai.api.http.adapter.uploading.uploadingRouter
 import net.mamoe.mirai.api.http.context.MahContextHolder
+import net.mamoe.mirai.api.http.util.installOnce
 
 
 fun Application.httpModule(adapter: HttpAdapter) {
@@ -36,7 +37,7 @@ fun Application.httpModule(adapter: HttpAdapter) {
     }
 
     install(ContentNegotiation) { json(json = BuiltinJsonSerializer.buildJson()) }
-    install(GlobalExceptionHandler) { printTrace = MahContextHolder.debug }
+    installOnce(GlobalExceptionHandler) { printTrace = MahContextHolder.debug }
     install(Authorization)
     if (MahContextHolder.debug) {
         install(DoubleReceive)

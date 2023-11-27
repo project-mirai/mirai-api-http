@@ -14,6 +14,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.SendChannel
+import net.mamoe.mirai.api.http.adapter.http.plugin.GlobalExceptionHandler
 import net.mamoe.mirai.api.http.adapter.internal.dto.VerifyRetDTO
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJson
 import net.mamoe.mirai.api.http.adapter.internal.serializer.toJsonElement
@@ -22,6 +23,7 @@ import net.mamoe.mirai.api.http.adapter.ws.WebsocketAdapter
 import net.mamoe.mirai.api.http.adapter.ws.dto.WsOutgoing
 import net.mamoe.mirai.api.http.adapter.ws.extension.FrameLogExtension
 import net.mamoe.mirai.api.http.context.MahContextHolder
+import net.mamoe.mirai.api.http.util.installOnce
 
 /**
  * ktor websocket 模块加载
@@ -34,6 +36,9 @@ fun Application.websocketRouteModule(wsAdapter: WebsocketAdapter) {
             }
         }
     }
+
+
+    installOnce(GlobalExceptionHandler) { printTrace = MahContextHolder.debug }
     wsRouter(wsAdapter)
     uploadingRouter()
 }
