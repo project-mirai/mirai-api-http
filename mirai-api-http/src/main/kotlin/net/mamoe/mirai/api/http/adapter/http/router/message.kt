@@ -19,7 +19,7 @@ import net.mamoe.mirai.api.http.adapter.internal.action.*
 import net.mamoe.mirai.api.http.adapter.internal.consts.Paths
 import net.mamoe.mirai.api.http.adapter.internal.dto.EventListRestfulResult
 import net.mamoe.mirai.api.http.adapter.internal.dto.IntRestfulResult
-import java.net.URL
+import net.mamoe.mirai.api.http.util.openAsStream
 
 /**
  * 消息路由
@@ -108,7 +108,7 @@ internal fun Application.messageRouter() = routing {
         val type = parts.value("type")
         val url = parts.valueOrNull("url")
         val stream = if (url != null) {
-            URL(url).openStream()
+            url.openAsStream()
         } else {
             val f = parts.file("img") ?: throw IllegalParamException("缺少参数 img")
             f.streamProvider()
@@ -125,7 +125,7 @@ internal fun Application.messageRouter() = routing {
         val type = parts.value("type")
         val url = parts.valueOrNull("url")
         val stream = if (url != null) {
-            URL(url).openStream()
+            url.openAsStream()
         } else {
             val f = parts.file("voice") ?: throw IllegalParamException("缺少参数 voice")
             f.streamProvider()
