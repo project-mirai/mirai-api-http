@@ -20,6 +20,7 @@ import net.mamoe.mirai.api.http.adapter.http.plugin.Authorization
 import net.mamoe.mirai.api.http.adapter.http.plugin.GlobalExceptionHandler
 import net.mamoe.mirai.api.http.adapter.http.plugin.HttpRouterMonitor
 import net.mamoe.mirai.api.http.adapter.internal.serializer.BuiltinJsonSerializer
+import net.mamoe.mirai.api.http.adapter.uploading.uploadingRouter
 import net.mamoe.mirai.api.http.context.MahContextHolder
 
 
@@ -52,4 +53,5 @@ fun Application.httpModule(adapter: HttpAdapter) {
     fileRouter()
     commandRouter()
     announcementRouter()
+    uploadingRouter()
 }
