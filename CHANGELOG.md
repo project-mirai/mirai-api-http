@@ -1,6 +1,31 @@
 # 更新日志
 
 
+## \[2.10.0\] - 2023-11-27
+
+### 修复
+
++ debug 模式下将输出全局异常日志
++ 修复文件上传文档错误 #537
+
+### 新增
+
++ 新增群成员活跃信息，查询属性 [member.active](docs/api/API.md#获取群员设置), #588
++ 支持通过 `url` 上传图片和语音 [图片文件上传](docs/adapter/HttpAdapter.md#图片文件上传), [语音文件上传](docs/adapter/HttpAdapter.md#语音文件上传), #613
++ 新增好友变更事件 [`FriendAddEvent`](docs/api/EventType.md#添加好友), [`FriendDeleteEvent`](docs/api/EventType.md#好友删除), @StageGuard
++ 支持 [`SuperFace`超级表情](docs/api/MessageType.md#Face)
++ 支持 [`ShortVideo`短视频](docs/api/MessageType.md#ShortVideo), [短视频上传](docs/adapter/HttpAdapter.md#短视频文件上传)
++ 支持 [获取好友漫游消息](docs/api/API.md#获取漫游消息)
++ `ws` 支持原 `http` 的上传功能，无需额外开启 `http adapter` [图片文件上传](docs/adapter/HttpAdapter.md#图片文件上传), [语音文件上传](docs/adapter/HttpAdapter.md#语音文件上传), [短视频上传](docs/adapter/HttpAdapter.md#短视频文件上传)
+
+### 变更
+
++ 升级 mirai core 版本, 支持 2.16.0
++ 移除 `GroupEntranceAnnouncementChangeEvent` 入群通知变更事件类型
++ `ForwardMessage` 中 `display` 字段可选 @ProgramRipper
+
+
+
 ## \[2.9.1\] - 2023-3-2
 
 ### 修复
