@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Mamoe Technologies and contributors.
+ * Copyright 2023 Mamoe Technologies and contributors.
  *
  * 此源代码的使用受 GNU AFFERO GENERAL PUBLIC LICENSE version 3 许可证的约束, 可以在以下链接找到该许可证.
  * Use of this source code is governed by the GNU AGPLv3 license that can be found through the following link.
@@ -59,6 +59,7 @@ object Paths {
     const val sendNudge = "sendNudge"
     const val uploadImage = "uploadImage"
     const val uploadVoice = "uploadVoice"
+    const val uploadShortVideo = "uploadShortVideo"
     const val recall = "recall"
     const val roamingMessages = "roamingMessages"
 

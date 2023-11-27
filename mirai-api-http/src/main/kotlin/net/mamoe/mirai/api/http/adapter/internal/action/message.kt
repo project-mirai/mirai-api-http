@@ -228,6 +228,26 @@ internal suspend fun onUploadVoice(session: Session, stream: InputStream, type: 
 }
 
 /**
+ * 上传短视频
+ */
+internal suspend fun onUploadShortVideo(session: Session, streamThumbnail: InputStream, streamVideo: InputStream, type: String): UploadShortVideoRetDTO {
+    val video = streamThumbnail.useStream { st ->
+        streamVideo.useStream { sv ->
+            when (type) {
+                "Group", "group" -> session.bot.groups.firstOrNull()?.uploadShortVideo(st, sv)
+                "Friend", "friend", "Temp", "temp" -> session.bot.friends.firstOrNull()?.uploadShortVideo(st, sv)
+
+                else -> null
+            }
+        }
+    }
+
+    return video?.run { UploadShortVideoRetDTO(videoId) }
+        ?: throw IllegalAccessException("视频上传错误")
+}
+
+
+/**
  * 消息撤回
  */
 @OptIn(ConsoleExperimentalApi::class)

@@ -62,7 +62,7 @@ internal fun Application.messageRouter() = routing {
         val data = it.unreadQueue.peek(it.count)
         call.respond(EventListRestfulResult(data = data))
     }
-    
+
     /**
      * 获取指定条数最新的消息，和 `/fetchLatestMessage` 不一样，这个方法不会删除消息
      */
@@ -131,6 +131,18 @@ internal fun Application.messageRouter() = routing {
             f.streamProvider()
         }
         val ret = onUploadVoice(session, stream, type)
+        call.respond(ret)
+    }
+
+    /**
+     * 上传短视频
+     */
+    httpAuthedMultiPart(Paths.uploadShortVideo) { session, parts ->
+        val type = parts.value("type")
+        val thumbnail = parts.file("thumbnail")?.run { streamProvider() } ?: throw IllegalParamException("缺少参数 thumbnail")
+        val video = parts.file("video")?.run{ streamProvider() } ?: throw IllegalParamException("缺少参数 video")
+
+        val ret = onUploadShortVideo(session, thumbnail, video, type)
         call.respond(ret)
     }
 

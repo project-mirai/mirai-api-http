@@ -659,6 +659,33 @@ adapterSettings:
 }
 ```
 
+### 短视频文件上传
+
+使用此方法上传语音文件至服务器并返回videoId
+
+```
+[POST] /uploadShortVideo
+```
+
+**本接口为[POST]请求, 参数格式为`multipart/form-data`**
+
+#### 请求:
+
+| 名字         | 类型     | 可选    | 举例        | 说明                              |
+|------------|--------|-------| ----------- |---------------------------------|
+| sessionKey | String | true  | YourSession | 已经激活的Session                    |
+| type       | String | false | "group"     | 当前仅支持 "group", "friend", "temp" |
+| video      | File   | false | -           | 短视频文件                           |
+| thumbnail  | File   | false | -           | 短视频封面                           |
+
+#### 响应:
+
+```json5
+{
+  "videoId":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", //短视频的videoId
+}
+```
+
 ### 群文件上传
 
 ```
